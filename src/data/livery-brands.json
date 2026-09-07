@@ -1,0 +1,12 @@
+[
+  {"name":"PetSmart","order":1},
+  {"name":"The Home Depot","order":2},
+  {"name":"GHOST Energy","order":3},
+  {"name":"Ironmouse","order":4},
+  {"name":"Mobil 1","order":5,"logo":"https://i.ibb.co/k6Pfj3JN/Untitled507-20260903172810.png"},
+  {"name":"DeWalt","order":6},
+  {"name":"Rheem","order":7,"logo":"https://i.ibb.co/HLsngRyx/Untitled508-20260903172343.png"},
+  {"name":"Interstate Batteries","order":8},
+  {"name":"RIDGID","order":9,"logo":"https://i.ibb.co/Z6bZ42Cm/Untitled507-20260903171856.png"},
+  {"name":"Arrow Electronics","order":10}
+]

@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import partners from '../../data/partners.json';
+import brands from '../../data/livery-brands.json';
+import '../../styles/pages/content.css';
+const otherPortfolios=[
+  {name:'Nico',handle:'@Nico_BlueDust638',brands:['Chick-fil-A','Dell','7-Eleven','FICO','Areytn Sportswear','Claro!','Omnilife','GNP Seguros','Amazon Prime','Nutri','3M','Lincoln Welders','Mercado Pago']},
+  {name:'Rocky',handle:'@IIKyle5Larson',brands:['Dr. Pepper','Discover','Ghost Energy','Orlando Health']}
+];
+---
+<BaseLayout title="Partners" description="Aetherwing Partner Network — featured public-facing relationships and separate driver livery-brand portfolios.">
+  <PageHero eyebrow="Aetherwing eMotorsports" title="Aetherwing Partners" description="Aetherwing’s partner network brings together gaming and sim-racing relationships while individual livery-brand portfolios remain clearly separate from team partnerships." ghost="PARTNERS" />
+  <section class="section section--tight aw-partner-page">
+    <div class="shell">
+      <div class="aw-partner-summary"><span><b>02</b> Featured Partners</span><span><b>GAME</b> Gaming Culture</span><span><b>SIM</b> Sim Racing</span><span><b>IR + RBX</b> Competition Footprint</span></div>
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Network</p><h2 class="section-title">Featured Brands & Affiliates</h2></div><p class="lede">Two current team-level relationships. No livery logo is promoted into this section just because it appears on a race car.</p></div>
+      <div class="aw-featured-partners">
+        {partners.map((partner,index)=><article class="aw-featured-partner panel">
+          <div class="aw-featured-partner__logo"><img src={partner.logo} alt={partner.name} loading={index===0?'eager':'lazy'} /></div>
+          <div class="aw-featured-partner__body"><div class="aw-featured-partner__badges"><span class="tag">{partner.role}</span><b>{index===0?'Gaming / Collectibles':'Sim Racing / Affiliate'}</b></div><small>{index===0?'Brand Profile':'Affiliate Profile'}</small><h3>{partner.name}</h3><p>{partner.description}</p><div class="aw-partner-tags">{partner.tags.map((tag)=><span>{tag}</span>)}</div><a class="btn" href={partner.url} target="_blank" rel="noopener noreferrer">Visit Website ↗</a></div>
+        </article>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-partnership-values" data-brush="PARTNERSHIP VALUES">
+    <div class="shell shell--standard">
+      <div class="section-head"><div><p class="eyebrow">How We Approach Partnerships</p><h2 class="section-title">Built for Fit, Not Clutter.</h2></div></div>
+      <div class="aw-value-rail"><article><span>01 // Team</span><h3>Across the team.</h3><p>Featured relationships are presented where they naturally fit the Aetherwing organization and its public identity.</p></article><article><span>02 // Creative</span><h3>Part of the presentation.</h3><p>Brand treatment should feel integrated with racing and content instead of becoming a disconnected logo wall.</p></article><article><span>03 // Culture</span><h3>Racing + gaming.</h3><p>The network reflects both competitive motorsports and the broader gaming culture around the team.</p></article><article><span>04 // Clarity</span><h3>Relationships stay clear.</h3><p>Team partners, affiliate relationships, and driver livery portfolios are labeled as different things.</p></article></div>
+    </div>
+  </section>
+
+  <section class="section aw-portfolios" data-portfolios>
+    <div class="shell">
+      <div class="section-head"><div><p class="eyebrow">Driver Brand Programs</p><h2 class="section-title">Livery & Brand Portfolios</h2></div><p class="lede">These brands appear in individual livery and creative programs. Inclusion here does not by itself mean team-level sponsorship or affiliation.</p></div>
+      <div class="aw-portfolio-controls"><button type="button" data-expand>Expand All</button><button type="button" data-collapse>Collapse All</button></div>
+      <div class="aw-portfolio-list">
+        <details open><summary><span><small>Driver Brand / Livery Portfolio</small><strong>Wispy <em>(@Aokikoto)</em></strong></span><b>10 Livery Brands</b></summary><div class="aw-brand-grid">{brands.map((brand)=><div class="aw-brand-tile">{brand.logo?<img src={brand.logo} alt={brand.name} loading="lazy" />:<strong>{brand.name}</strong>}<span>{String(brand.order).padStart(2,'0')}</span></div>)}</div></details>
+        {otherPortfolios.map((portfolio)=><details><summary><span><small>Driver Brand / Livery Portfolio</small><strong>{portfolio.name} <em>({portfolio.handle})</em></strong></span><b>{portfolio.brands.length} Livery Brands</b></summary><div class="aw-brand-grid is-text">{portfolio.brands.map((brand,index)=><div class="aw-brand-tile"><strong>{brand}</strong><span>{String(index+1).padStart(2,'0')}</span></div>)}</div></details>)}
+      </div>
+      <p class="aw-brand-note">Brand note: logos and names shown inside driver portfolios may represent livery identities, advertising, or creative programs. Their appearance there does not by itself indicate a separate team-level sponsorship or affiliate relationship.</p>
+    </div>
+  </section>
+  <section class="section"><div class="shell shell--standard"><div class="aw-contact-cta"><span class="aw-paper-label">Build Something With Aetherwing</span><h2>Racing. Gaming. Content. Creative.</h2><p>Interested in working with Aetherwing? Open the communications channel through Contact HQ.</p><a class="btn" href="/contact/">Contact Us</a></div></div></section>
+</BaseLayout>
+<script>
+  const root=document.querySelector('[data-portfolios]');
+  root?.querySelector('[data-expand]')?.addEventListener('click',()=>root.querySelectorAll('details').forEach(d=>d.open=true));
+  root?.querySelector('[data-collapse]')?.addEventListener('click',()=>root.querySelectorAll('details').forEach(d=>d.open=false));
+</script>

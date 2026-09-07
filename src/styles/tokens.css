@@ -1,0 +1,68 @@
+:root {
+  --aw-black:#030303;
+  --aw-bg:#050505;
+  --aw-panel:#0b0b0b;
+  --aw-panel-2:#111;
+  --aw-panel-3:#181818;
+  --aw-paper:#ebe7dc;
+  --aw-white:#fff;
+  --aw-soft:#d2d2d2;
+  --aw-muted:#9b9b9b;
+  --aw-red:#e61a24;
+  --aw-red-dark:#a8000b;
+  --aw-red-hot:#ff2633;
+  --aw-gold:#ffb800;
+  --aw-orange:#ff5c00;
+  --aw-blue:#00a6ff;
+  --aw-cyan:#00d0ff;
+  --aw-alliance:#a56cff;
+  --aw-positive:#00ff66;
+
+  --ink-0:#000;
+  --ink-1:var(--aw-black);
+  --ink-2:var(--aw-bg);
+  --ink-3:var(--aw-panel);
+  --ink-4:var(--aw-panel-2);
+  --paper:var(--aw-paper);
+  --paper-muted:#b7b3aa;
+  --white:var(--aw-white);
+  --aether-red:var(--aw-red);
+  --aether-red-hot:var(--aw-red-hot);
+  --signal-orange:var(--aw-orange);
+  --feather-gold:var(--aw-gold);
+  --race-blue:var(--aw-blue);
+  --electric-cyan:var(--aw-cyan);
+  --alliance-purple:var(--aw-alliance);
+  --positive:var(--aw-positive);
+
+  --font-body:'Inter',Arial,sans-serif;
+  --font-condensed:'Saira Condensed','Anton',Impact,sans-serif;
+  --font-mono:'Share Tech Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --font-editorial:'Special Elite','Saira Condensed',Arial,sans-serif;
+  --font-brush:'Edo SZ','Road Rage','Special Elite',cursive;
+  --font-number:'Funkrocker','Saira Condensed',Impact,sans-serif;
+
+  --space-1:.35rem;
+  --space-2:.6rem;
+  --space-3:.9rem;
+  --space-4:1.25rem;
+  --space-5:1.75rem;
+  --space-6:2.5rem;
+  --space-7:3.5rem;
+  --space-8:5rem;
+  --space-9:7rem;
+
+  --content-wide:92rem;
+  --content:76rem;
+  --content-narrow:52rem;
+  --gutter:clamp(1rem,3vw,2.5rem);
+  --border:rgba(255,255,255,.14);
+  --border-strong:rgba(255,255,255,.28);
+  --shadow-hard:8px 8px 0 #000;
+  --ease-race:cubic-bezier(.2,.8,.2,1);
+  --duration-fast:140ms;
+  --duration:240ms;
+  --z-nav:100;
+  --z-overlay:300;
+  --z-toast:500;
+}

@@ -1,0 +1,141 @@
+[
+  {
+    "slug": "wispy",
+    "name": "Wispy",
+    "handle": "@Aokikoto",
+    "role": "Founder / Driver",
+    "affiliation": "aetherwing",
+    "numbers": "15 / 28 / 32 / 54",
+    "programs": [
+      "NRRS",
+      "UARL D1",
+      "UARL D2",
+      "UARL Open",
+      "Kmart",
+      "Sunoco"
+    ],
+    "feature": "Multi-program",
+    "bio": "Aetherwing founder and multi-program driver across RoRacing and iRacing.",
+    "iracingName": "Nicholas Waggoner"
+  },
+  {
+    "slug": "parker",
+    "name": "Parker",
+    "handle": "@Leg0man1o",
+    "role": "Driver",
+    "affiliation": "aetherwing",
+    "numbers": "43",
+    "programs": [
+      "NRRS"
+    ],
+    "feature": "NRRS",
+    "bio": "Aetherwing NRRS driver in the #43 entry."
+  },
+  {
+    "slug": "rocky",
+    "name": "Rocky",
+    "handle": "@IIKyle5Larson",
+    "role": "Driver",
+    "affiliation": "aetherwing",
+    "numbers": "92",
+    "programs": [
+      "UARL D1"
+    ],
+    "feature": "UARL D1",
+    "bio": "Full-time Aetherwing UARL Division 1 driver in the #92."
+  },
+  {
+    "slug": "burgertown2good",
+    "name": "BurgerTown2Good",
+    "handle": "@uhhbzb",
+    "role": "Driver",
+    "affiliation": "aetherwing",
+    "numbers": "11",
+    "programs": [
+      "UARL D2"
+    ],
+    "feature": "UARL D2",
+    "bio": "Active Aetherwing UARL Division 2 driver in the #11."
+  },
+  {
+    "slug": "gk3r",
+    "name": "Gk3r",
+    "handle": "@seals",
+    "role": "Driver",
+    "affiliation": "aetherwing",
+    "numbers": "19",
+    "programs": [
+      "UARL D2"
+    ],
+    "feature": "UARL D2",
+    "bio": "Active Aetherwing UARL Division 2 driver in the #19."
+  },
+  {
+    "slug": "will",
+    "name": "Will",
+    "handle": "@Raceartstudios",
+    "role": "Creative Director / Driver",
+    "affiliation": "alliance",
+    "numbers": "24 / 42",
+    "programs": [
+      "Kmart",
+      "Sunoco"
+    ],
+    "feature": "StarClutch Alliance",
+    "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor."
+  },
+  {
+    "slug": "jaxon",
+    "name": "Jaxon",
+    "role": "Media Specialist / Driver",
+    "affiliation": "alliance",
+    "numbers": "34",
+    "programs": [
+      "Kmart"
+    ],
+    "feature": "StarClutch Alliance",
+    "bio": "Aetherwing Media Specialist and #34 Kmart alliance competitor.",
+    "handle": "@Arctic_Blitzzzz"
+  },
+  {
+    "slug": "clutch",
+    "name": "Clutch",
+    "handle": "@Mj_fan088",
+    "role": "Alliance Driver",
+    "affiliation": "alliance",
+    "numbers": "29 / 46",
+    "programs": [
+      "Kmart",
+      "Sunoco"
+    ],
+    "feature": "StarClutch Alliance",
+    "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46."
+  },
+  {
+    "slug": "eazy",
+    "name": "Eazy",
+    "handle": "@Eazyonthafarilla",
+    "role": "Alliance Driver",
+    "affiliation": "alliance",
+    "numbers": "27 / 29",
+    "programs": [
+      "Kmart",
+      "Sunoco"
+    ],
+    "feature": "StarClutch Alliance",
+    "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM."
+  },
+  {
+    "slug": "matty",
+    "name": "Matty",
+    "handle": "@mymainisgone98",
+    "role": "Alliance Driver",
+    "affiliation": "alliance",
+    "numbers": "29",
+    "programs": [
+      "Kmart"
+    ],
+    "feature": "Part-Time Entry",
+    "bio": "StarClutch Racing alliance driver sharing the part-time Kmart #29 entry."
+  }
+]

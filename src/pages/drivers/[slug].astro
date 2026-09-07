@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import profiles from '../../data/driver-profiles.json';
+import drivers from '../../data/drivers.json';
+import '../../styles/pages/drivers.css';
+export function getStaticPaths(){return profiles.map((profile)=>({params:{slug:profile.slug},props:{profile}}));}
+const {profile}=Astro.props;
+const entries=drivers.filter((driver)=>driver.profile===profile.slug);
+---
+<BaseLayout title={profile.displayName} description={`${profile.displayName} — ${profile.subtitle}. Aetherwing eMotorsports driver profile.`}>
+  <PageHero eyebrow={`Driver Profile / ${profile.subtitle}`} title={profile.displayName} description={profile.intro} ghost={profile.displayName} />
+  <section class="section section--tight"><div class="shell shell--standard">
+    {profile.iracingName&&<div class="aw-formula-note" style="margin-bottom:2rem"><b>Identity note:</b> RoRacing presentation uses {profile.displayName}; iRacing liveries and historical results use {profile.iracingName}. Both resolve to this driver profile.</div>}
+    <div class="aw-iracing-stat-grid">{profile.stats.map((stat)=><div><span>{stat.label}</span><strong>{stat.value}</strong></div>)}</div>
+    <div class="section-head" style="margin-top:4rem"><div><p class="eyebrow">Current Entries</p><h2 class="section-title">Program Map</h2></div></div>
+    <div class="aw-factory-grid">{entries.map((entry)=><article class:list={['panel',{'panel--alliance':entry.affiliation==='alliance'}]}><span>#{entry.number}</span><h3>{entry.competition}</h3><p>{entry.status}{entry.car?` · ${entry.car}`:''}</p></article>)}</div>
+  </div></section>
+</BaseLayout>

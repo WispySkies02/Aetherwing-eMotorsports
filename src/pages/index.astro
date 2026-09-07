@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import site from '../data/site.json';
+import competitions from '../data/competitions.json';
+import roster from '../data/roster-profiles.json';
+import events from '../data/schedule-events.json';
+import partners from '../data/partners.json';
+import result from '../data/results.json';
+import '../styles/pages/home.css';
+const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
+const initialCompetition=competitions[0];
+const liveEvent=events.find((event)=>event.league==='iracing' && event.title==='Southern 500' && event.date==='2026-09-02') ?? events[0];
+const latest=result.latestKnownMartinsville;
+---
+<BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
+  <section class="aw-home-hero">
+    <div class="shell aw-home-hero__inner">
+      <div class="aw-home-hero__copy">
+        <span class="aw-home-kicker">2026 Competition Network</span>
+        <div class="aw-home-mark">Aetherwing eMOTORSPORTS</div>
+        <h1><span>Born to Soar.</span><b>Built to Fight.</b></h1>
+        <h2>NR2003. Roblox. iRacing.</h2>
+        <p>A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.</p>
+        <div class="aw-home-actions"><a class="btn" href="/drivers/">View Drivers</a><a class="btn btn--ghost" href="/schedule/#next-operation">Next Race / Schedule</a></div>
+      </div>
+      <aside class="aw-glance panel">
+        <span class="aw-paper-label">Aetherwing at a glance</span>
+        <div class="aw-glance__grid">
+          <div><strong>{site.activeRoRacingDrivers}</strong><span>Active RoRacing Drivers</span></div>
+          <div><strong>{String(site.competitionRelationships).padStart(2,'0')}</strong><span>Competition Relationships</span></div>
+          <div><strong>{String(site.featuredPartners).padStart(2,'0')}</strong><span>Featured Partners</span></div>
+          <div><strong>03</strong><span>Competition Worlds</span></div>
+        </div>
+        <p>5 Aetherwing drivers and 5 alliance-only drivers across 5 Aetherwing programs and 2 alliance series.</p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="aw-home-stats">
+    <div class="shell stat-rail">
+      <div class="stat"><strong>{site.verifiedWins}</strong><span>AEM Wins</span></div>
+      <div class="stat"><strong>{site.estimatedStarts}</strong><span>Est. Racing Starts</span></div>
+      <div class="stat"><strong>{site.competitionRelationships}</strong><span>Competition Relationships</span></div>
+      <div class="stat"><strong>{site.founded}</strong><span>Founded</span></div>
+    </div>
+  </div>
+
+  <section class="section aw-race-control" data-brush="RACE CONTROL" id="next-event">
+    <div class="shell">
+      <div class="section-head">
+        <div><p class="eyebrow">Aetherwing Race Control</p><h2 class="section-title">Next Event</h2></div>
+        <p class="lede">The next green flag across the Aetherwing schedule, with live-state treatment when an event window is active.</p>
+      </div>
+      <a class="aw-next-event panel" href="/schedule/#next-operation">
+        <div class="aw-next-event__left">
+          <span class="tag tag--live">LIVE</span>
+          <small data-home-event-league>{liveEvent.leagueName} · {liveEvent.status}</small>
+          <h3 data-home-event-title>{liveEvent.title}</h3>
+          <p data-home-event-meta>{liveEvent.track} · {liveEvent.displayDate ?? liveEvent.date} · {liveEvent.time}</p>
+        </div>
+        <div class="aw-next-event__right">
+          <span>Event Window</span>
+          <strong data-home-countdown>LIVE</strong>
+          <small data-home-count-label>Current iRacing special-event window</small>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section aw-team-section" data-brush="THE ROSTER">
+    <div class="shell">
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Racing Team</p><h2 class="section-title">Meet the Team</h2></div><p class="lede">Wispy stays anchored. Three other current RoRacing drivers rotate on each visit so the homepage does not become the same static wall every time.</p></div>
+      <div class="aw-team-browser" data-team-browser>
+        <div class="aw-team-cards" data-team-cards>
+          {initialTeam.map((driver,index)=><button class:list={['aw-team-card',{'is-selected':index===0}]} type="button" data-driver-slug={driver.slug}><small>{driver.role}</small><strong>#{driver.numbers}</strong><h3>{driver.name}</h3><span>{driver.feature}</span></button>)}
+        </div>
+        <article class="aw-team-detail panel" data-team-detail>
+          <div><span class="tag">Founder / Driver</span><h3>Wispy</h3><p class="mono">@Aokikoto · #15 / #28 / #32 / #54</p><p>Aetherwing founder and multi-program driver across RoRacing and iRacing.</p></div>
+          <a class="btn" href="/drivers/">Open Driver Hub</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-programs" data-brush="WHERE WE COMPETE">
+    <div class="shell">
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Competition Relationships</p><h2 class="section-title">Where We Compete</h2></div><p class="lede">Seven current relationships: 5 programs under the Aetherwing banner and 2 alliance series represented through StarClutch Racing.</p></div>
+      <div class="aw-program-browser" data-program-browser>
+        <div class="aw-program-tabs" role="tablist" aria-label="Competition relationships">
+          {competitions.map((competition,index)=><button type="button" role="tab" aria-selected={index===0?'true':'false'} data-program={competition.id} class:list={[{'is-alliance':competition.type==='alliance'}]}><span>{String(index+1).padStart(2,'0')}</span>{competition.name}</button>)}
+        </div>
+        <article class="aw-program-detail panel" data-program-detail data-type={initialCompetition.type}>
+          <div class="aw-program-detail__head"><span class="tag">{initialCompetition.label}</span><small>{initialCompetition.schedule}</small></div>
+          <h3>{initialCompetition.name}</h3>
+          <p class="aw-program-machine">{initialCompetition.machine}</p>
+          <p class="mono muted">{initialCompetition.platform}</p>
+          <div class="aw-program-roster">{initialCompetition.roster.map((entry)=><span>{entry}</span>)}</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-news-deck" data-brush="LATEST FROM THE GARAGE">
+    <div class="shell">
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
+      <div class="aw-news-grid">
+        <a class="aw-feature-story panel" href="/news/"><span class="tag tag--gold">Team Dispatch</span><small>July 2026</small><h3>How the 2026 Schedule Prepares Aetherwing for Full-Time Work</h3><p>A look at how the current competition calendar shapes the team’s rhythm, race-week preparation, and long-term program direction.</p><b>Read the News Hub →</b></a>
+        <article class="aw-result-card panel">
+          <div class="aw-result-card__top"><span class="tag tag--red">Latest Result</span>{latest.standings.chaseLocked && <span class="tag tag--gold">Chase Locked</span>}</div>
+          <small>NRRS Town Fair Cup Series</small><h3>Goody's Fast Relief 500 at Martinsville</h3><p class="mono">Martinsville Speedway · August 25, 2026 · #{latest.number} {latest.driver}</p>
+          <div class="aw-result-stats"><div><span>Start</span><strong>P{latest.start}</strong></div><div><span>Finish</span><strong>P{latest.finish}</strong></div><div><span>Points</span><strong>+{latest.pointsChange}</strong></div></div>
+          <details><summary>Race detail</summary><p>Stage 1: P{latest.stage1.finish} · {latest.stage1.points} pts // Stage 2: P{latest.stage2.finish} · {latest.stage2.points} pts</p><p>P{latest.standings.position} · {latest.standings.points} pts | {latest.standings.leaderGap} Leader | +{latest.standings.chaseMargin} Chase</p></details>
+          <a href="/wins-history/">View Full Result →</a>
+        </article>
+        <div class="aw-quick-links">
+          <a class="panel" href="/drivers/"><small>Roster Updated</small><strong>Driver Hub</strong><span>Current drivers, programs, and Factory entries →</span></a>
+          <a class="panel" href="/team-handbook/"><small>Operations</small><strong>Team Handbook</strong><span>Standards, race-week rules, and communication →</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-partner-strip" data-brush="PARTNER NETWORK">
+    <div class="shell">
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Partner Network</p><h2 class="section-title">Partner Network</h2></div><p class="lede">Two featured public-facing relationships. Driver livery brands remain a separate portfolio.</p></div>
+      <div class="aw-partner-grid">
+        {partners.map((partner)=><a class="aw-partner panel" href={partner.url} target="_blank" rel="noopener noreferrer"><div class="aw-partner-logo"><img loading="lazy" src={partner.logo} alt={partner.name} /></div><div><span class="tag">{partner.role}</span><h3>{partner.name}</h3><p>{partner.description}</p></div></a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-follow">
+    <div class="shell">
+      <div class="aw-follow__card">
+        <span class="aw-paper-label">Follow the Flight</span><h2>Keep exploring the garage.</h2><p>Jump into the roster, Partner Network, schedule, record book, and team standards without losing the Aetherwing identity.</p><div><a class="btn" href="/drivers/">View Drivers</a><a class="btn btn--ghost" href="/partners/">View Partners</a><a class="btn btn--ghost" href="/wins-history/">Wins & History</a></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script define:vars={{ roster, competitions, events }}>
+  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const countdown=document.querySelector('[data-home-countdown]');
+  const homeLeague=document.querySelector('[data-home-event-league]');
+  const homeTitle=document.querySelector('[data-home-event-title]');
+  const homeMeta=document.querySelector('[data-home-event-meta]');
+  const homeLabel=document.querySelector('[data-home-count-label]');
+  const pad=(n)=>String(n).padStart(2,'0');
+  const offsetFor=(dateKey)=>{const [y,m,d]=dateKey.split('-').map(Number);const noon=new Date(Date.UTC(y,m-1,d,12));const tz=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset',hour:'2-digit'}).formatToParts(noon).find(p=>p.type==='timeZoneName')?.value||'GMT-4';const match=tz.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/);return match?`${match[1]}${pad(match[2])}:${pad(match[3]||'00')}`:'-04:00';};
+  const parseTime=(text)=>{if(!text||text==='Event Window'||text==='TBD'||text==='NO RACE')return{hour:12,minute:0};const match=text.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);if(!match)return{hour:20,minute:0};let hour=Number(match[1]);const minute=Number(match[2]);if(match[3].toUpperCase()==='PM'&&hour!==12)hour+=12;if(match[3].toUpperCase()==='AM'&&hour===12)hour=0;return{hour,minute};};
+  const startOf=(event)=>{if(event.league==='iracing'||event.offWeek)return new Date(`${event.date}T00:00:00${offsetFor(event.date)}`);const t=parseTime(event.time);return new Date(`${event.date}T${pad(t.hour)}:${pad(t.minute)}:00${offsetFor(event.date)}`);};
+  const endOf=(event)=>{if(event.league==='iracing'||event.offWeek||event.tbd){const key=event.endDate||event.date;return new Date(`${key}T23:59:59${offsetFor(key)}`);}return new Date(startOf(event).getTime()+((event.durationMinutes||90)*60000));};
+  const displayDate=(event)=>{if(event.displayDate)return event.displayDate.toUpperCase();const [y,m,d]=event.date.split('-').map(Number);return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();};
+  const updateHomeEvent=()=>{const now=new Date();const upcoming=events.filter(event=>!event.offWeek&&endOf(event)>=now).sort((a,b)=>startOf(a)-startOf(b));const event=upcoming[0];if(!event||!(countdown instanceof HTMLElement))return;homeLeague.textContent=`${event.leagueName} · ${event.status||'Scheduled'}`;homeTitle.textContent=event.title;homeMeta.textContent=`${event.track} · ${displayDate(event)} · ${event.time}`;const start=startOf(event),end=endOf(event);if(now>=start&&now<=end){countdown.textContent='LIVE';countdown.classList.add('is-live');homeLabel.textContent=event.league==='iracing'?'Current iRacing special-event window':'Event currently active';return;}countdown.classList.remove('is-live');const diff=Math.max(0,start-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);countdown.textContent=d>0?`${d}D ${pad(h)}H`:`${pad(h)}H ${pad(m)}M`;homeLabel.textContent='Until next operation';};
+  updateHomeEvent();setInterval(updateHomeEvent,60000);
+  const teamBrowser=document.querySelector('[data-team-browser]');
+  if(teamBrowser){
+    const cards=teamBrowser.querySelector('[data-team-cards]');
+    const detail=teamBrowser.querySelector('[data-team-detail]');
+    const wispy=roster.find(d=>d.slug==='wispy');
+    const pool=roster.filter(d=>d.slug!=='wispy').sort(()=>Math.random()-.5).slice(0,3);
+    const selected=[wispy,...pool].filter(Boolean);
+    const renderDetail=(driver)=>{if(!(detail instanceof HTMLElement)||!driver)return;detail.innerHTML=`<div><span class="tag ${driver.affiliation==='alliance'?'tag--alliance':''}">${driver.role}</span><h3>${driver.name}</h3><p class="mono">${driver.handle||''}${driver.handle?' · ':''}#${driver.numbers}</p><p>${driver.bio}</p><p class="mono muted">${driver.programs.join(' · ')}</p></div><a class="btn" href="/drivers/">Open Driver Hub</a>`;};
+    if(cards instanceof HTMLElement){cards.innerHTML=selected.map((driver,i)=>`<button class="aw-team-card ${i===0?'is-selected':''}" type="button" data-driver-slug="${driver.slug}"><small>${driver.role}</small><strong>#${driver.numbers}</strong><h3>${driver.name}</h3><span>${driver.feature}</span></button>`).join('');cards.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{cards.querySelectorAll('button').forEach(b=>b.classList.remove('is-selected'));btn.classList.add('is-selected');renderDetail(roster.find(d=>d.slug===btn.dataset.driverSlug));}));}
+  }
+  const programBrowser=document.querySelector('[data-program-browser]');
+  if(programBrowser){
+    const tabs=programBrowser.querySelectorAll('[role="tab"]');
+    const detail=programBrowser.querySelector('[data-program-detail]');
+    const renderProgram=(program)=>{if(!(detail instanceof HTMLElement)||!program)return;detail.dataset.type=program.type;detail.classList.toggle('panel--alliance',program.type==='alliance');detail.innerHTML=`<div class="aw-program-detail__head"><span class="tag ${program.type==='alliance'?'tag--alliance':''}">${program.label}</span><small>${program.schedule}</small></div><h3>${program.name}</h3><p class="aw-program-machine">${program.machine}</p><p class="mono muted">${program.platform}</p><div class="aw-program-roster">${program.roster.map(entry=>`<span>${entry}</span>`).join('')}</div>`;};
+    tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(t=>t.setAttribute('aria-selected','false'));tab.setAttribute('aria-selected','true');renderProgram(competitions.find(p=>p.id===tab.dataset.program));if(!reduceMotion&&detail instanceof HTMLElement)detail.animate([{opacity:.35,transform:'translateY(5px)'},{opacity:1,transform:'none'}],{duration:180,easing:'ease-out'});}));
+  }
+</script>

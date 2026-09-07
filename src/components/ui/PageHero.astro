@@ -1,0 +1,12 @@
+---
+interface Props { eyebrow:string; title:string; description?:string; ghost?:string; }
+const { eyebrow,title,description,ghost=title.split(' ')[0] }=Astro.props;
+---
+<section class="page-hero" data-ghost={ghost}>
+  <div class="shell shell--standard">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="display">{title}</h1>
+    <div class="aw-brush-rule" aria-hidden="true"></div>
+    {description && <p class="lede">{description}</p>}
+  </div>
+</section>

@@ -1,0 +1,336 @@
+{
+  "locations": {
+    "Daytona International Speedway": {
+      "lat": 29.1852,
+      "lon": -81.0705,
+      "city": "DAYTONA BEACH, FL"
+    },
+    "Daytona Backstretch": {
+      "lat": 29.1852,
+      "lon": -81.0705,
+      "city": "DAYTONA BEACH, FL"
+    },
+    "Daytona International Speedway Road Course": {
+      "lat": 29.1852,
+      "lon": -81.0705,
+      "city": "DAYTONA BEACH, FL"
+    },
+    "Las Vegas Motor Speedway": {
+      "lat": 36.273,
+      "lon": -115.0103,
+      "city": "LAS VEGAS, NV"
+    },
+    "Circuit of the Americas": {
+      "lat": 30.1328,
+      "lon": -97.6411,
+      "city": "AUSTIN, TX"
+    },
+    "Phoenix Raceway": {
+      "lat": 33.3748,
+      "lon": -112.3112,
+      "city": "AVONDALE, AZ"
+    },
+    "Atlanta Motor Speedway": {
+      "lat": 33.3869,
+      "lon": -84.3164,
+      "city": "HAMPTON, GA"
+    },
+    "Richmond Raceway": {
+      "lat": 37.5928,
+      "lon": -77.4194,
+      "city": "RICHMOND, VA"
+    },
+    "Rockingham Speedway": {
+      "lat": 34.9742,
+      "lon": -79.6105,
+      "city": "ROCKINGHAM, NC"
+    },
+    "Martinsville Speedway": {
+      "lat": 36.6341,
+      "lon": -79.8517,
+      "city": "MARTINSVILLE, VA"
+    },
+    "Talladega Superspeedway": {
+      "lat": 33.5669,
+      "lon": -86.0661,
+      "city": "TALLADEGA, AL"
+    },
+    "Charlotte Motor Speedway": {
+      "lat": 35.3514,
+      "lon": -80.6834,
+      "city": "CONCORD, NC"
+    },
+    "The Dirt Track At Charlotte": {
+      "lat": 35.3514,
+      "lon": -80.6834,
+      "city": "CONCORD, NC"
+    },
+    "Charlotte Motor Speedway Roval": {
+      "lat": 35.3514,
+      "lon": -80.6834,
+      "city": "CONCORD, NC"
+    },
+    "The Milwaukee Mile": {
+      "lat": 43.0205,
+      "lon": -88.0108,
+      "city": "WEST ALLIS, WI"
+    },
+    "Mexico City": {
+      "lat": 19.4042,
+      "lon": -99.0895,
+      "city": "MEXICO CITY, MX"
+    },
+    "Road America": {
+      "lat": 43.7979,
+      "lon": -87.9946,
+      "city": "ELKHART LAKE, WI"
+    },
+    "Chicagoland Speedway": {
+      "lat": 41.4746,
+      "lon": -88.0569,
+      "city": "JOLIET, IL"
+    },
+    "Watkins Glen International": {
+      "lat": 42.3369,
+      "lon": -76.9272,
+      "city": "WATKINS GLEN, NY"
+    },
+    "New Hampshire Motor Speedway": {
+      "lat": 43.3621,
+      "lon": -71.4608,
+      "city": "LOUDON, NH"
+    },
+    "Darlington Raceway": {
+      "lat": 34.2953,
+      "lon": -79.9056,
+      "city": "DARLINGTON, SC"
+    },
+    "Indianapolis Motor Speedway": {
+      "lat": 39.7983,
+      "lon": -86.2339,
+      "city": "SPEEDWAY, IN"
+    },
+    "Indianapolis Motor Speedway Road Course": {
+      "lat": 39.7983,
+      "lon": -86.2339,
+      "city": "SPEEDWAY, IN"
+    },
+    "Bristol Motor Speedway": {
+      "lat": 36.5168,
+      "lon": -82.2569,
+      "city": "BRISTOL, TN"
+    },
+    "Kansas Speedway": {
+      "lat": 39.1158,
+      "lon": -94.8311,
+      "city": "KANSAS CITY, KS"
+    },
+    "Homestead-Miami Speedway": {
+      "lat": 25.4518,
+      "lon": -80.4089,
+      "city": "HOMESTEAD, FL"
+    },
+    "Homestead Miami Speedway": {
+      "lat": 25.4518,
+      "lon": -80.4089,
+      "city": "HOMESTEAD, FL"
+    },
+    "Auto Club Speedway": {
+      "lat": 34.0888,
+      "lon": -117.5005,
+      "city": "FONTANA, CA"
+    },
+    "Sonoma Raceway": {
+      "lat": 38.1611,
+      "lon": -122.4546,
+      "city": "SONOMA, CA"
+    },
+    "Michigan International Speedway": {
+      "lat": 42.0664,
+      "lon": -84.2414,
+      "city": "BROOKLYN, MI"
+    },
+    "Bowman Gray Stadium": {
+      "lat": 36.0792,
+      "lon": -80.2307,
+      "city": "WINSTON-SALEM, NC"
+    },
+    "Nashville Fairgrounds": {
+      "lat": 36.1306,
+      "lon": -86.7667,
+      "city": "NASHVILLE, TN"
+    },
+    "Texas Motor Speedway": {
+      "lat": 33.0373,
+      "lon": -97.2821,
+      "city": "FORT WORTH, TX"
+    },
+    "Pocono Raceway": {
+      "lat": 41.0558,
+      "lon": -75.5117,
+      "city": "LONG POND, PA"
+    },
+    "Dover Motor Speedway": {
+      "lat": 39.1899,
+      "lon": -75.5306,
+      "city": "DOVER, DE"
+    },
+    "Chicago Street Course": {
+      "lat": 41.8781,
+      "lon": -87.6298,
+      "city": "CHICAGO, IL"
+    },
+    "World Wide Technology Raceway": {
+      "lat": 38.6508,
+      "lon": -90.1362,
+      "city": "MADISON, IL"
+    },
+    "USA International Speedway": {
+      "lat": 28.1633,
+      "lon": -81.9333,
+      "city": "LAKELAND, FL"
+    },
+    "Knoxville Raceway": {
+      "lat": 41.3164,
+      "lon": -93.1006,
+      "city": "KNOXVILLE, IA"
+    },
+    "Crandon International Raceway": {
+      "lat": 45.5683,
+      "lon": -88.9042,
+      "city": "CRANDON, WI"
+    },
+    "Michelin Raceway Road Atlanta": {
+      "lat": 34.1492,
+      "lon": -83.8182,
+      "city": "BRASELTON, GA"
+    },
+    "Five Flags Speedway": {
+      "lat": 30.54,
+      "lon": -87.32,
+      "city": "PENSACOLA, FL"
+    },
+    "Chili Bowl": {
+      "lat": 36.1322,
+      "lon": -95.9311,
+      "city": "TULSA, OK"
+    },
+    "Virginia International Raceway": {
+      "lat": 36.5617,
+      "lon": -79.2061,
+      "city": "ALTON, VA"
+    },
+    "Naval Base Coronado": {
+      "lat": 32.699,
+      "lon": -117.202,
+      "city": "SAN DIEGO, CA"
+    },
+    "North Wilkesboro Speedway": {
+      "lat": 36.166,
+      "lon": -81.125,
+      "city": "NORTH WILKESBORO, NC"
+    },
+    "Portland International Raceway": {
+      "lat": 45.596,
+      "lon": -122.693,
+      "city": "PORTLAND, OR"
+    },
+    "Iowa Speedway": {
+      "lat": 41.677,
+      "lon": -93.015,
+      "city": "NEWTON, IA"
+    },
+    "Indianapolis Raceway Park": {
+      "lat": 39.813,
+      "lon": -86.341,
+      "city": "BROWNSBURG, IN"
+    },
+    "Sunny South Raceway Park": {
+      "lat": 30.4735,
+      "lon": -88.34,
+      "city": "GRAND BAY, AL"
+    },
+    "Wake County Speedway": {
+      "lat": 35.6599,
+      "lon": -78.6942,
+      "city": "RALEIGH, NC"
+    },
+    "Slinger Speedway": {
+      "lat": 43.3297,
+      "lon": -88.2831,
+      "city": "SLINGER, WI"
+    },
+    "Tyler County Speedway": {
+      "lat": 39.497,
+      "lon": -80.9065,
+      "city": "MIDDLEBOURNE, WV"
+    },
+    "Cedar Lake Speedway": {
+      "lat": 45.1275,
+      "lon": -92.5358,
+      "city": "NEW RICHMOND, WI"
+    },
+    "ABC Raceway": {
+      "lat": 46.5416,
+      "lon": -90.8791,
+      "city": "ASHLAND, WI"
+    },
+    "Baileyville Speedway": {
+      "lat": 45.1848,
+      "lon": -67.4264,
+      "city": "BAILEYVILLE, ME"
+    },
+    "Eldora Speedway": {
+      "lat": 40.2981,
+      "lon": -84.63,
+      "city": "NEW WESTON, OH"
+    },
+    "Silverstone Circuit": {
+      "lat": 52.0786,
+      "lon": -1.0169,
+      "city": "SILVERSTONE, UK"
+    },
+    "Monza Oval": {
+      "lat": 45.619,
+      "lon": 9.2811,
+      "city": "MONZA, IT"
+    },
+    "Greece Speedway": {
+      "lat": 43.2098,
+      "lon": -77.6931,
+      "city": "GREECE, NY"
+    },
+    "Twin Ring Motegi": {
+      "lat": 36.5333,
+      "lon": 140.2269,
+      "city": "MOTEGI, JP"
+    },
+    "Echo Park Speedway": {
+      "lat": 39.7392,
+      "lon": -104.9903,
+      "city": "DENVER, CO"
+    }
+  },
+  "aliases": {
+    "Daytona": "Daytona International Speedway",
+    "Fontana": "Auto Club Speedway",
+    "Las Vegas": "Las Vegas Motor Speedway",
+    "COTA": "Circuit of the Americas",
+    "Phoenix": "Phoenix Raceway",
+    "Atlanta": "Atlanta Motor Speedway",
+    "Richmond": "Richmond Raceway",
+    "Rockingham": "Rockingham Speedway",
+    "Martinsville": "Martinsville Speedway",
+    "Talladega": "Talladega Superspeedway",
+    "Charlotte": "Charlotte Motor Speedway",
+    "Milwaukee": "The Milwaukee Mile",
+    "Chicagoland": "Chicagoland Speedway",
+    "Watkins Glen": "Watkins Glen International",
+    "New Hampshire": "New Hampshire Motor Speedway",
+    "Darlington": "Darlington Raceway",
+    "Indy Road Course": "Indianapolis Motor Speedway Road Course",
+    "Bristol": "Bristol Motor Speedway",
+    "Kansas": "Kansas Speedway",
+    "Homestead-Miami": "Homestead-Miami Speedway"
+  }
+}

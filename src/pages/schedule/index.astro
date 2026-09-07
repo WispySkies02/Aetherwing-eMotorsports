@@ -1,0 +1,304 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import scheduleSource from '../../data/schedule-events.json';
+import trackSource from '../../data/schedule-track-locations.json';
+import '../../styles/pages/schedule.css';
+
+const scheduleEvents = [...scheduleSource].sort((a,b) => String(a.date ?? '9999').localeCompare(String(b.date ?? '9999')) || String(a.time ?? '').localeCompare(String(b.time ?? '')));
+const totalSeasonRaces = scheduleEvents.filter((event) => event.league !== 'iracing' && !event.offWeek).length;
+const monthKey = (event) => event.tbd ? 'tbd' : String(event.date).slice(0,7);
+const monthLabel = (key) => {
+  if (key === 'tbd') return 'Upcoming Events (TBA)';
+  const [year,month] = key.split('-').map(Number);
+  return new Date(Date.UTC(year,month-1,1,12)).toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
+};
+const groups = Object.entries(scheduleEvents.reduce((map,event,index) => {
+  const key = monthKey(event);
+  if (!map[key]) map[key] = [];
+  map[key].push({event,index});
+  return map;
+},{}));
+const leagueClass = (league) => league === 'open' ? 'open' : league;
+const isAlliance = (league) => league === 'kmart' || league === 'sunoco';
+const displayDate = (event) => {
+  if (event.tbd) return 'TBD';
+  if (event.displayDate) return event.displayDate.toUpperCase();
+  const [y,m,d] = event.date.split('-').map(Number);
+  return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
+};
+---
+<BaseLayout title="Schedule" description="The complete Aetherwing 2026–27 race calendar: 126 season races across seven competition relationships plus iRacing special-event windows, with reactive Race Control and expandable event information docks.">
+  <PageHero eyebrow="2026–27 Competition Calendar" title="Aetherwing Events" description="The complete calendar across five Aetherwing programs, two StarClutch Racing alliance series, and iRacing special events. Filter the grid and Race Control immediately retargets the next operation for that selection." ghost="RACE" />
+
+  <section class="section section--tight aw-schedule-page" data-schedule-page>
+    <div class="shell">
+      <div class="aw-schedule-stats">
+        <div><span>Competition Relationships</span><strong>07</strong><small>5 Aetherwing · 2 Alliance</small></div>
+        <div><span>Total Season Races</span><strong>{totalSeasonRaces}</strong><small>Off-weeks excluded</small></div>
+        <div><span>Calendar Window</span><strong>26–27</strong><small>2026 through 2027</small></div>
+        <div><span>Calendar Review</span><strong>SEP 05</strong><small>September 5, 2026</small></div>
+      </div>
+
+      <section class="aw-race-control" aria-labelledby="aw-next-title">
+        <article class="aw-next-operation" id="next-operation" data-next-operation data-league="iracing">
+          <div class="aw-next-rail"><span>Next Operation</span><b data-next-state>LOADING</b></div>
+          <div class="aw-next-main">
+            <div class="aw-next-tags"><span data-next-league>Schedule</span><b data-next-status>Upcoming</b><em data-next-special hidden></em></div>
+            <h2 id="aw-next-title" data-next-title>Loading schedule…</h2>
+            <p data-next-meta>Finding the next event for the selected filter.</p>
+          </div>
+          <div class="aw-next-clock">
+            <small>Race Control Countdown</small>
+            <strong data-next-count>--</strong>
+            <span data-next-count-label>Synchronizing</span>
+          </div>
+        </article>
+
+        <div class="aw-weather-container" data-weather-mount hidden>
+          <div class="aw-weather-dashboard">
+            <div class="aw-weather-header"><div><i></i><h3>Track Radar &amp; Met Telemetry</h3></div><span>WEATHER STAR I</span></div>
+            <div class="aw-weather-chassis">
+              <div class="aw-weather-terminal">
+                <pre class="aw-weather-screen is-active" data-weather-loading>FETCHING WEATHER DATA...\n\n<span data-weather-target></span></pre>
+                <pre class="aw-weather-screen" data-weather-screen="1"></pre>
+                <pre class="aw-weather-screen" data-weather-screen="2"></pre>
+                <pre class="aw-weather-screen" data-weather-screen="3"></pre>
+              </div>
+            </div>
+            <div class="aw-weather-footer"><span>LIVE FORECAST FEED</span><span>AETHERWING RACE CONTROL</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="aw-schedule-toolbar" data-schedule-toolbar>
+        <div class="aw-filter-row">
+          <button class="is-active" type="button" data-filter="all" aria-pressed="true">All Events</button>
+          <button type="button" data-filter="kmart" aria-pressed="false">Kmart</button>
+          <button type="button" data-filter="sunoco" aria-pressed="false">Sunoco Trucks</button>
+          <button type="button" data-filter="nrrs" aria-pressed="false">NRRS</button>
+          <button type="button" data-filter="uarl-group" aria-pressed="false">UARL Divisions</button>
+          <button type="button" data-filter="iracing" aria-pressed="false">iRacing Special Events</button>
+        </div>
+        <div class="aw-subfilter-row" data-uarl-subfilters hidden>
+          <button class="is-active" type="button" data-subfilter="uarl-all" aria-pressed="true">All UARL</button>
+          <button type="button" data-subfilter="uarl-d1" aria-pressed="false">UARL D1</button>
+          <button type="button" data-subfilter="uarl-d2" aria-pressed="false">UARL D2</button>
+          <button type="button" data-subfilter="open" aria-pressed="false">UARL Open</button>
+        </div>
+      </div>
+
+      <div class="aw-schedule-readout"><span>Upcoming Operations</span><strong data-visible-count>—</strong><small>Tap any event to open its information dock.</small></div>
+
+      <div class="aw-months" data-schedule-output>
+        {groups.map(([key,items]) => (
+          <section class="aw-month-block" data-month-key={key}>
+            <div class="aw-month-heading"><h2>{monthLabel(key)}</h2><span data-month-count></span></div>
+            <div class="aw-event-stack">
+              {items.map(({event,index}) => (
+                <article class:list={['aw-event-card',{'is-alliance':isAlliance(event.league),'is-special':event.league==='iracing','is-off-week':event.offWeek}]} data-event-card data-event-index={index} data-league={leagueClass(event.league)}>
+                  <button class="aw-event-summary" type="button" data-event-toggle aria-expanded="false" aria-controls={`event-dock-${index}`}>
+                    <div class="aw-event-date"><strong>{displayDate(event)}</strong><span>{event.time}</span></div>
+                    <div class="aw-event-main">
+                      <div class="aw-event-tags">
+                        <span>{event.leagueName}</span>
+                        {event.status && <b>{event.status}</b>}
+                        {event.specialTag && <em>{event.specialTag}</em>}
+                        {isAlliance(event.league) && <i>StarClutch Racing Alliance</i>}
+                      </div>
+                      <h3>{event.title}</h3>
+                      <p>{event.track}</p>
+                    </div>
+                    <div class="aw-event-chevron"><span>INFO</span><b>⌄</b></div>
+                  </button>
+                  <div class="aw-event-dock" id={`event-dock-${index}`} data-event-dock hidden>
+                    <div class="aw-dock-bar"><span>Event Information Dock</span><strong data-event-live-state>Scheduled</strong></div>
+                    <div class="aw-dock-grid">
+                      <div><span>Competition</span><strong>{event.leagueName}</strong></div>
+                      <div><span>Relationship</span><strong>{isAlliance(event.league) ? 'StarClutch Racing Alliance' : 'Aetherwing Program'}</strong></div>
+                      <div><span>{event.league==='iracing' ? 'Event Window' : 'Scheduled Start'}</span><strong>{event.displayDate ? event.displayDate : displayDate(event)} · {event.time}</strong></div>
+                      <div><span>Track</span><strong>{event.track}</strong></div>
+                      <div><span>Season Phase</span><strong>{event.status ?? 'Scheduled'}</strong></div>
+                      <div><span>Round / Marker</span><strong>{event.round ?? event.specialTag ?? (event.offWeek ? 'OFF WEEK' : '—')}</strong></div>
+                    </div>
+                    <div class="aw-dock-bottom">
+                      <div><span>Race Control</span><strong data-event-countdown>Calculating…</strong></div>
+                      <p>{event.league==='iracing' ? 'iRacing special event. This entry is represented as a multi-day event window rather than a single weekly start time.' : event.offWeek ? 'Scheduled off-week. Race Control skips this entry when selecting the next actual operation.' : 'Official calendar entry from the current Aetherwing schedule source.'}</p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <div class="aw-schedule-toggle-wrap"><button class="btn btn--ghost" type="button" data-schedule-toggle aria-expanded="false">Show Full Upcoming Schedule</button></div>
+      <div class="empty-state" data-schedule-empty hidden><strong>No Events Match This Filter</strong><p>There are no remaining upcoming entries for this competition selection.</p></div>
+    </div>
+  </section>
+
+  <script type="application/json" id="aw-schedule-data" set:html={JSON.stringify(scheduleEvents)}></script>
+  <script type="application/json" id="aw-track-data" set:html={JSON.stringify(trackSource)}></script>
+</BaseLayout>
+
+<script is:inline>
+(() => {
+  const page = document.querySelector('[data-schedule-page]');
+  const dataNode = document.getElementById('aw-schedule-data');
+  const trackNode = document.getElementById('aw-track-data');
+  if (!page || !dataNode || !trackNode) return;
+  const scheduleEvents = JSON.parse(dataNode.textContent || '[]');
+  const trackData = JSON.parse(trackNode.textContent || '{}');
+  const locations = trackData.locations || {}; const aliases = trackData.aliases || {};
+  const cards = Array.from(page.querySelectorAll('[data-event-card]'));
+  const monthBlocks = Array.from(page.querySelectorAll('[data-month-key]'));
+  const toolbar = page.querySelector('[data-schedule-toolbar]');
+  const uarlSubfilters = page.querySelector('[data-uarl-subfilters]');
+  const visibleCount = page.querySelector('[data-visible-count]');
+  const empty = page.querySelector('[data-schedule-empty]');
+  const toggleFull = page.querySelector('[data-schedule-toggle]');
+  const nextCard = page.querySelector('[data-next-operation]');
+  const weatherMount = page.querySelector('[data-weather-mount]');
+  const weatherLoading = page.querySelector('[data-weather-loading]');
+  const weatherTarget = page.querySelector('[data-weather-target]');
+  const weatherScreens = Array.from(page.querySelectorAll('[data-weather-screen]'));
+  let activeFilter = 'all'; let activeSubfilter = 'uarl-all'; let showFullSchedule = false; let currentWeatherTrack = null; let weatherCycle = null;
+
+  const pad = (number) => String(number).padStart(2,'0');
+  function getOffsetForDateKey(dateKey) {
+    const parts = dateKey.split('-').map(Number); const noonUTC = new Date(Date.UTC(parts[0],parts[1]-1,parts[2],12));
+    const formatter = new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset',hour:'2-digit'});
+    const tz = formatter.formatToParts(noonUTC).find(part => part.type === 'timeZoneName')?.value || 'GMT-4';
+    const match = tz.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/); if (!match) return '-04:00';
+    return `${match[1]}${pad(match[2])}:${pad(match[3] || '00')}`;
+  }
+  function parseTime(text) {
+    if (!text || text === 'TBD' || text === 'Event Window' || text === 'NO RACE') return {hour:12,minute:0};
+    const match = text.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if (!match) return {hour:20,minute:0};
+    let hour = Number(match[1]); const minute = Number(match[2]); const period = match[3].toUpperCase();
+    if (period === 'PM' && hour !== 12) hour += 12; if (period === 'AM' && hour === 12) hour = 0; return {hour,minute};
+  }
+  function makeEasternDate(event) {
+    const time = parseTime(event.time); const stamp = `${event.date}T${pad(time.hour)}:${pad(time.minute)}:00${getOffsetForDateKey(event.date)}`; return new Date(stamp);
+  }
+  function getEventStart(event) {
+    if (event.offWeek || event.league === 'iracing') return new Date(`${event.date}T00:00:00${getOffsetForDateKey(event.date)}`);
+    return makeEasternDate(event);
+  }
+  function getEventEnd(event) {
+    if (event.offWeek) return new Date(`${event.date}T23:59:59${getOffsetForDateKey(event.date)}`);
+    if (event.league === 'iracing' || event.tbd) { const end = event.endDate || event.date; return new Date(`${end}T23:59:59${getOffsetForDateKey(end)}`); }
+    return new Date(getEventStart(event).getTime() + ((event.durationMinutes || 90) * 60000));
+  }
+  function isUpcoming(event) { return getEventEnd(event) >= new Date(); }
+  function isAlliance(league) { return league === 'kmart' || league === 'sunoco'; }
+  function matchesFilter(event) {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'uarl-group') return activeSubfilter === 'uarl-all' ? ['uarl-d1','uarl-d2','open'].includes(event.league) : event.league === activeSubfilter;
+    return event.league === activeFilter;
+  }
+  function filteredEvents() { return scheduleEvents.filter(event => isUpcoming(event) && matchesFilter(event)).sort((a,b) => getEventStart(a)-getEventStart(b)); }
+  function competitionLabel(event) { return `${event.leagueName}${isAlliance(event.league) ? ' · StarClutch Racing Alliance' : ''}`; }
+  function displayDate(event) {
+    if (event.tbd) return 'TBD'; if (event.displayDate) return event.displayDate.toUpperCase();
+    const [y,m,d] = event.date.split('-').map(Number); return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
+  }
+
+  function renderSchedule() {
+    let shown = 0; const visibleMonthKeys = [];
+    cards.forEach((card,index) => {
+      const event = scheduleEvents[index]; const visible = isUpcoming(event) && matchesFilter(event);
+      card.hidden = !visible; card.classList.remove('is-next');
+      if (visible) { shown++; const key = event.tbd ? 'tbd' : event.date.slice(0,7); if (!visibleMonthKeys.includes(key)) visibleMonthKeys.push(key); }
+    });
+    const next = filteredEvents().find(event => !event.offWeek) || filteredEvents()[0];
+    if (next) { const nextIndex = scheduleEvents.indexOf(next); cards[nextIndex]?.classList.add('is-next'); }
+    monthBlocks.forEach(block => {
+      const key = block.dataset.monthKey || ''; const hasVisible = Array.from(block.querySelectorAll('[data-event-card]')).some(card => !card.hidden);
+      const withinCondensed = showFullSchedule || visibleMonthKeys.indexOf(key) < 3;
+      block.hidden = !hasVisible || !withinCondensed;
+      const monthCount = block.querySelector('[data-month-count]'); if (monthCount) monthCount.textContent = `${Array.from(block.querySelectorAll('[data-event-card]')).filter(card=>!card.hidden).length} operations`;
+    });
+    if (visibleCount) visibleCount.textContent = `${shown} upcoming operation${shown===1?'':'s'}`;
+    if (empty instanceof HTMLElement) empty.hidden = shown > 0;
+    const hiddenByCondense = monthBlocks.some(block => { const hasVisible = Array.from(block.querySelectorAll('[data-event-card]')).some(card=>!card.hidden); return hasVisible && block.hidden; });
+    if (toggleFull instanceof HTMLElement) { toggleFull.hidden = !hiddenByCondense && !showFullSchedule; toggleFull.textContent = showFullSchedule ? 'Show Condensed Schedule' : 'Show Full Upcoming Schedule'; toggleFull.setAttribute('aria-expanded',String(showFullSchedule)); }
+  }
+
+  function formatCountdown(event, now = new Date()) {
+    if (event.tbd) return {main:'TBD',sub:'Awaiting official scheduling',state:'TBD'};
+    const start = getEventStart(event); const end = getEventEnd(event);
+    if (now >= start && now <= end) return {main:'LIVE',sub:`${competitionLabel(event)} is currently active`,state:'LIVE'};
+    if (now > end) return {main:'COMPLETE',sub:'Event window closed',state:'COMPLETE'};
+    const seconds = Math.max(0,Math.floor((start-now)/1000)); const days=Math.floor(seconds/86400),hours=Math.floor((seconds%86400)/3600),minutes=Math.floor((seconds%3600)/60),secs=seconds%60;
+    return seconds < 86400 ? {main:`${pad(hours)}:${pad(minutes)}:${pad(secs)}`,sub:'Until green flag',state:'UPCOMING'} : {main:`${days}D ${pad(hours)}H`,sub:'Until next operation',state:'UPCOMING'};
+  }
+
+  function updateNextOperation() {
+    const events = filteredEvents(); const event = events.find(item => !item.offWeek) || events[0];
+    const title = nextCard?.querySelector('[data-next-title]'); const meta = nextCard?.querySelector('[data-next-meta]'); const league = nextCard?.querySelector('[data-next-league]'); const status = nextCard?.querySelector('[data-next-status]'); const special = nextCard?.querySelector('[data-next-special]'); const state = nextCard?.querySelector('[data-next-state]'); const count = nextCard?.querySelector('[data-next-count]'); const countLabel = nextCard?.querySelector('[data-next-count-label]');
+    if (!event) {
+      if (nextCard instanceof HTMLElement) nextCard.removeAttribute('data-league'); if (title) title.textContent='Season Complete'; if (meta) meta.textContent='No upcoming events match the selected filter.'; if (league) league.textContent='Schedule'; if (status) status.textContent='Complete'; if (state) state.textContent='COMPLETE'; if (count) count.textContent='--'; if (countLabel) countLabel.textContent='Schedule pending'; updateWeather(null); return;
+    }
+    if (nextCard instanceof HTMLElement) nextCard.dataset.league = event.league;
+    if (title) title.textContent = event.title; if (meta) meta.textContent = `${competitionLabel(event)} · ${event.track} · ${displayDate(event)}${event.tbd ? '' : ' · ' + event.time}`; if (league) league.textContent = event.leagueName; if (status) status.textContent = event.status || 'Scheduled';
+    if (special instanceof HTMLElement) { special.hidden = !event.specialTag; special.textContent = event.specialTag || ''; }
+    const countdown = formatCountdown(event); if (state) state.textContent=countdown.state; if (count) {count.textContent=countdown.main; count.classList.toggle('is-live',countdown.state==='LIVE');} if (countLabel) countLabel.textContent=countdown.sub;
+    if (event.track !== currentWeatherTrack && !event.tbd) { currentWeatherTrack = event.track; updateWeather(event.track); } else if (event.tbd) updateWeather(null);
+  }
+
+  function updateDockCountdowns() {
+    cards.forEach((card,index) => {
+      const event = scheduleEvents[index]; const target = card.querySelector('[data-event-countdown]'); const state = card.querySelector('[data-event-live-state]'); if (!target || !state) return;
+      const countdown = formatCountdown(event); target.textContent = countdown.main === 'LIVE' ? 'LIVE NOW' : `${countdown.main} · ${countdown.sub}`; state.textContent = countdown.state;
+      card.classList.toggle('is-live',countdown.state==='LIVE');
+    });
+  }
+
+  toolbar?.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+    toolbar.querySelectorAll('[data-filter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeFilter = button.dataset.filter || 'all';
+    if (uarlSubfilters instanceof HTMLElement) uarlSubfilters.hidden = activeFilter !== 'uarl-group';
+    if (activeFilter === 'uarl-group') { activeSubfilter='uarl-all'; toolbar.querySelectorAll('[data-subfilter]').forEach(item=>{item.classList.toggle('is-active',item.dataset.subfilter==='uarl-all');item.setAttribute('aria-pressed',String(item.dataset.subfilter==='uarl-all'));}); }
+    showFullSchedule=false; renderSchedule(); updateNextOperation();
+  }));
+  toolbar?.querySelectorAll('[data-subfilter]').forEach(button => button.addEventListener('click', () => {
+    toolbar.querySelectorAll('[data-subfilter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeSubfilter=button.dataset.subfilter || 'uarl-all'; showFullSchedule=false; renderSchedule(); updateNextOperation();
+  }));
+  toggleFull?.addEventListener('click',()=>{showFullSchedule=!showFullSchedule;renderSchedule();});
+
+  page.querySelectorAll('[data-event-toggle]').forEach(button => button.addEventListener('click', () => {
+    const card = button.closest('[data-event-card]'); const dock = card?.querySelector('[data-event-dock]'); if (!(dock instanceof HTMLElement)) return;
+    const opening = dock.hidden;
+    page.querySelectorAll('[data-event-dock]').forEach(other => { if (other !== dock && other instanceof HTMLElement) { other.hidden=true; other.closest('[data-event-card]')?.querySelector('[data-event-toggle]')?.setAttribute('aria-expanded','false'); } });
+    dock.hidden = !opening; button.setAttribute('aria-expanded',String(opening)); if (opening) card?.classList.add('is-open'); else card?.classList.remove('is-open');
+  }));
+
+  function resolveTrackLocation(name) { const canonical = aliases[name] || name; return locations[canonical] || null; }
+  function weatherCondition(code) { const v=Number(code); if(v===0)return'CLEAR';if(v===1)return'MAINLY CLEAR';if(v===2)return'PARTLY CLOUDY';if(v===3)return'OVERCAST';if(v===45||v===48)return'FOG';if([51,53,55,56,57].includes(v))return'DRIZZLE';if([61,63,65,66,67].includes(v))return'RAIN';if([71,73,75,77].includes(v))return'SNOW';if([80,81,82].includes(v))return'SHOWERS';if([85,86].includes(v))return'SNOW SHOWERS';if([95,96,99].includes(v))return'THUNDERSTORMS';return'VARIABLE'; }
+  function windDirection(degrees) { if (degrees == null || Number.isNaN(Number(degrees))) return 'CALM'; const dirs=['N','NE','E','SE','S','SW','W','NW']; return dirs[Math.round(Number(degrees)/45)%8]; }
+  async function fetchWithTimeout(url,ms=8000) { const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),ms); try { const response=await fetch(url,{signal:controller.signal,headers:{Accept:'application/geo+json, application/json'}}); if(!response.ok)throw new Error(String(response.status)); return response; } finally {clearTimeout(timer);} }
+  function cycleWeather() { clearInterval(weatherCycle); let index=0; const screens=weatherScreens; screens.forEach(screen=>screen.classList.remove('is-active')); if(screens[0])screens[0].classList.add('is-active'); weatherCycle=setInterval(()=>{screens[index]?.classList.remove('is-active');index=(index+1)%screens.length;screens[index]?.classList.add('is-active');},7000); }
+  async function openMeteo(loc) {
+    const params=new URLSearchParams({latitude:String(loc.lat),longitude:String(loc.lon),current:'temperature_2m,weather_code,wind_speed_10m,wind_direction_10m',daily:'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',temperature_unit:'fahrenheit',wind_speed_unit:'mph',timezone:'auto',forecast_days:'3'});
+    const response=await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?${params}`); const data=await response.json(); if(!data.current||!data.daily)throw new Error('weather');
+    const now=data.current; const daily=data.daily; const time=new Intl.DateTimeFormat('en-US',{timeZone:data.timezone||'America/New_York',hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'}).format(new Date()).replace(/\u202F/g,' ').toUpperCase();
+    const windSpeed=now.wind_speed_10m==null?0:Math.round(now.wind_speed_10m); const wind=windSpeed?`${windDirection(now.wind_direction_10m)} ${windSpeed} MPH`:'CALM';
+    weatherScreens[0].textContent=`      LATEST OBSERVATIONS\n\n${loc.city}\n\nTIME: ${time}\nTEMP: ${now.temperature_2m==null?'--':Math.round(now.temperature_2m)} F\nCOND: ${weatherCondition(now.weather_code)}\nWIND: ${wind}`;
+    const block=(i)=>{if(!daily.time?.[i])return'';const day=new Date(`${daily.time[i]}T12:00:00`);const label=new Intl.DateTimeFormat('en-US',{timeZone:data.timezone||'UTC',weekday:'long'}).format(day).toUpperCase();return `${label}...\n${weatherCondition(daily.weather_code[i])}\nHIGH ${daily.temperature_2m_max[i]==null?'--':Math.round(daily.temperature_2m_max[i])} F / LOW ${daily.temperature_2m_min[i]==null?'--':Math.round(daily.temperature_2m_min[i])} F\nPRECIP ${daily.precipitation_probability_max[i]==null?'--':Math.round(daily.precipitation_probability_max[i])}%\n\n`;};
+    weatherScreens[1].textContent=`      TRACK FORECAST\n\n${block(0)}${block(1)}`; weatherScreens[2].textContent=`      EXTENDED FORECAST\n\n${block(2)}`;
+  }
+  async function updateWeather(trackName) {
+    clearInterval(weatherCycle); if (!trackName) { currentWeatherTrack=null; if(weatherMount instanceof HTMLElement)weatherMount.hidden=true; return; }
+    const loc=resolveTrackLocation(trackName); if(!loc){currentWeatherTrack=null;if(weatherMount instanceof HTMLElement)weatherMount.hidden=true;return;} if(weatherMount instanceof HTMLElement)weatherMount.hidden=false;
+    weatherScreens.forEach(screen=>screen.classList.remove('is-active')); if(weatherLoading instanceof HTMLElement){weatherLoading.classList.add('is-active');weatherLoading.firstChild.textContent='FETCHING WEATHER DATA...\n\n';} if(weatherTarget)weatherTarget.textContent=`TARGET: ${loc.city}`;
+    try { await openMeteo(loc); if(weatherLoading instanceof HTMLElement)weatherLoading.classList.remove('is-active'); cycleWeather(); } catch { if(weatherTarget)weatherTarget.textContent='COMMUNICATION ERROR'; }
+  }
+
+  renderSchedule(); updateNextOperation(); updateDockCountdowns();
+  const timer=setInterval(()=>{updateNextOperation();updateDockCountdowns();},1000);
+  const refresh=()=>{renderSchedule();updateNextOperation();updateDockCountdowns();};
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();}); addEventListener('focus',refresh); addEventListener('pageshow',refresh);
+  window.awScheduleIntervals={timer};
+})();
+</script>

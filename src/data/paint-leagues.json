@@ -1,0 +1,189 @@
+[
+  {
+    "id": "nrrs",
+    "name": "NRRS",
+    "subtitle": "Aetherwing Program · Stock Car Competition",
+    "bodyTag": "D1 Toyota",
+    "color": "#18c2ff",
+    "description": "Current NRRS roster. Wispy's Toyota BBR Cup liveries live in this garage.",
+    "drivers": [
+      {
+        "name": "Wispy",
+        "username": "@Aokikoto",
+        "role": "Founder / Driver"
+      },
+      {
+        "name": "Parker",
+        "username": "@Leg0man1o",
+        "role": "Driver"
+      }
+    ],
+    "relationship": "aetherwing"
+  },
+  {
+    "id": "uarl-d1",
+    "name": "UARL D1",
+    "subtitle": "Aetherwing Program · LL Bean Cup Series",
+    "bodyTag": "D1 Cadillac",
+    "color": "#ff5eb8",
+    "description": "Current UARL Division 1 roster. Historical uploaded schemes stay with the season and number they originally ran.",
+    "drivers": [
+      {
+        "name": "Wispy",
+        "username": "@Aokikoto",
+        "role": "Founder / Driver"
+      },
+      {
+        "name": "Rocky",
+        "username": "@IIKyle5Larson",
+        "role": "Driver"
+      }
+    ],
+    "relationship": "aetherwing"
+  },
+  {
+    "id": "uarl-d2",
+    "name": "UARL D2",
+    "subtitle": "Aetherwing Program · NFFF Grand National Series",
+    "bodyTag": "D2 Cadillac",
+    "color": "#9f6bff",
+    "description": "Current UARL Division 2 roster, including Aetherwing’s part-time #15 entry. Older uploaded Aetherwing schemes remain available below as archive entries.",
+    "drivers": [
+      {
+        "name": "BurgerTown2Good",
+        "username": "@uhhbzb",
+        "role": "Driver"
+      },
+      {
+        "name": "Gk3r",
+        "username": "@seals",
+        "role": "Driver"
+      },
+      {
+        "name": "Wispy",
+        "username": "@Aokikoto",
+        "role": "AEM Part-Time Driver"
+      }
+    ],
+    "relationship": "aetherwing"
+  },
+  {
+    "id": "uarl-open",
+    "name": "UARL Open",
+    "subtitle": "Aetherwing Program · Open Series",
+    "bodyTag": "Late Model Toyota",
+    "color": "#d8ff3e",
+    "description": "Current UARL Open Series roster. Late model entries and uploaded open-series schemes live in this garage.",
+    "drivers": [
+      {
+        "name": "Wispy",
+        "username": "@Aokikoto",
+        "role": "Founder / Driver"
+      }
+    ],
+    "relationship": "aetherwing"
+  },
+  {
+    "id": "kmart",
+    "name": "Kmart",
+    "subtitle": "StarClutch Racing Alliance · Kmart Auto Parts Series",
+    "bodyTag": "D2 Dodge",
+    "color": "#ff6a00",
+    "description": "Alliance competition under the StarClutch Racing banner. Dodge schemes use the BBR D2 Chevrolet body.",
+    "drivers": [
+      {
+        "name": "Wispy",
+        "username": "@Aokikoto",
+        "role": "StarClutch Racing Alliance Driver"
+      },
+      {
+        "name": "Will",
+        "username": "@Raceartstudios",
+        "role": "StarClutch Racing Alliance Driver"
+      },
+      {
+        "name": "Jaxon",
+        "username": "@Arctic_Blitzzzz",
+        "role": "StarClutch Racing Alliance Driver"
+      },
+      {
+        "name": "Eazy",
+        "username": "@Eazyonthafarilla",
+        "role": "Part-Time Alliance Driver"
+      },
+      {
+        "name": "Clutch",
+        "username": "@Mj_fan088",
+        "role": "Part-Time Alliance Driver"
+      },
+      {
+        "name": "Matty",
+        "username": "@mymainisgone98",
+        "role": "Part-Time Alliance Driver"
+      }
+    ],
+    "relationship": "alliance"
+  },
+  {
+    "id": "sunoco-truck",
+    "name": "Sunoco Truck Series",
+    "subtitle": "StarClutch Racing Alliance · Truck Series",
+    "bodyTag": "D3 RAM",
+    "color": "#ffd236",
+    "description": "Alliance competition under the StarClutch Racing banner. Current Sunoco entries use RAM.",
+    "drivers": [
+      {
+        "name": "Eazy",
+        "username": "@Eazyonthafarilla",
+        "role": "StarClutch Racing Alliance Driver"
+      },
+      {
+        "name": "Will",
+        "username": "@Raceartstudios",
+        "role": "StarClutch Racing Alliance Driver"
+      },
+      {
+        "name": "Clutch",
+        "username": "@Mj_fan088",
+        "role": "StarClutch Racing Alliance Driver"
+      },
+      {
+        "name": "Wispy",
+        "username": "@Aokikoto",
+        "role": "StarClutch Racing Alliance Driver"
+      }
+    ],
+    "relationship": "alliance"
+  },
+  {
+    "id": "iracing",
+    "name": "iRacing",
+    "subtitle": "Aetherwing Program · Sim Racing Collection",
+    "bodyTag": "Mixed Fleet",
+    "color": "#00D0FF",
+    "description": "Aetherwing iRacing Factory Program drivers and team endurance liveries.",
+    "drivers": [
+      {
+        "name": "Levi Ramsey",
+        "username": "",
+        "role": "Factory Driver"
+      },
+      {
+        "name": "Nicholas Waggoner",
+        "username": "",
+        "role": "Factory Driver"
+      },
+      {
+        "name": "Joshua Douglas",
+        "username": "",
+        "role": "Factory Driver"
+      },
+      {
+        "name": "Aetherwing Endurance Team",
+        "username": "",
+        "role": "Team Entry"
+      }
+    ],
+    "relationship": "aetherwing"
+  }
+]

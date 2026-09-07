@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import leadership from '../../data/leadership.json';
+import '../../styles/pages/editorial-pages.css';
+const discord='https://discord.gg/Q7xKySQFy5';
+const lanes=[
+ ['01','Race Operations','Race-night issues, league entries, driver availability, lineup notes, scheduling, and event coordination.'],
+ ['02','Graphics & Liveries','Paint schemes, sponsor placement, number designs, race graphics, brand assets, and creative collaboration.'],
+ ['03','Recruitment','Driver interest, tryouts, development entries, part-time roles, and roster conversations.'],
+ ['04','Partners & Media','Partner questions, public announcements, media requests, and team presentation.']
+];
+---
+<BaseLayout title="Contact HQ" description="The official Aetherwing communications hub for race operations, recruitment, creative work, partners, media, and general team questions.">
+  <PageHero eyebrow="Race Control // Open Channel" title="Contact HQ" description="The official communications hub for Aetherwing eMotorsports — race operations, recruitment, creative work, partnerships, media, and general team questions all start here." ghost="OPEN CHANNEL" />
+  <section class="section section--tight aw-editorial-page"><div class="shell">
+    <div class="stat-rail"><div class="stat"><strong>HQ</strong><span>Discord Hub</span></div><div class="stat"><strong>07</strong><span>Competition Relationships</span></div><div class="stat"><strong>02</strong><span>Featured Partners</span></div><div class="stat"><strong>OPEN</strong><span>AEM Contact</span></div></div>
+    <section class="section"><div class="section-head"><div><p class="eyebrow">Primary Contact</p><h2 class="section-title">Open the Channel</h2></div><p class="lede">Discord is the central point for Aetherwing communication, race-week coordination, roster conversations, creative work, and team announcements.</p></div><div class="aw-channel-card"><div class="aw-channel-copy"><span class="aw-paper-label">Aetherwing Discord HQ</span><h2>The Garage Is Live.</h2><p>Join the server for live race comms, lineup updates, livery discussion, recruitment, partner conversations, media drops, and day-to-day team movement.</p><a class="btn" href={discord} target="_blank" rel="noopener noreferrer">Connect to HQ ↗</a></div><div class="aw-channel-signal"><small>Communications status</small><strong>CHANNEL OPEN</strong><span class="mono muted">Voice channels · team announcements · recruitment · race-week coordination</span></div></div></section>
+
+    <section class="section"><div class="section-head"><div><p class="eyebrow">Dispatch Board</p><h2 class="section-title">Contact Lanes</h2></div><p class="lede">Start with the lane that best matches what you need. They all lead into the same Discord HQ.</p></div><div class="aw-contact-lanes">{lanes.map((lane)=><a class="panel aw-contact-lane" href={discord} target="_blank" rel="noopener noreferrer"><span>{lane[0]}</span><h3>{lane[1]}</h3><p>{lane[2]}</p><b>Route to Discord →</b></a>)}</div></section>
+
+    <section class="section"><div class="section-head"><div><p class="eyebrow">Team Directory</p><h2 class="section-title">Contact Chain</h2></div><p class="lede">Current leadership and responsibilities.</p></div><div class="aw-contact-chain">{leadership.map((person)=><article class="panel aw-contact-person"><h3>{person.name}</h3><b>{person.roles.join(' / ')}</b><p>{person.name==='Wispy'?'Major team direction, website content, partner presentation, identity decisions, RoRacing and sim-racing coordination.':person.name==='Callornot'?'Team Principal responsibilities, organization-level coordination, competitive structure, and sim-racing operations.':person.name==='Will'?'Liveries, design assets, graphic direction, and visual presentation.':'Race photography, media assets, graphic production, and visual storytelling.'}</p></article>)}</div></section>
+
+    <section class="section"><div class="aw-contact-cta"><span class="aw-paper-label">Channel Open.</span><h2>Race. Create. Join. Connect.</h2><p>Whether you are here to race, create, join the roster, talk partnerships, request media help, or simply follow the team, Discord is the primary line into Aetherwing eMotorsports.</p><div style="display:flex;gap:.7rem;flex-wrap:wrap"><a class="btn" href={discord} target="_blank" rel="noopener noreferrer">Join Discord</a><a class="btn btn--ghost" href="/drivers/">View Drivers</a><a class="btn btn--ghost" href="/partners/">View Partners</a></div></div></section>
+  </div></section>
+</BaseLayout>

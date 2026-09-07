@@ -1,0 +1,9 @@
+[
+  {"id":"nrrs","name":"NRRS","series":"NRRS","day":2,"time":"19:30","timezone":"America/New_York","type":"aetherwing","frequency":"weekly"},
+  {"id":"uarl-d1","name":"UARL Division 1","series":"L.L. Bean Cup Series","day":6,"time":"20:30","timezone":"America/New_York","type":"aetherwing","frequency":"weekly"},
+  {"id":"uarl-open","name":"UARL Open","series":"Open Series","day":0,"time":"11:30","timezone":"America/New_York","type":"aetherwing","frequency":"weekly"},
+  {"id":"uarl-d2","name":"UARL Division 2","series":"NFFF Grand National Series","day":1,"time":"18:45","timezone":"America/New_York","type":"aetherwing","frequency":"weekly"},
+  {"id":"kmart","name":"Kmart Auto Parts Series","series":"StarClutch Racing Alliance","day":1,"time":"20:30","timezone":"America/New_York","type":"alliance","frequency":"weekly"},
+  {"id":"sunoco","name":"Sunoco Truck Series","series":"StarClutch Racing Alliance","day":6,"time":"20:00","timezone":"America/New_York","type":"alliance","frequency":"weekly"},
+  {"id":"iracing-specials","name":"iRacing Special Events","series":"Factory Program","type":"special","frequency":"window","display":"Multi-day event windows"}
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "slug":"wispy",
+    "displayName":"Wispy",
+    "iracingName":"Nicholas Waggoner",
+    "subtitle":"Founder · Team Owner · Driver",
+    "intro":"Aetherwing founder and multi-program driver competing across RoRacing and iRacing.",
+    "stats":[
+      {"label":"iRacing Starts","value":"409"},
+      {"label":"Wins","value":"59"},
+      {"label":"Top Fives","value":"121"},
+      {"label":"Poles","value":"52"},
+      {"label":"Formula Win Rate","value":"14.1%"}
+    ]
+  }
+]

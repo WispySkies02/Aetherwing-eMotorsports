@@ -1,0 +1,201 @@
+[
+  {
+    "id": "wispy-nrrs",
+    "profile": "wispy",
+    "displayName": "Wispy",
+    "number": "32",
+    "competition": "NRRS",
+    "competitionId": "nrrs",
+    "status": "Active",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "parker-nrrs",
+    "profile": "parker",
+    "displayName": "Parker",
+    "number": "43",
+    "competition": "NRRS",
+    "competitionId": "nrrs",
+    "status": "Active",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "wispy-uarl-d1",
+    "profile": "wispy",
+    "displayName": "Wispy",
+    "number": "28",
+    "competition": "UARL Division 1",
+    "competitionId": "uarl-d1",
+    "status": "Full-Time",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "rocky-uarl-d1",
+    "profile": "rocky",
+    "displayName": "Rocky",
+    "number": "92",
+    "competition": "UARL Division 1",
+    "competitionId": "uarl-d1",
+    "status": "Full-Time",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "burgertown-uarl-d2",
+    "profile": "burgertown2good",
+    "displayName": "BurgerTown2Good",
+    "handle": "@uhhbzb",
+    "number": "11",
+    "competition": "UARL Division 2",
+    "competitionId": "uarl-d2",
+    "status": "Active",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "gk3r-uarl-d2",
+    "profile": "gk3r",
+    "displayName": "Gk3r",
+    "handle": "@seals",
+    "number": "19",
+    "competition": "UARL Division 2",
+    "competitionId": "uarl-d2",
+    "status": "Active",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "wispy-uarl-d2",
+    "profile": "wispy",
+    "displayName": "Wispy",
+    "handle": "@Aokikoto",
+    "number": "15",
+    "competition": "UARL Division 2",
+    "competitionId": "uarl-d2",
+    "status": "Aetherwing Part-Time",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "wispy-uarl-open",
+    "profile": "wispy",
+    "displayName": "Wispy",
+    "number": "28",
+    "competition": "UARL Open",
+    "competitionId": "uarl-open",
+    "status": "Active",
+    "affiliation": "aetherwing",
+    "car": "BBR Late Model Toyota"
+  },
+  {
+    "id": "wispy-kmart",
+    "profile": "wispy",
+    "displayName": "Wispy",
+    "number": "15",
+    "competition": "Kmart Auto Parts Series",
+    "competitionId": "kmart",
+    "status": "Active",
+    "affiliation": "alliance"
+  },
+  {
+    "id": "will-kmart",
+    "profile": "will",
+    "displayName": "Will",
+    "number": "24",
+    "competition": "Kmart Auto Parts Series",
+    "competitionId": "kmart",
+    "status": "Active",
+    "affiliation": "alliance"
+  },
+  {
+    "id": "jaxon-kmart",
+    "profile": "jaxon",
+    "displayName": "Jaxon",
+    "number": "34",
+    "competition": "Kmart Auto Parts Series",
+    "competitionId": "kmart",
+    "status": "Active",
+    "affiliation": "alliance"
+  },
+  {
+    "id": "shared-kmart",
+    "profile": "shared-29",
+    "displayName": "Clutch / Eazy / Matty",
+    "number": "29",
+    "competition": "Kmart Auto Parts Series",
+    "competitionId": "kmart",
+    "status": "Shared Part-Time Entry",
+    "affiliation": "alliance"
+  },
+  {
+    "id": "eazy-sunoco",
+    "profile": "eazy",
+    "displayName": "Eazy",
+    "number": "27",
+    "competition": "Sunoco Truck Series",
+    "competitionId": "sunoco",
+    "status": "Active",
+    "affiliation": "alliance",
+    "car": "RAM"
+  },
+  {
+    "id": "will-sunoco",
+    "profile": "will",
+    "displayName": "Will",
+    "number": "42",
+    "competition": "Sunoco Truck Series",
+    "competitionId": "sunoco",
+    "status": "Active",
+    "affiliation": "alliance",
+    "car": "RAM"
+  },
+  {
+    "id": "clutch-sunoco",
+    "profile": "clutch",
+    "displayName": "Clutch",
+    "number": "46",
+    "competition": "Sunoco Truck Series",
+    "competitionId": "sunoco",
+    "status": "Active",
+    "affiliation": "alliance",
+    "car": "RAM"
+  },
+  {
+    "id": "wispy-sunoco",
+    "profile": "wispy",
+    "displayName": "Wispy",
+    "number": "54",
+    "competition": "Sunoco Truck Series",
+    "competitionId": "sunoco",
+    "status": "Active",
+    "affiliation": "alliance",
+    "car": "RAM"
+  },
+  {
+    "id": "levi-iracing",
+    "profile": "levi-ramsey",
+    "displayName": "Levi Ramsey",
+    "number": "6",
+    "competition": "iRacing Factory Program",
+    "competitionId": "iracing-factory",
+    "status": "Factory Driver",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "nicholas-iracing",
+    "profile": "wispy",
+    "displayName": "Nicholas Waggoner",
+    "number": "28",
+    "competition": "iRacing Factory Program",
+    "competitionId": "iracing-factory",
+    "status": "Factory Driver",
+    "affiliation": "aetherwing",
+    "identityNote": "Same driver as Wispy; use Nicholas Waggoner for iRacing liveries and historical iRacing results."
+  },
+  {
+    "id": "joshua-iracing",
+    "profile": "joshua-douglas",
+    "displayName": "Joshua Douglas",
+    "number": "35",
+    "competition": "iRacing Factory Program",
+    "competitionId": "iracing-factory",
+    "status": "Factory Driver",
+    "affiliation": "aetherwing"
+  }
+]

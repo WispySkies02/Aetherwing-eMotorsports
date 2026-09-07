@@ -1,0 +1,100 @@
+[
+  {
+    "id": "nrrs",
+    "name": "NRRS",
+    "type": "aetherwing",
+    "label": "Aetherwing Program",
+    "schedule": "Tuesdays \u00b7 7:30 PM ET",
+    "machine": "BBR Next-Gen Toyota",
+    "platform": "Roblox / BBR Next-Gen platform",
+    "roster": [
+      "#32 Wispy",
+      "#43 Parker"
+    ]
+  },
+  {
+    "id": "uarl-d1",
+    "name": "UARL Division 1",
+    "series": "L.L. Bean Cup Series",
+    "type": "aetherwing",
+    "label": "Aetherwing Program",
+    "schedule": "Saturdays \u00b7 8:30 PM ET",
+    "machine": "BBR Next-Gen Cadillac (Toyota Body)",
+    "platform": "Roblox / BBR Next-Gen platform",
+    "roster": [
+      "#28 Wispy",
+      "#92 Rocky"
+    ]
+  },
+  {
+    "id": "uarl-d2",
+    "name": "UARL Division 2",
+    "series": "NFFF Grand National Series",
+    "type": "aetherwing",
+    "label": "Aetherwing Program",
+    "schedule": "Mondays \u00b7 6:45 PM ET",
+    "machine": "NXS20 Cadillac (Ford Body)",
+    "platform": "Roblox / NXS20 platform",
+    "roster": [
+      "#11 BurgerTown2Good",
+      "#19 Gk3r",
+      "#15 Wispy \u00b7 PT"
+    ]
+  },
+  {
+    "id": "uarl-open",
+    "name": "UARL Open",
+    "type": "aetherwing",
+    "label": "Aetherwing Program",
+    "schedule": "Sundays \u00b7 11:30 AM ET",
+    "machine": "Super Late Model Open Series",
+    "platform": "Roblox / UARL Late Model platform",
+    "roster": [
+      "#28 Wispy"
+    ]
+  },
+  {
+    "id": "iracing-factory",
+    "name": "iRacing Factory Program",
+    "type": "aetherwing",
+    "label": "Aetherwing Program",
+    "schedule": "Special-event windows",
+    "machine": "Multiple Cars \u00b7 Multiple Disciplines",
+    "platform": "iRacing / Aetherwing Factory Program",
+    "roster": [
+      "#6 Levi Ramsey",
+      "#28 Nicholas Waggoner",
+      "#35 Joshua Douglas"
+    ]
+  },
+  {
+    "id": "kmart",
+    "name": "Kmart Auto Parts Series",
+    "type": "alliance",
+    "label": "StarClutch Racing Alliance",
+    "schedule": "Mondays \u00b7 8:30 PM ET",
+    "machine": "Dodge \u00b7 BBR D2 Chevy Body",
+    "platform": "Roblox / StarClutch Racing",
+    "roster": [
+      "#15 Wispy",
+      "#24 Will",
+      "#34 Jaxon",
+      "#29 PT \u00b7 Clutch / Eazy / Matty"
+    ]
+  },
+  {
+    "id": "sunoco",
+    "name": "Sunoco Truck Series",
+    "type": "alliance",
+    "label": "StarClutch Racing Alliance",
+    "schedule": "Saturdays \u00b7 8:00 PM ET",
+    "machine": "Dodge RAM \u00b7 CWS15 Ford Body",
+    "platform": "Roblox / StarClutch Racing",
+    "roster": [
+      "#27 Eazy",
+      "#42 Will",
+      "#46 Clutch",
+      "#54 Wispy"
+    ]
+  }
+]

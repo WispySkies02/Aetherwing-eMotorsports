@@ -1,0 +1,11 @@
+{
+  "factoryDrivers": 3,
+  "teamEntries": 1,
+  "schemes": 13,
+  "entries": [
+    {"driver":"Levi Ramsey","number":"6","schemes":0,"placeholder":true},
+    {"driver":"Nicholas Waggoner","number":"28 / 97","schemes":12,"placeholder":false},
+    {"driver":"Joshua Douglas","number":"35","schemes":0,"placeholder":true},
+    {"driver":"Aetherwing Endurance Team","number":"TEAM","schemes":1,"placeholder":false}
+  ]
+}

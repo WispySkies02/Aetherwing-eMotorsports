@@ -1,0 +1,504 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import paints from '../../data/paints.json';
+import leagues from '../../data/paint-leagues.json';
+import driverOverrides from '../../data/paint-driver-overrides.json';
+import '../../styles/pages/paint-booth.css';
+
+const initial = paints[0];
+const badgeLabels = {
+  prized:'Prized Livery', patriotic:'Patriotic', concept:'Concept', tribute:'Tribute',
+  starclutch:'StarClutch Racing Alliance', legacy:'Legacy / Part-Time', racewinner:'Race Winner', throwback:'Throwback'
+};
+const leagueName = (id) => leagues.find((league) => league.id === id)?.name ?? id;
+const sourceDrivers = leagues.reduce((sum, league) => sum + league.drivers.length, 0);
+const wispyIdentityPaints = paints.filter((paint) => paint.driver === 'Wispy' || paint.driver === 'Nicholas Waggoner');
+const initialRackPaints = wispyIdentityPaints;
+---
+<BaseLayout title="Paint Booth" description="Enter the Aetherwing Paint Booth: an interactive seven-garage livery facility with 34 uploaded schemes, driver stalls, Roblox Scheme IDs, deep links, iRacing Factory paints, and StarClutch Racing alliance liveries.">
+  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.3">
+    <div class="aw-facility-hud">
+      <div class="aw-hud-brand">
+        <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" class="aw-hud-logo" />
+        <span>AETHERWING eMOTORSPORTS</span>
+        <strong>THE PAINT BOOTH</strong>
+        <small>LIVE LIVERY FACILITY // SELECT A GARAGE. CALL A DRIVER. LOAD A CAR.</small>
+      </div>
+      <div class="aw-hud-metrics" aria-label="Paint Booth collection status">
+        <div><span>GARAGES</span><strong>07</strong></div>
+        <div><span>PAINTS</span><strong>{String(paints.length).padStart(2,'0')}</strong></div>
+        <div><span>DRIVER SLOTS</span><strong>{String(sourceDrivers).padStart(2,'0')}</strong></div>
+        <div class="is-live"><span>FACILITY</span><strong>OPEN</strong></div>
+      </div>
+    </div>
+
+    <div class="aw-booth-shell" data-booth-shell data-lighting="shop" data-relationship="aetherwing">
+      <aside class="aw-garage-directory" data-mobile-anchor="garage" aria-label="Garage directory">
+        <div class="aw-rail-heading"><span>01</span><div><strong>GARAGE RAIL</strong><small>Competition program</small></div></div>
+        <div class="aw-directory-list" data-league-controls>
+          <button type="button" class="is-active is-identity" data-league-id="wispy-all" style="--league:#f6f6f6">
+            <span>00</span>
+            <div><strong>WISPY — ALL PAINTS</strong><small>{String(wispyIdentityPaints.length).padStart(2,'0')} PAINTS · ALL GARAGES + iRACING</small></div>
+            <i aria-hidden="true">→</i>
+          </button>
+          {leagues.map((league,index) => {
+            const count = paints.filter((paint) => paint.leagues.includes(league.id)).length;
+            return (
+              <button type="button" class:list={[{'is-alliance':league.relationship==='alliance'}]} data-league-id={league.id} style={`--league:${league.color}`}>
+                <span>{String(index+1).padStart(2,'0')}</span>
+                <div><strong>{league.name}</strong><small>{String(count).padStart(2,'0')} PAINT{count===1?'':'S'} · {league.relationship==='alliance'?'STARCLUTCH ALLIANCE':'AETHERWING PROGRAM'}</small></div>
+                <i aria-hidden="true">→</i>
+              </button>
+            )
+          })}
+        </div>
+        <div class="aw-rail-note">THE GARAGE CHANGES THE ACTIVE DRIVER WALL, PAINT RACK, LIGHTING ACCENT AND VEHICLE IN THE BAY.</div>
+      </aside>
+
+      <main class="aw-booth-room" data-booth-room>
+        <div class="aw-booth-statusbar">
+          <div><span>ACTIVE BAY</span><strong>PAINT // 01</strong></div>
+          <div class="aw-booth-signal"><i></i><span data-booth-state>READY / VEHICLE IN BAY</span></div>
+        </div>
+        <nav class="aw-mobile-booth-console" aria-label="Mobile paint booth controls">
+          <button type="button" data-mobile-target="garage"><span>01</span>GARAGES</button>
+          <button type="button" data-mobile-target="drivers"><span>02</span>DRIVERS</button>
+          <button type="button" data-mobile-target="rack"><span>03</span>PAINTS</button>
+          <button type="button" data-mobile-info><span>04</span>INFO</button>
+        </nav>
+
+        <div class="aw-booth-architecture" aria-hidden="true">
+          <div class="aw-ceiling-grid"></div>
+          <div class="aw-light-bank aw-light-bank--1"></div>
+          <div class="aw-light-bank aw-light-bank--2"></div>
+          <div class="aw-light-bank aw-light-bank--3"></div>
+          <div class="aw-side-wall aw-side-wall--left"><span>AEM</span></div>
+          <div class="aw-side-wall aw-side-wall--right"><span>PAINT</span></div>
+          <div class="aw-back-wall"><span class="aw-back-mark">AETHERWING</span><i></i></div>
+          <div class="aw-floor-grid"></div>
+          <div class="aw-floor-stop"><span>VEHICLE STOP</span></div>
+          <div class="aw-spray-haze"></div>
+        </div>
+
+        <div class="aw-booth-car" data-booth-car>
+          <div class="aw-car-shadow" aria-hidden="true"></div>
+          <button type="button" class="aw-car-open" data-open-active-render aria-label={`Open ${initial.sponsor} render`}>
+            <img src={initial.image} alt={`${initial.driver} — ${initial.sponsor} paint scheme render`} data-active-car fetchpriority="high" decoding="async" />
+          </button>
+        </div>
+
+        <div class="aw-car-id aw-car-id--top">
+          <span data-active-garage>{leagueName(initial.leagues[0])}</span>
+          <strong data-active-sponsor>{initial.sponsor}</strong>
+        </div>
+        <div class="aw-car-id aw-car-id--bottom">
+          <strong data-active-number>{initial.number ? `#${initial.number}` : 'TEAM'}</strong>
+          <div><span data-active-driver>{initial.driver}</span><small><b data-active-manufacturer>{initial.manufacturer}</b> // <b data-active-body>{initial.body}</b></small></div>
+        </div>
+
+        <button class="aw-info-tab" type="button" data-toggle-info aria-expanded="false"><span>SCHEME INFO</span><b>i</b></button>
+      </main>
+
+      <aside class="aw-driver-wall" data-mobile-anchor="drivers" aria-label="Driver stalls">
+        <div class="aw-rail-heading"><span>02</span><div><strong>DRIVER STALLS</strong><small data-driver-count>01 entry</small></div></div>
+        <div class="aw-driver-controls" data-driver-controls>
+          <button type="button" class="is-active" data-driver-name="Wispy"><b>#32 / #20 / #15 / #28 / #54 / #97</b><span><strong>Wispy</strong><small>@Aokikoto · All Garages + iRacing Identity</small></span><em class="is-ready">33 PAINTS</em></button>
+        </div>
+        <div class="aw-driver-wall-foot"><strong>READY</strong> = uploaded paint in this garage.<br><strong>PENDING</strong> = roster slot exists, render has not been supplied yet.</div>
+      </aside>
+
+      <aside class="aw-booth-info is-collapsed" data-info-dock aria-label="Selected paint information">
+        <div class="aw-info-head"><div><span>03</span><strong>SCHEME DOSSIER</strong></div><button type="button" data-toggle-info aria-expanded="false" aria-label="Close scheme information">×</button></div>
+        <div class="aw-info-main">
+          <div class="aw-info-number" data-info-number>{initial.number ? `#${initial.number}` : 'TEAM'}</div>
+          <p class="aw-info-kicker" data-info-relationship>Aetherwing Program</p>
+          <h2 data-info-sponsor>{initial.sponsor}</h2>
+          <p class="aw-info-driver" data-info-driver>{initial.driver}{initial.username ? ` · ${initial.username}` : ''}</p>
+          <div class="aw-info-badges" data-info-badges>{initial.special.map((tag)=><span>{badgeLabels[tag] ?? tag}</span>)}</div>
+          <dl>
+            <div><dt>Garage</dt><dd data-info-garage>{leagueName(initial.leagues[0])}</dd></div>
+            <div><dt>Manufacturer</dt><dd data-info-manufacturer>{initial.manufacturer}</dd></div>
+            <div><dt>Body</dt><dd data-info-body>{initial.body}</dd></div>
+            <div><dt>Paint Type</dt><dd data-info-type>{initial.schemeId ? 'Roblox Scheme' : 'iRacing Custom Livery'}</dd></div>
+          </dl>
+          <p class="aw-info-note" data-info-note>{initial.note ?? 'Current uploaded Paint Booth livery.'}</p>
+        </div>
+        <div class="aw-info-actions">
+          <div class="aw-scheme-readout" data-scheme-readout hidden={!initial.schemeId}><span>Scheme ID</span><code data-active-scheme-id>{initial.schemeId}</code></div>
+          <button class="aw-console-button" type="button" data-copy-id hidden={!initial.schemeId}>COPY SCHEME ID</button>
+          <button class="aw-console-button" type="button" data-copy-share>COPY PAINT LINK</button>
+          <button class="aw-console-button" type="button" data-open-active-render data-info-open-render>VIEW FULL RENDER</button>
+        </div>
+      </aside>
+
+      <section class="aw-control-bench" data-mobile-anchor="rack" aria-label="Paint booth controls">
+        <div class="aw-bench-label"><span>04</span><div><strong>PAINT RACK</strong><small data-paint-count>{String(initialRackPaints.length).padStart(2,'0')} paints</small></div></div>
+        <div class="aw-paint-rack" data-paint-controls>
+          {initialRackPaints.map((paint) => {
+            const paintLeague = leagues.find((league) => league.id === paint.leagues?.[0]);
+            return (
+              <button type="button" class:list={[{'is-active':paint.slug===initial.slug}]} data-rack-paint={paint.slug}>
+                <img src={paint.image} alt="" loading="lazy" decoding="async" />
+                <span><strong>{paint.sponsor}</strong><small>{paint.number ? `#${paint.number}` : 'TEAM'} · {paintLeague?.name ?? paint.leagues?.[0] ?? ''} · {paint.manufacturer}</small></span>
+              </button>
+            )
+          })}
+        </div>
+        <div class="aw-bench-controls">
+          <div class="aw-light-controls" role="group" aria-label="Paint booth lighting">
+            <span>LIGHTING</span>
+            <button class="is-active" type="button" data-light="shop">SHOP</button>
+            <button type="button" data-light="showroom">SHOWROOM</button>
+            <button type="button" data-light="dark">DARK</button>
+          </div>
+          <div class="aw-nav-controls">
+            <button type="button" data-prev-paint aria-label="Previous paint">← PREV</button>
+            <button type="button" data-random-paint>SURPRISE ME</button>
+            <button type="button" data-next-paint aria-label="Next paint">NEXT →</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="aw-facility-instruction"><strong>THIS IS THE BOOTH.</strong><span>The archive below is only the fast browser. All primary interaction happens in the facility above.</span></div>
+  </section>
+
+  <section class="aw-driver-bay-overview" aria-labelledby="driver-bays-title">
+    <div class="shell">
+      <div class="aw-overview-head"><span>ROSTER VISIBILITY</span><h2 id="driver-bays-title">EVERY CURRENT DRIVER BAY</h2><p>No paint is invented here. If the current Paint Booth source does not include a render for a driver, the bay is intentionally marked as awaiting paint.</p></div>
+      <div class="aw-overview-grid">
+        {leagues.map((league) => (
+          <article style={`--league:${league.color}`} class:list={[{'is-alliance':league.relationship==='alliance'}]}>
+            <header><span>{league.relationship==='alliance'?'STARCLUTCH ALLIANCE':'AETHERWING PROGRAM'}</span><strong>{league.name}</strong></header>
+            <div>
+              {league.drivers.map((driver) => {
+                const key = `${league.id}::${driver.name}`;
+                const number = driverOverrides[key]?.join(' / ') ?? '';
+                const count = paints.filter((paint) => paint.driver === driver.name && paint.leagues.includes(league.id)).length;
+                return <div class="aw-overview-driver"><b>{number ? `#${number}` : '—'}</b><span><strong>{driver.name}</strong><small>{driver.username || driver.role}</small></span><em class:list={[{'is-ready':count>0}]}>{count>0?`${count} PAINT${count===1?'':'S'}`:'PAINT PENDING'}</em></div>
+              })}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-paint-collection" data-collection>
+    <div class="shell">
+      <div class="section-head">
+        <div><p class="eyebrow">Archive Terminal</p><h2 class="section-title">Full Paint Collection</h2></div>
+        <p class="lede">Fast access to every uploaded render. Selecting a card sends that paint back into the booth above.</p>
+      </div>
+      <div class="aw-collection-toolbar">
+        <label><span>SEARCH PAINTS</span><input type="search" placeholder="Driver, sponsor, body, manufacturer…" data-paint-search /></label>
+        <div class="aw-collection-filters" data-collection-filters>
+          <button class="is-active" type="button" data-collection-filter="all">ALL {paints.length}</button>
+          <button type="button" data-collection-filter="wispy-all">WISPY {wispyIdentityPaints.length}</button>
+          {leagues.map((league)=><button type="button" data-collection-filter={league.id}>{league.name}</button>)}
+        </div>
+      </div>
+      <div class="aw-collection-grid" data-collection-grid>
+        {paints.map((paint) => (
+          <article class="aw-collection-card" id={`paint-${paint.slug}`} data-collection-card data-slug={paint.slug} data-driver={paint.driver} data-leagues={paint.leagues.join(' ')} data-search={`${paint.driver} ${paint.username ?? ''} ${paint.sponsor} ${paint.manufacturer} ${paint.body}`.toLowerCase()}>
+            <button type="button" class="aw-collection-image" data-load-paint={paint.slug}>
+              <img src={paint.image} alt={`${paint.number ? `#${paint.number} ` : ''}${paint.driver} — ${paint.sponsor} paint scheme render`} loading="lazy" decoding="async" />
+              <span>LOAD INTO BOOTH</span>
+            </button>
+            <div class="aw-collection-copy">
+              <div class="aw-collection-top"><span>{paint.leagues.map(leagueName).join(' / ')}</span><strong>{paint.number ? `#${paint.number}` : 'TEAM'}</strong></div>
+              <h3>{paint.sponsor}</h3><p>{paint.driver}{paint.username ? ` · ${paint.username}` : ''}</p>
+              <div class="aw-collection-specs"><span>{paint.manufacturer}</span><span>{paint.body}</span></div>
+              {paint.note && <small>{paint.note}</small>}
+              <div class="aw-collection-badges">{paint.special.map((tag)=><span>{badgeLabels[tag] ?? tag}</span>)}</div>
+              <div class="aw-collection-actions">{paint.schemeId ? <button type="button" data-card-copy-id={paint.schemeId}>COPY ID</button> : <span>iRACING CUSTOM LIVERY</span>}<button type="button" data-card-copy-share={paint.slug} aria-label={`Copy paint link for ${paint.sponsor}`}>↗</button></div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="empty-state" data-collection-empty hidden><strong>NO PAINTS MATCH</strong><p>Try another garage or search term.</p></div>
+    </div>
+  </section>
+
+  <dialog class="aw-paint-lightbox" data-paint-lightbox><button type="button" data-lightbox-close aria-label="Close expanded render">×</button><img data-lightbox-image alt="" /><p data-lightbox-caption></p></dialog>
+  <div class="aw-copy-toast" data-copy-toast role="status" aria-live="polite" hidden>Copied</div>
+  <script type="application/json" id="aw-paint-booth-data" set:html={JSON.stringify({ paints, leagues, driverOverrides })}></script>
+</BaseLayout>
+
+<script is:inline>
+(() => {
+  const root = document.querySelector('[data-paint-facility]');
+  const raw = document.getElementById('aw-paint-booth-data');
+  if (!root || !raw) return;
+  const { paints, leagues, driverOverrides } = JSON.parse(raw.textContent || '{}');
+  const badgeLabels = { prized:'Prized Livery', patriotic:'Patriotic', concept:'Concept', tribute:'Tribute', starclutch:'StarClutch Racing Alliance', legacy:'Legacy / Part-Time', racewinner:'Race Winner', throwback:'Throwback' };
+  const PAINT_SHARE_BASE = 'https://paint.aetherwing.net/';
+  const boothShell = root.querySelector('[data-booth-shell]');
+  const leagueButtons = Array.from(root.querySelectorAll('[data-league-id]'));
+  const driverControls = root.querySelector('[data-driver-controls]');
+  const paintControls = root.querySelector('[data-paint-controls]');
+  const driverCount = root.querySelector('[data-driver-count]');
+  const paintCount = root.querySelector('[data-paint-count]');
+  const car = root.querySelector('[data-active-car]');
+  const infoDock = root.querySelector('[data-info-dock]');
+  const infoToggle = root.querySelector('[data-toggle-info]');
+  const toast = document.querySelector('[data-copy-toast]');
+  const collection = document.querySelector('[data-collection]');
+  const dialog = document.querySelector('[data-paint-lightbox]');
+  const dialogImage = dialog?.querySelector('[data-lightbox-image]');
+  const dialogCaption = dialog?.querySelector('[data-lightbox-caption]');
+  const WISPY_SCOPE = 'wispy-all';
+  const WISPY_NAMES = new Set(['Wispy', 'Nicholas Waggoner']);
+  const WISPY_SCOPE_META = {
+    id: WISPY_SCOPE,
+    name: 'Wispy — All Paints',
+    subtitle: 'Every Aetherwing / StarClutch / iRacing livery for the Wispy identity',
+    bodyTag: 'Mixed Fleet',
+    color: '#f6f6f6',
+    relationship: 'aetherwing',
+    drivers: [{ name:'Wispy', username:'@Aokikoto', role:'All Garages + iRacing Identity' }]
+  };
+  let activeLeague = WISPY_SCOPE;
+  let activeDriver = 'Wispy';
+  let activePaint = paints.find((paint) => WISPY_NAMES.has(paint.driver)) || paints[0] || null;
+  let toastTimer;
+
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const isWispyIdentity = (name) => WISPY_NAMES.has(name);
+  const wispyPaints = () => paints.filter((paint) => isWispyIdentity(paint.driver));
+  const leagueById = (id) => id === WISPY_SCOPE ? WISPY_SCOPE_META : leagues.find(league => league.id === id);
+  const leaguePaints = (id) => id === WISPY_SCOPE ? wispyPaints() : paints.filter(paint => Array.isArray(paint.leagues) && paint.leagues.includes(id));
+  const driverPaints = (leagueId, driverName) => {
+    if (leagueId === WISPY_SCOPE && driverName === 'Wispy') return wispyPaints();
+    return paints.filter(paint => paint.driver === driverName && paint.leagues?.includes(leagueId));
+  };
+  const copyText = async (text) => {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    const area = document.createElement('textarea'); area.value = text; area.style.position='fixed'; area.style.opacity='0'; document.body.append(area); area.select(); document.execCommand('copy'); area.remove();
+  };
+  const announce = (text) => { if (!(toast instanceof HTMLElement)) return; toast.textContent = text; toast.hidden = false; clearTimeout(toastTimer); toastTimer = window.setTimeout(() => toast.hidden = true, 1400); };
+  const shareUrl = (paint) => `${PAINT_SHARE_BASE}${encodeURIComponent(paint.slug)}/`;
+
+  function displayDrivers(league) {
+    if (league?.id === WISPY_SCOPE) return [...WISPY_SCOPE_META.drivers];
+    const current = [...(league?.drivers || [])];
+    const names = new Set(current.map(driver => driver.name));
+    leaguePaints(league?.id).forEach(paint => {
+      if (paint.driver && !names.has(paint.driver)) {
+        current.push({ name:paint.driver, username:paint.username || '', role:'Legacy / Archive' }); names.add(paint.driver);
+      }
+    });
+    return current;
+  }
+
+  function numberForDriver(leagueId, driverName) {
+    if (leagueId === WISPY_SCOPE && driverName === 'Wispy') {
+      return [...new Set(wispyPaints().map((paint) => paint.number).filter(Boolean))].join(' / ');
+    }
+    const override = driverOverrides[`${leagueId}::${driverName}`];
+    if (override?.length) return override.join(' / ');
+    return [...new Set(driverPaints(leagueId, driverName).map(paint => paint.number).filter(Boolean))].join(' / ');
+  }
+
+  function renderDrivers() {
+    const league = leagueById(activeLeague); if (!league || !driverControls) return;
+    const drivers = displayDrivers(league);
+    driverCount.textContent = `${String(drivers.length).padStart(2,'0')} ${drivers.length===1?'entry':'entries'}`;
+    driverControls.innerHTML = drivers.map(driver => {
+      const number = numberForDriver(activeLeague, driver.name);
+      const displayNumber = number ? number.split(' / ').map(value => '#' + value).join(' / ') : '—';
+      const count = driverPaints(activeLeague, driver.name).length;
+      return `<button type="button" class="${driver.name===activeDriver?'is-active':''}" data-driver-name="${esc(driver.name)}"><b>${esc(displayNumber)}</b><span><strong>${esc(driver.name)}</strong><small>${esc(driver.username || driver.role || 'Driver')}</small></span><em class="${count ? 'is-ready' : ''}">${count ? `${String(count).padStart(2,'0')} PAINT${count===1?'':'S'}` : 'PENDING'}</em></button>`;
+    }).join('');
+    driverControls.querySelectorAll('[data-driver-name]').forEach(button => button.addEventListener('click', () => selectDriver(button.dataset.driverName || '')));
+  }
+
+  function renderPaintRack() {
+    if (!paintControls) return;
+    const list = driverPaints(activeLeague, activeDriver);
+    paintCount.textContent = `${String(list.length).padStart(2,'0')} ${list.length===1?'paint':'paints'}`;
+    if (!list.length) {
+      paintControls.innerHTML = `<div class="aw-paint-pending"><strong>Still in the Paint Shop</strong><span>No uploaded render for this driver in this garage yet.</span></div>`;
+      root.querySelector('[data-booth-state]').textContent = 'PAINT PENDING / DRIVER SLOT RESERVED';
+      return;
+    }
+    root.querySelector('[data-booth-state]').textContent = 'READY / VEHICLE IN BAY';
+    paintControls.innerHTML = list.map(paint => {
+      const paintLeague = leagueById(paint.leagues?.[0]);
+      return `<button type="button" class="${activePaint?.slug===paint.slug?'is-active':''}" data-rack-paint="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy" decoding="async"><span><strong>${esc(paint.sponsor)}</strong><small>${paint.number ? '#' + esc(paint.number) : 'TEAM'} · ${esc(paintLeague?.name || paint.leagues?.[0] || '')} · ${esc(paint.manufacturer)}</small></span></button>`;
+    }).join('');
+    paintControls.querySelectorAll('[data-rack-paint]').forEach(button => button.addEventListener('click', () => selectPaint(button.dataset.rackPaint || '', true)));
+  }
+
+
+  function showPaintPending(driverName) {
+    activePaint = null;
+    const league = leagueById(activeLeague);
+    const carWrap = root.querySelector('[data-booth-car]');
+    if (car instanceof HTMLImageElement) { car.removeAttribute('src'); car.alt = `${driverName} paint pending`; }
+    carWrap?.classList.add('is-empty');
+    const set = (selector, text) => { const node = root.querySelector(selector); if (node) node.textContent = text; };
+    set('[data-active-garage]', league?.name || activeLeague); set('[data-active-driver]', driverName); set('[data-active-sponsor]', 'Paint Pending');
+    const numbers = numberForDriver(activeLeague, driverName); set('[data-active-number]', numbers ? '#' + numbers.split(' / ').join(' / #') : '—');
+    set('[data-active-body]', league?.bodyTag || 'Garage slot reserved'); set('[data-active-manufacturer]', 'Awaiting uploaded render');
+    set('[data-info-number]', numbers ? '#' + numbers.split(' / ').join(' / #') : '—');
+    set('[data-info-relationship]', league?.relationship === 'alliance' ? 'StarClutch Racing Alliance' : 'Aetherwing Program');
+    set('[data-info-sponsor]', 'Still in the Paint Shop'); set('[data-info-driver]', driverName); set('[data-info-garage]', league?.name || activeLeague);
+    set('[data-info-manufacturer]', '—'); set('[data-info-body]', league?.bodyTag || '—'); set('[data-info-type]', 'Paint Pending');
+    set('[data-info-note]', `${driverName} is listed in this garage, but there is not an uploaded render here yet. This driver slot is preserved and ready for the next livery.`);
+    const badges = root.querySelector('[data-info-badges]'); if (badges) badges.innerHTML = '<span>Paint Pending</span>';
+    const readout = root.querySelector('[data-scheme-readout]'); const copyId = root.querySelector('[data-copy-id]'); const copyShare = root.querySelector('[data-copy-share]'); const infoOpen = root.querySelector('[data-info-open-render]');
+    if (readout instanceof HTMLElement) readout.hidden = true; if (copyId instanceof HTMLElement) copyId.hidden = true; if (copyShare instanceof HTMLElement) copyShare.hidden = true; if (infoOpen instanceof HTMLElement) infoOpen.hidden = true;
+    root.querySelector('[data-booth-state]').textContent = 'PAINT PENDING / DRIVER SLOT RESERVED';
+  }
+
+  function selectLeague(id, keepPaint = false) {
+    const league = leagueById(id); if (!league) return;
+    activeLeague = id;
+    leagueButtons.forEach(button => button.classList.toggle('is-active', button.dataset.leagueId === id));
+    if (boothShell instanceof HTMLElement) { boothShell.dataset.relationship = league.relationship || 'aetherwing'; if (league.relationship === 'alliance') boothShell.style.removeProperty('--booth-accent'); else boothShell.style.setProperty('--booth-accent', league.color || 'var(--aw-blue)'); }
+    if (!keepPaint) {
+      const drivers = displayDrivers(league);
+      activeDriver = drivers[0]?.name || '';
+      const first = driverPaints(id, activeDriver)[0] || null;
+      activePaint = first;
+    }
+    renderDrivers(); renderPaintRack(); if (activePaint) updateActivePaint(activePaint, false); else showPaintPending(activeDriver);
+  }
+
+  function selectDriver(name) {
+    activeDriver = name;
+    const list = driverPaints(activeLeague, name);
+    if (list.length) { activePaint = list[0]; updateActivePaint(activePaint, true); } else { showPaintPending(name); }
+    renderDrivers(); renderPaintRack();
+  }
+
+  function updateActivePaint(paint, updateUrl = true) {
+    if (!paint) return;
+    activePaint = paint;
+    root.querySelector('[data-booth-car]')?.classList.remove('is-empty');
+    const browsingWispyScope = activeLeague === WISPY_SCOPE && isWispyIdentity(paint.driver);
+    const primaryLeague = paint.leagues.find(id => id === activeLeague) || paint.leagues[0];
+    if (!browsingWispyScope && primaryLeague && primaryLeague !== activeLeague) activeLeague = primaryLeague;
+    activeDriver = browsingWispyScope ? 'Wispy' : paint.driver;
+    const actualLeague = leagueById(primaryLeague);
+    const scopeLeague = leagueById(activeLeague);
+    const league = browsingWispyScope ? actualLeague : scopeLeague;
+    if (boothShell instanceof HTMLElement) { boothShell.dataset.relationship = league?.relationship || 'aetherwing'; if (league?.relationship === 'alliance') boothShell.style.removeProperty('--booth-accent'); else boothShell.style.setProperty('--booth-accent', league?.color || 'var(--aw-blue)'); }
+    leagueButtons.forEach(button => button.classList.toggle('is-active', button.dataset.leagueId === activeLeague));
+    if (car instanceof HTMLImageElement) { car.src = paint.image; car.alt = `${paint.number ? '#' + paint.number + ' ' : ''}${paint.driver} — ${paint.sponsor} paint scheme render`; }
+    const set = (selector, text) => { const node = root.querySelector(selector); if (node) node.textContent = text; };
+    set('[data-active-garage]', league?.name || activeLeague);
+    set('[data-active-driver]', browsingWispyScope ? 'Wispy / Nicholas Waggoner' : paint.driver);
+    set('[data-active-sponsor]', paint.sponsor);
+    set('[data-active-number]', paint.number ? `#${paint.number}` : 'TEAM');
+    set('[data-active-body]', paint.body);
+    set('[data-active-manufacturer]', paint.manufacturer);
+    set('[data-info-number]', paint.number ? `#${paint.number}` : 'TEAM');
+    set('[data-info-relationship]', league?.relationship === 'alliance' ? 'StarClutch Racing Alliance' : 'Aetherwing Program');
+    set('[data-info-sponsor]', paint.sponsor);
+    set('[data-info-driver]', `${paint.driver}${paint.username ? ' · ' + paint.username : ''}${browsingWispyScope ? ' · WISPY IDENTITY' : ''}`);
+    set('[data-info-garage]', league?.name || activeLeague);
+    set('[data-info-manufacturer]', paint.manufacturer);
+    set('[data-info-body]', paint.body);
+    set('[data-info-type]', paint.schemeId ? 'Roblox Scheme' : 'iRacing Custom Livery');
+    set('[data-info-note]', paint.note || 'Current uploaded Paint Booth livery.');
+    set('[data-active-scheme-id]', paint.schemeId || '');
+    const badges = root.querySelector('[data-info-badges]');
+    if (badges) badges.innerHTML = (paint.special || []).map(tag => `<span>${esc(badgeLabels[tag] || tag)}</span>`).join('') + (paint.specialBadgeIcon ? `<span class="is-icon"><img src="${esc(paint.specialBadgeIcon)}" alt="Special badge icon"></span>` : '');
+    const readout = root.querySelector('[data-scheme-readout]'); const copyId = root.querySelector('[data-copy-id]');
+    if (readout instanceof HTMLElement) readout.hidden = !paint.schemeId;
+    if (copyId instanceof HTMLElement) copyId.hidden = !paint.schemeId;
+    const copyShare = root.querySelector('[data-copy-share]'); const infoOpen = root.querySelector('[data-info-open-render]'); if (copyShare instanceof HTMLElement) copyShare.hidden = false; if (infoOpen instanceof HTMLElement) infoOpen.hidden = false;
+    renderDrivers(); renderPaintRack();
+    if (updateUrl) history.replaceState(null, '', `${location.pathname}#paint-${paint.slug}`);
+  }
+
+  function selectPaint(slug, updateUrl = true) {
+    const paint = paints.find(item => item.slug === slug); if (!paint) return;
+    const targetLeague = paint.leagues[0];
+    const keepWispyScope = activeLeague === WISPY_SCOPE && isWispyIdentity(paint.driver);
+    if (!keepWispyScope) {
+      activeLeague = targetLeague;
+      activeDriver = paint.driver;
+    } else {
+      activeDriver = 'Wispy';
+    }
+    updateActivePaint(paint, updateUrl);
+  }
+
+  leagueButtons.forEach(button => button.addEventListener('click', () => selectLeague(button.dataset.leagueId || '')));
+  root.querySelectorAll('[data-mobile-target]').forEach((button) => button.addEventListener('click', () => {
+    const target = root.querySelector(`[data-mobile-anchor="${button.dataset.mobileTarget || ''}"]`);
+    target?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start' });
+  }));
+  root.querySelector('[data-mobile-info]')?.addEventListener('click', () => {
+    setInfoDockState(false);
+  });
+  root.querySelectorAll('[data-light]').forEach(button => button.addEventListener('click', () => {
+    root.querySelectorAll('[data-light]').forEach(item => item.classList.remove('is-active')); button.classList.add('is-active');
+    if (boothShell instanceof HTMLElement) boothShell.dataset.lighting = button.dataset.light || 'shop';
+  }));
+  root.querySelector('[data-random-paint]')?.addEventListener('click', () => selectPaint(paints[Math.floor(Math.random()*paints.length)].slug, true));
+  root.querySelector('[data-prev-paint]')?.addEventListener('click', () => {
+    const list = driverPaints(activeLeague, activeDriver); if (!list.length) return; const index = Math.max(0, list.findIndex(p => p.slug === activePaint?.slug)); selectPaint(list[(index - 1 + list.length) % list.length].slug, true);
+  });
+  root.querySelector('[data-next-paint]')?.addEventListener('click', () => {
+    const list = driverPaints(activeLeague, activeDriver); if (!list.length) return; const index = Math.max(0, list.findIndex(p => p.slug === activePaint?.slug)); selectPaint(list[(index + 1) % list.length].slug, true);
+  });
+  const setInfoDockState = (closed) => {
+    infoDock?.classList.toggle('is-collapsed', closed);
+    root.querySelectorAll('[data-toggle-info]').forEach((toggle) => toggle.setAttribute('aria-expanded', String(!closed)));
+  };
+  root.querySelectorAll('[data-toggle-info]').forEach((toggle) => toggle.addEventListener('click', () => {
+    setInfoDockState(!(infoDock?.classList.contains('is-collapsed')));
+  }));
+  root.querySelector('[data-copy-id]')?.addEventListener('click', async () => { if (!activePaint?.schemeId) return; await copyText(activePaint.schemeId); announce('Scheme ID copied'); });
+  root.querySelector('[data-copy-share]')?.addEventListener('click', async () => { if (!activePaint) return; await copyText(shareUrl(activePaint)); announce('Paint link copied'); });
+
+  function openActiveRender() {
+    if (!activePaint || !(dialog instanceof HTMLDialogElement) || !(dialogImage instanceof HTMLImageElement)) return;
+    dialogImage.src = activePaint.image; dialogImage.alt = `${activePaint.driver} — ${activePaint.sponsor}`; if (dialogCaption) dialogCaption.textContent = `${activePaint.number ? '#' + activePaint.number + ' · ' : ''}${activePaint.driver} · ${activePaint.sponsor}`; dialog.showModal();
+  }
+  root.querySelectorAll('[data-open-active-render]').forEach(button => button.addEventListener('click', openActiveRender));
+  dialog?.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+  dialog?.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+
+  const search = collection?.querySelector('[data-paint-search]');
+  const collectionCards = Array.from(collection?.querySelectorAll('[data-collection-card]') || []);
+  const collectionFilters = Array.from(collection?.querySelectorAll('[data-collection-filter]') || []);
+  const collectionEmpty = collection?.querySelector('[data-collection-empty]');
+  let collectionFilter = 'all';
+  function applyCollection() {
+    const query = (search?.value || '').trim().toLowerCase(); let shown = 0;
+    collectionCards.forEach(card => {
+      const matchesLeague = collectionFilter === 'all'
+        || (collectionFilter === WISPY_SCOPE && isWispyIdentity(card.dataset.driver || ''))
+        || (card.dataset.leagues || '').split(' ').includes(collectionFilter);
+      const matchesSearch = !query || (card.dataset.search || '').includes(query);
+      card.hidden = !(matchesLeague && matchesSearch); if (!card.hidden) shown++;
+    });
+    if (collectionEmpty instanceof HTMLElement) collectionEmpty.hidden = shown > 0;
+  }
+  collectionFilters.forEach(button => button.addEventListener('click', () => { collectionFilters.forEach(item => item.classList.remove('is-active')); button.classList.add('is-active'); collectionFilter = button.dataset.collectionFilter || 'all'; applyCollection(); }));
+  search?.addEventListener('input', applyCollection);
+  collection?.querySelectorAll('[data-load-paint]').forEach(button => button.addEventListener('click', () => { selectPaint(button.dataset.loadPaint || '', true); root.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start'}); }));
+  collection?.querySelectorAll('[data-card-copy-id]').forEach(button => button.addEventListener('click', async () => { await copyText(button.dataset.cardCopyId || ''); announce('Scheme ID copied'); }));
+  collection?.querySelectorAll('[data-card-copy-share]').forEach(button => button.addEventListener('click', async () => { const paint = paints.find(item => item.slug === button.dataset.cardCopyShare); if (!paint) return; await copyText(shareUrl(paint)); announce('Paint link copied'); }));
+
+  function revealHash() {
+    if (!location.hash.startsWith('#paint-')) return false;
+    const slug = decodeURIComponent(location.hash.slice(7)); const paint = paints.find(item => item.slug === slug); if (!paint) return false;
+    activeLeague = paint.leagues?.[0] || activeLeague;
+    activeDriver = paint.driver || activeDriver;
+    selectPaint(slug, false); if (infoDock?.classList.contains('is-collapsed')) setInfoDockState(false);
+    const card = document.getElementById(`paint-${slug}`); card?.classList.add('is-share-target'); window.setTimeout(() => card?.classList.remove('is-share-target'), 2400); return true;
+  }
+  if (!revealHash()) {
+    selectLeague(WISPY_SCOPE);
+    const fullWispyRack = driverPaints(WISPY_SCOPE, 'Wispy');
+    if (fullWispyRack.length) updateActivePaint(fullWispyRack[0], false);
+  }
+  addEventListener('hashchange', revealHash);
+})();
+</script>

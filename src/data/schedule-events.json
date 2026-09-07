@@ -1,0 +1,1401 @@
+[
+  {
+    "date": "2026-04-07",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Pre-Season",
+    "title": "Clash at the Coliseum",
+    "track": "Bowman Gray Stadium",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-04-11",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "The Fresh From Florida 250",
+    "track": "Daytona International Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-04-14",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Daytona 500",
+    "track": "Daytona International Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-04-18",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Ecosave 200",
+    "track": "Las Vegas Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-04-21",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Chicagoland 400",
+    "track": "Chicagoland Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-04-25",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "The Fr8 208",
+    "track": "Atlanta Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-04-28",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Watkins Glen 355",
+    "track": "Watkins Glen International",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-05-02",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Black’s Tire 200",
+    "track": "Rockingham Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-05-05",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Auto Club 400",
+    "track": "Auto Club Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-05-09",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Brickyard 400",
+    "track": "Indianapolis Motor Speedway Road Course",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-05-12",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Rockingham 400",
+    "track": "Rockingham Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-05-16",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "The Milwaukee Mile",
+    "track": "The Milwaukee Mile",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-05-19",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Las Vegas 400",
+    "track": "Las Vegas Motor Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-05-26",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Coca-Cola 600",
+    "track": "Charlotte Motor Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-05-30",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "MillerTech Battery 200",
+    "track": "Pocono Raceway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-06-02",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Phoenix 500",
+    "track": "Phoenix Raceway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-06-06",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Men’s Mental Health Awareness Month 200",
+    "track": "Martinsville Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-06-09",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Toyota/Save Mart 350",
+    "track": "Sonoma Raceway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-06-13",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Bully Hill Vineyards 176 at the Glen",
+    "track": "Watkins Glen International",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-06-16",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Geico 500",
+    "track": "Talladega Superspeedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-06-20",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Sunoco Truck Series Race",
+    "track": "Darlington Raceway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-06-23",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "All-Star",
+    "title": "All-Star Race",
+    "track": "Michigan International Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-06-27",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "Sunoco Truck Series Race",
+    "track": "Chicagoland Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-07-07",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Road America 250",
+    "track": "Road America",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-07-11",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "The Eero 250",
+    "track": "Richmond Raceway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-07-14",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Richmond 400",
+    "track": "Richmond Raceway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-07-18",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "The LiUNA! 150",
+    "track": "Road America",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-07-21",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Bristol Night Race",
+    "track": "Bristol Motor Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Mobil 1 300",
+    "track": "Daytona",
+    "date": "2026-07-27",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 1",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-07-28",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Mexico City 200",
+    "track": "Mexico City",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-08-01",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "The Ford EcoBoost 200",
+    "track": "Homestead-Miami Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Super Start Batteries 300",
+    "track": "Fontana",
+    "date": "2026-08-03",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 2",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-08-04",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Charlotte Oval",
+    "track": "Charlotte Motor Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-08-04",
+    "endDate": "2026-08-09",
+    "displayDate": "Aug 4–9",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Knoxville Nationals",
+    "track": "Knoxville Raceway",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-08-08",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Regular Season",
+    "title": "North Carolina Education Lottery 200",
+    "track": "Charlotte Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Pennzoil 300",
+    "track": "Las Vegas",
+    "date": "2026-08-10",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 3",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-08-14",
+    "endDate": "2026-08-15",
+    "displayDate": "Aug 14–15",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Portimao 1000km",
+    "track": "Algarve International Circuit",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-08-15",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Sunoco Truck Series Race",
+    "track": "Bristol Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "BrakeBest 250",
+    "track": "COTA",
+    "date": "2026-08-17",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 4",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-08-18",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "U.S. Navy 250",
+    "track": "Naval Base Coronado",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-08-22",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Sunoco Truck Series Race",
+    "track": "Talladega Superspeedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "MasterPro 200",
+    "track": "Phoenix",
+    "date": "2026-08-24",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 5",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-08-25",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Goody's Fast Relief 500",
+    "track": "Martinsville Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-08-25",
+    "endDate": "2026-08-30",
+    "displayDate": "Aug 25–30",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Crandon Championship",
+    "track": "Crandon International Raceway",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-09-05",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "The EJP 175",
+    "track": "New Hampshire Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "OFF WEEK",
+    "track": "No race scheduled",
+    "date": "2026-08-31",
+    "time": "NO RACE",
+    "series": "Kmart",
+    "round": "OFF WEEK",
+    "status": "Schedule Break",
+    "offWeek": true
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Craftsman Tools 300",
+    "track": "Michigan",
+    "date": "2026-09-07",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 6",
+    "specialTag": "DASH4CASH QUALIFIER",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-09-01",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Kroger 200",
+    "track": "Indianapolis Raceway Park",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-09-02",
+    "endDate": "2026-09-07",
+    "displayDate": "Sep 2–7",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Southern 500",
+    "track": "Darlington Raceway",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-09-12",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Sunoco Truck Series Race",
+    "track": "Daytona International Speedway Road Course",
+    "time": "8:00 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Advance Auto Parts 250",
+    "track": "Rockingham",
+    "date": "2026-09-14",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 7",
+    "specialTag": "DASH4CASH",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-09-08",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Regular Season",
+    "title": "Pepsi 400",
+    "track": "Daytona International Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-09-09",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Pre-Season",
+    "title": "L.L. Bean Clash",
+    "track": "Daytona International Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-09-10",
+    "endDate": "2026-09-15",
+    "displayDate": "Sep 10–15",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Suzuka 1000km",
+    "track": "Suzuka Circuit",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-09-19",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Sunoco Truck Series Race",
+    "track": "Michigan International Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-09-12",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "The 6th Annual Daytona 500",
+    "track": "Daytona International Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-09-13",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Sunshine State 150",
+    "track": "Daytona Backstretch",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Brembo Performance 200",
+    "track": "Portland",
+    "date": "2026-09-21",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 8",
+    "specialTag": "DASH4CASH",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-09-14",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "The 6th Official Daytona 250",
+    "track": "Daytona International Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-09-18",
+    "endDate": "2026-09-20",
+    "displayDate": "Sep 18–20",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Britcar 24",
+    "track": "Silverstone",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-09-26",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Sunoco Truck Series Race",
+    "track": "Dover Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-09-19",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Queen City 500",
+    "track": "Charlotte Motor Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-09-20",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Snowball Summer Classic",
+    "track": "Five Flags Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "BrakeBest Brake Pads 250",
+    "track": "Martinsville",
+    "date": "2026-09-28",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 9",
+    "specialTag": "DASH4CASH",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-09-21",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Carolina Freight 200",
+    "track": "Charlotte Motor Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-09-22",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "The Chase",
+    "title": "Southern 500",
+    "track": "Darlington Raceway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-09-25",
+    "endDate": "2026-09-27",
+    "displayDate": "Sep 25–27",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Petit Le Mans",
+    "track": "Michelin Raceway Road Atlanta",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-10-03",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Ecosave 250",
+    "track": "Charlotte Motor Speedway Roval",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-09-26",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Aztec Grand Prix 400",
+    "track": "Mexico City",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-09-27",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Southern Heritage 100",
+    "track": "Sunny South Raceway Park",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Valvoline 300",
+    "track": "Talladega",
+    "date": "2026-10-05",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 10",
+    "specialTag": "DASH4CASH",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-09-28",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Borderlands Truck Challenge 150",
+    "track": "Mexico City",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-09-29",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "The Chase",
+    "title": "Tyson Holly Farms 400",
+    "track": "North Wilkesboro Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-10-02",
+    "endDate": "2026-10-04",
+    "displayDate": "Oct 2–4",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Bathurst 1000",
+    "track": "Mount Panorama Circuit",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-10-10",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "Sunoco Truck Series Race",
+    "track": "Phoenix Raceway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-10-03",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Echo Park Thunder 400",
+    "track": "Echo Park Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-10-04",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Queen City Dirt Nationals",
+    "track": "The Dirt Track At Charlotte",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "O'Reilly Auto Parts All-Star",
+    "track": "Charlotte",
+    "date": "2026-10-12",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "ALL-STAR",
+    "status": "All-Star Race"
+  },
+  {
+    "date": "2026-10-05",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Echo Park Hauler 200",
+    "track": "Echo Park Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-10-06",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "The Chase",
+    "title": "Pure Michigan 400",
+    "track": "Michigan International Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-10-17",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "The Chase",
+    "title": "The Fr8 208",
+    "track": "Atlanta Motor Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-10-10",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Music City 300",
+    "track": "Nashville Fairgrounds",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-10-11",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Capital Cup",
+    "track": "Wake County Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "MasterPro Milwaukee Mile 200",
+    "track": "Milwaukee",
+    "date": "2026-10-19",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 11",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-10-12",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Honky-Tonk Hauler 200",
+    "track": "Nashville Fairgrounds",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-10-13",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "The Chase",
+    "title": "Toyota/Save Mart 350",
+    "track": "Sonoma Raceway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-10-16",
+    "endDate": "2026-10-18",
+    "displayDate": "Oct 16–18",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "8 Hours of Indianapolis",
+    "track": "Indianapolis Motor Speedway Road Course",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-10-24",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "status": "Championship",
+    "title": "The Baptist Health 200",
+    "track": "Homestead-Miami Speedway",
+    "time": "8:00 PM ET"
+  },
+  {
+    "date": "2026-10-17",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Jackpot 400",
+    "track": "Las Vegas Motor Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-10-18",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Badger State 150",
+    "track": "Slinger Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Corona Mexico 250",
+    "track": "Mexico City",
+    "date": "2026-10-26",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 12",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-10-19",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "High Roller Truck Shootout 200",
+    "track": "Las Vegas Motor Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-10-20",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "The Chase",
+    "title": "Sylvania 300",
+    "track": "New Hampshire Motor Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-10-24",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "British Crown 300",
+    "track": "Silverstone Circuit",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-10-25",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Appalachian Challenge",
+    "track": "Tyler County Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "USAA Salute to Service 250",
+    "track": "Naval Base Coronado",
+    "date": "2026-11-02",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 13",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-10-26",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Union Jack Truck Classic 150",
+    "track": "Silverstone Circuit",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-10-27",
+    "league": "nrrs",
+    "leagueName": "NRRS",
+    "status": "Championship",
+    "title": "Ford 400",
+    "track": "Homestead-Miami Speedway",
+    "time": "7:30 PM ET"
+  },
+  {
+    "date": "2026-10-30",
+    "endDate": "2026-10-31",
+    "displayDate": "Oct 30–31",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "iRacing FF1600 Festival",
+    "track": "Brands Hatch",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-11-01",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Great Lakes Showdown",
+    "track": "Cedar Lake Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "date": "2026-11-01",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Lone Star 500",
+    "track": "Texas Motor Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Lowe's 600",
+    "track": "Charlotte",
+    "date": "2026-11-09",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 14",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-11-02",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Texas Trailblazer 250",
+    "track": "Texas Motor Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-11-04",
+    "endDate": "2026-11-09",
+    "displayDate": "Nov 4–9",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Homestead Championship",
+    "track": "Homestead Miami Speedway",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-11-07",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "All-Star",
+    "title": "The 6th Annual UARL All-Star Race",
+    "track": "USA International Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-11-08",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "North Country Classic",
+    "track": "ABC Raceway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "MicroGard 300",
+    "track": "Chicagoland",
+    "date": "2026-11-16",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 15",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-11-09",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Italian Freight Challenge 175",
+    "track": "Monza Oval",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-11-13",
+    "endDate": "2026-11-15",
+    "displayDate": "Nov 13–15",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "SFL Mountain Showdown",
+    "track": "Mount Panorama Circuit",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-11-14",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Monza Speed Festival 350",
+    "track": "Monza Oval",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-11-15",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Pine Tree State 150",
+    "track": "Baileyville Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "MasterPro 200 at The Glen",
+    "track": "Watkins Glen",
+    "date": "2026-11-23",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 16",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-11-16",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Aegean Truck Classic 150",
+    "track": "Greece Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-11-17",
+    "endDate": "2026-11-21",
+    "displayDate": "Nov 17–21",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "iRacing Runoffs",
+    "track": "Road America",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-11-21",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Olympian 300",
+    "track": "Greece Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-11-22",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Heartland Dirt Crown",
+    "track": "Eldora Speedway",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Super Start Batteries 200",
+    "track": "New Hampshire",
+    "date": "2026-11-30",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 17",
+    "status": "Regular Season"
+  },
+  {
+    "date": "2026-11-23",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Tri-Corner Freight 200",
+    "track": "Pocono Raceway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-11-28",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Mountain Peak 400",
+    "track": "Pocono Raceway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-11-29",
+    "league": "open",
+    "leagueName": "UARL Open",
+    "status": "Regular Season",
+    "title": "Madhouse 100",
+    "track": "Bowman Gray Stadium",
+    "time": "11:30 AM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Goodyear Southern 300",
+    "track": "Darlington",
+    "date": "2026-12-07",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 18",
+    "status": "The Chase"
+  },
+  {
+    "date": "2026-11-30",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Crossroads Truck Classic 200",
+    "track": "Indianapolis Motor Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-12-02",
+    "endDate": "2026-12-07",
+    "displayDate": "Dec 2–7",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Winter Derby",
+    "track": "Five Flags Speedway",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-12-05",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Brickyard 500",
+    "track": "Indianapolis Motor Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "BrakeBest 200 at Indianapolis",
+    "track": "Indy Road Course",
+    "date": "2026-12-14",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 19",
+    "status": "The Chase"
+  },
+  {
+    "date": "2026-12-07",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Regular Season",
+    "title": "Pacific Hauler Challenge 125",
+    "track": "Twin Ring Motegi",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-12-12",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Regular Season",
+    "title": "Rising Sun 300",
+    "track": "Twin Ring Motegi",
+    "time": "8:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Bush's Beans 250",
+    "track": "Bristol",
+    "date": "2026-12-21",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 20",
+    "status": "The Chase"
+  },
+  {
+    "date": "2026-12-14",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "The Chase",
+    "title": "Lakefront Truck Clash 125",
+    "track": "Chicago Street Course",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-12-15",
+    "endDate": "2026-12-20",
+    "displayDate": "Dec 15–20",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "Chili Bowl",
+    "track": "Chili Bowl",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-12-18",
+    "endDate": "2026-12-19",
+    "displayDate": "Dec 18–19",
+    "league": "iracing",
+    "leagueName": "iRacing Events",
+    "status": "Special Event",
+    "title": "The Production Car Challenge",
+    "track": "Virginia International Raceway",
+    "time": "Event Window"
+  },
+  {
+    "date": "2026-12-19",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "The Chase",
+    "title": "Windy City Grand Prix",
+    "track": "Chicago Street Course",
+    "time": "8:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "MasterPro 250",
+    "track": "Kansas",
+    "date": "2026-12-28",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 21",
+    "status": "The Chase"
+  },
+  {
+    "date": "2026-12-21",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "The Chase",
+    "title": "Heartland Hauler 200",
+    "track": "Chicagoland Speedway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2026-12-23",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "The Chase",
+    "title": "Midwest 400",
+    "track": "Chicagoland Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2026-12-27",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "The Chase",
+    "title": "Gateway 400",
+    "track": "World Wide Technology Raceway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "Menards 200",
+    "track": "Indianapolis Raceway Park",
+    "date": "2027-01-04",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 22",
+    "status": "The Chase"
+  },
+  {
+    "date": "2026-12-28",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "The Chase",
+    "title": "Mississippi Freight 200",
+    "track": "World Wide Technology Raceway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2027-01-02",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "The Chase",
+    "title": "Southern 500",
+    "track": "Darlington Raceway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "WeatherTech Championship 300",
+    "track": "Homestead-Miami",
+    "date": "2027-01-11",
+    "time": "8:30 PM ET",
+    "durationMinutes": 90,
+    "series": "Kmart",
+    "round": "RACE 23",
+    "status": "The Chase"
+  },
+  {
+    "date": "2027-01-04",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "The Chase",
+    "title": "Palmetto Truck Classic 200",
+    "track": "Darlington Raceway",
+    "time": "6:45 PM ET"
+  },
+  {
+    "date": "2027-01-09",
+    "league": "uarl-d1",
+    "leagueName": "L.L. Bean Cup Series",
+    "status": "Championship",
+    "title": "L.L. Bean Championship Finale",
+    "track": "Homestead-Miami Speedway",
+    "time": "8:30 PM ET"
+  },
+  {
+    "date": "2027-01-11",
+    "league": "uarl-d2",
+    "leagueName": "NFFF Grand National",
+    "status": "Championship",
+    "title": "The 6th Trader Joes Truck Championship",
+    "track": "Homestead-Miami Speedway",
+    "time": "6:45 PM ET"
+  }
+]

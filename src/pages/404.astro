@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="404 — Off Track" description="The requested Aetherwing page could not be found." noindex={true}>
+  <section class="page-hero" style="min-height:65vh;display:grid;align-items:center">
+    <div class="shell shell--standard">
+      <p class="eyebrow">Race control / 404</p>
+      <h1 class="display"><span style="color:var(--aether-red)">OFF</span> TRACK.</h1>
+      <p class="lede">That route isn’t on the timing sheet. Head back to the main paddock or jump straight into Race Control.</p>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.5rem"><a class="btn btn--primary" href="/">Return Home</a><a class="btn" href="/schedule/">Race Control</a></div>
+    </div>
+  </section>
+</BaseLayout>

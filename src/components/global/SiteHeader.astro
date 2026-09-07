@@ -1,0 +1,86 @@
+---
+const path=Astro.url.pathname;
+const active=(href:string)=>href==='/'?path==='/':path.startsWith(href);
+const groups=[
+  {label:'Team',links:[['Drivers','/drivers/'],['Paint Booth','/paint-booth/'],['Mission & Values','/mission-values/'],['Team Handbook','/team-handbook/']]},
+  {label:'Race',links:[['Schedule','/schedule/'],['Wins & History','/wins-history/'],['News & Updates','/news/']]},
+  {label:'Connect',links:[['Partners','/partners/'],['Contact HQ','/contact/']]}
+];
+---
+<header class="site-header" data-site-header>
+  <div class="shell site-header__inner">
+    <a class="brand" href="/" aria-label="Aetherwing eMotorsports home">
+      <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" />
+    </a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a class:list={[{active:active('/')}]} href="/">Home</a>
+      {groups.map((group)=>(
+        <div class="nav-group">
+          <button type="button" aria-haspopup="true" aria-expanded="false">{group.label}<span aria-hidden="true">+</span></button>
+          <div class="nav-group__menu">
+            <small>{group.label} Control</small>
+            {group.links.map(([label,href])=><a class:list={[{active:active(href)}]} href={href}>{label}</a>)}
+          </div>
+        </div>
+      ))}
+    </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open Aetherwing navigation"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-scrim" data-menu-scrim hidden></div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Aetherwing mobile navigation" hidden>
+    <div class="mobile-menu__inner">
+      <div class="mobile-kicker">Navigation Control</div>
+      <a class="mobile-home" href="/">Aetherwing Hub</a>
+      {groups.map((group,index)=>(
+        <section class="mobile-group">
+          <button type="button" class="mobile-group__toggle" aria-expanded={index===0?'true':'false'}>
+            <span>{group.label}</span><b aria-hidden="true">+</b>
+          </button>
+          <div class="mobile-group__links" hidden={index!==0}>
+            {group.links.map(([label,href])=><a class:list={[{active:active(href)}]} href={href}>{label}</a>)}
+          </div>
+        </section>
+      ))}
+      <div class="mobile-feature">
+        <strong>Born to Soar. Built to Fight.</strong>
+        <p>Aetherwing eMotorsports // 5 Aetherwing Programs • 2 Alliance Series • 7 Competition Relationships.</p>
+      </div>
+    </div>
+  </nav>
+</header>
+<script>
+  const header=document.querySelector('[data-site-header]');
+  if(header){
+    const toggle=header.querySelector('.menu-toggle');
+    const menu=header.querySelector('#mobile-menu');
+    const scrim=header.querySelector('[data-menu-scrim]');
+    const close=()=>{if(!(toggle instanceof HTMLButtonElement)||!(menu instanceof HTMLElement))return;toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open Aetherwing navigation');menu.hidden=true;if(scrim instanceof HTMLElement)scrim.hidden=true;document.documentElement.classList.remove('menu-open')};
+    const open=()=>{if(!(toggle instanceof HTMLButtonElement)||!(menu instanceof HTMLElement))return;toggle.setAttribute('aria-expanded','true');toggle.setAttribute('aria-label','Close Aetherwing navigation');menu.hidden=false;if(scrim instanceof HTMLElement)scrim.hidden=false;document.documentElement.classList.add('menu-open');menu.querySelector('a,button')?.focus()};
+    if(toggle instanceof HTMLButtonElement)toggle.addEventListener('click',()=>toggle.getAttribute('aria-expanded')==='true'?close():open());
+    scrim?.addEventListener('click',close);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();if(toggle instanceof HTMLButtonElement)toggle.focus()}});
+    menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+    menu?.querySelectorAll('.mobile-group__toggle').forEach(btn=>btn.addEventListener('click',()=>{
+      if(!(btn instanceof HTMLButtonElement))return;
+      const links=btn.nextElementSibling;
+      const expanded=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',String(!expanded));
+      if(links instanceof HTMLElement)links.hidden=expanded;
+    }));
+    header.querySelectorAll('.nav-group').forEach(group=>{
+      const btn=group.querySelector('button');
+      if(!(btn instanceof HTMLButtonElement))return;
+      group.addEventListener('mouseenter',()=>btn.setAttribute('aria-expanded','true'));
+      group.addEventListener('mouseleave',()=>btn.setAttribute('aria-expanded','false'));
+      group.addEventListener('focusin',()=>btn.setAttribute('aria-expanded','true'));
+      group.addEventListener('focusout',e=>{if(e.relatedTarget instanceof Node&&!group.contains(e.relatedTarget))btn.setAttribute('aria-expanded','false')});
+    });
+  }
+</script>
+<style>
+.site-header{position:sticky;top:0;z-index:var(--z-nav);background:rgba(0,0,0,.96);border-bottom:4px solid #fff;box-shadow:0 8px 0 rgba(0,0,0,.7)}.site-header::after{content:'';position:absolute;left:0;bottom:-4px;width:38%;height:4px;background:linear-gradient(90deg,var(--aw-red),var(--aw-gold) 72%,var(--aw-blue));clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}.site-header__inner{height:82px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem}.brand{display:flex;align-items:center;width:min(270px,31vw);min-width:190px;height:68px;text-decoration:none}.brand img{width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(3px 3px 0 #000)}.desktop-nav{display:flex;align-items:stretch;height:100%;gap:.25rem}.desktop-nav>a,.nav-group>button{display:flex;align-items:center;gap:.5rem;height:100%;border:0;background:none;padding:0 .8rem;color:#c0bdb5;text-decoration:none;font:900 .72rem/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase;cursor:pointer}.desktop-nav>a:hover,.desktop-nav>a.active,.nav-group>button:hover{color:#fff;background:#0b0b0b}.desktop-nav>a.active{box-shadow:inset 0 -5px var(--aw-red)}.nav-group{position:relative}.nav-group>button span{color:var(--aw-gold);font-size:1rem}.nav-group__menu{position:absolute;right:0;top:calc(100% + 4px);width:240px;padding:.7rem;background:#050505;border:3px solid #fff;box-shadow:7px 7px 0 #000;display:none;transform:rotate(.35deg)}.nav-group:hover .nav-group__menu,.nav-group:focus-within .nav-group__menu{display:grid}.nav-group__menu small{padding:.5rem .6rem;color:var(--aw-blue);font:900 .58rem/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase}.nav-group__menu a{padding:.8rem .65rem;border-top:1px solid #282828;color:#bbb;text-decoration:none;font:800 .78rem/1.1 var(--font-mono);text-transform:uppercase}.nav-group__menu a:hover,.nav-group__menu a.active{color:#000;background:var(--aw-paper)}
+.menu-toggle{display:none;width:48px;height:48px;border:3px solid #fff;background:#000;padding:9px;box-shadow:4px 4px 0 var(--aw-red);cursor:pointer}.menu-toggle span{display:block;height:3px;background:#fff;margin:5px 0;transition:.18s}.menu-toggle[aria-expanded=true] span:nth-child(1){transform:translateY(8px) rotate(45deg)}.menu-toggle[aria-expanded=true] span:nth-child(2){opacity:0}.menu-toggle[aria-expanded=true] span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.mobile-scrim{position:fixed;inset:82px 0 0;background:rgba(0,0,0,.72);backdrop-filter:blur(2px)}.mobile-menu{position:fixed;top:82px;right:0;bottom:0;width:min(92vw,430px);overflow:auto;background:linear-gradient(rgba(5,5,5,.96),rgba(0,0,0,.98)),url('/images/textures/aetherwing-editorial.webp') center/cover;border-left:4px solid #fff;box-shadow:-10px 0 0 rgba(0,0,0,.65)}.mobile-menu__inner{padding:1.25rem}.mobile-kicker{display:inline-block;background:var(--aw-gold);color:#000;padding:.35rem .7rem;font:900 .62rem/1 var(--font-mono);letter-spacing:.13em;text-transform:uppercase;transform:rotate(-1deg)}.mobile-home{display:block;margin:1.1rem 0 1.4rem;color:#fff;text-decoration:none;font:400 3rem/.8 var(--font-brush);text-transform:uppercase}.mobile-group{border-top:2px solid #333}.mobile-group__toggle{width:100%;min-height:58px;display:flex;justify-content:space-between;align-items:center;border:0;background:none;color:#fff;font:900 1.2rem/1 var(--font-condensed);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}.mobile-group__toggle b{font:400 1.7rem/1 var(--font-mono);color:var(--aw-red);transition:.18s}.mobile-group__toggle[aria-expanded=true] b{transform:rotate(45deg)}.mobile-group__links{display:grid;padding:0 0 .8rem 1rem}.mobile-group__links a{padding:.75rem;border-left:3px solid #333;color:#bbb;text-decoration:none;font:800 .84rem/1 var(--font-mono);text-transform:uppercase}.mobile-group__links a.active,.mobile-group__links a:hover{border-left-color:var(--aw-blue);color:#fff;background:#0b0b0b}.mobile-feature{margin-top:1.4rem;padding:1rem;border:2px dashed #444;background:#000;transform:rotate(-.5deg)}.mobile-feature strong{font:400 1.45rem/.9 var(--font-brush);text-transform:uppercase;color:var(--aw-paper)}.mobile-feature p{margin:.7rem 0 0;color:#8f8f8f;font:700 .68rem/1.5 var(--font-mono)}.menu-open{overflow:hidden}
+@media(max-width:980px){.desktop-nav{display:none}.menu-toggle{display:block}.brand{width:225px}}
+@media(max-width:520px){.site-header__inner{height:72px}.site-header .brand{height:58px;width:205px;min-width:0}.mobile-menu,.mobile-scrim{top:72px}}
+</style>

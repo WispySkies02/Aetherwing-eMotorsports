@@ -1,0 +1,12 @@
+{
+  "latestKnownMartinsville": {
+    "driver": "Wispy",
+    "number": "32",
+    "start": 7,
+    "finish": 4,
+    "pointsChange": 39,
+    "stage1": {"finish": 8, "points": 0},
+    "stage2": {"finish": 5, "points": 6},
+    "standings": {"position": 6, "points": 553, "leaderGap": -196, "chaseMargin": 211, "chaseLocked": true}
+  }
+}

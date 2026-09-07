@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import wins from '../../data/wins.json';
+import results from '../../data/results.json';
+import '../../styles/pages/content.css';
+import '../../styles/pages/history.css';
+const latest=results.latestKnownMartinsville;
+const newest=wins.slice(-4).reverse();
+const milestones=[
+ ['Aug 26, 2025','First Recorded Modern Start','MRRA D1 Coca-Cola 600 at Charlotte. Wispy qualified 6th and finished 2nd.'],
+ ['Nov 25, 2025','First NRRS Win','Jaxon earned the first recorded NRRS victory for the team at Iowa Speedway.'],
+ ['Dec 19, 2025','First iRacing Dirt Win','Joshua Douglas scored a major dirt victory in the Chili Bowl on iRacing.'],
+ ['May 15, 2026','First iRacing Crown Jewel','Nicholas Waggoner won the Indianapolis 500, adding a major crown jewel to the record book.'],
+ ['Jun 7, 2026','25th Recorded Team Win','Nicholas Waggoner added an iRacing Trucks victory at Michigan, giving Aetherwing its 25th recorded win.'],
+ ['Aug 25, 2026','Wispy — 5× Chase Qualifier','The NRRS Season 3 berth became Wispy’s fifth confirmed Chase appearance across NRRS, Kmart, and UARL.']
+];
+---
+<BaseLayout title="Wins & History" description="The official Aetherwing record book — verified team wins, major milestones, postseason achievements, and organization lineage.">
+  <PageHero eyebrow="The Official Aetherwing Record Book" title="Wins & History" description="Verified team wins, major milestones, postseason achievements, and the lineage that built the modern organization." ghost="RECORD BOOK" />
+  <section class="section section--tight aw-history" data-history>
+    <div class="shell">
+      <div class="stat-rail"><div class="stat"><strong>27</strong><span>Verified Team Wins</span></div><div class="stat"><strong>05</strong><span>Aetherwing Programs</span></div><div class="stat"><strong>02</strong><span>Alliance Series</span></div><div class="stat"><strong>2023</strong><span>Modern Team Era</span></div></div>
+      <nav class="aw-history-jump" aria-label="Record book sections"><a href="#scope">Record Scope</a><a href="#latest-result">Latest Result</a><a href="#victory-lane">Victory Lane</a><a href="#win-list">Win Archive</a><a href="#milestones">Milestones</a><a href="#history-log">History Log</a></nav>
+
+      <section id="scope" class="aw-record-scope"><div class="section-head"><div><p class="eyebrow">How the Record Book Works</p><h2 class="section-title">Record Scope</h2></div></div><div class="aw-scope-grid"><article class="panel"><span>Aetherwing Record</span><h3>What Counts As A Team Win</h3><p>The verified total counts results recorded under the BellSouth or Aetherwing team banner. The archive below is the source for that total.</p><b>27 Verified Team Wins</b></article><article class="panel"><span>Historical Record</span><h3>Kmart Results Stay Where They Belong</h3><p>Historic Kmart Cup wins remain preserved as Aetherwing/BellSouth-era results because that is how those races were recorded at the time.</p><b>Historical AEM Era</b></article><article class="panel panel--alliance"><span>Current Structure</span><h3>Alliance Results Are Separate</h3><p>Current Kmart and Sunoco entries compete under StarClutch Racing through the alliance. Current alliance results do not increase the Aetherwing team-win total.</p><b>5 AEM Programs · 2 Alliance Series</b></article></div></section>
+
+      <section id="latest-result" class="aw-latest-result"><div class="section-head"><div><p class="eyebrow">Most Recent Race</p><h2 class="section-title">Latest Result</h2></div></div><article class="panel"><div><span class="tag tag--gold">Chase Locked</span><small>NRRS Town Fair Cup Series</small><h3>Goody's Fast Relief 500 at Martinsville</h3><p>Martinsville Speedway · August 25, 2026 · #{latest.number} {latest.driver}</p></div><div class="aw-latest-result__stats"><div><span>Start</span><strong>P{latest.start}</strong></div><div><span>Finish</span><strong>P{latest.finish}</strong></div><div><span>Points</span><strong>+{latest.pointsChange}</strong></div><div><span>Standings</span><strong>P{latest.standings.position}</strong></div></div><details><summary>Stage & standings detail</summary><p>Stage 1: P{latest.stage1.finish} · {latest.stage1.points} pts // Stage 2: P{latest.stage2.finish} · {latest.stage2.points} pts</p><p>{latest.standings.points} pts · {latest.standings.leaderGap} Leader · +{latest.standings.chaseMargin} Chase</p></details></article></section>
+
+      <section id="victory-lane"><div class="section-head"><div><p class="eyebrow">Victory Lane</p><h2 class="section-title">Latest Victories</h2></div></div><div class="aw-victory-grid">{newest.map((win)=><article class="panel"><span>🏆</span><small>{win.league}</small><h3>{win.track}</h3><p>{win.driver}</p><b>{win.date}</b></article>)}</div></section>
+
+      <section id="win-list" class="aw-win-archive"><div class="section-head"><div><p class="eyebrow">Complete Record</p><h2 class="section-title">Win List</h2></div><p class="lede">Historical results stay under the series and team relationship that existed when each race was run.</p></div><div class="aw-win-filters"><button class="is-active" type="button" data-win-filter="all">All</button><button type="button" data-win-filter="Kmart">Kmart · Historic AEM</button><button type="button" data-win-filter="NRRS">NRRS</button><button type="button" data-win-filter="UARL">UARL</button><button type="button" data-win-filter="iRacing">iRacing</button></div><div class="aw-win-table"><div class="aw-win-row aw-win-head"><span>League</span><span>Track / Event</span><span>Driver</span><span>Date</span></div>{wins.map((win)=><div class="aw-win-row" data-win-row data-league={win.league}><span>{win.league}</span><strong>{win.track}</strong><span>{win.driver}</span><span>{win.date}</span></div>)}</div><p class="mono muted" data-win-count>Showing 27 recorded wins.</p></section>
+
+      <section id="milestones" class="aw-milestones"><div class="section-head"><div><p class="eyebrow">Milestones</p><h2 class="section-title">Firsts & Records</h2></div></div><div class="timeline">{milestones.map((item)=><article class="timeline-item"><span class="tag">{item[0]}</span><h3>{item[1]}</h3><p class="muted">{item[2]}</p></article>)}</div></section>
+
+      <section id="history-log" class="aw-history-log"><div class="section-head"><div><p class="eyebrow">Timeline</p><h2 class="section-title">History Log</h2></div><p class="lede">Organization lineage begins in 2015; the BellSouth eMotorsports chapter that becomes today’s Aetherwing begins in 2023.</p></div><div class="aw-history-cards"><article><span>2015</span><h3>Organization Lineage Begins</h3><p>The racing lineage that eventually leads to Aetherwing begins as Silph Co. Motorsports during the NASCAR 15 era.</p></article><article><span>Late 2023</span><h3>BellSouth eMotorsports Era</h3><p>The modern eMotorsports organization begins as the team enters NR2003 league competition.</p></article><article><span>2024</span><h3>RoRacing & iRacing Expansion</h3><p>Roblox RoRacing and iRacing programs begin, setting the foundation for the modern multi-series structure.</p></article><article><span>Jan 1, 2026</span><h3>Aetherwing Era Begins</h3><p>BellSouth eMotorsports becomes Aetherwing eMotorsports, carrying forward the verified modern competition record.</p></article><article><span>Aug 25, 2026</span><h3>Third Straight NRRS Chase</h3><p>Wispy’s Martinsville P4 clinches a fifth confirmed Chase appearance overall and a third straight NRRS postseason berth.</p></article></div></section>
+    </div>
+  </section>
+</BaseLayout>
+<script>
+  const root=document.querySelector('[data-history]');
+  if(root){const rows=Array.from(root.querySelectorAll('[data-win-row]'));const count=root.querySelector('[data-win-count]');root.querySelectorAll('[data-win-filter]').forEach(button=>button.addEventListener('click',()=>{if(!(button instanceof HTMLButtonElement))return;root.querySelectorAll('[data-win-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');const filter=button.dataset.winFilter||'all';let shown=0;rows.forEach(row=>{const show=filter==='all'||(row.dataset.league||'').startsWith(filter);row.hidden=!show;if(show)shown++;});if(count)count.textContent=`Showing ${shown} recorded win${shown===1?'':'s'}.`;}));}
+</script>

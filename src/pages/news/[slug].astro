@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import stories from '../../data/news.json';
+import '../../styles/pages/content.css';
+import '../../styles/pages/news.css';
+export function getStaticPaths(){return stories.map((story)=>({params:{slug:story.slug},props:{story}}));}
+const {story}=Astro.props;
+---
+<BaseLayout title={story.title} description={story.summary} type="article">
+  <article class="aw-article">
+    <header class="aw-article-hero"><div class="shell shell--standard"><span class="tag tag--gold">{story.kicker}</span><p class="eyebrow">{story.category} · {story.date}</p><h1>{story.title}</h1><p>{story.summary}</p><div class="aw-story-tags">{story.tags.map((tag)=><span>{tag}</span>)}</div></div></header>
+    <div class="shell shell--narrow aw-article-body"><p class="aw-article-lede">{story.summary}</p><p>This archive entry preserves the event in the identity and context in which it was recorded. Current team roles, current alliances, or current branding do not rewrite the historical result.</p><div class="aw-article-back"><a class="btn" href="/news/">← Team Wire</a><a class="btn btn--ghost" href="/wins-history/">Record Book</a></div></div>
+  </article>
+</BaseLayout>

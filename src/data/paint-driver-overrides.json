@@ -1,0 +1,63 @@
+{
+  "nrrs::Parker": [
+    "43"
+  ],
+  "uarl-d1::Wispy": [
+    "28"
+  ],
+  "uarl-d1::Rocky": [
+    "92"
+  ],
+  "uarl-d2::BurgerTown2Good": [
+    "11"
+  ],
+  "uarl-d2::Gk3r": [
+    "19"
+  ],
+  "uarl-d2::Wispy": [
+    "15"
+  ],
+  "uarl-open::Wispy": [
+    "28"
+  ],
+  "kmart::Wispy": [
+    "15"
+  ],
+  "kmart::Will": [
+    "24"
+  ],
+  "kmart::Jaxon": [
+    "34"
+  ],
+  "kmart::Eazy": [
+    "29 PT"
+  ],
+  "kmart::Clutch": [
+    "29 PT"
+  ],
+  "kmart::Matty": [
+    "29 PT"
+  ],
+  "sunoco-truck::Eazy": [
+    "27"
+  ],
+  "sunoco-truck::Will": [
+    "42"
+  ],
+  "sunoco-truck::Clutch": [
+    "46"
+  ],
+  "sunoco-truck::Wispy": [
+    "54"
+  ],
+  "iracing::Levi Ramsey": [
+    "6"
+  ],
+  "iracing::Nicholas Waggoner": [
+    "28",
+    "97"
+  ],
+  "iracing::Joshua Douglas": [
+    "35"
+  ]
+}

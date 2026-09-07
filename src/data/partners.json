@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Palmetto Gaming",
+    "role": "Gaming Partner",
+    "featured": true,
+    "description": "A gaming and collectibles relationship centered on retro and modern games, accessories, Funko Pops, Pok\u00e9mon cards, and similar inventory.",
+    "url": "https://www.palmettogaming.com",
+    "logo": "https://1e7ea100626cc069b156.cdn6.editmysite.com/uploads/b/1e7ea100626cc069b1563209b0ec867317428e47fa0b74a79813b09076b7c39c/PalmettoSNEScontrollerLogoWithBackgroundSquare_1727985535.png?width=2400&optimize=medium",
+    "tags": [
+      "Video Games",
+      "Accessories",
+      "Collectibles"
+    ]
+  },
+  {
+    "name": "Apex Sim Racing",
+    "role": "Affiliate Partner",
+    "featured": true,
+    "description": "Aetherwing participates in the Apex Sim Racing affiliate program, connecting the Factory Program with the sim-racing hardware ecosystem.",
+    "url": "https://www.apexsimracing.com/",
+    "logo": "https://sksimracing.com/wp-content/uploads/2022/09/Apex_Sim_Racing_Logo_500.png.webp",
+    "tags": [
+      "Hardware",
+      "Rigs + Accessories",
+      "Sim Racing"
+    ]
+  }
+]

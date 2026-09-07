@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import roster from '../../data/roster-profiles.json';
+import iracing from '../../data/iracing-garage.json';
+import profiles from '../../data/driver-profiles.json';
+import '../../styles/pages/drivers.css';
+const selected=roster[0];
+const wispyStats=profiles[0].stats;
+---
+<BaseLayout title="Drivers" description="Current Aetherwing drivers, iRacing Factory entries, and StarClutch Racing alliance participants.">
+  <PageHero eyebrow="2026 Season Roster" title="Aetherwing Drivers" description="Current Aetherwing drivers, iRacing Factory entries, and StarClutch Racing alliance participants. Pick a driver and the profile stage updates in place." ghost="ROSTER" />
+  <section class="section section--tight aw-driver-hub">
+    <div class="shell">
+      <div class="aw-roster-stats stat-rail">
+        <div class="stat"><strong>10</strong><span>Active RoRacing Drivers</span></div>
+        <div class="stat"><strong>7</strong><span>Competition Relationships</span></div>
+        <div class="stat"><strong>3</strong><span>iRacing Factory Entries</span></div>
+        <div class="stat"><strong>5 / 5</strong><span>Aetherwing / Alliance-Only</span></div>
+      </div>
+      <div class="aw-driver-toolbar" data-driver-toolbar>
+        <div><span>Roster View</span><strong data-driver-count>10 shown</strong></div>
+        <div class="aw-driver-filters" role="group" aria-label="Filter drivers">
+          <button type="button" class="is-active" data-filter="all">All</button>
+          <button type="button" data-filter="aetherwing">Aetherwing</button>
+          <button type="button" data-filter="NRRS">NRRS</button>
+          <button type="button" data-filter="UARL D1">UARL D1</button>
+          <button type="button" data-filter="UARL D2">UARL D2</button>
+          <button type="button" class="is-alliance" data-filter="Kmart">Kmart</button>
+          <button type="button" class="is-alliance" data-filter="Sunoco">Sunoco</button>
+        </div>
+      </div>
+
+      <div class="aw-driver-browser" data-driver-browser>
+        <div class="aw-driver-list" role="listbox" aria-label="Driver roster">
+          {roster.map((driver,index)=><button type="button" role="option" aria-selected={index===0?'true':'false'} data-slug={driver.slug} data-affiliation={driver.affiliation} data-programs={driver.programs.join('|')}><span class="aw-driver-num">#{driver.numbers}</span><span><strong>{driver.name}</strong><small>{driver.role}</small></span><i>{driver.feature}</i></button>)}
+        </div>
+        <article class="aw-driver-stage panel" data-driver-stage>
+          <div class="aw-driver-stage__ghost" aria-hidden="true">#{selected.numbers}</div>
+          <div class="aw-driver-stage__meta"><span class="tag">{selected.role}</span><span class="tag tag--gold">{selected.feature}</span></div>
+          <h2>{selected.name}</h2>
+          <p class="aw-driver-handle">{selected.handle}</p>
+          <p>{selected.bio}</p>
+          <div class="aw-driver-programs">{selected.programs.map((program)=><span>{program}</span>)}</div>
+          <div class="aw-driver-stage__footer"><span>Active numbers</span><strong>#{selected.numbers}</strong></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-wispy-stats" data-brush="FACTORY DATA">
+    <div class="shell shell--standard">
+      <div class="section-head"><div><p class="eyebrow">Wispy / Nicholas Waggoner</p><h2 class="section-title">iRacing Career Snapshot</h2></div><p class="lede">One identity record: Wispy for RoRacing presentation, Nicholas Waggoner for iRacing liveries and historical results.</p></div>
+      <div class="aw-iracing-stat-grid">{wispyStats.map((stat)=><div><span>{stat.label}</span><strong>{stat.value}</strong></div>)}</div>
+      <p class="aw-formula-note"><b>14.1% Formula win rate</b> refers specifically to Formula-category iRacing competition.</p>
+    </div>
+  </section>
+
+  <section class="section aw-factory-roster">
+    <div class="shell shell--standard">
+      <div class="section-head"><div><p class="eyebrow">iRacing Factory Program</p><h2 class="section-title">03 Factory Entries</h2></div><p class="lede">The garage uses Nicholas Waggoner for iRacing paint/history presentation without creating a duplicate Wispy profile.</p></div>
+      <div class="aw-factory-grid">
+        {iracing.entries.filter((entry)=>entry.driver!=='Aetherwing Endurance Team').map((entry)=><article class="panel"><span>#{entry.number}</span><h3>{entry.driver==='Nicholas Waggoner'?'Wispy / Nicholas Waggoner':entry.driver}</h3><p>Aetherwing Factory Program</p></article>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+<script define:vars={{ roster }}>
+  const browser=document.querySelector('[data-driver-browser]');
+  const toolbar=document.querySelector('[data-driver-toolbar]');
+  const count=document.querySelector('[data-driver-count]');
+  if(browser){
+    const list=browser.querySelector('.aw-driver-list');
+    const stage=browser.querySelector('[data-driver-stage]');
+    const options=Array.from(browser.querySelectorAll('[role="option"]'));
+    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">#${driver.numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>Active numbers</span><strong>#${driver.numbers}</strong></div>`;};
+    options.forEach(option=>option.addEventListener('click',()=>{options.forEach(o=>o.setAttribute('aria-selected','false'));option.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===option.dataset.slug));}));
+    toolbar?.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
+      if(!(button instanceof HTMLButtonElement))return;toolbar.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');const filter=button.dataset.filter;let shown=0;let first=null;options.forEach(option=>{const programs=(option.dataset.programs||'').split('|');const show=filter==='all'||option.dataset.affiliation===filter||programs.includes(filter||'');option.hidden=!show;if(show){shown++;if(!first)first=option;}});if(count)count.textContent=`${shown} shown`;if(first instanceof HTMLButtonElement){options.forEach(o=>o.setAttribute('aria-selected','false'));first.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===first.dataset.slug));}if(list instanceof HTMLElement)list.scrollTo({top:0,behavior:'smooth'});
+    }));
+  }
+</script>
