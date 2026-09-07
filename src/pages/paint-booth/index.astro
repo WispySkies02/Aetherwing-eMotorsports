@@ -13,10 +13,10 @@ const badgeLabels = {
 const leagueName = (id) => leagues.find((league) => league.id === id)?.name ?? id;
 const sourceDrivers = leagues.reduce((sum, league) => sum + league.drivers.length, 0);
 const wispyIdentityPaints = paints.filter((paint) => paint.driver === 'Wispy' || paint.driver === 'Nicholas Waggoner');
-const initialRackPaints = wispyIdentityPaints;
+const initialRackPaints = paints;
 ---
 <BaseLayout title="Paint Booth" description="Enter the Aetherwing Paint Booth: an interactive seven-garage livery facility with 34 uploaded schemes, driver stalls, Roblox Scheme IDs, deep links, iRacing Factory paints, and StarClutch Racing alliance liveries.">
-  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.4">
+  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.5">
     <div class="aw-facility-hud">
       <div class="aw-hud-brand">
         <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" class="aw-hud-logo" />
@@ -36,9 +36,9 @@ const initialRackPaints = wispyIdentityPaints;
       <aside class="aw-garage-directory" data-mobile-anchor="garage" aria-label="Garage directory">
         <div class="aw-rail-heading"><span>01</span><div><strong>GARAGE RAIL</strong><small>Competition program</small></div></div>
         <div class="aw-directory-list" data-league-controls>
-          <button type="button" class="is-active is-identity" data-league-id="wispy-all" style="--league:#f6f6f6">
+          <button type="button" class="is-active is-identity" data-league-id="all" style="--league:#f6f6f6">
             <span>00</span>
-            <div><strong>WISPY — ALL PAINTS</strong><small>{String(wispyIdentityPaints.length).padStart(2,'0')} PAINTS · ALL GARAGES + iRACING</small></div>
+            <div><strong>ALL PAINTS</strong><small>{String(paints.length).padStart(2,'0')} PAINTS · EVERY UPLOADED LIVERY</small></div>
             <i aria-hidden="true">→</i>
           </button>
           {leagues.map((league,index) => {
@@ -59,6 +59,14 @@ const initialRackPaints = wispyIdentityPaints;
         <div class="aw-booth-statusbar">
           <div><span>ACTIVE BAY</span><strong>PAINT // 01</strong></div>
           <div class="aw-booth-signal"><i></i><span data-booth-state>READY / VEHICLE IN BAY</span></div>
+        </div>
+        <div class="aw-booth-light-deck" role="group" aria-label="Paint booth lighting presets">
+          <span>BOOTH LIGHTS</span>
+          <button class="is-active" type="button" data-light="shop">SHOP</button>
+          <button type="button" data-light="showroom">SHOWROOM</button>
+          <button type="button" data-light="inspection">INSPECTION</button>
+          <button type="button" data-light="night">NIGHT</button>
+          <button type="button" data-light="neon">NEON</button>
         </div>
         <nav class="aw-mobile-booth-console" aria-label="Mobile paint booth controls">
           <button type="button" data-mobile-target="garage"><span>01</span>GARAGES</button>
@@ -102,7 +110,7 @@ const initialRackPaints = wispyIdentityPaints;
       <aside class="aw-driver-wall" data-mobile-anchor="drivers" aria-label="Driver stalls">
         <div class="aw-rail-heading"><span>02</span><div><strong>DRIVER STALLS</strong><small data-driver-count>01 entry</small></div></div>
         <div class="aw-driver-controls" data-driver-controls>
-          <button type="button" class="is-active" data-driver-name="Wispy"><b>#32 / #20 / #15 / #28 / #54 / #97</b><span><strong>Wispy</strong><small>@Aokikoto · All Garages + iRacing Identity</small></span><em class="is-ready">33 PAINTS</em></button>
+          <button type="button" class="is-active" data-driver-name="__all__"><b>MIXED FLEET</b><span><strong>All Drivers / Entries</strong><small>Complete uploaded collection</small></span><em class="is-ready">34 PAINTS</em></button>
         </div>
         <div class="aw-driver-wall-foot"><strong>READY</strong> = uploaded paint in this garage.<br><strong>PENDING</strong> = roster slot exists, render has not been supplied yet.</div>
       </aside>
@@ -136,33 +144,28 @@ const initialRackPaints = wispyIdentityPaints;
         <div class="aw-mobile-quick-picker" data-mobile-quick-picker aria-label="Quick paint picker">
           <div class="aw-mobile-picker-head"><strong>QUICK PAINT PICKER</strong><span>Garage → Driver → Paint</span></div>
           <label><span>Garage</span><select data-mobile-league-select>
-            <option value="wispy-all">Wispy — All Paints (33)</option>
+            <option value="all">All Paints (34)</option>
             {leagues.map((league) => <option value={league.id}>{league.name} ({paints.filter((paint)=>paint.leagues.includes(league.id)).length})</option>)}
           </select></label>
-          <label><span>Driver</span><select data-mobile-driver-select><option value="Wispy">Wispy — All Garages + iRacing</option></select></label>
+          <label><span>Driver</span><select data-mobile-driver-select><option value="__all__">All Drivers / Entries — 34 Paints</option></select></label>
           <label><span>Paint</span><select data-mobile-paint-select>
-            {initialRackPaints.map((paint) => <option value={paint.slug}>{leagueName(paint.leagues[0])} · {paint.number ? `#${paint.number} ` : ''}{paint.sponsor}</option>)}
+            {initialRackPaints.map((paint) => <option value={paint.slug}>{leagueName(paint.leagues[0])} · {paint.number ? `#${paint.number} ` : ''}{paint.driver} · {paint.sponsor}</option>)}
           </select></label>
-          <small data-mobile-picker-note>33 Wispy/Nicholas identity paints available.</small>
+          <small data-mobile-picker-note>34 uploaded paints available across every driver and team entry.</small>
         </div>
         <div class="aw-paint-rack" data-paint-controls>
-          {initialRackPaints.map((paint) => {
+          {initialRackPaints.map((paint,index) => {
             const paintLeague = leagues.find((league) => league.id === paint.leagues?.[0]);
+            const eagerThumb = index < 4;
             return (
               <button type="button" class:list={[{'is-active':paint.slug===initial.slug}]} data-rack-paint={paint.slug}>
-                <img src={paint.image} alt="" loading="lazy" decoding="async" />
+                <img class="aw-deferred-image" src={eagerThumb ? paint.image : undefined} data-src={eagerThumb ? undefined : paint.image} alt="" loading={eagerThumb ? 'eager' : 'lazy'} fetchpriority="low" decoding="async" />
                 <span><strong>{paint.sponsor}</strong><small>{paint.number ? `#${paint.number}` : 'TEAM'} · {paintLeague?.name ?? paint.leagues?.[0] ?? ''} · {paint.manufacturer}</small></span>
               </button>
             )
           })}
         </div>
         <div class="aw-bench-controls">
-          <div class="aw-light-controls" role="group" aria-label="Paint booth lighting">
-            <span>LIGHTING</span>
-            <button class="is-active" type="button" data-light="shop">SHOP</button>
-            <button type="button" data-light="showroom">SHOWROOM</button>
-            <button type="button" data-light="dark">DARK</button>
-          </div>
           <div class="aw-nav-controls">
             <button type="button" data-prev-paint aria-label="Previous paint">← PREV</button>
             <button type="button" data-random-paint>SURPRISE ME</button>
@@ -214,7 +217,7 @@ const initialRackPaints = wispyIdentityPaints;
         {paints.map((paint) => (
           <article class="aw-collection-card" id={`paint-${paint.slug}`} data-collection-card data-slug={paint.slug} data-driver={paint.driver} data-leagues={paint.leagues.join(' ')} data-search={`${paint.driver} ${paint.username ?? ''} ${paint.sponsor} ${paint.manufacturer} ${paint.body}`.toLowerCase()}>
             <button type="button" class="aw-collection-image" data-load-paint={paint.slug}>
-              <img src={paint.image} alt={`${paint.number ? `#${paint.number} ` : ''}${paint.driver} — ${paint.sponsor} paint scheme render`} loading="lazy" decoding="async" />
+              <img class="aw-deferred-image" data-src={paint.image} alt={`${paint.number ? `#${paint.number} ` : ''}${paint.driver} — ${paint.sponsor} paint scheme render`} loading="lazy" fetchpriority="low" decoding="async" />
               <span>LOAD INTO BOOTH</span>
             </button>
             <div class="aw-collection-copy">
@@ -263,29 +266,95 @@ const initialRackPaints = wispyIdentityPaints;
   const dialog = document.querySelector('[data-paint-lightbox]');
   const dialogImage = dialog?.querySelector('[data-lightbox-image]');
   const dialogCaption = dialog?.querySelector('[data-lightbox-caption]');
+  const ALL_SCOPE = 'all';
+  const ALL_DRIVER = '__all__';
   const WISPY_SCOPE = 'wispy-all';
   const WISPY_NAMES = new Set(['Wispy', 'Nicholas Waggoner']);
-  const WISPY_SCOPE_META = {
-    id: WISPY_SCOPE,
-    name: 'Wispy — All Paints',
-    subtitle: 'Every Aetherwing / StarClutch / iRacing livery for the Wispy identity',
+  const ALL_SCOPE_META = {
+    id: ALL_SCOPE,
+    name: 'All Paints',
+    subtitle: 'Every uploaded Aetherwing / StarClutch / iRacing livery',
     bodyTag: 'Mixed Fleet',
     color: '#f6f6f6',
     relationship: 'aetherwing',
-    drivers: [{ name:'Wispy', username:'@Aokikoto', role:'All Garages + iRacing Identity' }]
+    drivers: []
   };
-  let activeLeague = WISPY_SCOPE;
-  let activeDriver = 'Wispy';
-  let activePaint = paints.find((paint) => WISPY_NAMES.has(paint.driver)) || paints[0] || null;
+  let activeLeague = ALL_SCOPE;
+  let activeDriver = ALL_DRIVER;
+  let activePaint = paints[0] || null;
   let toastTimer;
+  let carSwapToken = 0;
+  const imageWarmCache = new Map();
+  const deferredObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const img = entry.target;
+      if (img instanceof HTMLImageElement && img.dataset.src) {
+        const src = img.dataset.src;
+        img.addEventListener('load', () => img.classList.add('is-loaded'), { once:true });
+        img.src = src;
+        img.removeAttribute('data-src');
+      }
+      observer.unobserve(entry.target);
+    });
+  }, { root:null, rootMargin:'420px 320px', threshold:0.01 }) : null;
+
+  function observeDeferredImages(scope = document) {
+    scope.querySelectorAll?.('img[data-src]').forEach((img) => {
+      if (!(img instanceof HTMLImageElement)) return;
+      if (deferredObserver) deferredObserver.observe(img);
+      else { img.src = img.dataset.src || ''; img.removeAttribute('data-src'); }
+    });
+  }
+
+  function warmImage(url, priority = 'auto') {
+    if (!url) return Promise.resolve(false);
+    if (imageWarmCache.has(url)) return imageWarmCache.get(url);
+    const promise = new Promise((resolve) => {
+      const preload = new Image();
+      preload.decoding = 'async';
+      try { preload.fetchPriority = priority; } catch {}
+      preload.onload = () => resolve(true);
+      preload.onerror = () => resolve(false);
+      preload.src = url;
+      if (preload.complete) resolve(preload.naturalWidth > 0);
+    });
+    imageWarmCache.set(url, promise);
+    return promise;
+  }
+
+  function warmAdjacentPaints(paint) {
+    const list = driverPaints(activeLeague, activeDriver);
+    if (!list.length) return;
+    const index = Math.max(0, list.findIndex((item) => item.slug === paint.slug));
+    [list[(index + 1) % list.length], list[(index - 1 + list.length) % list.length]].forEach((item) => { if (item?.image) warmImage(item.image, 'low'); });
+  }
+
+  async function setActiveCarImage(paint) {
+    if (!(car instanceof HTMLImageElement) || !paint?.image) return;
+    const token = ++carSwapToken;
+    const carWrap = root.querySelector('[data-booth-car]');
+    carWrap?.classList.add('is-loading');
+    const stateNode = root.querySelector('[data-booth-state]');
+    if (stateNode) stateNode.textContent = 'LOADING PAINT / IMAGE CACHE';
+    await warmImage(paint.image, 'high');
+    if (token !== carSwapToken) return;
+    car.src = paint.image;
+    car.alt = `${paint.number ? '#' + paint.number + ' ' : ''}${paint.driver} — ${paint.sponsor} paint scheme render`;
+    carWrap?.classList.remove('is-loading');
+    if (stateNode) stateNode.textContent = 'READY / VEHICLE IN BAY';
+    warmAdjacentPaints(paint);
+  }
 
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const isWispyIdentity = (name) => WISPY_NAMES.has(name);
   const wispyPaints = () => paints.filter((paint) => isWispyIdentity(paint.driver));
-  const leagueById = (id) => id === WISPY_SCOPE ? WISPY_SCOPE_META : leagues.find(league => league.id === id);
-  const leaguePaints = (id) => id === WISPY_SCOPE ? wispyPaints() : paints.filter(paint => Array.isArray(paint.leagues) && paint.leagues.includes(id));
+  const leagueById = (id) => id === ALL_SCOPE ? ALL_SCOPE_META : leagues.find(league => league.id === id);
+  const leaguePaints = (id) => id === ALL_SCOPE ? paints : paints.filter(paint => Array.isArray(paint.leagues) && paint.leagues.includes(id));
   const driverPaints = (leagueId, driverName) => {
-    if (leagueId === WISPY_SCOPE && driverName === 'Wispy') return wispyPaints();
+    if (leagueId === ALL_SCOPE && driverName === ALL_DRIVER) return paints;
+    if (leagueId === ALL_SCOPE && driverName === 'Wispy') return wispyPaints();
+    if (leagueId === ALL_SCOPE) return paints.filter(paint => paint.driver === driverName);
     return paints.filter(paint => paint.driver === driverName && paint.leagues?.includes(leagueId));
   };
   const copyText = async (text) => {
@@ -296,7 +365,12 @@ const initialRackPaints = wispyIdentityPaints;
   const shareUrl = (paint) => `${PAINT_SHARE_BASE}${encodeURIComponent(paint.slug)}/`;
 
   function displayDrivers(league) {
-    if (league?.id === WISPY_SCOPE) return [...WISPY_SCOPE_META.drivers];
+    if (league?.id === ALL_SCOPE) {
+      const owners = [{ name:ALL_DRIVER, label:'All Drivers / Entries', username:'Complete uploaded collection', role:'Full Collection' }, { name:'Wispy', label:'Wispy / Nicholas Waggoner', username:'@Aokikoto', role:'33 identity paints' }];
+      const seen = new Set(['Wispy','Nicholas Waggoner']);
+      paints.forEach((paint) => { if (paint.driver && !seen.has(paint.driver)) { owners.push({ name:paint.driver, label:paint.driver, username:paint.username || '', role:'Uploaded paint owner' }); seen.add(paint.driver); } });
+      return owners;
+    }
     const current = [...(league?.drivers || [])];
     const names = new Set(current.map(driver => driver.name));
     leaguePaints(league?.id).forEach(paint => {
@@ -308,7 +382,8 @@ const initialRackPaints = wispyIdentityPaints;
   }
 
   function numberForDriver(leagueId, driverName) {
-    if (leagueId === WISPY_SCOPE && driverName === 'Wispy') {
+    if (leagueId === ALL_SCOPE && driverName === ALL_DRIVER) return '';
+    if (leagueId === ALL_SCOPE && driverName === 'Wispy') {
       return [...new Set(wispyPaints().map((paint) => paint.number).filter(Boolean))].join(' / ');
     }
     const override = driverOverrides[`${leagueId}::${driverName}`];
@@ -323,7 +398,8 @@ const initialRackPaints = wispyIdentityPaints;
       const drivers = displayDrivers(league);
       mobileDriverSelect.innerHTML = drivers.map((driver) => {
         const count = driverPaints(activeLeague, driver.name).length;
-        const label = `${driver.name}${driver.username ? ' · ' + driver.username : ''}${count ? ` · ${count} paint${count===1?'':'s'}` : ' · Paint pending'}`;
+        const driverLabel = driver.label || driver.name;
+        const label = `${driverLabel}${driver.username ? ' · ' + driver.username : ''}${count ? ` · ${count} paint${count===1?'':'s'}` : ' · Paint pending'}`;
         return `<option value="${esc(driver.name)}">${esc(label)}</option>`;
       }).join('');
       if (drivers.some((driver)=>driver.name===activeDriver)) mobileDriverSelect.value = activeDriver;
@@ -353,7 +429,8 @@ const initialRackPaints = wispyIdentityPaints;
       const number = numberForDriver(activeLeague, driver.name);
       const displayNumber = number ? number.split(' / ').map(value => '#' + value).join(' / ') : '—';
       const count = driverPaints(activeLeague, driver.name).length;
-      return `<button type="button" class="${driver.name===activeDriver?'is-active':''}" data-driver-name="${esc(driver.name)}"><b>${esc(displayNumber)}</b><span><strong>${esc(driver.name)}</strong><small>${esc(driver.username || driver.role || 'Driver')}</small></span><em class="${count ? 'is-ready' : ''}">${count ? `${String(count).padStart(2,'0')} PAINT${count===1?'':'S'}` : 'PENDING'}</em></button>`;
+      const driverLabel = driver.label || driver.name;
+      return `<button type="button" class="${driver.name===activeDriver?'is-active':''}" data-driver-name="${esc(driver.name)}"><b>${esc(driver.name===ALL_DRIVER ? 'MIXED FLEET' : displayNumber)}</b><span><strong>${esc(driverLabel)}</strong><small>${esc(driver.username || driver.role || 'Driver')}</small></span><em class="${count ? 'is-ready' : ''}">${count ? `${String(count).padStart(2,'0')} PAINT${count===1?'':'S'}` : 'PENDING'}</em></button>`;
     }).join('');
     driverControls.querySelectorAll('[data-driver-name]').forEach(button => button.addEventListener('click', () => selectDriver(button.dataset.driverName || '')));
   }
@@ -371,9 +448,10 @@ const initialRackPaints = wispyIdentityPaints;
     root.querySelector('[data-booth-state]').textContent = 'READY / VEHICLE IN BAY';
     paintControls.innerHTML = list.map(paint => {
       const paintLeague = leagueById(paint.leagues?.[0]);
-      return `<button type="button" class="${activePaint?.slug===paint.slug?'is-active':''}" data-rack-paint="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy" decoding="async"><span><strong>${esc(paint.sponsor)}</strong><small>${paint.number ? '#' + esc(paint.number) : 'TEAM'} · ${esc(paintLeague?.name || paint.leagues?.[0] || '')} · ${esc(paint.manufacturer)}</small></span></button>`;
+      return `<button type="button" class="${activePaint?.slug===paint.slug?'is-active':''}" data-rack-paint="${esc(paint.slug)}"><img class="aw-deferred-image" data-src="${esc(paint.image)}" alt="" loading="lazy" fetchpriority="low" decoding="async"><span><strong>${esc(paint.sponsor)}</strong><small>${paint.number ? '#' + esc(paint.number) : 'TEAM'} · ${esc(paintLeague?.name || paint.leagues?.[0] || '')} · ${esc(paint.manufacturer)}</small></span></button>`;
     }).join('');
     paintControls.querySelectorAll('[data-rack-paint]').forEach(button => button.addEventListener('click', () => selectPaint(button.dataset.rackPaint || '', true)));
+    observeDeferredImages(paintControls);
     syncMobileQuickPicker();
   }
 
@@ -406,9 +484,10 @@ const initialRackPaints = wispyIdentityPaints;
     if (boothShell instanceof HTMLElement) { boothShell.dataset.relationship = league.relationship || 'aetherwing'; if (league.relationship === 'alliance') boothShell.style.removeProperty('--booth-accent'); else boothShell.style.setProperty('--booth-accent', league.color || 'var(--aw-blue)'); }
     if (!keepPaint) {
       const drivers = displayDrivers(league);
+      const allDriver = id === ALL_SCOPE ? drivers.find((driver) => driver.name === ALL_DRIVER) : null;
       const identityDriver = drivers.find((driver) => isWispyIdentity(driver.name) && driverPaints(id, driver.name).length);
       const readyDriver = drivers.find((driver) => driverPaints(id, driver.name).length);
-      const preferredDriver = identityDriver || readyDriver || drivers[0];
+      const preferredDriver = allDriver || identityDriver || readyDriver || drivers[0];
       activeDriver = preferredDriver?.name || '';
       const first = driverPaints(id, activeDriver)[0] || null;
       activePaint = first;
@@ -419,27 +498,29 @@ const initialRackPaints = wispyIdentityPaints;
   function selectDriver(name) {
     activeDriver = name;
     const list = driverPaints(activeLeague, name);
-    if (list.length) { activePaint = list[0]; updateActivePaint(activePaint, true); } else { showPaintPending(name); }
+    activePaint = list[0] || null;
     renderDrivers(); renderPaintRack();
+    if (activePaint) updateActivePaint(activePaint, true); else showPaintPending(name);
   }
 
   function updateActivePaint(paint, updateUrl = true) {
     if (!paint) return;
     activePaint = paint;
     root.querySelector('[data-booth-car]')?.classList.remove('is-empty');
-    const browsingWispyScope = activeLeague === WISPY_SCOPE && isWispyIdentity(paint.driver);
+    const browsingAllScope = activeLeague === ALL_SCOPE;
     const primaryLeague = paint.leagues.find(id => id === activeLeague) || paint.leagues[0];
-    if (!browsingWispyScope && primaryLeague && primaryLeague !== activeLeague) activeLeague = primaryLeague;
-    activeDriver = browsingWispyScope ? 'Wispy' : paint.driver;
+    if (!browsingAllScope && primaryLeague && primaryLeague !== activeLeague) activeLeague = primaryLeague;
+    if (browsingAllScope && activeDriver !== ALL_DRIVER) activeDriver = isWispyIdentity(paint.driver) ? 'Wispy' : paint.driver;
+    if (!browsingAllScope) activeDriver = paint.driver;
     const actualLeague = leagueById(primaryLeague);
     const scopeLeague = leagueById(activeLeague);
-    const league = browsingWispyScope ? actualLeague : scopeLeague;
+    const league = browsingAllScope ? actualLeague : scopeLeague;
     if (boothShell instanceof HTMLElement) { boothShell.dataset.relationship = league?.relationship || 'aetherwing'; if (league?.relationship === 'alliance') boothShell.style.removeProperty('--booth-accent'); else boothShell.style.setProperty('--booth-accent', league?.color || 'var(--aw-blue)'); }
     leagueButtons.forEach(button => button.classList.toggle('is-active', button.dataset.leagueId === activeLeague));
-    if (car instanceof HTMLImageElement) { car.src = paint.image; car.alt = `${paint.number ? '#' + paint.number + ' ' : ''}${paint.driver} — ${paint.sponsor} paint scheme render`; }
+    setActiveCarImage(paint);
     const set = (selector, text) => { const node = root.querySelector(selector); if (node) node.textContent = text; };
     set('[data-active-garage]', league?.name || activeLeague);
-    set('[data-active-driver]', browsingWispyScope ? 'Wispy / Nicholas Waggoner' : paint.driver);
+    set('[data-active-driver]', isWispyIdentity(paint.driver) ? 'Wispy / Nicholas Waggoner' : paint.driver);
     set('[data-active-sponsor]', paint.sponsor);
     set('[data-active-number]', paint.number ? `#${paint.number}` : 'TEAM');
     set('[data-active-body]', paint.body);
@@ -447,7 +528,7 @@ const initialRackPaints = wispyIdentityPaints;
     set('[data-info-number]', paint.number ? `#${paint.number}` : 'TEAM');
     set('[data-info-relationship]', league?.relationship === 'alliance' ? 'StarClutch Racing Alliance' : 'Aetherwing Program');
     set('[data-info-sponsor]', paint.sponsor);
-    set('[data-info-driver]', `${paint.driver}${paint.username ? ' · ' + paint.username : ''}${browsingWispyScope ? ' · WISPY IDENTITY' : ''}`);
+    set('[data-info-driver]', `${paint.driver}${paint.username ? ' · ' + paint.username : ''}${isWispyIdentity(paint.driver) ? ' · WISPY IDENTITY' : ''}`);
     set('[data-info-garage]', league?.name || activeLeague);
     set('[data-info-manufacturer]', paint.manufacturer);
     set('[data-info-body]', paint.body);
@@ -460,24 +541,29 @@ const initialRackPaints = wispyIdentityPaints;
     if (readout instanceof HTMLElement) readout.hidden = !paint.schemeId;
     if (copyId instanceof HTMLElement) copyId.hidden = !paint.schemeId;
     const copyShare = root.querySelector('[data-copy-share]'); const infoOpen = root.querySelector('[data-info-open-render]'); if (copyShare instanceof HTMLElement) copyShare.hidden = false; if (infoOpen instanceof HTMLElement) infoOpen.hidden = false;
-    renderDrivers(); renderPaintRack();
+    driverControls?.querySelectorAll('[data-driver-name]').forEach((button) => button.classList.toggle('is-active', button.dataset.driverName === activeDriver));
+    paintControls?.querySelectorAll('[data-rack-paint]').forEach((button) => button.classList.toggle('is-active', button.dataset.rackPaint === paint.slug));
+    if (mobilePaintSelect instanceof HTMLSelectElement && Array.from(mobilePaintSelect.options).some((option) => option.value === paint.slug)) mobilePaintSelect.value = paint.slug;
     if (updateUrl) history.replaceState(null, '', `${location.pathname}#paint-${paint.slug}`);
   }
 
   function selectPaint(slug, updateUrl = true) {
     const paint = paints.find(item => item.slug === slug); if (!paint) return;
+    const previousLeague = activeLeague;
+    const previousDriver = activeDriver;
     const targetLeague = paint.leagues[0];
-    const keepWispyScope = activeLeague === WISPY_SCOPE && isWispyIdentity(paint.driver);
-    if (!keepWispyScope) {
+    const keepAllScope = activeLeague === ALL_SCOPE;
+    if (!keepAllScope) {
       activeLeague = targetLeague;
       activeDriver = paint.driver;
-    } else {
-      activeDriver = 'Wispy';
+    } else if (activeDriver !== ALL_DRIVER) {
+      activeDriver = isWispyIdentity(paint.driver) ? 'Wispy' : paint.driver;
     }
+    if (previousLeague !== activeLeague || previousDriver !== activeDriver) { renderDrivers(); renderPaintRack(); }
     updateActivePaint(paint, updateUrl);
   }
 
-  mobileLeagueSelect?.addEventListener('change', () => selectLeague(mobileLeagueSelect.value || WISPY_SCOPE));
+  mobileLeagueSelect?.addEventListener('change', () => selectLeague(mobileLeagueSelect.value || ALL_SCOPE));
   mobileDriverSelect?.addEventListener('change', () => selectDriver(mobileDriverSelect.value || ''));
   mobilePaintSelect?.addEventListener('change', () => { if (mobilePaintSelect.value) selectPaint(mobilePaintSelect.value, true); });
   leagueButtons.forEach(button => button.addEventListener('click', () => selectLeague(button.dataset.leagueId || '')));
@@ -539,6 +625,10 @@ const initialRackPaints = wispyIdentityPaints;
   collection?.querySelectorAll('[data-card-copy-id]').forEach(button => button.addEventListener('click', async () => { await copyText(button.dataset.cardCopyId || ''); announce('Scheme ID copied'); }));
   collection?.querySelectorAll('[data-card-copy-share]').forEach(button => button.addEventListener('click', async () => { const paint = paints.find(item => item.slug === button.dataset.cardCopyShare); if (!paint) return; await copyText(shareUrl(paint)); announce('Paint link copied'); }));
 
+  observeDeferredImages(root);
+  if ('requestIdleCallback' in window) requestIdleCallback(() => warmAdjacentPaints(activePaint), { timeout:1200 });
+  else setTimeout(() => warmAdjacentPaints(activePaint), 500);
+
   function revealHash() {
     if (!location.hash.startsWith('#paint-')) return false;
     const slug = decodeURIComponent(location.hash.slice(7)); const paint = paints.find(item => item.slug === slug); if (!paint) return false;
@@ -548,9 +638,9 @@ const initialRackPaints = wispyIdentityPaints;
     const card = document.getElementById(`paint-${slug}`); card?.classList.add('is-share-target'); window.setTimeout(() => card?.classList.remove('is-share-target'), 2400); return true;
   }
   if (!revealHash()) {
-    selectLeague(WISPY_SCOPE);
-    const fullWispyRack = driverPaints(WISPY_SCOPE, 'Wispy');
-    if (fullWispyRack.length) updateActivePaint(fullWispyRack[0], false);
+    selectLeague(ALL_SCOPE);
+    const fullRack = driverPaints(ALL_SCOPE, ALL_DRIVER);
+    if (fullRack.length) updateActivePaint(fullRack[0], false);
   }
   addEventListener('hashchange', revealHash);
 })();

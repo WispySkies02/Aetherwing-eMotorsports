@@ -7,6 +7,9 @@ import profiles from '../../data/driver-profiles.json';
 import '../../styles/pages/drivers.css';
 const selected=roster[0];
 const wispyStats=profiles[0].stats;
+const numberParts=(value)=>String(value||'').split('/').map((part)=>part.trim().replace(/^#/, '')).filter(Boolean);
+const formatNumbers=(value)=>numberParts(value).map((part)=>`#${part}`).join(' / ');
+const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(driver.numbers)}));
 ---
 <BaseLayout title="Drivers" description="Current Aetherwing drivers, iRacing Factory entries, and StarClutch Racing alliance participants.">
   <PageHero eyebrow="2026 Season Roster" title="Aetherwing Drivers" description="Current Aetherwing drivers, iRacing Factory entries, and StarClutch Racing alliance participants. Pick a driver and the profile stage updates in place." ghost="ROSTER" />
@@ -33,16 +36,16 @@ const wispyStats=profiles[0].stats;
 
       <div class="aw-driver-browser" data-driver-browser>
         <div class="aw-driver-list" role="listbox" aria-label="Driver roster">
-          {roster.map((driver,index)=><button type="button" role="option" aria-selected={index===0?'true':'false'} data-slug={driver.slug} data-affiliation={driver.affiliation} data-programs={driver.programs.join('|')}><span class="aw-driver-num">#{driver.numbers}</span><span><strong>{driver.name}</strong><small>{driver.role}</small></span><i>{driver.feature}</i></button>)}
+          {rosterDisplay.map((driver,index)=><button type="button" role="option" aria-selected={index===0?'true':'false'} data-slug={driver.slug} data-affiliation={driver.affiliation} data-programs={driver.programs.join('|')}><span class:list={["aw-driver-num",{"is-multi":driver.numberParts.length>1}]}>{driver.numberParts.map((num)=><b>#{num}</b>)}</span><span><strong>{driver.name}</strong><small>{driver.role}</small></span><i>{driver.feature}</i></button>)}
         </div>
         <article class="aw-driver-stage panel" data-driver-stage>
-          <div class="aw-driver-stage__ghost" aria-hidden="true">#{selected.numbers}</div>
+          <div class="aw-driver-stage__ghost" aria-hidden="true">{formatNumbers(selected.numbers)}</div>
           <div class="aw-driver-stage__meta"><span class="tag">{selected.role}</span><span class="tag tag--gold">{selected.feature}</span></div>
           <h2>{selected.name}</h2>
           <p class="aw-driver-handle">{selected.handle}</p>
           <p>{selected.bio}</p>
           <div class="aw-driver-programs">{selected.programs.map((program)=><span>{program}</span>)}</div>
-          <div class="aw-driver-stage__footer"><span>Active numbers</span><strong>#{selected.numbers}</strong></div>
+          <div class="aw-driver-stage__footer"><span>Active numbers</span><strong>{formatNumbers(selected.numbers)}</strong></div>
         </article>
       </div>
     </div>
@@ -73,7 +76,8 @@ const wispyStats=profiles[0].stats;
     const list=browser.querySelector('.aw-driver-list');
     const stage=browser.querySelector('[data-driver-stage]');
     const options=Array.from(browser.querySelectorAll('[role="option"]'));
-    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">#${driver.numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>Active numbers</span><strong>#${driver.numbers}</strong></div>`;};
+    const formatNumbers=(value)=>String(value||'').split('/').map(part=>part.trim()).filter(Boolean).map(part=>`#${part.replace(/^#/, '')}`).join(' / ');
+    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';const numbers=formatNumbers(driver.numbers);stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">${numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>Active numbers</span><strong>${numbers}</strong></div>`;};
     options.forEach(option=>option.addEventListener('click',()=>{options.forEach(o=>o.setAttribute('aria-selected','false'));option.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===option.dataset.slug));}));
     toolbar?.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
       if(!(button instanceof HTMLButtonElement))return;toolbar.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');const filter=button.dataset.filter;let shown=0;let first=null;options.forEach(option=>{const programs=(option.dataset.programs||'').split('|');const show=filter==='all'||option.dataset.affiliation===filter||programs.includes(filter||'');option.hidden=!show;if(show){shown++;if(!first)first=option;}});if(count)count.textContent=`${shown} shown`;if(first instanceof HTMLButtonElement){options.forEach(o=>o.setAttribute('aria-selected','false'));first.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===first.dataset.slug));}if(list instanceof HTMLElement)list.scrollTo({top:0,behavior:'smooth'});

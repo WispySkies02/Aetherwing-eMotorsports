@@ -22,6 +22,21 @@ const groups = Object.entries(scheduleEvents.reduce((map,event,index) => {
 },{}));
 const leagueClass = (league) => league === 'open' ? 'open' : league;
 const isAlliance = (league) => league === 'kmart' || league === 'sunoco';
+const crownJewelPattern = /(daytona 500|coca-cola 600|lowe['’]?s 600|southern 500|brickyard 400|brickyard 500)/i;
+const eventCriteria = (event) => {
+  const tags = [];
+  const status = String(event.status || '').toLowerCase();
+  const special = String(event.specialTag || '');
+  if (/dash4cash/i.test(special)) tags.push({kind:/qualifier/i.test(special)?'d4cqual':'d4c',label:/qualifier/i.test(special)?'D4C Qualifier':'Dash4Cash'});
+  if (status.includes('the chase') || status === 'chase') tags.push({kind:'chase',label:'Chase Race'});
+  if (status.includes('championship')) tags.push({kind:'championship',label:'Championship Finale'});
+  if (status.includes('all-star')) tags.push({kind:'allstar',label:'All-Star'});
+  if (status.includes('pre-season') || status.includes('preseason')) tags.push({kind:'preseason',label:'Preseason'});
+  if (event.league === 'iracing' || status.includes('special event')) tags.push({kind:'special',label:'Special Event'});
+  if (crownJewelPattern.test(String(event.title || ''))) tags.push({kind:'crown',label:'Crown Jewel'});
+  if (event.offWeek) tags.push({kind:'offweek',label:'Off Week'});
+  return tags.filter((tag,index,array)=>array.findIndex((item)=>item.kind===tag.kind&&item.label===tag.label)===index);
+};
 const displayDate = (event) => {
   if (event.tbd) return 'TBD';
   if (event.displayDate) return event.displayDate.toUpperCase();
@@ -103,8 +118,8 @@ const displayDate = (event) => {
                     <div class="aw-event-main">
                       <div class="aw-event-tags">
                         <span>{event.leagueName}</span>
-                        {event.status && <b>{event.status}</b>}
-                        {event.specialTag && <em>{event.specialTag}</em>}
+                        {event.status && !eventCriteria(event).length && <b>{event.status}</b>}
+                        {eventCriteria(event).map((tag)=><em class={`is-${tag.kind}`}>{tag.label}</em>)}
                         {isAlliance(event.league) && <i>StarClutch Racing Alliance</i>}
                       </div>
                       <h3>{event.title}</h3>
@@ -120,7 +135,8 @@ const displayDate = (event) => {
                       <div><span>{event.league==='iracing' ? 'Event Window' : 'Scheduled Start'}</span><strong>{event.displayDate ? event.displayDate : displayDate(event)} · {event.time}</strong></div>
                       <div><span>Track</span><strong>{event.track}</strong></div>
                       <div><span>Season Phase</span><strong>{event.status ?? 'Scheduled'}</strong></div>
-                      <div><span>Round / Marker</span><strong>{event.round ?? event.specialTag ?? (event.offWeek ? 'OFF WEEK' : '—')}</strong></div>
+                      <div><span>Round / Marker</span><strong>{event.round ?? (event.offWeek ? 'OFF WEEK' : '—')}</strong></div>
+                      <div><span>Event Criteria</span><strong>{eventCriteria(event).map((tag)=>tag.label).join(' · ') || 'Standard Event'}</strong></div>
                     </div>
                     <div class="aw-dock-bottom">
                       <div><span>Race Control</span><strong data-event-countdown>Calculating…</strong></div>

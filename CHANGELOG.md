@@ -1,3 +1,17 @@
+## v0.3.6
+- Home page: removed the white logo-panel background treatment behind Palmetto Gaming and Apex Sim Racing, replacing it with a transparent/dark integrated partner-logo presentation.
+- Partners page: matched the featured logo presentation to the darker integrated style for consistency.
+
+## 0.3.5 — Driver Numbers, Full ALL Rack, Booth Lighting & Schedule Criteria
+
+- Fixed multi-number formatting on Drivers so every number carries its own `#`; Wispy now reads `#32 / #28 / #15 / #54`.
+- Changed the Paint Booth primary ALL scope from Wispy-only to the complete 34-paint uploaded collection.
+- Added All Drivers / Entries selection while keeping Wispy/Nicholas available as a 33-paint identity subset.
+- Moved lighting controls into the visible booth area and expanded presets to Shop, Showroom, Inspection, Night, and Neon.
+- Added semantic Schedule criteria tags for Dash4Cash, Chase, Crown Jewel, Championship, All-Star, Preseason, Special Event, and Off Week.
+- Fixed Kmart Michigan weather by mapping `Michigan` to Michigan International Speedway; also filled other schedule weather gaps for Portland, Silverstone, Algarve, Brands Hatch, Mount Panorama, and Suzuka.
+- Reworked Paint Booth image loading: i.ibb preconnect, deferred offscreen thumbnails, low-priority rack/archive thumbnails, high-priority active-car warming, adjacent-paint prefetching, and no full rack rebuild on every paint click.
+
 # Changelog
 
 ## 0.3.4 — Paint Picker + Shareable Schedule Events

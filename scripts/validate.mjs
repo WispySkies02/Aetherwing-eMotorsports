@@ -50,6 +50,11 @@ assert(scheduleEvents.length === 143, 'Complete schedule source contains 143 cal
 assert(scheduleEvents.some((event) => event.league === 'iracing' && event.title === 'Southern 500' && event.endDate === '2026-09-07'), 'iRacing Southern 500 is a multi-day event window');
 assert(scheduleEvents.some((event) => event.title === 'Suzuka 1000km' && event.endDate === '2026-09-15'), 'Suzuka 1000km is represented as a multi-day event window');
 assert(Object.keys(tracks.locations || {}).length >= 60, 'Schedule retains track-location weather mapping');
+assert(tracks.aliases?.Michigan === 'Michigan International Speedway', 'Kmart Michigan weather alias resolves correctly');
+assert(tracks.aliases?.Portland === 'Portland International Raceway', 'Kmart Portland weather alias resolves correctly');
+assert(tracks.aliases?.Silverstone === 'Silverstone Circuit', 'Silverstone weather alias resolves correctly');
+const unresolvedWeatherTracks = [...new Set(scheduleEvents.filter((event) => !event.offWeek && event.track && event.track !== 'No race scheduled').map((event) => event.track))].filter((track) => !(tracks.locations?.[tracks.aliases?.[track] || track]));
+assert(unresolvedWeatherTracks.length === 0, `All scheduled track names resolve to weather locations${unresolvedWeatherTracks.length ? ': ' + unresolvedWeatherTracks.join(', ') : ''}`);
 
 const wispyIRacing = drivers.find((d) => d.id === 'nicholas-iracing');
 assert(wispyIRacing?.displayName === 'Nicholas Waggoner' && wispyIRacing?.profile === 'wispy', 'Nicholas Waggoner resolves to Wispy profile for iRacing');
@@ -73,17 +78,24 @@ assert(paints.some((p) => p.slug === 'truck-mopar-starclutch-racing' && String(p
 const schedulePage = text('src/pages/schedule/index.astro');
 const paintPage = text('src/pages/paint-booth/index.astro');
 assert(schedulePage.includes('data-event-dock') && schedulePage.includes('updateNextOperation'), 'Schedule includes expandable event docks and reactive Next Operation logic');
+assert(schedulePage.includes('eventCriteria') && schedulePage.includes('Crown Jewel') && schedulePage.includes('Dash4Cash'), 'Schedule includes semantic special-criteria tags');
 assert(schedulePage.includes('data-event-share') && schedulePage.includes('revealEventHash'), 'Schedule includes share buttons and exact event deep-link reveal logic');
 assert(existsSync(resolve(root, 'src/pages/event/[slug].astro')), 'Static share route exists for schedule events');
 assert(paintPage.includes('data-light="showroom"') && paintPage.includes('data-random-paint') && paintPage.includes('data-driver-controls'), 'Paint Booth includes immersive lighting, random paint, and driver controls');
 assert(paintPage.includes('aw-driver-wall') && paintPage.includes('aw-driver-bay-overview'), 'Paint Booth includes permanent driver stalls and Every Current Driver Bay overview');
 assert(paintPage.includes('aw-control-bench') && paintPage.includes('aw-booth-architecture'), 'Paint Booth is structured around the full facility rather than a standard hero/card module');
-assert(paintPage.includes("WISPY_SCOPE = 'wispy-all'") && paintPage.includes('WISPY — ALL PAINTS'), 'Paint Booth exposes the full 33-paint Wispy identity rack');
-assert(paintPage.includes('initialRackPaints.map') && paintPage.includes('33 PAINTS'), 'Paint Booth server-renders the initial 33-paint Wispy rack');
+assert(paintPage.includes("ALL_SCOPE = 'all'") && paintPage.includes('ALL PAINTS'), 'Paint Booth ALL scope exposes the complete uploaded collection');
+assert(paintPage.includes('initialRackPaints = paints') && paintPage.includes('initialRackPaints.map'), 'Paint Booth server-renders the initial 34-paint rack');
+assert(paintPage.includes('data-light="inspection"') && paintPage.includes('data-light="night"') && paintPage.includes('data-light="neon"'), 'Paint Booth includes expanded near-car lighting presets');
 assert(paintPage.includes('aw-mobile-booth-console') && paintPage.includes('data-mobile-target="rack"'), 'Paint Booth includes a dedicated mobile booth control console');
 assert(paintPage.includes('data-mobile-league-select') && paintPage.includes('data-mobile-driver-select') && paintPage.includes('data-mobile-paint-select'), 'Paint Booth includes the mobile Garage → Driver → Paint quick picker');
 assert(paintPage.includes('identityDriver') && paintPage.includes('readyDriver'), 'Garage selection prefers a paint-ready Wispy/Nicholas slot before pending drivers');
 assert(paintPage.includes('https://paint.aetherwing.net/'), 'Paint share URLs stay on the separate Paint Share project');
+assert(paintPage.includes('imageWarmCache') && paintPage.includes('observeDeferredImages') && paintPage.includes('warmAdjacentPaints'), 'Paint Booth prioritizes active renders and defers offscreen thumbnails');
+const baseLayout = text('src/layouts/BaseLayout.astro');
+assert(baseLayout.includes('preconnect" href="https://i.ibb.co'), 'Global shell preconnects to the paint image host');
+const driversPage = text('src/pages/drivers/index.astro');
+assert(driversPage.includes('aw-driver-num') && driversPage.includes('numberParts'), 'Drivers page uses split multi-number rendering for Wispy and other multi-program drivers');
 
 const requiredRoutes = [
   'src/pages/index.astro','src/pages/drivers/index.astro','src/pages/drivers/[slug].astro','src/pages/schedule/index.astro','src/pages/event/[slug].astro','src/pages/paint-booth/index.astro','src/pages/partners/index.astro','src/pages/news/index.astro','src/pages/news/[slug].astro','src/pages/wins-history/index.astro','src/pages/mission-values/index.astro','src/pages/team-handbook/index.astro','src/pages/contact/index.astro','src/pages/404.astro'

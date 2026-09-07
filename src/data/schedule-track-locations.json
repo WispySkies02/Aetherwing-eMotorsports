@@ -309,6 +309,26 @@
       "lat": 39.7392,
       "lon": -104.9903,
       "city": "DENVER, CO"
+    },
+    "Algarve International Circuit": {
+      "lat": 37.227,
+      "lon": -8.6267,
+      "city": "PORTIMAO, PT"
+    },
+    "Brands Hatch": {
+      "lat": 51.3569,
+      "lon": 0.2631,
+      "city": "WEST KINGSDOWN, UK"
+    },
+    "Mount Panorama Circuit": {
+      "lat": -33.4456,
+      "lon": 149.5564,
+      "city": "BATHURST, AU"
+    },
+    "Suzuka Circuit": {
+      "lat": 34.8431,
+      "lon": 136.541,
+      "city": "SUZUKA, JP"
     }
   },
   "aliases": {
@@ -331,6 +351,9 @@
     "Indy Road Course": "Indianapolis Motor Speedway Road Course",
     "Bristol": "Bristol Motor Speedway",
     "Kansas": "Kansas Speedway",
-    "Homestead-Miami": "Homestead-Miami Speedway"
+    "Homestead-Miami": "Homestead-Miami Speedway",
+    "Michigan": "Michigan International Speedway",
+    "Portland": "Portland International Raceway",
+    "Silverstone": "Silverstone Circuit"
   }
 }
