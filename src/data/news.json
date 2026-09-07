@@ -1,10 +1,769 @@
 [
-{"slug":"wispy-clinches-nrrs-chase-martinsville","category":"Race & Competition","date":"August 25, 2026","kicker":"Chase Clinched","title":"Wispy Clinches Third Straight NRRS Chase Berth at Martinsville","summary":"A P4 finish in the Goody's Fast Relief 500 locked Wispy and the #32 Aetherwing entry into the NRRS Season 3 Chase, marking a third consecutive NRRS postseason appearance and fifth confirmed Chase qualification overall.","tags":["NRRS","Chase","Martinsville"],"featured":true},
-{"slug":"michigan-photo-finish-rowdy","category":"Race & Competition","date":"June 5, 2026","kicker":"Race Win","title":"Michigan Photo Finish For Rowdy","summary":"Nicholas Waggoner won the NASCAR iRacing Series race at Michigan by 0.029 seconds in the #28 Cheddar’s Toyota, adding another verified Aetherwing victory.","tags":["iRacing","Michigan","Photo Finish"]},
-{"slug":"michigan-truck-victory","category":"Milestones","date":"June 7, 2026","kicker":"25th Win","title":"Michigan Truck Victory Marks 25","summary":"Nicholas Waggoner followed the Michigan NIS win with an iRacing Trucks victory, giving Aetherwing its 25th recorded team win.","tags":["iRacing Trucks","Milestone"]},
-{"slug":"indianapolis-500-win","category":"Milestones","date":"May 15, 2026","kicker":"Crown Jewel","title":"Waggoner Wins the Indianapolis 500 on iRacing","summary":"Nicholas Waggoner delivered a crown-jewel victory for Aetherwing, winning the Indianapolis 500 on iRacing.","tags":["iRacing","Indianapolis 500","Crown Jewel"]},
-{"slug":"aetherwing-sweeps-clashes","category":"Race & Competition","date":"April 11, 2026","kicker":"Double Win","title":"Aetherwing Sweeps the Clashes","summary":"Aetherwing opened the 2026 RoRacing season with a two-league statement as Jaxon won the NRRS Clash and Jayden completed the sweep with a UARL Clash victory.","tags":["NRRS","UARL","RoRacing"]},
-{"slug":"bellsouth-becomes-aetherwing","category":"Team & Organization","date":"January 1, 2026","kicker":"New Era","title":"BellSouth Becomes Aetherwing","summary":"BellSouth eMotorsports became Aetherwing eMotorsports, launching the current identity while carrying forward the verified modern competition record.","tags":["Rebrand","Aetherwing","Team News"]},
-{"slug":"first-roracing-win","category":"Milestones","date":"December 2, 2025","kicker":"First Win","title":"Wispy Scores First RoRacing Win","summary":"Wispy broke through in the NRRS Season 2 All-Star Race at Miami for the first RoRacing victory of the recorded career.","tags":["NRRS","RoRacing","All-Star"]},
-{"slug":"kmart-daytona-500-one-two","category":"Race & Competition","date":"September 22, 2025","kicker":"Crown Jewel","title":"Aetherwing Scores 1–2 in Kmart Cup Daytona 500","summary":"Flamingo won the Season 1 Daytona 500 with teammate Will pushing him to the line, producing Aetherwing’s first points-paying victory and a historic 1–2 finish.","tags":["Kmart Cup","Daytona 500","Historic AEM"]}
+  {
+    "slug": "wispy-clinches-nrrs-s3-chase-martinsville",
+    "legacyRoute": "/wispy-clinches-nrrs-s3-chase-martinsville",
+    "category": "Milestones",
+    "date": "August 25, 2026",
+    "dateIso": "2026-08-25",
+    "context": "NRRS Town Fair Cup Series",
+    "kicker": "Chase Clinched",
+    "title": "Wispy Clinches Third Straight NRRS Chase Berth at Martinsville",
+    "summary": "A P4 finish in the Goody's Fast Relief 500 officially locked Wispy and the #32 Aetherwing entry into the NRRS Season 3 Chase, marking a third consecutive NRRS postseason appearance and fifth confirmed Chase qualification overall.",
+    "tags": [
+      "Chase Clinched",
+      "NRRS",
+      "Martinsville",
+      "3 Straight NRRS",
+      "5× Chase Qualifier"
+    ],
+    "featured": true,
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Start",
+        "value": "P7"
+      },
+      {
+        "label": "Finish",
+        "value": "P4"
+      },
+      {
+        "label": "Race Points",
+        "value": "+39"
+      },
+      {
+        "label": "Standings",
+        "value": "P6 · 553"
+      },
+      {
+        "label": "Chase Cut",
+        "value": "+211"
+      },
+      {
+        "label": "Career Berths",
+        "value": "5×"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "Locked In at Martinsville",
+        "paragraphs": [
+          "Martinsville delivered more than another strong finish for Wispy. Bringing the #32 Aetherwing entry home fourth in the Goody's Fast Relief 500 mathematically secured a place in the NRRS Season 3 Chase and extended one of the most consistent postseason runs in Wispy's recorded RoRacing career.",
+          "Wispy started seventh and finished fourth for 33 finishing points. A fifth-place Stage 2 result added six points after an eighth-place Stage 1, producing 39 race points for the night. The result left Wispy sixth in the standings with 553 points, 196 behind the championship leader and 211 points above the Chase cutoff."
+        ]
+      },
+      {
+        "heading": "Three Straight in NRRS",
+        "paragraphs": [
+          "The Martinsville clinch continued a streak that began in NRRS Season 1. Wispy has now qualified for the Chase in each of the first three recorded NRRS postseason campaigns: Season 1 on points, Season 2 through an All-Star victory, and Season 3 on points after Martinsville.",
+          "The routes were different each time. Regular-season consistency carried the first berth, the Season 2 Miami All-Star victory provided a direct win-in, and the Season 3 #32 built enough of a points cushion to secure the spot before the regular season was finished."
+        ]
+      },
+      {
+        "heading": "Five Berths, Three Series",
+        "paragraphs": [
+          "NRRS accounts for three of the five confirmed Chase appearances, but the postseason résumé extends beyond one league. A Kmart Season 1 berth was earned on points after Kansas, while the UARL Season 4 regular-season finale at Indianapolis produced a race-winning ticket into that championship field.",
+          "The record now stands at three NRRS berths, one Kmart berth, and one UARL berth. Two of those five were secured directly through victories: the NRRS Season 2 All-Star Race at Miami and the UARL Season 4 finale at Indianapolis."
+        ]
+      },
+      {
+        "heading": "The Championship Fight Is Next",
+        "paragraphs": [
+          "Martinsville did not finish the job; it guaranteed the opportunity to keep fighting for it. With the Season 3 Chase berth secure, Wispy and the #32 program could turn fully toward the postseason and another chance to convert a Chase appearance into a championship run.",
+          "Whatever came next, the qualification itself added another permanent marker to the record book: five confirmed Chase appearances across three series and three consecutive seasons in the NRRS championship field."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Postseason Résumé",
+      "title": "Five Trips Into The Fight",
+      "text": "NRRS ×3 · Kmart ×1 · UARL ×1. Two of the five confirmed berths were secured through race victories."
+    },
+    "timeline": [
+      {
+        "series": "NRRS",
+        "season": "Season 1",
+        "title": "First NRRS Chase Berth",
+        "method": "Qualified on Points",
+        "date": "May 4, 2025"
+      },
+      {
+        "series": "NRRS",
+        "season": "Season 2",
+        "title": "Miami All-Star Win-In",
+        "method": "Berth Secured by Victory",
+        "date": "Dec 2, 2025"
+      },
+      {
+        "series": "Kmart",
+        "season": "Season 1",
+        "title": "Kansas Points Clincher",
+        "method": "Qualified on Points",
+        "date": "Feb 9, 2026"
+      },
+      {
+        "series": "UARL",
+        "season": "Season 4",
+        "title": "Indianapolis Win-In",
+        "method": "Berth Secured by Victory",
+        "date": "Feb 19, 2026"
+      },
+      {
+        "series": "NRRS",
+        "season": "Season 3",
+        "title": "Back In The Chase",
+        "method": "Qualified on Points",
+        "date": "Aug 25, 2026"
+      }
+    ]
+  },
+  {
+    "slug": "wispy-100th-roracing-start-talladega",
+    "legacyRoute": "/wispy-100th-roracing-start-talladega",
+    "category": "Milestones",
+    "date": "June 16, 2026",
+    "dateIso": "2026-06-16",
+    "context": "NRRS",
+    "kicker": "100th Start",
+    "title": "Wispy Finishes 2nd in Historic 100th RoRacing Start",
+    "summary": "Wispy marked his 100th career RoRacing start with a Stage 1 win and runner-up finish at Talladega, scoring 50 points and moving up one spot to fourth in the NRRS standings after avoiding multiple wrecks and rebounding from setbacks.",
+    "tags": [
+      "Milestone",
+      "NRRS",
+      "RoRacing",
+      "100th Start",
+      "Stage Win",
+      "Runner-Up"
+    ],
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Career Start",
+        "value": "100"
+      },
+      {
+        "label": "Stage 1",
+        "value": "WIN"
+      },
+      {
+        "label": "Finish",
+        "value": "P2"
+      },
+      {
+        "label": "Points",
+        "value": "50"
+      },
+      {
+        "label": "Standings",
+        "value": "P4"
+      },
+      {
+        "label": "Track",
+        "value": "Talladega"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "Start Number 100",
+        "paragraphs": [
+          "Talladega became the setting for a major career marker as Wispy made the 100th recorded RoRacing start. The milestone race became more than a ceremonial number: the #32 program left the event with a stage victory, a runner-up finish, and a meaningful points haul.",
+          "The result came after a race that required recovery as much as outright speed. Wispy avoided multiple incidents and rebounded from setbacks instead of letting the milestone race unravel."
+        ]
+      },
+      {
+        "heading": "Stage Win, Then a Runner-Up Finish",
+        "paragraphs": [
+          "A Stage 1 victory put the milestone on the board early. By the checkered flag, Wispy had converted the day into a second-place finish at Talladega and 50 total points.",
+          "That combination made the 100th start one of the stronger all-around results in the recorded career: a stage win, a podium-level finish, and points that mattered to the championship picture."
+        ]
+      },
+      {
+        "heading": "A Milestone That Moved the Standings",
+        "paragraphs": [
+          "The Talladega result moved Wispy up one position to fourth in the NRRS standings. Instead of the 100th start living only as a career-count statistic, it directly improved the competitive position of the #32 team.",
+          "The story was preserved in the Team Wire because it combined the personal milestone with an actual race-day result — exactly the kind of moment the archive was built to keep."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Milestone File",
+      "title": "100 Starts · 50 Points",
+      "text": "Stage 1 win, runner-up finish, and a move to fourth in the NRRS standings in Wispy's 100th recorded RoRacing start."
+    }
+  },
+  {
+    "slug": "waggoner-sweeps-michigan-double",
+    "legacyRoute": "/waggoner-sweeps-michigan-double",
+    "category": "Race & Competition",
+    "date": "June 7, 2026",
+    "dateIso": "2026-06-07",
+    "context": "NASCAR Class C Series - Fixed",
+    "kicker": "Michigan Double",
+    "title": "Waggoner Sweeps Michigan Double",
+    "summary": "Nicholas Waggoner followed up his NASCAR iRacing Series Michigan win by capturing the NASCAR Class C Series - Fixed truck race, completing a two-win Michigan weekend and giving Aetherwing its 25th recorded race victory.",
+    "tags": [
+      "Race Win",
+      "iRacing",
+      "Michigan Double",
+      "Truck Win",
+      "25th Win"
+    ],
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Weekend Wins",
+        "value": "2"
+      },
+      {
+        "label": "NIS Win",
+        "value": "JUN 5"
+      },
+      {
+        "label": "Truck Win",
+        "value": "JUN 7"
+      },
+      {
+        "label": "Team Win",
+        "value": "25TH"
+      },
+      {
+        "label": "Track",
+        "value": "Michigan"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "Two Wins in One Michigan Weekend",
+        "paragraphs": [
+          "Nicholas Waggoner completed a Michigan sweep by following the June 5 NASCAR iRacing Series victory with a June 7 win in the NASCAR Class C Series - Fixed truck race.",
+          "The second checkered flag turned an already significant weekend into a two-win run across two different iRacing NASCAR disciplines at the same track."
+        ]
+      },
+      {
+        "heading": "The Truck Win Marked Number 25",
+        "paragraphs": [
+          "The Class C Series - Fixed victory also carried an organizational milestone: it became Aetherwing's 25th recorded team win in the modern record book.",
+          "That placed the Michigan truck result in two parts of the archive at once — as the completion of Waggoner's Michigan double and as the victory that pushed the team-win count to 25."
+        ]
+      },
+      {
+        "heading": "From Photo Finish to Weekend Sweep",
+        "paragraphs": [
+          "Just two days earlier, Waggoner had won the NASCAR iRacing Series race at Michigan by 0.029 seconds. The truck victory meant the photo-finish breakthrough was not an isolated result; it became the first half of a complete Michigan double.",
+          "The back-to-back Michigan victories remain grouped in the record book as one of the defining iRacing weekends of the Aetherwing era."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Record Book",
+      "title": "Victory No. 25",
+      "text": "The June 7 Michigan truck win completed a two-race weekend sweep and became Aetherwing's 25th recorded team victory."
+    }
+  },
+  {
+    "slug": "waggoner-michigan-nis-win",
+    "legacyRoute": "/waggoner-michigan-nis-win",
+    "category": "Race & Competition",
+    "date": "June 5, 2026",
+    "dateIso": "2026-06-05",
+    "context": "NASCAR iRacing Series",
+    "kicker": "Photo Finish",
+    "title": "Waggoner Wins Michigan NIS Thriller for Rowdy",
+    "summary": "Nicholas Waggoner scored an emotional NASCAR iRacing Series victory at Michigan in a photo finish, winning by 0.029 seconds in the #28 Cheddar’s Scratch Kitchen Toyota and dedicating the win to Kyle “Rowdy” Busch.",
+    "tags": [
+      "Race Win",
+      "iRacing",
+      "Michigan",
+      "Photo Finish",
+      "For Rowdy"
+    ],
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Margin",
+        "value": "0.029"
+      },
+      {
+        "label": "Entry",
+        "value": "#28"
+      },
+      {
+        "label": "Car",
+        "value": "Toyota"
+      },
+      {
+        "label": "Series",
+        "value": "NIS"
+      },
+      {
+        "label": "Track",
+        "value": "Michigan"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "A Michigan Win Decided at the Line",
+        "paragraphs": [
+          "Nicholas Waggoner put the #28 Cheddar's Scratch Kitchen Toyota into Victory Lane in the NASCAR iRacing Series at Michigan, with the result decided by only 0.029 seconds.",
+          "The margin made the victory a true photo finish and immediately gave the race a permanent place in the Aetherwing record book."
+        ]
+      },
+      {
+        "heading": "For Rowdy",
+        "paragraphs": [
+          "The result carried an emotional layer beyond the finishing margin. Waggoner dedicated the Michigan victory to Kyle “Rowdy” Busch, making the race one of the more personal wins preserved in the team's iRacing history.",
+          "The combination of the #28 entry, Cheddar's Scratch Kitchen livery, razor-thin margin, and dedication is why the Team Wire keeps the event as more than a line in the win table."
+        ]
+      },
+      {
+        "heading": "The First Half of a Michigan Double",
+        "paragraphs": [
+          "The NIS win became the opening act of an even bigger weekend. Two days later, Waggoner won the NASCAR Class C Series - Fixed truck race at Michigan as well.",
+          "Together, the June 5 and June 7 victories formed a two-win Michigan sweep, with the second result becoming Aetherwing's 25th recorded team win."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Finish Margin",
+      "title": "0.029 Seconds",
+      "text": "The #28 Cheddar's Scratch Kitchen Toyota won the NASCAR iRacing Series race at Michigan in a photo finish."
+    }
+  },
+  {
+    "slug": "waggoner-wins-iracing-indianapolis-500",
+    "legacyRoute": "/waggoner-wins-iracing-indianapolis-500",
+    "category": "Race & Competition",
+    "date": "May 15, 2026",
+    "dateIso": "2026-05-15",
+    "context": "iRacing",
+    "kicker": "Crown Jewel",
+    "title": "Waggoner Wins the Indianapolis 500 on iRacing",
+    "summary": "Nicholas Waggoner delivered a crown-jewel victory for Aetherwing, winning the Indianapolis 500 on iRacing and adding one of sim racing’s biggest oval trophies to the team record book.",
+    "tags": [
+      "Race Win",
+      "iRacing",
+      "Indianapolis 500",
+      "Crown Jewel"
+    ],
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Event",
+        "value": "INDY 500"
+      },
+      {
+        "label": "Driver",
+        "value": "Waggoner"
+      },
+      {
+        "label": "Date",
+        "value": "MAY 15"
+      },
+      {
+        "label": "Milestone",
+        "value": "1ST AEM"
+      },
+      {
+        "label": "Type",
+        "value": "Crown Jewel"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "A Crown Jewel Goes Into the Record Book",
+        "paragraphs": [
+          "Nicholas Waggoner won the Indianapolis 500 on iRacing on May 15, 2026, delivering one of the biggest oval victories in Aetherwing's recorded sim-racing history.",
+          "The result was preserved as a crown-jewel win rather than an ordinary race victory because of the event's place in the iRacing program and the wider motorsports calendar."
+        ]
+      },
+      {
+        "heading": "First iRacing Crown Jewel for Aetherwing",
+        "paragraphs": [
+          "The Indianapolis victory became Aetherwing's first recorded iRacing crown-jewel win. That distinction placed it alongside the team's other major firsts and milestones in Wins & History.",
+          "For the Factory Program, the result gave the organization a marquee event victory to anchor the 2026 iRacing season."
+        ]
+      },
+      {
+        "heading": "Part of a Breakout Run",
+        "paragraphs": [
+          "The Indianapolis 500 win came less than a month before Waggoner's two-win Michigan weekend. By early June, the record book showed Indianapolis, the Michigan NASCAR iRacing Series race, and the Michigan truck race in quick succession.",
+          "That run made the Indianapolis 500 not only a standalone crown jewel, but the beginning of one of the strongest stretches in the team's recorded iRacing history."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Milestone",
+      "title": "First iRacing Crown Jewel",
+      "text": "The May 15 Indianapolis 500 victory is recorded as Aetherwing's first iRacing crown-jewel win."
+    }
+  },
+  {
+    "slug": "aetherwing-sweeps-clashes",
+    "legacyRoute": "/aetherwing-sweeps-clashes",
+    "category": "Race & Competition",
+    "date": "April 11, 2026",
+    "dateIso": "2026-04-11",
+    "context": "NRRS / UARL",
+    "kicker": "Double Win",
+    "title": "Aetherwing Sweeps the Clashes",
+    "summary": "Aetherwing opened the 2026 RoRacing season with a two-league statement as Jaxon won the NRRS Clash and Jayden completed the sweep with a UARL Clash victory.",
+    "tags": [
+      "Double Win",
+      "NRRS",
+      "UARL",
+      "RoRacing"
+    ],
+    "byline": "WispySkies02",
+    "metrics": [
+      {
+        "label": "NRRS Winner",
+        "value": "JAXON"
+      },
+      {
+        "label": "NRRS Track",
+        "value": "TARGET"
+      },
+      {
+        "label": "UARL Winner",
+        "value": "JAYDEN"
+      },
+      {
+        "label": "Weekend",
+        "value": "2 WINS"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "Jaxon Strikes First in NRRS",
+        "paragraphs": [
+          "The new RoRacing season opened with Jaxon putting Aetherwing in Victory Lane in the NRRS Clash at Target Speedway. The preseason exhibition demanded clean execution through aggressive racing, and Jaxon stayed positioned for the move that mattered.",
+          "The win gave the organization an immediate statement result before championship points even began."
+        ]
+      },
+      {
+        "heading": "Jayden Completes the Sweep in UARL",
+        "paragraphs": [
+          "Season 4 D1 champion Jayden carried that momentum into the UARL Clash and delivered the second win of the opening stretch.",
+          "With one victory in each league's preseason showcase, Aetherwing turned the start of the season into an organizational sweep rather than a single isolated result."
+        ]
+      },
+      {
+        "heading": "Setting the Standard for the Regular Season",
+        "paragraphs": [
+          "The two Clash wins gave the team early evidence of competitive pace and coordination across both programs. The original story framed the weekend as a tone-setter for the regular season and the championship campaigns ahead.",
+          "The article also captured the team identity of that moment, including the GR Aetherwing presentation and the roster that represented the organization during that historical period."
+        ]
+      }
+    ],
+    "quote": {
+      "text": "Winning a Clash event is about more than just grabbing a trophy—it’s about establishing dominance before the championship points even start counting.",
+      "attribution": "Original Aetherwing race report"
+    },
+    "callout": {
+      "label": "Opening Statement",
+      "title": "Two Clashes · Two Wins",
+      "text": "Jaxon won the NRRS Clash at Target Speedway and Jayden completed the sweep with a UARL Clash victory."
+    }
+  },
+  {
+    "slug": "aetherwing-ngm-driver-development",
+    "legacyRoute": "/aetherwing-ngm-driver-development",
+    "category": "Team & Organization",
+    "date": "January 10, 2026",
+    "dateIso": "2026-01-10",
+    "context": "Driver Development Program",
+    "kicker": "Driver Development",
+    "title": "Aetherwing and NGM Build Driver Development Pathway",
+    "summary": "Aetherwing partnered with Nico Goated Motorsports, the team owned by Nico, to create a development pathway for future NRRS and Kmart Cup talent.",
+    "tags": [
+      "Driver Development",
+      "NGM",
+      "Partnership",
+      "Talent Pipeline"
+    ],
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Partner",
+        "value": "NGM"
+      },
+      {
+        "label": "NGM Owner",
+        "value": "NICO"
+      },
+      {
+        "label": "Program",
+        "value": "DDP"
+      },
+      {
+        "label": "Focus",
+        "value": "Talent Pipeline"
+      },
+      {
+        "label": "Pathways",
+        "value": "NRRS / KCS"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "A Clearer Road Into Aetherwing",
+        "paragraphs": [
+          "Aetherwing announced a strategic partnership with Nico Goated Motorsports, the team owned by Nico, to support the Driver Development Program and create a more deliberate entry point for new talent.",
+          "Instead of moving every prospect directly into the primary roster, the development structure was designed to scout, evaluate, and prepare drivers before larger opportunities were considered."
+        ]
+      },
+      {
+        "heading": "Development Through Competition",
+        "paragraphs": [
+          "The program centered its competitive pathway on environments connected to NRRS and Kmart Cup Series racing. Speed mattered, but the evaluation was intentionally broader than lap time alone.",
+          "Consistency, availability, attitude, race craft, preparation, communication, and long-term commitment were all part of the development focus. Successful participants could be considered for reserve or primary-roster opportunities."
+        ]
+      },
+      {
+        "heading": "Scout · Develop · Promote",
+        "paragraphs": [
+          "The pathway was organized around three steps. Scout meant identifying new drivers, watching race craft, and tracking availability. Develop meant building consistency, improving communication, and learning team standards. Promote meant opening reserve or primary opportunities for drivers who proved they fit the long-term organization.",
+          "The structure gave Aetherwing a middle step between outside competition and direct signing, while NGM provided a development partner familiar with the RoRacing environment."
+        ]
+      },
+      {
+        "heading": "Why It Mattered",
+        "paragraphs": [
+          "The partnership gave Aetherwing a more structured approach to roster growth and established a repeatable talent pipeline instead of relying only on immediate signings.",
+          "The original program announcement positioned the NGM relationship as a foundation for future growth across the team's NRRS and Kmart Cup efforts."
+        ]
+      }
+    ],
+    "quote": {
+      "text": "This is about building the next wave — not just finding fast drivers, but finding the right drivers.",
+      "attribution": "Aetherwing team note"
+    },
+    "callout": {
+      "label": "Evaluation Focus",
+      "title": "Consistency · Availability · Attitude",
+      "text": "Race craft, preparation, communication and long-term team fit were part of the development review alongside outright speed."
+    }
+  },
+  {
+    "slug": "aetherwing-launch-new-era",
+    "legacyRoute": "/aetherwing-launch-new-era",
+    "category": "Team & Organization",
+    "date": "January 1, 2026",
+    "dateIso": "2026-01-01",
+    "context": "Team Rebrand",
+    "kicker": "New Era",
+    "title": "BellSouth Becomes Aetherwing",
+    "summary": "BellSouth eMotorsports officially became Aetherwing eMotorsports, launching a sharper identity built for NR2003, Roblox RoRacing, iRacing, and the future of the team.",
+    "tags": [
+      "Team News",
+      "Rebrand",
+      "New Era",
+      "AEM"
+    ],
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Previous",
+        "value": "BellSouth"
+      },
+      {
+        "label": "New Identity",
+        "value": "Aetherwing"
+      },
+      {
+        "label": "Modern Era",
+        "value": "2023"
+      },
+      {
+        "label": "Expansion",
+        "value": "2024"
+      },
+      {
+        "label": "Launch",
+        "value": "2026"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "A New Identity",
+        "paragraphs": [
+          "After building the modern foundation under the BellSouth eMotorsports name, the organization officially launched its next chapter as Aetherwing eMotorsports.",
+          "The change was presented as more than a new name. Aetherwing represented a more original long-term identity, a stronger presentation system, and a competitive direction designed to work across NR2003, Roblox RoRacing, and iRacing."
+        ]
+      },
+      {
+        "heading": "What BellSouth Built",
+        "paragraphs": [
+          "The BellSouth era carried the team into its modern sim-racing phase, especially after entering NR2003 competition in late 2023. Expansion into Roblox RoRacing and iRacing followed in 2024, creating the foundation for a larger multi-program organization.",
+          "That history was not discarded by the rebrand. The Aetherwing identity was designed to carry the record and organizational lineage forward while giving the modern team a brand that could stand on its own."
+        ]
+      },
+      {
+        "heading": "Built to Grow Beyond One Program",
+        "paragraphs": [
+          "The launch introduced a more aggressive visual direction and a clearer competitive structure. The 2026 identity was built to support a growing roster, partner network, record book, and development path rather than being tied to one league or platform.",
+          "The rebrand created a clean starting point for the next phase without rewriting the BellSouth chapter that led to it."
+        ]
+      },
+      {
+        "heading": "The Timeline Into Aetherwing",
+        "paragraphs": [
+          "The organizational lineage begins with Silph Co. Motorsports in the NASCAR 15 era, returns as BellSouth Racing during the NASCAR Heat era, enters NR2003 as BellSouth eMotorsports in 2023, expands into RoRacing and iRacing in 2024, and becomes Aetherwing eMotorsports in 2026.",
+          "That sequence remains part of the public history because the Aetherwing era is a continuation of the same organization rather than a replacement history."
+        ]
+      }
+    ],
+    "quote": {
+      "text": "Born to soar. Built to fight.",
+      "attribution": "Aetherwing eMotorsports team identity"
+    },
+    "callout": {
+      "label": "Identity File",
+      "title": "BellSouth → Aetherwing",
+      "text": "A new name and visual direction carried the existing modern team history forward into the 2026 Aetherwing era."
+    }
+  },
+  {
+    "slug": "wispy-wins-nrrs-all-star",
+    "legacyRoute": "/wispy-wins-nrrs-all-star",
+    "category": "Milestones",
+    "date": "December 2, 2025",
+    "dateIso": "2025-12-02",
+    "context": "NRRS All-Star Race",
+    "kicker": "First Win",
+    "title": "Wispy Scores First RoRacing Win",
+    "summary": "Wispy broke through in the NRRS Season 2 All-Star Race, taking the #28 Aetherwing entry to Victory Lane for his first career RoRacing win.",
+    "tags": [
+      "First Win",
+      "NRRS",
+      "RoRacing",
+      "Owner-Driver"
+    ],
+    "byline": "WispySkies02",
+    "metrics": [
+      {
+        "label": "Driver",
+        "value": "WISPY"
+      },
+      {
+        "label": "Entry",
+        "value": "#28"
+      },
+      {
+        "label": "Series",
+        "value": "NRRS"
+      },
+      {
+        "label": "Event",
+        "value": "ALL-STAR"
+      },
+      {
+        "label": "Career",
+        "value": "1ST WIN"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "Wispy Is Officially a Race Winner",
+        "paragraphs": [
+          "The NRRS Season 2 All-Star Race became the breakthrough night for Wispy, as the #28 Aetherwing entry survived a chaotic non-points showcase and reached Victory Lane for the first recorded RoRacing win of the career.",
+          "The All-Star format brought segment breaks, resets, and repeated opportunities for strategy to change the running order, making execution as important as raw pace."
+        ]
+      },
+      {
+        "heading": "The Final Stage",
+        "paragraphs": [
+          "Wispy and the team kept the opening portions controlled, prioritizing track position and clean exits before committing to a more aggressive plan for the final stage. A well-timed stop and strong restart pace put the #28 inside the top three as the race moved toward its finish.",
+          "On the final run, Wispy cleared traffic, defended the high lane, and controlled the race while the battle behind developed. The late pressure was not enough to take the lead away, and the #28 crossed the line first."
+        ]
+      },
+      {
+        "heading": "A Breakthrough Beyond the Points",
+        "paragraphs": [
+          "The All-Star Race did not award championship points, but the significance of the result was much bigger than the scoring format. It was the first proof in the record book that Wispy could turn the pace, racecraft, and strategy into a race victory.",
+          "The win later became even more important to the postseason story: the Season 2 All-Star victory also secured Wispy's second NRRS Chase berth."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Career First",
+      "title": "Victory Lane · Dec 2, 2025",
+      "text": "The #28 Aetherwing entry won the NRRS Season 2 All-Star Race for Wispy's first recorded career RoRacing victory."
+    }
+  },
+  {
+    "slug": "kmart-cup-daytona500-one-two-finish",
+    "legacyRoute": "/kmart-cup-daytona500-one-two-finish",
+    "category": "Race & Competition",
+    "date": "September 22, 2025",
+    "dateIso": "2025-09-22",
+    "context": "Kmart Cup Series",
+    "kicker": "Crown Jewel Win",
+    "title": "Aetherwing Scores 1-2 in Kmart Cup Daytona 500",
+    "summary": "Flamingo won the Kmart Cup Series Season 1 Daytona 500 with teammate Will pushing him to the line, giving Aetherwing its first points-paying victory and a historic 1-2 finish.",
+    "tags": [
+      "Crown Jewel Win",
+      "Kmart Cup",
+      "Daytona 500",
+      "1-2 Finish"
+    ],
+    "byline": "WispySkies02",
+    "metrics": [
+      {
+        "label": "Winner",
+        "value": "#22 Flamingo"
+      },
+      {
+        "label": "Runner-Up",
+        "value": "#94 Will"
+      },
+      {
+        "label": "Finish",
+        "value": "1–2"
+      },
+      {
+        "label": "Event",
+        "value": "DAYTONA 500"
+      },
+      {
+        "label": "Type",
+        "value": "Crown Jewel"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "A Landmark Daytona 500 Win",
+        "paragraphs": [
+          "The 2025–26 Kmart Cup Series opened with Flamingo taking the #22 Apex Sim Racing Chevrolet to victory in the Daytona 500 on September 22, 2025.",
+          "The win became Aetherwing's first points-paying victory and delivered a crown-jewel result at the beginning of the season."
+        ]
+      },
+      {
+        "heading": "Flamingo and Will Break Away Together",
+        "paragraphs": [
+          "Drafting partnerships shaped the closing laps. Flamingo and teammate Will in the #94 linked together after the final restart, using the two-car push to create separation from the rest of the field.",
+          "The coordination turned the race from a fight for one Aetherwing win into a chance to bring both cars home at the front."
+        ]
+      },
+      {
+        "heading": "The White Flag Protection",
+        "paragraphs": [
+          "On the final lap, Will protected Flamingo's rear quarter while the pair worked through Turns 3 and 4 and defended against a late challenge from behind.",
+          "Flamingo reached the checkered flag first and Will finished second, completing the 1–2 sweep in one of the biggest races on the Kmart Cup schedule."
+        ]
+      },
+      {
+        "heading": "A Season-Opening Statement",
+        "paragraphs": [
+          "The result gave Flamingo a first Daytona 500 victory, put Aetherwing's first crown jewel of the season into the record book, and followed Will's Budweiser Shootout victory one week earlier.",
+          "The original race report framed the back-to-back Daytona results as a major early-season momentum swing for the organization."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "Historic Finish",
+      "title": "Aetherwing 1–2 at Daytona",
+      "text": "Flamingo won the Daytona 500 with teammate Will second, delivering the team's first points-paying victory and a crown-jewel sweep of the top two positions."
+    }
+  }
 ]

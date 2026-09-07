@@ -26,6 +26,18 @@ const iracing = json('iracing-garage.json');
 const wins = json('wins.json');
 const paints = json('paints.json');
 const paintLeagues = json('paint-leagues.json');
+const news = json('news.json');
+
+
+assert(news.length === 10, 'News archive matches the current 10-story Team Wire');
+assert(new Set(news.map((story) => story.slug)).size === news.length, 'All Team Wire story slugs are unique');
+assert(news.filter((story) => story.category === 'Race & Competition').length === 5, 'Team Wire contains five Race & Competition stories');
+assert(news.filter((story) => story.category === 'Milestones').length === 3, 'Team Wire contains three Milestones stories');
+assert(news.filter((story) => story.category === 'Team & Organization').length === 2, 'Team Wire contains two Team & Organization stories');
+assert(news.some((story) => story.featured && story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville'), 'Martinsville Chase clinch remains the Team Wire headline');
+assert(news.some((story) => story.slug === 'wispy-100th-roracing-start-talladega'), '100th RoRacing start story is migrated');
+assert(news.some((story) => story.slug === 'aetherwing-ngm-driver-development'), 'NGM Driver Development story is migrated');
+assert(news.every((story) => Array.isArray(story.sections) && story.sections.length >= 3), 'Every Team Wire story has a full article body');
 
 assert(site.competitionRelationships === 7, 'Seven competition relationships');
 assert(site.featuredPartners === 2 && partners.filter((p) => p.featured).length === 2, 'Exactly two featured partners');
@@ -97,6 +109,13 @@ assert(baseLayout.includes('preconnect" href="https://i.ibb.co'), 'Global shell 
 const driversPage = text('src/pages/drivers/index.astro');
 assert(driversPage.includes('aw-driver-num') && driversPage.includes('numberParts'), 'Drivers page uses split multi-number rendering for Wispy and other multi-program drivers');
 
+
+const newsIndex = text('src/pages/news/index.astro');
+const newsArticle = text('src/pages/news/[slug].astro');
+assert(newsIndex.includes('2026 Dispatches') && newsIndex.includes('2025 Archive') && newsIndex.includes('Stories on Record'), 'News index mirrors the current Team Wire archive structure');
+assert(newsArticle.includes('story.sections.map') && newsArticle.includes('aw-news-story-body'), 'News article route renders full migrated story bodies');
+assert(newsArticle.includes('story.metrics') && newsArticle.includes('story.timeline'), 'News article route supports story snapshots and the Chase ledger');
+
 const requiredRoutes = [
   'src/pages/index.astro','src/pages/drivers/index.astro','src/pages/drivers/[slug].astro','src/pages/schedule/index.astro','src/pages/event/[slug].astro','src/pages/paint-booth/index.astro','src/pages/partners/index.astro','src/pages/news/index.astro','src/pages/news/[slug].astro','src/pages/wins-history/index.astro','src/pages/mission-values/index.astro','src/pages/team-handbook/index.astro','src/pages/contact/index.astro','src/pages/404.astro'
 ];
@@ -107,6 +126,10 @@ for (const asset of requiredAssets) assert(existsSync(resolve(root, asset)), `Lo
 
 const redirects = text('public/_redirects');
 assert(/^\/updates\s+\/news\s+301/m.test(redirects), 'Legacy /updates route redirects to /news');
+for (const story of news) {
+  const escaped = story.legacyRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  assert(new RegExp(`^${escaped}\\s+\\/news\\/${story.slug}\\s+301`, 'm').test(redirects), `Legacy story redirects: ${story.slug}`);
+}
 
 if (process.exitCode) {
   console.error('\nAetherwing data validation failed. Fix locked facts before building.');

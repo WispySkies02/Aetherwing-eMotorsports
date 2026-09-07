@@ -4,26 +4,167 @@ import PageHero from '../../components/ui/PageHero.astro';
 import stories from '../../data/news.json';
 import '../../styles/pages/content.css';
 import '../../styles/pages/news.css';
-const featured=stories.find((story)=>story.featured) ?? stories[0];
+
+const featured = stories.find((story) => story.featured) ?? stories[0];
+const dispatches = stories.filter((story) => story.dateIso.startsWith('2026') && story.slug !== featured.slug);
+const archive = stories.filter((story) => story.dateIso.startsWith('2025'));
+const categories = ['Race & Competition', 'Milestones', 'Team & Organization'];
+const searchable = (story) => `${story.title} ${story.summary} ${story.context} ${story.byline ?? ''} ${(story.tags ?? []).join(' ')}`.toLowerCase();
 ---
-<BaseLayout title="News & Updates" description="The Aetherwing Team Wire — selected stories from the track, garage, and organization.">
-  <PageHero eyebrow="The Aetherwing Team Wire" title="News & Updates" description="Selected stories from the track, garage, and organization — major performances, milestones, team decisions, and changes that shaped Aetherwing eMotorsports." ghost="TEAM WIRE" />
-  <section class="section section--tight aw-news-page" data-news-feed>
-    <div class="shell">
-      <div class="aw-story-tools"><label><span>Search updates</span><input type="search" placeholder="Search story, driver, series, track…" data-news-search /></label><div class="aw-story-filters"><button class="is-active" type="button" data-news-filter="all">All Stories</button><button type="button" data-news-filter="Race & Competition">Race & Competition</button><button type="button" data-news-filter="Milestones">Milestones</button><button type="button" data-news-filter="Team & Organization">Team & Organization</button></div><b data-news-count>Showing all stories.</b></div>
-      <a class="aw-headline-story panel" href={`/news/${featured.slug}/`} data-story data-category={featured.category} data-search={`${featured.title} ${featured.summary} ${featured.tags.join(' ')}`.toLowerCase()}>
-        <div class="aw-headline-copy"><span class="tag tag--gold">Headline Story</span><small>{featured.kicker} · {featured.date}</small><h2>{featured.title}</h2><p>{featured.summary}</p><div class="aw-story-tags">{featured.tags.map((tag)=><span>{tag}</span>)}</div><b>Open Story →</b></div>
-        <div class="aw-headline-mark" aria-hidden="true">LOCKED<br/><span>5X</span></div>
-      </a>
-      <div class="aw-story-grid">
-        {stories.filter((story)=>story.slug!==featured.slug).map((story)=><a class="aw-story-card panel" href={`/news/${story.slug}/`} data-story data-category={story.category} data-search={`${story.title} ${story.summary} ${story.tags.join(' ')}`.toLowerCase()}><small>{story.kicker} · {story.date}</small><span class="tag">{story.category}</span><h3>{story.title}</h3><p>{story.summary}</p><div class="aw-story-tags">{story.tags.map((tag)=><span>{tag}</span>)}</div><b>Read →</b></a>)}
-      </div>
-      <div class="empty-state" data-news-empty hidden>No stories match that filter or search.</div>
+<BaseLayout title="News & Updates" description="The Aetherwing Team Wire — the curated archive of major races, meaningful milestones, team decisions, and organizational changes that shaped Aetherwing eMotorsports.">
+  <PageHero eyebrow="The Aetherwing Team Wire" title="News & Updates" description="A curated record of the moments worth keeping: major races, meaningful milestones, and changes inside the organization. Routine results live elsewhere; the stories that shaped the team live here." ghost="TEAM WIRE" />
+
+  <section class="aw-news-kpis" aria-label="Team Wire archive summary">
+    <div class="shell aw-news-kpi-grid">
+      <div><strong>{String(stories.length).padStart(2,'0')}</strong><span>Stories on Record</span></div>
+      <div><strong>03</strong><span>Story Desks</span></div>
+      <div><strong>2025</strong><span>Archive Begins</span></div>
+      <div><strong>CURATED</strong><span>Team Archive</span></div>
     </div>
   </section>
-  <section class="section"><div class="shell shell--standard"><div class="aw-contact-cta"><span class="aw-paper-label">Follow the Full Program</span><h2>The story is bigger than the feed.</h2><p>The complete Aetherwing picture continues through the roster, schedule, partner network, and record book.</p><div style="display:flex;gap:.7rem;flex-wrap:wrap"><a class="btn" href="/drivers/">View Drivers</a><a class="btn btn--ghost" href="/schedule/">View Schedule</a><a class="btn btn--ghost" href="/wins-history/">Wins & History</a></div></div></div></section>
+
+  <section class="section section--tight aw-news-page" data-news-feed>
+    <div class="shell">
+      <div class="aw-news-intro">
+        <div>
+          <p class="eyebrow">Story Feed</p>
+          <h2 class="section-title">The Stories That Stayed.</h2>
+        </div>
+        <p class="lede">Ten stories currently define the public Team Wire: race wins, personal milestones, team-building decisions, and the transition into the Aetherwing era.</p>
+      </div>
+
+      <div class="aw-story-tools">
+        <label>
+          <span>Search updates</span>
+          <input type="search" placeholder="Search story, driver, series, track, or partner…" data-news-search />
+        </label>
+        <div class="aw-story-filters" aria-label="Filter Team Wire">
+          <button class="is-active" type="button" data-news-filter="all">All Stories</button>
+          {categories.map((category) => <button type="button" data-news-filter={category}>{category}</button>)}
+        </div>
+        <b data-news-count>Showing all {stories.length} stories.</b>
+      </div>
+
+      <section class="aw-feed-group aw-feed-group--headline" data-feed-group>
+        <div class="aw-feed-label"><span>Headline Story</span><i></i></div>
+        <a
+          class="aw-headline-story panel"
+          href={`/news/${featured.slug}/`}
+          data-story
+          data-year="2026"
+          data-category={featured.category}
+          data-search={searchable(featured)}
+        >
+          <div class="aw-headline-copy">
+            <div class="aw-news-card-topline"><span class="tag tag--live">{featured.kicker}</span><small>{featured.context} · {featured.date}</small></div>
+            <h2>{featured.title}</h2>
+            <p>{featured.summary}</p>
+            <div class="aw-story-tags">{featured.tags.map((tag) => <span>{tag}</span>)}</div>
+            <b>Open Full Story →</b>
+          </div>
+          <div class="aw-headline-mark" aria-hidden="true"><span>LOCKED</span><strong>5X</strong><small>NRRS // S3 // CHASE</small></div>
+        </a>
+      </section>
+
+      <section class="aw-feed-group" data-feed-group>
+        <div class="aw-feed-label"><span>2026 Dispatches</span><i></i></div>
+        <div class="aw-story-grid">
+          {dispatches.map((story) => (
+            <a
+              class="aw-story-card panel"
+              href={`/news/${story.slug}/`}
+              data-story
+              data-year="2026"
+              data-category={story.category}
+              data-search={searchable(story)}
+            >
+              <div class="aw-news-card-topline"><span class="tag">{story.category}</span><small>{story.date}</small></div>
+              <p class="aw-news-context">{story.context}</p>
+              <h3>{story.title}</h3>
+              <p>{story.summary}</p>
+              <div class="aw-story-tags">{story.tags.map((tag) => <span>{tag}</span>)}</div>
+              <b>Read Full Story →</b>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="aw-feed-group aw-feed-group--archive" data-feed-group>
+        <div class="aw-feed-label"><span>2025 Archive</span><i></i></div>
+        <div class="aw-story-grid aw-story-grid--archive">
+          {archive.map((story) => (
+            <a
+              class="aw-story-card panel"
+              href={`/news/${story.slug}/`}
+              data-story
+              data-year="2025"
+              data-category={story.category}
+              data-search={searchable(story)}
+            >
+              <div class="aw-news-card-topline"><span class="tag">{story.category}</span><small>{story.date}</small></div>
+              <p class="aw-news-context">{story.context}</p>
+              <h3>{story.title}</h3>
+              <p>{story.summary}</p>
+              <div class="aw-story-tags">{story.tags.map((tag) => <span>{tag}</span>)}</div>
+              <b>Read Full Story →</b>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <div class="empty-state aw-news-empty" data-news-empty hidden>
+        <strong>No Updates Found</strong>
+        <p>No visible posts match the selected feed filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section aw-news-follow">
+    <div class="shell shell--standard">
+      <div class="aw-contact-cta">
+        <span class="aw-paper-label">Follow the Full Program</span>
+        <h2>The story is bigger than the feed.</h2>
+        <p>Team Wire keeps the stories that matter. The complete Aetherwing picture still lives across the roster, schedule, partner wall, and record book.</p>
+        <div class="aw-news-follow-actions"><a class="btn" href="/drivers/">View Drivers</a><a class="btn btn--ghost" href="/schedule/">View Schedule</a><a class="btn btn--ghost" href="/wins-history/">Wins & History</a></div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
 <script>
-  const root=document.querySelector('[data-news-feed]');
-  if(root){const stories=Array.from(root.querySelectorAll('[data-story]'));const search=root.querySelector('[data-news-search]');const count=root.querySelector('[data-news-count]');const empty=root.querySelector('[data-news-empty]');let filter='all';const apply=()=>{const q=search instanceof HTMLInputElement?search.value.trim().toLowerCase():'';let shown=0;stories.forEach(story=>{const show=(filter==='all'||story.dataset.category===filter)&&(!q||(story.dataset.search||'').includes(q));story.hidden=!show;if(show)shown++;});if(count)count.textContent=filter==='all'&&!q?'Showing all stories.':`${shown} stor${shown===1?'y':'ies'} shown.`;if(empty instanceof HTMLElement)empty.hidden=shown>0;};root.querySelectorAll('[data-news-filter]').forEach(button=>button.addEventListener('click',()=>{if(!(button instanceof HTMLButtonElement))return;root.querySelectorAll('[data-news-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');filter=button.dataset.newsFilter||'all';apply();}));search?.addEventListener('input',apply);}
+  const root = document.querySelector('[data-news-feed]');
+  if (root) {
+    const cards = Array.from(root.querySelectorAll('[data-story]'));
+    const groups = Array.from(root.querySelectorAll('[data-feed-group]'));
+    const search = root.querySelector('[data-news-search]');
+    const count = root.querySelector('[data-news-count]');
+    const empty = root.querySelector('[data-news-empty]');
+    let filter = 'all';
+
+    const apply = () => {
+      const q = search instanceof HTMLInputElement ? search.value.trim().toLowerCase() : '';
+      let shown = 0;
+      cards.forEach((card) => {
+        if (!(card instanceof HTMLElement)) return;
+        const visible = (filter === 'all' || card.dataset.category === filter) && (!q || (card.dataset.search || '').includes(q));
+        card.hidden = !visible;
+        if (visible) shown += 1;
+      });
+      groups.forEach((group) => {
+        if (!(group instanceof HTMLElement)) return;
+        group.hidden = !group.querySelector('[data-story]:not([hidden])');
+      });
+      if (count) count.textContent = filter === 'all' && !q ? `Showing all ${cards.length} stories.` : `${shown} stor${shown === 1 ? 'y' : 'ies'} shown.`;
+      if (empty instanceof HTMLElement) empty.hidden = shown > 0;
+    };
+
+    root.querySelectorAll('[data-news-filter]').forEach((button) => button.addEventListener('click', () => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      root.querySelectorAll('[data-news-filter]').forEach((item) => item.classList.remove('is-active'));
+      button.classList.add('is-active');
+      filter = button.dataset.newsFilter || 'all';
+      apply();
+    }));
+    search?.addEventListener('input', apply);
+  }
 </script>

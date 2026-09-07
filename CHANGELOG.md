@@ -1,3 +1,11 @@
+## v0.3.8 — Full Team Wire Migration
+- Migrated the exact 10-story archive currently published on `aetherwing.net/updates` into the new News page.
+- Added the previously missing 100th RoRacing start and Aetherwing/NGM Driver Development stories.
+- Replaced short placeholder article pages with full, structured story pages containing article sections, quick-fact rails, story-file metadata, historical-context notes, and story-to-story navigation.
+- Preserved the full Martinsville Chase-clinch record, including the five-berth postseason ledger.
+- Added redirects from every current Squarespace story URL to its new `/news/<slug>/` route, plus redirects from earlier rebuild slugs.
+- Kept the current curated 10-story set rather than restoring stories intentionally absent from the live Team Wire.
+
 ## v0.3.7
 - Paint Booth performance pass: reduced the eager thumbnail batch, tightened lazy-load margins, deferred archive image loading until the archive is approached, added image preloading for the active and adjacent paints, and avoided unnecessary active-image swaps.
 - Added stronger content-visibility containment for heavy Paint Booth sections.

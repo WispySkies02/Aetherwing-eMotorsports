@@ -1,1 +1,22 @@
 /updates /news 301
+
+# Current Squarespace Team Wire article routes → new static News routes
+/wispy-clinches-nrrs-s3-chase-martinsville /news/wispy-clinches-nrrs-s3-chase-martinsville 301
+/wispy-100th-roracing-start-talladega /news/wispy-100th-roracing-start-talladega 301
+/waggoner-sweeps-michigan-double /news/waggoner-sweeps-michigan-double 301
+/waggoner-michigan-nis-win /news/waggoner-michigan-nis-win 301
+/waggoner-wins-iracing-indianapolis-500 /news/waggoner-wins-iracing-indianapolis-500 301
+/aetherwing-sweeps-clashes /news/aetherwing-sweeps-clashes 301
+/aetherwing-ngm-driver-development /news/aetherwing-ngm-driver-development 301
+/aetherwing-launch-new-era /news/aetherwing-launch-new-era 301
+/wispy-wins-nrrs-all-star /news/wispy-wins-nrrs-all-star 301
+/kmart-cup-daytona500-one-two-finish /news/kmart-cup-daytona500-one-two-finish 301
+
+# Earlier rebuild slugs → canonical Team Wire routes
+/news/wispy-clinches-nrrs-chase-martinsville /news/wispy-clinches-nrrs-s3-chase-martinsville 301
+/news/michigan-photo-finish-rowdy /news/waggoner-michigan-nis-win 301
+/news/michigan-truck-victory /news/waggoner-sweeps-michigan-double 301
+/news/indianapolis-500-win /news/waggoner-wins-iracing-indianapolis-500 301
+/news/bellsouth-becomes-aetherwing /news/aetherwing-launch-new-era 301
+/news/first-roracing-win /news/wispy-wins-nrrs-all-star 301
+/news/kmart-daytona-500-one-two /news/kmart-cup-daytona500-one-two-finish 301

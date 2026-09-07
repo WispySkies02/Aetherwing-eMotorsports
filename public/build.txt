@@ -1,7 +1,8 @@
 Aetherwing eMotorsports
-Build: v0.3.7
+Build: v0.3.8
 Drivers: Wispy multi-number display fixed (#32 / #28 / #15 / #54)
 Paint Booth: ALL = 34 total paints; 5 lighting presets; optimized render loading
 Schedule: criteria tags + all scheduled track names resolve to weather locations
 Home partner logo panels: white backgrounds removed
 Paint Booth speed: tighter lazy-loading, image preloading, smaller eager batch, deferred archive loads
+News: 10 current Team Wire stories migrated with full article bodies and legacy redirects

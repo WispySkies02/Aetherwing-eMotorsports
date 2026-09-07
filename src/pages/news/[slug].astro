@@ -3,12 +3,114 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import stories from '../../data/news.json';
 import '../../styles/pages/content.css';
 import '../../styles/pages/news.css';
-export function getStaticPaths(){return stories.map((story)=>({params:{slug:story.slug},props:{story}}));}
-const {story}=Astro.props;
+
+export function getStaticPaths() {
+  return stories.map((story, index) => ({ params: { slug: story.slug }, props: { story, index } }));
+}
+
+const { story, index } = Astro.props;
+const previous = stories[index - 1] ?? null;
+const next = stories[index + 1] ?? null;
+const categoryClass = story.category === 'Race & Competition' ? 'is-race' : story.category === 'Team & Organization' ? 'is-team' : 'is-milestone';
 ---
 <BaseLayout title={story.title} description={story.summary} type="article">
-  <article class="aw-article">
-    <header class="aw-article-hero"><div class="shell shell--standard"><span class="tag tag--gold">{story.kicker}</span><p class="eyebrow">{story.category} · {story.date}</p><h1>{story.title}</h1><p>{story.summary}</p><div class="aw-story-tags">{story.tags.map((tag)=><span>{tag}</span>)}</div></div></header>
-    <div class="shell shell--narrow aw-article-body"><p class="aw-article-lede">{story.summary}</p><p>This archive entry preserves the event in the identity and context in which it was recorded. Current team roles, current alliances, or current branding do not rewrite the historical result.</p><div class="aw-article-back"><a class="btn" href="/news/">← Team Wire</a><a class="btn btn--ghost" href="/wins-history/">Record Book</a></div></div>
+  <article class={`aw-news-article ${categoryClass}`}>
+    <header class="aw-news-article-hero">
+      <div class="aw-news-article-ghost" aria-hidden="true">{story.featured ? 'LOCKED' : story.kicker}</div>
+      <div class="shell shell--standard aw-news-article-hero__inner">
+        <a class="aw-news-back" href="/news/">← Team Wire</a>
+        <div class="aw-news-article-meta-top">
+          <span class="tag">{story.category}</span>
+          <span>{story.context}</span>
+          <time datetime={story.dateIso}>{story.date}</time>
+        </div>
+        <p class="eyebrow">{story.kicker}</p>
+        <h1>{story.title}</h1>
+        <p class="aw-news-article-dek">{story.summary}</p>
+        <div class="aw-story-tags aw-story-tags--hero">{story.tags.map((tag) => <span>{tag}</span>)}</div>
+        <p class="aw-news-byline">Filed by {story.byline ?? 'Aetherwing eMotorsports'}</p>
+      </div>
+    </header>
+
+    {story.metrics?.length > 0 && (
+      <section class="aw-news-snapshot" aria-label={`${story.title} quick facts`}>
+        <div class="shell aw-news-snapshot-grid">
+          {story.metrics.map((metric, metricIndex) => <div class:list={[{'is-accent':metricIndex === 1 || metricIndex === story.metrics.length - 1}]}><span>{metric.label}</span><strong>{metric.value}</strong></div>)}
+        </div>
+      </section>
+    )}
+
+    <main class="aw-news-article-main">
+      <div class="shell shell--standard aw-news-story-layout">
+        <div class="aw-news-story-body">
+          {story.sections.map((section, sectionIndex) => (
+            <section class="aw-news-story-section">
+              <h2>{section.heading}</h2>
+              {section.paragraphs.map((paragraph, paragraphIndex) => <p class:list={[{'is-lede':sectionIndex === 0 && paragraphIndex === 0}]}>{paragraph}</p>)}
+              {story.quote && sectionIndex === 0 && (
+                <blockquote class="aw-news-quote">
+                  <p>{story.quote.text}</p>
+                  <cite>{story.quote.attribution}</cite>
+                </blockquote>
+              )}
+            </section>
+          ))}
+
+          {story.callout && (
+            <aside class="aw-news-callout">
+              <span>{story.callout.label}</span>
+              <h2>{story.callout.title}</h2>
+              <p>{story.callout.text}</p>
+            </aside>
+          )}
+
+          {story.timeline?.length > 0 && (
+            <section class="aw-news-ledger" aria-labelledby="news-ledger-title">
+              <div class="aw-news-ledger-head"><div><span>Wispy // Confirmed Postseason Record</span><h2 id="news-ledger-title">The Road To Five.</h2></div><strong>5×</strong></div>
+              <div class="aw-news-ledger-grid">
+                {story.timeline.map((entry, timelineIndex) => (
+                  <article class:list={[{'is-current':timelineIndex === story.timeline.length - 1}]}>
+                    <small>{entry.series} · {entry.season}</small>
+                    <h3>{entry.title}</h3>
+                    <span>{entry.method}</span>
+                    <time>{entry.date}</time>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div class="aw-news-history-note">
+            <strong>Archive Note</strong>
+            <p>This story is preserved in the competitive and organizational context in which it was recorded. Later roster, branding, partnership, or alliance changes do not rewrite the historical event.</p>
+          </div>
+        </div>
+
+        <aside class="aw-news-story-sidebar" aria-label="Story file">
+          <div class="aw-news-file-card">
+            <span>Story File</span>
+            <strong>{story.kicker}</strong>
+            <dl>
+              <div><dt>Desk</dt><dd>{story.category}</dd></div>
+              <div><dt>Context</dt><dd>{story.context}</dd></div>
+              <div><dt>Date</dt><dd>{story.date}</dd></div>
+              <div><dt>Archive</dt><dd>{story.dateIso.slice(0,4)}</dd></div>
+            </dl>
+          </div>
+          <div class="aw-news-sidebar-links">
+            <a href="/wins-history/">Wins & History <span>→</span></a>
+            <a href="/schedule/">Schedule <span>→</span></a>
+            <a href="/drivers/">Drivers <span>→</span></a>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <nav class="aw-news-story-nav" aria-label="More Team Wire stories">
+      <div class="shell shell--standard">
+        {previous ? <a href={`/news/${previous.slug}/`}><span>Newer Story</span><strong>← {previous.title}</strong></a> : <a href="/news/"><span>News Archive</span><strong>← Team Wire</strong></a>}
+        {next ? <a href={`/news/${next.slug}/`}><span>Older Story</span><strong>{next.title} →</strong></a> : <a href="/news/"><span>News Archive</span><strong>All Stories →</strong></a>}
+      </div>
+    </nav>
   </article>
 </BaseLayout>
