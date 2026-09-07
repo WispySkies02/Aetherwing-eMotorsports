@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import scheduleSource from '../../data/schedule-events.json';
+import { eventSlug, eventDisplayDate, eventShareDescription } from '../../lib/schedule-events.mjs';
+
+export function getStaticPaths() {
+  return scheduleSource.map((event) => ({
+    params: { slug: eventSlug(event) },
+    props: { event: { ...event, shareSlug: eventSlug(event) } }
+  }));
+}
+
+const { event } = Astro.props;
+const target = `/schedule#event-${event.shareSlug}`;
+const relationship = event.league === 'kmart' || event.league === 'sunoco'
+  ? 'StarClutch Racing Alliance'
+  : 'Aetherwing Program';
+const description = eventShareDescription(event);
+---
+<BaseLayout
+  title={event.title}
+  description={description}
+  canonical={`/event/${event.shareSlug}/`}
+  image="/images/social/default-social.png"
+  noindex={true}
+>
+  <section class="section" style="min-height:65vh;display:grid;place-items:center">
+    <div class="shell" style="max-width:860px">
+      <article style="border:3px solid #fff;background:#050505;box-shadow:10px 10px 0 #000;padding:clamp(1.2rem,4vw,2.2rem)">
+        <p class="eyebrow">Shared Schedule Event</p>
+        <h1 class="section-title" style="margin:.35rem 0 .8rem">{event.title}</h1>
+        <p class="lede" style="margin:0 0 1rem">{event.leagueName} · {relationship}</p>
+        <div style="display:grid;gap:.55rem;font-family:var(--font-mono);text-transform:uppercase;font-size:.72rem;color:#aaa">
+          <strong style="color:#fff">{eventDisplayDate(event)} · {event.time}</strong>
+          <span>{event.track}</span>
+          <span>{event.status ?? 'Scheduled'}{event.specialTag ? ` · ${event.specialTag}` : ''}</span>
+        </div>
+        <a class="btn" href={target} style="margin-top:1.25rem">Open in Aetherwing Schedule</a>
+      </article>
+    </div>
+  </section>
+  <script is:inline define:vars={{ target }}>
+    window.location.replace(target);
+  </script>
+</BaseLayout>

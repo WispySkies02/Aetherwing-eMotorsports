@@ -4,8 +4,9 @@ import PageHero from '../../components/ui/PageHero.astro';
 import scheduleSource from '../../data/schedule-events.json';
 import trackSource from '../../data/schedule-track-locations.json';
 import '../../styles/pages/schedule.css';
+import { eventSlug } from '../../lib/schedule-events.mjs';
 
-const scheduleEvents = [...scheduleSource].sort((a,b) => String(a.date ?? '9999').localeCompare(String(b.date ?? '9999')) || String(a.time ?? '').localeCompare(String(b.time ?? '')));
+const scheduleEvents = [...scheduleSource].map((event) => ({ ...event, shareSlug: eventSlug(event) })).sort((a,b) => String(a.date ?? '9999').localeCompare(String(b.date ?? '9999')) || String(a.time ?? '').localeCompare(String(b.time ?? '')));
 const totalSeasonRaces = scheduleEvents.filter((event) => event.league !== 'iracing' && !event.offWeek).length;
 const monthKey = (event) => event.tbd ? 'tbd' : String(event.date).slice(0,7);
 const monthLabel = (key) => {
@@ -96,7 +97,7 @@ const displayDate = (event) => {
             <div class="aw-month-heading"><h2>{monthLabel(key)}</h2><span data-month-count></span></div>
             <div class="aw-event-stack">
               {items.map(({event,index}) => (
-                <article class:list={['aw-event-card',{'is-alliance':isAlliance(event.league),'is-special':event.league==='iracing','is-off-week':event.offWeek}]} data-event-card data-event-index={index} data-league={leagueClass(event.league)}>
+                <article id={`event-${event.shareSlug}`} class:list={['aw-event-card',{'is-alliance':isAlliance(event.league),'is-special':event.league==='iracing','is-off-week':event.offWeek}]} data-event-card data-event-index={index} data-event-slug={event.shareSlug} data-league={leagueClass(event.league)}>
                   <button class="aw-event-summary" type="button" data-event-toggle aria-expanded="false" aria-controls={`event-dock-${index}`}>
                     <div class="aw-event-date"><strong>{displayDate(event)}</strong><span>{event.time}</span></div>
                     <div class="aw-event-main">
@@ -112,7 +113,7 @@ const displayDate = (event) => {
                     <div class="aw-event-chevron"><span>INFO</span><b>⌄</b></div>
                   </button>
                   <div class="aw-event-dock" id={`event-dock-${index}`} data-event-dock hidden>
-                    <div class="aw-dock-bar"><span>Event Information Dock</span><strong data-event-live-state>Scheduled</strong></div>
+                    <div class="aw-dock-bar"><span>Event Information Dock</span><div><strong data-event-live-state>Scheduled</strong><button type="button" class="aw-event-share" data-event-share={event.shareSlug} aria-label={`Copy share link for ${event.title}`}>↗ SHARE</button></div></div>
                     <div class="aw-dock-grid">
                       <div><span>Competition</span><strong>{event.leagueName}</strong></div>
                       <div><span>Relationship</span><strong>{isAlliance(event.league) ? 'StarClutch Racing Alliance' : 'Aetherwing Program'}</strong></div>
@@ -138,6 +139,7 @@ const displayDate = (event) => {
     </div>
   </section>
 
+  <div class="aw-schedule-toast" data-schedule-toast role="status" aria-live="polite" hidden>Event link copied</div>
   <script type="application/json" id="aw-schedule-data" set:html={JSON.stringify(scheduleEvents)}></script>
   <script type="application/json" id="aw-track-data" set:html={JSON.stringify(trackSource)}></script>
 </BaseLayout>
@@ -163,7 +165,7 @@ const displayDate = (event) => {
   const weatherLoading = page.querySelector('[data-weather-loading]');
   const weatherTarget = page.querySelector('[data-weather-target]');
   const weatherScreens = Array.from(page.querySelectorAll('[data-weather-screen]'));
-  let activeFilter = 'all'; let activeSubfilter = 'uarl-all'; let showFullSchedule = false; let currentWeatherTrack = null; let weatherCycle = null;
+  let activeFilter = 'all'; let activeSubfilter = 'uarl-all'; let showFullSchedule = false; let currentWeatherTrack = null; let weatherCycle = null; let forcedEventSlug = ''; let toastTimer = null;
 
   const pad = (number) => String(number).padStart(2,'0');
   function getOffsetForDateKey(dateKey) {
@@ -208,7 +210,7 @@ const displayDate = (event) => {
   function renderSchedule() {
     let shown = 0; const visibleMonthKeys = [];
     cards.forEach((card,index) => {
-      const event = scheduleEvents[index]; const visible = isUpcoming(event) && matchesFilter(event);
+      const event = scheduleEvents[index]; const forced = forcedEventSlug && event.shareSlug === forcedEventSlug; const visible = forced || (isUpcoming(event) && matchesFilter(event));
       card.hidden = !visible; card.classList.remove('is-next');
       if (visible) { shown++; const key = event.tbd ? 'tbd' : event.date.slice(0,7); if (!visibleMonthKeys.includes(key)) visibleMonthKeys.push(key); }
     });
@@ -220,7 +222,7 @@ const displayDate = (event) => {
       block.hidden = !hasVisible || !withinCondensed;
       const monthCount = block.querySelector('[data-month-count]'); if (monthCount) monthCount.textContent = `${Array.from(block.querySelectorAll('[data-event-card]')).filter(card=>!card.hidden).length} operations`;
     });
-    if (visibleCount) visibleCount.textContent = `${shown} upcoming operation${shown===1?'':'s'}`;
+    if (visibleCount) visibleCount.textContent = forcedEventSlug ? `${shown} operation${shown===1?'':'s'} · shared event revealed` : `${shown} upcoming operation${shown===1?'':'s'}`;
     if (empty instanceof HTMLElement) empty.hidden = shown > 0;
     const hiddenByCondense = monthBlocks.some(block => { const hasVisible = Array.from(block.querySelectorAll('[data-event-card]')).some(card=>!card.hidden); return hasVisible && block.hidden; });
     if (toggleFull instanceof HTMLElement) { toggleFull.hidden = !hiddenByCondense && !showFullSchedule; toggleFull.textContent = showFullSchedule ? 'Show Condensed Schedule' : 'Show Full Upcoming Schedule'; toggleFull.setAttribute('aria-expanded',String(showFullSchedule)); }
@@ -260,10 +262,10 @@ const displayDate = (event) => {
     toolbar.querySelectorAll('[data-filter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeFilter = button.dataset.filter || 'all';
     if (uarlSubfilters instanceof HTMLElement) uarlSubfilters.hidden = activeFilter !== 'uarl-group';
     if (activeFilter === 'uarl-group') { activeSubfilter='uarl-all'; toolbar.querySelectorAll('[data-subfilter]').forEach(item=>{item.classList.toggle('is-active',item.dataset.subfilter==='uarl-all');item.setAttribute('aria-pressed',String(item.dataset.subfilter==='uarl-all'));}); }
-    showFullSchedule=false; renderSchedule(); updateNextOperation();
+    forcedEventSlug=''; showFullSchedule=false; renderSchedule(); updateNextOperation();
   }));
   toolbar?.querySelectorAll('[data-subfilter]').forEach(button => button.addEventListener('click', () => {
-    toolbar.querySelectorAll('[data-subfilter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeSubfilter=button.dataset.subfilter || 'uarl-all'; showFullSchedule=false; renderSchedule(); updateNextOperation();
+    toolbar.querySelectorAll('[data-subfilter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeSubfilter=button.dataset.subfilter || 'uarl-all'; forcedEventSlug=''; showFullSchedule=false; renderSchedule(); updateNextOperation();
   }));
   toggleFull?.addEventListener('click',()=>{showFullSchedule=!showFullSchedule;renderSchedule();});
 
@@ -273,6 +275,31 @@ const displayDate = (event) => {
     page.querySelectorAll('[data-event-dock]').forEach(other => { if (other !== dock && other instanceof HTMLElement) { other.hidden=true; other.closest('[data-event-card]')?.querySelector('[data-event-toggle]')?.setAttribute('aria-expanded','false'); } });
     dock.hidden = !opening; button.setAttribute('aria-expanded',String(opening)); if (opening) card?.classList.add('is-open'); else card?.classList.remove('is-open');
   }));
+
+  const scheduleToast = page.querySelector('[data-schedule-toast]');
+  const copyText = async (text) => {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    const area=document.createElement('textarea'); area.value=text; area.style.position='fixed'; area.style.opacity='0'; document.body.append(area); area.select(); document.execCommand('copy'); area.remove();
+  };
+  const announceShare = (text) => { if (!(scheduleToast instanceof HTMLElement)) return; scheduleToast.textContent=text; scheduleToast.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>scheduleToast.hidden=true,1500); };
+  page.querySelectorAll('[data-event-share]').forEach(button => button.addEventListener('click', async () => {
+    const slug=button.dataset.eventShare || ''; if(!slug) return;
+    await copyText(`${location.origin}/event/${encodeURIComponent(slug)}/`);
+    announceShare('Event link copied');
+  }));
+
+  function revealEventHash() {
+    if (!location.hash.startsWith('#event-')) return false;
+    const slug=decodeURIComponent(location.hash.slice(7));
+    const target=scheduleEvents.find(event=>event.shareSlug===slug); if(!target) return false;
+    forcedEventSlug=slug; activeFilter='all'; activeSubfilter='uarl-all'; showFullSchedule=true;
+    toolbar?.querySelectorAll('[data-filter]').forEach(item=>{const selected=item.dataset.filter==='all';item.classList.toggle('is-active',selected);item.setAttribute('aria-pressed',String(selected));});
+    if(uarlSubfilters instanceof HTMLElement)uarlSubfilters.hidden=true;
+    renderSchedule(); updateNextOperation(); updateDockCountdowns();
+    const card=document.getElementById(`event-${slug}`); const toggle=card?.querySelector('[data-event-toggle]'); const dock=card?.querySelector('[data-event-dock]');
+    if(dock instanceof HTMLElement){page.querySelectorAll('[data-event-dock]').forEach(other=>{if(other!==dock && other instanceof HTMLElement)other.hidden=true;});dock.hidden=false;toggle?.setAttribute('aria-expanded','true');card?.classList.add('is-open','is-share-target');setTimeout(()=>card?.classList.remove('is-share-target'),2400);card?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});}
+    return true;
+  }
 
   function resolveTrackLocation(name) { const canonical = aliases[name] || name; return locations[canonical] || null; }
   function weatherCondition(code) { const v=Number(code); if(v===0)return'CLEAR';if(v===1)return'MAINLY CLEAR';if(v===2)return'PARTLY CLOUDY';if(v===3)return'OVERCAST';if(v===45||v===48)return'FOG';if([51,53,55,56,57].includes(v))return'DRIZZLE';if([61,63,65,66,67].includes(v))return'RAIN';if([71,73,75,77].includes(v))return'SNOW';if([80,81,82].includes(v))return'SHOWERS';if([85,86].includes(v))return'SNOW SHOWERS';if([95,96,99].includes(v))return'THUNDERSTORMS';return'VARIABLE'; }
@@ -295,7 +322,8 @@ const displayDate = (event) => {
     try { await openMeteo(loc); if(weatherLoading instanceof HTMLElement)weatherLoading.classList.remove('is-active'); cycleWeather(); } catch { if(weatherTarget)weatherTarget.textContent='COMMUNICATION ERROR'; }
   }
 
-  renderSchedule(); updateNextOperation(); updateDockCountdowns();
+  if (!revealEventHash()) { renderSchedule(); updateNextOperation(); updateDockCountdowns(); }
+  addEventListener('hashchange', revealEventHash);
   const timer=setInterval(()=>{updateNextOperation();updateDockCountdowns();},1000);
   const refresh=()=>{renderSchedule();updateNextOperation();updateDockCountdowns();};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();}); addEventListener('focus',refresh); addEventListener('pageshow',refresh);

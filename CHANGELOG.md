@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.4 — Paint Picker + Shareable Schedule Events
+
+- Fixed garage entry behavior so selecting UARL D1, UARL D2, Kmart, Sunoco, or iRacing prefers the Wispy/Nicholas driver slot when that garage contains uploaded paints instead of dropping into an unrelated pending driver first.
+- Added an iPhone-first Garage → Driver → Paint quick picker to the interactive Paint Booth.
+- Changed the mobile Paint Rack from a sideways hunt to a vertically scrollable full-width list.
+- UARL D2 now immediately exposes Wispy's two source paints; iRacing immediately exposes Nicholas Waggoner's 12 Wispy-identity paints.
+- Added share buttons to every Schedule information dock.
+- Added 143 static `/event/<slug>/` share routes with event-specific Open Graph metadata and human redirects back to the exact Schedule event.
+- Added `#event-...` deep-link handling that reveals, opens, scrolls to, and briefly highlights the targeted event, including completed events.
+- Updated staging build marker to v0.3.4.
+
 ## 0.3.3 — Repo-root deployment + server-rendered Wispy rack
 
 - Fixed the deployment packaging problem that could leave an older v0.2 project at the GitHub/Netlify repository root while newer source was nested inside `aetherwing-site/`.

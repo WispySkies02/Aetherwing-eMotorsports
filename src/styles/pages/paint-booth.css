@@ -142,3 +142,18 @@
 }
 @media(max-width:480px){.aw-hud-brand>small{font-size:.41rem}.aw-hud-metrics>div:nth-child(3){display:none}.aw-hud-metrics{grid-template-columns:repeat(3,1fr)}.aw-booth-room{height:64svh;min-height:470px}.aw-back-mark{font-size:3.4rem}.aw-car-id--bottom>strong{font-size:3.35rem}.aw-car-id--bottom>div small{display:none}.aw-booth-car{bottom:21%}.aw-booth-car.is-empty::after{top:62%}.aw-mobile-booth-console{left:.35rem;right:.35rem;bottom:.35rem}.aw-mobile-booth-console button{min-height:44px;font-size:.39rem}.aw-directory-list button{flex-basis:178px}.aw-directory-list button.is-identity{flex-basis:220px}.aw-paint-rack>button{flex-basis:230px}.aw-overview-driver{grid-template-columns:44px minmax(0,1fr)}.aw-overview-driver>em{grid-column:2;justify-self:start}.aw-collection-toolbar{position:static}}
 @media(prefers-reduced-motion:reduce){.aw-booth-signal i{animation:none}.aw-booth-car,.aw-car-open img,.aw-booth-info{transition:none}}
+
+/* v0.3.4 — iPhone-first quick picker and visible full paint rack */
+.aw-mobile-quick-picker{display:none}
+@media(max-width:720px){
+  .aw-mobile-quick-picker{display:grid;grid-template-columns:1fr;gap:.55rem;padding:.7rem;border-bottom:1px solid #303030;background:linear-gradient(180deg,#101010,#070707)}
+  .aw-mobile-picker-head{display:flex;align-items:end;justify-content:space-between;gap:.7rem;padding-bottom:.35rem;border-bottom:1px dashed #333}.aw-mobile-picker-head strong{font:900 .72rem/1 var(--font-mono);letter-spacing:.07em}.aw-mobile-picker-head span{color:var(--booth-accent);font:800 .46rem/1 var(--font-mono);text-transform:uppercase}
+  .aw-mobile-quick-picker label{display:grid;grid-template-columns:64px minmax(0,1fr);gap:.5rem;align-items:center}.aw-mobile-quick-picker label>span{color:#777;font:900 .48rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em}.aw-mobile-quick-picker select{width:100%;min-height:44px;border:1px solid #4a4a4a;border-radius:0;background:#050505;color:#fff;padding:.55rem .7rem;font:800 .72rem/1.2 var(--font-mono);text-transform:uppercase;-webkit-appearance:auto;appearance:auto}.aw-mobile-quick-picker select:focus{outline:2px solid var(--booth-accent);outline-offset:2px}.aw-mobile-quick-picker select:disabled{color:#666;border-style:dashed}.aw-mobile-quick-picker>small{display:block;padding:.15rem 0 0 64px;color:#777;font:700 .45rem/1.35 var(--font-mono);text-transform:uppercase}
+  .aw-paint-rack{display:grid;grid-template-columns:1fr;max-height:390px;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;overscroll-behavior:contain;padding:.55rem}
+  .aw-paint-rack>button{width:100%;min-width:0;min-height:88px;grid-template-columns:96px minmax(0,1fr);scroll-snap-align:start}
+  .aw-paint-rack img{width:96px;height:72px}
+  .aw-paint-rack>button span strong{font-size:.78rem}.aw-paint-rack>button span small{font-size:.46rem}
+}
+@media(max-width:480px){
+  .aw-mobile-quick-picker{padding:.6rem}.aw-mobile-picker-head{align-items:flex-start;flex-direction:column;gap:.25rem}.aw-mobile-quick-picker label{grid-template-columns:56px minmax(0,1fr)}.aw-mobile-quick-picker>small{padding-left:56px}.aw-paint-rack{max-height:350px}.aw-paint-rack>button{grid-template-columns:84px minmax(0,1fr)}.aw-paint-rack img{width:84px;height:66px}
+}

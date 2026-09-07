@@ -4,9 +4,9 @@ Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 ## Status
 
-**v0.3.3 — Mobile Paint Booth / Full Wispy Inventory Fix**
+**v0.3.4 — Mobile Paint Booth / Full Wispy Inventory Fix**
 
-This version keeps the current Aetherwing visual identity while fully migrating the current Schedule and Paint Booth source data. The Schedule carries the complete 126-race season calendar plus iRacing special-event windows and expandable event docks. Paint Booth v0.3.3 fixes the mobile facility layout and the incomplete Wispy paint presentation: mobile now enters the vehicle bay first with a dedicated booth control strip and bottom-sheet scheme dossier, while `WISPY — ALL PAINTS` exposes all 33 Wispy/Nicholas Waggoner identity paints across the source garages and iRacing. Every current source driver remains visible even when their render has not yet been supplied.
+This version keeps the current Aetherwing visual identity while fully migrating the current Schedule and Paint Booth source data. The Schedule carries the complete 126-race season calendar plus iRacing special-event windows and expandable event docks. Paint Booth v0.3.4 fixes the mobile facility layout and the incomplete Wispy paint presentation: mobile now enters the vehicle bay first with a dedicated booth control strip and bottom-sheet scheme dossier, while `WISPY — ALL PAINTS` exposes all 33 Wispy/Nicholas Waggoner identity paints across the source garages and iRacing. Every current source driver remains visible even when their render has not yet been supplied.
 
 This project does **not** replace or deploy the separate Paint Share project at `paint.aetherwing.net`.
 
@@ -95,8 +95,15 @@ Use Git rather than filename versioning. Prefer clear commits such as:
 - `Add Wispy Home Depot Kmart paint`
 
 
-## v0.3.3 repository deployment warning
+## v0.3.4 repository deployment warning
 
 This package is intentionally distributed as a **repo-root ZIP**. When updating an existing GitHub repository, the files from the ZIP must replace the repository root files (`package.json`, `src/`, `public/`, etc.). Do **not** place a new `aetherwing-site/` folder inside an older Aetherwing repository, because Netlify will continue building the older root project and ignore the nested update.
 
-Paint Booth v0.3.3 also server-renders all **33 Wispy/Nicholas identity paints** into the initial paint rack. The complete rack is therefore present before client-side JavaScript executes. The page root includes `data-paint-build="0.3.3"` for staging verification.
+Paint Booth v0.3.4 also server-renders all **33 Wispy/Nicholas identity paints** into the initial paint rack. The complete rack is therefore present before client-side JavaScript executes. The page root includes `data-paint-build="0.3.3"` for staging verification.
+
+
+## v0.3.4 interaction notes
+
+- Mobile Paint Booth now includes a native Garage → Driver → Paint quick picker.
+- Garage selection prefers a paint-ready Wispy/Nicholas stall when one exists, so UARL D2 and iRacing no longer open on an unrelated pending driver.
+- Schedule event docks include share buttons. Shared URLs use `/event/<slug>/` and redirect human visitors to the exact expanded event at `/schedule#event-<slug>`.

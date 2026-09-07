@@ -16,7 +16,7 @@ const wispyIdentityPaints = paints.filter((paint) => paint.driver === 'Wispy' ||
 const initialRackPaints = wispyIdentityPaints;
 ---
 <BaseLayout title="Paint Booth" description="Enter the Aetherwing Paint Booth: an interactive seven-garage livery facility with 34 uploaded schemes, driver stalls, Roblox Scheme IDs, deep links, iRacing Factory paints, and StarClutch Racing alliance liveries.">
-  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.3">
+  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.4">
     <div class="aw-facility-hud">
       <div class="aw-hud-brand">
         <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" class="aw-hud-logo" />
@@ -133,6 +133,18 @@ const initialRackPaints = wispyIdentityPaints;
 
       <section class="aw-control-bench" data-mobile-anchor="rack" aria-label="Paint booth controls">
         <div class="aw-bench-label"><span>04</span><div><strong>PAINT RACK</strong><small data-paint-count>{String(initialRackPaints.length).padStart(2,'0')} paints</small></div></div>
+        <div class="aw-mobile-quick-picker" data-mobile-quick-picker aria-label="Quick paint picker">
+          <div class="aw-mobile-picker-head"><strong>QUICK PAINT PICKER</strong><span>Garage → Driver → Paint</span></div>
+          <label><span>Garage</span><select data-mobile-league-select>
+            <option value="wispy-all">Wispy — All Paints (33)</option>
+            {leagues.map((league) => <option value={league.id}>{league.name} ({paints.filter((paint)=>paint.leagues.includes(league.id)).length})</option>)}
+          </select></label>
+          <label><span>Driver</span><select data-mobile-driver-select><option value="Wispy">Wispy — All Garages + iRacing</option></select></label>
+          <label><span>Paint</span><select data-mobile-paint-select>
+            {initialRackPaints.map((paint) => <option value={paint.slug}>{leagueName(paint.leagues[0])} · {paint.number ? `#${paint.number} ` : ''}{paint.sponsor}</option>)}
+          </select></label>
+          <small data-mobile-picker-note>33 Wispy/Nicholas identity paints available.</small>
+        </div>
         <div class="aw-paint-rack" data-paint-controls>
           {initialRackPaints.map((paint) => {
             const paintLeague = leagues.find((league) => league.id === paint.leagues?.[0]);
@@ -239,6 +251,10 @@ const initialRackPaints = wispyIdentityPaints;
   const paintControls = root.querySelector('[data-paint-controls]');
   const driverCount = root.querySelector('[data-driver-count]');
   const paintCount = root.querySelector('[data-paint-count]');
+  const mobileLeagueSelect = root.querySelector('[data-mobile-league-select]');
+  const mobileDriverSelect = root.querySelector('[data-mobile-driver-select]');
+  const mobilePaintSelect = root.querySelector('[data-mobile-paint-select]');
+  const mobilePickerNote = root.querySelector('[data-mobile-picker-note]');
   const car = root.querySelector('[data-active-car]');
   const infoDock = root.querySelector('[data-info-dock]');
   const infoToggle = root.querySelector('[data-toggle-info]');
@@ -300,6 +316,35 @@ const initialRackPaints = wispyIdentityPaints;
     return [...new Set(driverPaints(leagueId, driverName).map(paint => paint.number).filter(Boolean))].join(' / ');
   }
 
+  function syncMobileQuickPicker() {
+    const league = leagueById(activeLeague);
+    if (mobileLeagueSelect instanceof HTMLSelectElement) mobileLeagueSelect.value = activeLeague;
+    if (mobileDriverSelect instanceof HTMLSelectElement) {
+      const drivers = displayDrivers(league);
+      mobileDriverSelect.innerHTML = drivers.map((driver) => {
+        const count = driverPaints(activeLeague, driver.name).length;
+        const label = `${driver.name}${driver.username ? ' · ' + driver.username : ''}${count ? ` · ${count} paint${count===1?'':'s'}` : ' · Paint pending'}`;
+        return `<option value="${esc(driver.name)}">${esc(label)}</option>`;
+      }).join('');
+      if (drivers.some((driver)=>driver.name===activeDriver)) mobileDriverSelect.value = activeDriver;
+    }
+    if (mobilePaintSelect instanceof HTMLSelectElement) {
+      const list = driverPaints(activeLeague, activeDriver);
+      mobilePaintSelect.innerHTML = list.length ? list.map((paint) => {
+        const actualLeague = leagueById(paint.leagues?.[0]);
+        const label = `${actualLeague?.name || paint.leagues?.[0] || ''} · ${paint.number ? '#' + paint.number + ' · ' : ''}${paint.sponsor}`;
+        return `<option value="${esc(paint.slug)}">${esc(label)}</option>`;
+      }).join('') : '<option value="">Paint pending — no uploaded render</option>';
+      mobilePaintSelect.disabled = !list.length;
+      if (activePaint && list.some((paint)=>paint.slug===activePaint.slug)) mobilePaintSelect.value = activePaint.slug;
+    }
+    if (mobilePickerNote instanceof HTMLElement) {
+      const list = driverPaints(activeLeague, activeDriver);
+      const garageName = league?.name || 'Garage';
+      mobilePickerNote.textContent = list.length ? `${list.length} paint${list.length===1?'':'s'} ready for ${activeDriver} in ${garageName}.` : `${activeDriver} has no uploaded render in ${garageName} yet.`;
+    }
+  }
+
   function renderDrivers() {
     const league = leagueById(activeLeague); if (!league || !driverControls) return;
     const drivers = displayDrivers(league);
@@ -320,6 +365,7 @@ const initialRackPaints = wispyIdentityPaints;
     if (!list.length) {
       paintControls.innerHTML = `<div class="aw-paint-pending"><strong>Still in the Paint Shop</strong><span>No uploaded render for this driver in this garage yet.</span></div>`;
       root.querySelector('[data-booth-state]').textContent = 'PAINT PENDING / DRIVER SLOT RESERVED';
+      syncMobileQuickPicker();
       return;
     }
     root.querySelector('[data-booth-state]').textContent = 'READY / VEHICLE IN BAY';
@@ -328,6 +374,7 @@ const initialRackPaints = wispyIdentityPaints;
       return `<button type="button" class="${activePaint?.slug===paint.slug?'is-active':''}" data-rack-paint="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy" decoding="async"><span><strong>${esc(paint.sponsor)}</strong><small>${paint.number ? '#' + esc(paint.number) : 'TEAM'} · ${esc(paintLeague?.name || paint.leagues?.[0] || '')} · ${esc(paint.manufacturer)}</small></span></button>`;
     }).join('');
     paintControls.querySelectorAll('[data-rack-paint]').forEach(button => button.addEventListener('click', () => selectPaint(button.dataset.rackPaint || '', true)));
+    syncMobileQuickPicker();
   }
 
 
@@ -359,7 +406,10 @@ const initialRackPaints = wispyIdentityPaints;
     if (boothShell instanceof HTMLElement) { boothShell.dataset.relationship = league.relationship || 'aetherwing'; if (league.relationship === 'alliance') boothShell.style.removeProperty('--booth-accent'); else boothShell.style.setProperty('--booth-accent', league.color || 'var(--aw-blue)'); }
     if (!keepPaint) {
       const drivers = displayDrivers(league);
-      activeDriver = drivers[0]?.name || '';
+      const identityDriver = drivers.find((driver) => isWispyIdentity(driver.name) && driverPaints(id, driver.name).length);
+      const readyDriver = drivers.find((driver) => driverPaints(id, driver.name).length);
+      const preferredDriver = identityDriver || readyDriver || drivers[0];
+      activeDriver = preferredDriver?.name || '';
       const first = driverPaints(id, activeDriver)[0] || null;
       activePaint = first;
     }
@@ -427,6 +477,9 @@ const initialRackPaints = wispyIdentityPaints;
     updateActivePaint(paint, updateUrl);
   }
 
+  mobileLeagueSelect?.addEventListener('change', () => selectLeague(mobileLeagueSelect.value || WISPY_SCOPE));
+  mobileDriverSelect?.addEventListener('change', () => selectDriver(mobileDriverSelect.value || ''));
+  mobilePaintSelect?.addEventListener('change', () => { if (mobilePaintSelect.value) selectPaint(mobilePaintSelect.value, true); });
   leagueButtons.forEach(button => button.addEventListener('click', () => selectLeague(button.dataset.leagueId || '')));
   root.querySelectorAll('[data-mobile-target]').forEach((button) => button.addEventListener('click', () => {
     const target = root.querySelector(`[data-mobile-anchor="${button.dataset.mobileTarget || ''}"]`);

@@ -1,3 +1,5 @@
 Aetherwing eMotorsports
-Build: v0.3.3
+Build: v0.3.4
 Paint Booth: 33 Wispy/Nicholas identity paints, 34 total paints
+Mobile Paint Picker: Garage -> Driver -> Paint
+Schedule Sharing: /event/<event-slug>/ -> /schedule#event-<event-slug>
