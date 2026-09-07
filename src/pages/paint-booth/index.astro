@@ -16,7 +16,7 @@ const wispyIdentityPaints = paints.filter((paint) => paint.driver === 'Wispy' ||
 const initialRackPaints = paints;
 ---
 <BaseLayout title="Paint Booth" description="Enter the Aetherwing Paint Booth: an interactive seven-garage livery facility with 34 uploaded schemes, driver stalls, Roblox Scheme IDs, deep links, iRacing Factory paints, and StarClutch Racing alliance liveries.">
-  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.5">
+  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.7">
     <div class="aw-facility-hud">
       <div class="aw-hud-brand">
         <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" class="aw-hud-logo" />
@@ -156,7 +156,7 @@ const initialRackPaints = paints;
         <div class="aw-paint-rack" data-paint-controls>
           {initialRackPaints.map((paint,index) => {
             const paintLeague = leagues.find((league) => league.id === paint.leagues?.[0]);
-            const eagerThumb = index < 4;
+            const eagerThumb = index < 2;
             return (
               <button type="button" class:list={[{'is-active':paint.slug===initial.slug}]} data-rack-paint={paint.slug}>
                 <img class="aw-deferred-image" src={eagerThumb ? paint.image : undefined} data-src={eagerThumb ? undefined : paint.image} alt="" loading={eagerThumb ? 'eager' : 'lazy'} fetchpriority="low" decoding="async" />
@@ -285,6 +285,7 @@ const initialRackPaints = paints;
   let toastTimer;
   let carSwapToken = 0;
   const imageWarmCache = new Map();
+  const preloadLinks = new Map();
   const deferredObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -297,7 +298,13 @@ const initialRackPaints = paints;
       }
       observer.unobserve(entry.target);
     });
-  }, { root:null, rootMargin:'420px 320px', threshold:0.01 }) : null;
+  }, { root:null, rootMargin:'180px 120px', threshold:0.01 }) : null;
+  const collectionObserver = ('IntersectionObserver' in window && collection instanceof HTMLElement) ? new IntersectionObserver((entries, observer) => {
+    if (entries.some((entry) => entry.isIntersecting)) {
+      observeDeferredImages(collection);
+      observer.disconnect();
+    }
+  }, { root:null, rootMargin:'260px 0px', threshold:0.01 }) : null;
 
   function observeDeferredImages(scope = document) {
     scope.querySelectorAll?.('img[data-src]').forEach((img) => {
@@ -307,14 +314,29 @@ const initialRackPaints = paints;
     });
   }
 
+  function ensurePreload(url, priority = 'high') {
+    if (!url || preloadLinks.has(url)) return;
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = url;
+    try { link.fetchPriority = priority; } catch {}
+    document.head.append(link);
+    preloadLinks.set(url, link);
+  }
+
   function warmImage(url, priority = 'auto') {
     if (!url) return Promise.resolve(false);
+    ensurePreload(url, priority === 'high' ? 'high' : 'low');
     if (imageWarmCache.has(url)) return imageWarmCache.get(url);
     const promise = new Promise((resolve) => {
       const preload = new Image();
       preload.decoding = 'async';
       try { preload.fetchPriority = priority; } catch {}
-      preload.onload = () => resolve(true);
+      preload.onload = async () => {
+        try { if (preload.decode) await preload.decode(); } catch {}
+        resolve(true);
+      };
       preload.onerror = () => resolve(false);
       preload.src = url;
       if (preload.complete) resolve(preload.naturalWidth > 0);
@@ -332,6 +354,7 @@ const initialRackPaints = paints;
 
   async function setActiveCarImage(paint) {
     if (!(car instanceof HTMLImageElement) || !paint?.image) return;
+    if (car.getAttribute('src') === paint.image) { warmAdjacentPaints(paint); return; }
     const token = ++carSwapToken;
     const carWrap = root.querySelector('[data-booth-car]');
     carWrap?.classList.add('is-loading');
@@ -341,6 +364,7 @@ const initialRackPaints = paints;
     if (token !== carSwapToken) return;
     car.src = paint.image;
     car.alt = `${paint.number ? '#' + paint.number + ' ' : ''}${paint.driver} — ${paint.sponsor} paint scheme render`;
+    try { if (car.decode) await car.decode(); } catch {}
     carWrap?.classList.remove('is-loading');
     if (stateNode) stateNode.textContent = 'READY / VEHICLE IN BAY';
     warmAdjacentPaints(paint);
@@ -626,8 +650,10 @@ const initialRackPaints = paints;
   collection?.querySelectorAll('[data-card-copy-share]').forEach(button => button.addEventListener('click', async () => { const paint = paints.find(item => item.slug === button.dataset.cardCopyShare); if (!paint) return; await copyText(shareUrl(paint)); announce('Paint link copied'); }));
 
   observeDeferredImages(root);
-  if ('requestIdleCallback' in window) requestIdleCallback(() => warmAdjacentPaints(activePaint), { timeout:1200 });
-  else setTimeout(() => warmAdjacentPaints(activePaint), 500);
+  if (collectionObserver && collection instanceof HTMLElement) collectionObserver.observe(collection);
+  else if (collection) { if ('requestIdleCallback' in window) requestIdleCallback(() => observeDeferredImages(collection), { timeout:2200 }); else setTimeout(() => observeDeferredImages(collection), 1600); }
+  if ('requestIdleCallback' in window) requestIdleCallback(() => { if (activePaint?.image) ensurePreload(activePaint.image, 'high'); warmAdjacentPaints(activePaint); }, { timeout:1200 });
+  else setTimeout(() => { if (activePaint?.image) ensurePreload(activePaint.image, 'high'); warmAdjacentPaints(activePaint); }, 500);
 
   function revealHash() {
     if (!location.hash.startsWith('#paint-')) return false;

@@ -1,3 +1,7 @@
+## v0.3.7
+- Paint Booth performance pass: reduced the eager thumbnail batch, tightened lazy-load margins, deferred archive image loading until the archive is approached, added image preloading for the active and adjacent paints, and avoided unnecessary active-image swaps.
+- Added stronger content-visibility containment for heavy Paint Booth sections.
+
 ## v0.3.6
 - Home page: removed the white logo-panel background treatment behind Palmetto Gaming and Apex Sim Racing, replacing it with a transparent/dark integrated partner-logo presentation.
 - Partners page: matched the featured logo presentation to the darker integrated style for consistency.

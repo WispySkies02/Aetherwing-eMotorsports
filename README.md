@@ -1,3 +1,5 @@
+Current build: v0.3.7
+
 Current build: v0.3.6
 
 # Aetherwing eMotorsports — Main Website

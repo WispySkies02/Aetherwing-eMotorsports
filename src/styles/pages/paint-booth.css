@@ -170,3 +170,9 @@
 .aw-collection-card{content-visibility:auto;contain-intrinsic-size:420px 330px}
 @keyframes awPaintThumbLoad{0%{background-position:180% 0}100%{background-position:-40% 0}}
 @media(prefers-reduced-motion:reduce){.aw-deferred-image[data-src]{animation:none}.aw-booth-car.is-loading .aw-car-open img{transform:none}}
+
+/* v0.3.7 — deeper booth performance pass */
+.aw-driver-bay-overview,.aw-paint-collection{content-visibility:auto;contain-intrinsic-size:1000px}
+.aw-paint-rack>button{contain:layout paint style}
+.aw-collection-grid{content-visibility:auto;contain-intrinsic-size:1500px}
+.aw-booth-car .aw-car-open img{will-change:opacity}
