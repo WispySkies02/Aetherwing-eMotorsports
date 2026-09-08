@@ -72,7 +72,7 @@ const wispyIRacing = drivers.find((d) => d.id === 'nicholas-iracing');
 assert(wispyIRacing?.displayName === 'Nicholas Waggoner' && wispyIRacing?.profile === 'wispy', 'Nicholas Waggoner resolves to Wispy profile for iRacing');
 assert(iracing.factoryDrivers === 3 && iracing.teamEntries === 1 && iracing.schemes === 13, 'iRacing garage totals are 03 drivers / 01 team entry / 13 schemes');
 assert(paintLeagues.length === 7, 'Paint Booth source contains all seven garages');
-assert(paints.length === 34, 'Paint Booth source contains all 34 uploaded schemes');
+assert(paints.length === 35, 'Paint Booth source contains all 35 uploaded schemes');
 assert(paints.filter((paint) => paint.leagues?.includes('iracing')).length === 13, 'Paint Booth contains 13 iRacing liveries');
 assert(paints.filter((paint) => paint.driver === 'Wispy').length === 21, 'Paint Booth contains all 21 direct Wispy paints from V23');
 assert(paints.filter((paint) => paint.driver === 'Nicholas Waggoner').length === 12, 'Paint Booth contains all 12 Nicholas Waggoner iRacing paints tied to the Wispy identity');
@@ -81,9 +81,10 @@ assert(paints.filter((paint) => paint.leagues?.includes('nrrs')).length === 9, '
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-d1')).length === 1, 'UARL D1 garage contains the source-tagged Mobil 1 paint');
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-d2')).length === 2, 'UARL D2 garage contains both source-tagged paints');
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-open')).length === 1, 'UARL Open garage contains its source-tagged late model paint');
-assert(paints.filter((paint) => paint.leagues?.includes('kmart')).length === 4, 'Kmart garage contains all 4 source paints');
+assert(paints.filter((paint) => paint.leagues?.includes('kmart')).length === 5, 'Kmart garage contains all 5 uploaded paints');
 assert(paints.filter((paint) => paint.leagues?.includes('sunoco-truck')).length === 4, 'Sunoco garage contains all 4 source paints');
 assert(paints.some((p) => p.slug === 'kmart-2005-home-depot' && String(p.schemeId) === '77315638051491'), 'Kmart 2005 Home Depot paint/deep-link data is present');
+assert(paints.some((p) => p.slug === 'kmart-clutch-sinder' && p.driver === 'Clutch' && String(p.schemeId) === '132350921119875'), 'Clutch #29 Sinder Dodge Kmart paint/deep-link data is present');
 assert(paints.some((p) => p.slug === 'open-ghost-strawberry-watermelon' && String(p.schemeId) === '80179635555676'), 'UARL Open Ghost Strawberry Watermelon paint is present');
 assert(paints.some((p) => p.slug === 'truck-mopar-starclutch-racing' && String(p.schemeId) === '101804322425759'), 'Mopar / StarClutch Racing truck paint is present');
 
@@ -97,7 +98,7 @@ assert(paintPage.includes('data-light="showroom"') && paintPage.includes('data-r
 assert(paintPage.includes('aw-driver-wall') && paintPage.includes('aw-driver-bay-overview'), 'Paint Booth includes permanent driver stalls and Every Current Driver Bay overview');
 assert(paintPage.includes('aw-control-bench') && paintPage.includes('aw-booth-architecture'), 'Paint Booth is structured around the full facility rather than a standard hero/card module');
 assert(paintPage.includes("ALL_SCOPE = 'all'") && paintPage.includes('ALL PAINTS'), 'Paint Booth ALL scope exposes the complete uploaded collection');
-assert(paintPage.includes('initialRackPaints = paints') && paintPage.includes('initialRackPaints.map'), 'Paint Booth server-renders the initial 34-paint rack');
+assert(paintPage.includes('initialRackPaints = paints') && paintPage.includes('initialRackPaints.map'), 'Paint Booth server-renders the complete paint rack');
 assert(paintPage.includes('data-light="inspection"') && paintPage.includes('data-light="night"') && paintPage.includes('data-light="neon"'), 'Paint Booth includes expanded near-car lighting presets');
 assert(paintPage.includes('aw-mobile-booth-console') && paintPage.includes('data-mobile-target="rack"'), 'Paint Booth includes a dedicated mobile booth control console');
 assert(paintPage.includes('data-mobile-league-select') && paintPage.includes('data-mobile-driver-select') && paintPage.includes('data-mobile-paint-select'), 'Paint Booth includes the mobile Garage → Driver → Paint quick picker');

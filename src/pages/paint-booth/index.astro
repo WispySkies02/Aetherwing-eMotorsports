@@ -15,8 +15,8 @@ const sourceDrivers = leagues.reduce((sum, league) => sum + league.drivers.lengt
 const wispyIdentityPaints = paints.filter((paint) => paint.driver === 'Wispy' || paint.driver === 'Nicholas Waggoner');
 const initialRackPaints = paints;
 ---
-<BaseLayout title="Paint Booth" description="Enter the Aetherwing Paint Booth: an interactive seven-garage livery facility with 34 uploaded schemes, driver stalls, Roblox Scheme IDs, deep links, iRacing Factory paints, and StarClutch Racing alliance liveries.">
-  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.7">
+<BaseLayout title="Paint Booth" description={`Enter the Aetherwing Paint Booth: an interactive seven-garage livery facility with ${paints.length} uploaded schemes, driver stalls, Roblox Scheme IDs, deep links, iRacing Factory paints, and StarClutch Racing alliance liveries.`}>
+  <section class="aw-paint-facility" data-paint-facility data-paint-build="0.3.9">
     <div class="aw-facility-hud">
       <div class="aw-hud-brand">
         <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" class="aw-hud-logo" />
@@ -110,7 +110,7 @@ const initialRackPaints = paints;
       <aside class="aw-driver-wall" data-mobile-anchor="drivers" aria-label="Driver stalls">
         <div class="aw-rail-heading"><span>02</span><div><strong>DRIVER STALLS</strong><small data-driver-count>01 entry</small></div></div>
         <div class="aw-driver-controls" data-driver-controls>
-          <button type="button" class="is-active" data-driver-name="__all__"><b>MIXED FLEET</b><span><strong>All Drivers / Entries</strong><small>Complete uploaded collection</small></span><em class="is-ready">34 PAINTS</em></button>
+          <button type="button" class="is-active" data-driver-name="__all__"><b>MIXED FLEET</b><span><strong>All Drivers / Entries</strong><small>Complete uploaded collection</small></span><em class="is-ready">{paints.length} PAINTS</em></button>
         </div>
         <div class="aw-driver-wall-foot"><strong>READY</strong> = uploaded paint in this garage.<br><strong>PENDING</strong> = roster slot exists, render has not been supplied yet.</div>
       </aside>
@@ -144,14 +144,14 @@ const initialRackPaints = paints;
         <div class="aw-mobile-quick-picker" data-mobile-quick-picker aria-label="Quick paint picker">
           <div class="aw-mobile-picker-head"><strong>QUICK PAINT PICKER</strong><span>Garage → Driver → Paint</span></div>
           <label><span>Garage</span><select data-mobile-league-select>
-            <option value="all">All Paints (34)</option>
+            <option value="all">All Paints ({paints.length})</option>
             {leagues.map((league) => <option value={league.id}>{league.name} ({paints.filter((paint)=>paint.leagues.includes(league.id)).length})</option>)}
           </select></label>
-          <label><span>Driver</span><select data-mobile-driver-select><option value="__all__">All Drivers / Entries — 34 Paints</option></select></label>
+          <label><span>Driver</span><select data-mobile-driver-select><option value="__all__">All Drivers / Entries — {paints.length} Paints</option></select></label>
           <label><span>Paint</span><select data-mobile-paint-select>
             {initialRackPaints.map((paint) => <option value={paint.slug}>{leagueName(paint.leagues[0])} · {paint.number ? `#${paint.number} ` : ''}{paint.driver} · {paint.sponsor}</option>)}
           </select></label>
-          <small data-mobile-picker-note>34 uploaded paints available across every driver and team entry.</small>
+          <small data-mobile-picker-note>{paints.length} uploaded paints available across every driver and team entry.</small>
         </div>
         <div class="aw-paint-rack" data-paint-controls>
           {initialRackPaints.map((paint,index) => {

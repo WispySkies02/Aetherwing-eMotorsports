@@ -234,6 +234,23 @@
     "note": "Throwback to Tony Stewart’s 2005 Cup Series scheme."
   },
   {
+    "slug": "kmart-clutch-sinder",
+    "driver": "Clutch",
+    "username": "@Mj_fan088",
+    "leagues": [
+      "kmart"
+    ],
+    "number": "29",
+    "sponsor": "Sinder Dodge",
+    "manufacturer": "Dodge",
+    "body": "BBR D2 Chevy",
+    "schemeId": "132350921119875",
+    "image": "https://i.ibb.co/zV26LQkF/Clutch-Kmart-Sinder.png",
+    "special": [
+      "starclutch"
+    ]
+  },
+  {
     "slug": "d2-bundle-of-joy",
     "driver": "Wispy",
     "username": "@Aokikoto",

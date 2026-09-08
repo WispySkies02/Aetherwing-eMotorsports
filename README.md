@@ -1,4 +1,4 @@
-Current build: v0.3.8
+Current build: v0.3.9
 
 # Aetherwing eMotorsports — Main Website
 
@@ -8,7 +8,7 @@ Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 **v0.3.5 — Driver / Paint Booth / Schedule Polish**
 
-This version keeps the current Aetherwing visual identity while fully migrating the current Schedule and Paint Booth source data. The Schedule carries the complete 126-race season calendar plus iRacing special-event windows and expandable event docks. Paint Booth v0.3.5 keeps the immersive facility while making `ALL PAINTS` the complete 34-paint collection, improving mobile selection, moving five lighting presets into the booth itself, and optimizing remote render loading so the active car is prioritized over offscreen thumbnails. Every current source driver remains visible even when their render has not yet been supplied.
+This version keeps the current Aetherwing visual identity while fully migrating the current Schedule and Paint Booth source data. The Schedule carries the complete 126-race season calendar plus iRacing special-event windows and expandable event docks. Paint Booth v0.3.5 keeps the immersive facility while making `ALL PAINTS` the complete 35-paint collection, improving mobile selection, moving five lighting presets into the booth itself, and optimizing remote render loading so the active car is prioritized over offscreen thumbnails. Every current source driver remains visible even when their render has not yet been supplied.
 
 This project does **not** replace or deploy the separate Paint Share project at `paint.aetherwing.net`.
 
@@ -62,7 +62,7 @@ For projects where Netlify displays its platform badge, disable it in **Project 
 - Home: live race-control state, randomized Meet the Team presentation, selectable competition browser, expandable result detail
 - Drivers: league/program filters and selectable driver profile stage
 - Schedule: complete 2026–27 source calendar, live/upcoming state, filter-reactive Next Operation, countdowns, weather target, UARL subfilters, three-month condensed/full modes, and expandable event information docks
-- Paint Booth: full-height industrial paint facility, dedicated mobile bay/control layout, complete 34-paint ALL rack plus Wispy identity filter, permanent seven-garage rail with source paint counts, current-driver stall wall with READY/PENDING states, iPhone Garage → Driver → Paint picker, five near-car lighting presets, previous/next/random loading, prioritized active-render loading, exact paint deep links, archive search/filtering, lightbox, Scheme ID copy, and Paint Share URL copy
+- Paint Booth: full-height industrial paint facility, dedicated mobile bay/control layout, complete 35-paint ALL rack plus Wispy identity filter, permanent seven-garage rail with source paint counts, current-driver stall wall with READY/PENDING states, iPhone Garage → Driver → Paint picker, five near-car lighting presets, previous/next/random loading, prioritized active-render loading, exact paint deep links, archive search/filtering, lightbox, Scheme ID copy, and Paint Share URL copy
 - Partners: featured relationship profiles and expandable livery-brand portfolios kept separate from actual partnerships
 - News: editorial filtering/search and standalone story routes with page-specific metadata
 - Wins & History: filterable 27-win record book, milestones, and organization timeline
@@ -101,7 +101,7 @@ Use Git rather than filename versioning. Prefer clear commits such as:
 
 This package is intentionally distributed as a **repo-root ZIP**. When updating an existing GitHub repository, the files from the ZIP must replace the repository root files (`package.json`, `src/`, `public/`, etc.). Do **not** place a new `aetherwing-site/` folder inside an older Aetherwing repository, because Netlify will continue building the older root project and ignore the nested update.
 
-Paint Booth v0.3.5 also server-renders all **33 Wispy/Nicholas identity paints** into the initial paint rack. The complete rack is therefore present before client-side JavaScript executes. The page root includes `data-paint-build="0.3.5"` for staging verification.
+Paint Booth v0.3.9 server-renders the complete **35-paint collection** into the initial paint rack before client-side JavaScript executes. The Wispy/Nicholas identity filter still exposes its 33 paints, while Clutch now has a READY Kmart stall for the #29 Sinder Dodge. The page root includes `data-paint-build="0.3.9"` for staging verification.
 
 
 ## v0.3.5 interaction notes
@@ -113,5 +113,12 @@ Paint Booth v0.3.5 also server-renders all **33 Wispy/Nicholas identity paints**
 
 ### v0.3.5 interaction pass
 - Drivers: multi-number displays now show a # on every number; Wispy order follows NRRS/UARL/Kmart/Sunoco context (#32 / #28 / #15 / #54).
-- Paint Booth: ALL now means all 34 uploaded paints, with an All Drivers / Entries rack; lighting controls live in the booth and add Inspection, Night, and Neon presets.
+- Paint Booth: ALL now means all 35 uploaded paints, with an All Drivers / Entries rack; lighting controls live in the booth and add Inspection, Night, and Neon presets.
 - Schedule: event cards use semantic criteria chips (Chase, Dash4Cash, Crown Jewel, Championship, All-Star, Special Event), and weather mapping now covers Michigan, Portland, Silverstone, Suzuka, Brands Hatch, Mount Panorama, and Algarve.
+
+
+### v0.3.9 Paint addition
+- Added Clutch’s #29 Sinder Dodge to the Kmart / StarClutch Racing Alliance garage.
+- Scheme ID: `132350921119875`
+- Paint Booth deep link: `/paint-booth#paint-kmart-clutch-sinder`
+- Paint Share route: `https://paint.aetherwing.net/kmart-clutch-sinder/`

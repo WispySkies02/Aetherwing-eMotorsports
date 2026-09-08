@@ -1,3 +1,9 @@
+## v0.3.9
+- Added Clutch’s #29 Sinder Dodge to the Kmart / StarClutch Racing Alliance Paint Booth garage.
+- Added Scheme ID `132350921119875` and render `https://i.ibb.co/zV26LQkF/Clutch-Kmart-Sinder.png`.
+- Paint Booth collection is now 35 uploaded paints; Kmart now has 5.
+- Added the `kmart-clutch-sinder` deep-link/share slug.
+
 ## v0.3.8 — Full Team Wire Migration
 - Migrated the exact 10-story archive currently published on `aetherwing.net/updates` into the new News page.
 - Added the previously missing 100th RoRacing start and Aetherwing/NGM Driver Development stories.
