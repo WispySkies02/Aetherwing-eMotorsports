@@ -24,7 +24,8 @@
     "status": "Regular Season",
     "title": "Daytona 500",
     "track": "Daytona International Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 1"
   },
   {
     "date": "2026-04-18",
@@ -42,7 +43,8 @@
     "status": "Regular Season",
     "title": "Chicagoland 400",
     "track": "Chicagoland Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 2"
   },
   {
     "date": "2026-04-25",
@@ -60,7 +62,8 @@
     "status": "Regular Season",
     "title": "Watkins Glen 355",
     "track": "Watkins Glen International",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 3"
   },
   {
     "date": "2026-05-02",
@@ -78,7 +81,8 @@
     "status": "Regular Season",
     "title": "Auto Club 400",
     "track": "Auto Club Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 4"
   },
   {
     "date": "2026-05-09",
@@ -96,7 +100,8 @@
     "status": "Regular Season",
     "title": "Rockingham 400",
     "track": "Rockingham Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 5"
   },
   {
     "date": "2026-05-16",
@@ -114,7 +119,8 @@
     "status": "Regular Season",
     "title": "Las Vegas 400",
     "track": "Las Vegas Motor Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 6"
   },
   {
     "date": "2026-05-26",
@@ -123,7 +129,8 @@
     "status": "Regular Season",
     "title": "Coca-Cola 600",
     "track": "Charlotte Motor Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 7"
   },
   {
     "date": "2026-05-30",
@@ -141,7 +148,8 @@
     "status": "Regular Season",
     "title": "Phoenix 500",
     "track": "Phoenix Raceway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 8"
   },
   {
     "date": "2026-06-06",
@@ -159,7 +167,8 @@
     "status": "Regular Season",
     "title": "Toyota/Save Mart 350",
     "track": "Sonoma Raceway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 9"
   },
   {
     "date": "2026-06-13",
@@ -177,7 +186,8 @@
     "status": "Regular Season",
     "title": "Geico 500",
     "track": "Talladega Superspeedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 10"
   },
   {
     "date": "2026-06-20",
@@ -213,7 +223,8 @@
     "status": "Regular Season",
     "title": "Road America 250",
     "track": "Road America",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 11"
   },
   {
     "date": "2026-07-11",
@@ -231,7 +242,8 @@
     "status": "Regular Season",
     "title": "Richmond 400",
     "track": "Richmond Raceway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 12"
   },
   {
     "date": "2026-07-18",
@@ -249,7 +261,8 @@
     "status": "Regular Season",
     "title": "Bristol Night Race",
     "track": "Bristol Motor Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 13"
   },
   {
     "league": "kmart",
@@ -260,7 +273,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 1",
+    "round": "ROUND 1",
     "status": "Regular Season"
   },
   {
@@ -270,7 +283,8 @@
     "status": "Regular Season",
     "title": "Mexico City 200",
     "track": "Mexico City",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 14"
   },
   {
     "date": "2026-08-01",
@@ -290,7 +304,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 2",
+    "round": "ROUND 2",
     "status": "Regular Season"
   },
   {
@@ -300,7 +314,8 @@
     "status": "Regular Season",
     "title": "Charlotte Oval",
     "track": "Charlotte Motor Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 15"
   },
   {
     "date": "2026-08-04",
@@ -331,7 +346,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 3",
+    "round": "ROUND 3",
     "status": "Regular Season"
   },
   {
@@ -363,7 +378,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 4",
+    "round": "ROUND 4",
     "status": "Regular Season"
   },
   {
@@ -373,7 +388,8 @@
     "status": "Regular Season",
     "title": "U.S. Navy 250",
     "track": "Naval Base Coronado",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 16"
   },
   {
     "date": "2026-08-22",
@@ -393,7 +409,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 5",
+    "round": "ROUND 5",
     "status": "Regular Season"
   },
   {
@@ -403,7 +419,8 @@
     "status": "Regular Season",
     "title": "Goody's Fast Relief 500",
     "track": "Martinsville Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 17"
   },
   {
     "date": "2026-08-25",
@@ -446,7 +463,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 6",
+    "round": "ROUND 6",
     "specialTag": "DASH4CASH QUALIFIER",
     "status": "Regular Season"
   },
@@ -457,7 +474,8 @@
     "status": "Regular Season",
     "title": "Kroger 200",
     "track": "Indianapolis Raceway Park",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 18"
   },
   {
     "date": "2026-09-02",
@@ -488,7 +506,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 7",
+    "round": "ROUND 7",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
   },
@@ -499,7 +517,9 @@
     "status": "Regular Season",
     "title": "Pepsi 400",
     "track": "Daytona International Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 19",
+    "specialTag": "REGULAR SEASON FINALE"
   },
   {
     "date": "2026-09-09",
@@ -537,7 +557,8 @@
     "status": "Regular Season",
     "title": "The 6th Annual Daytona 500",
     "track": "Daytona International Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 1"
   },
   {
     "date": "2026-09-13",
@@ -546,7 +567,8 @@
     "status": "Regular Season",
     "title": "Sunshine State 150",
     "track": "Daytona Backstretch",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 1"
   },
   {
     "league": "kmart",
@@ -557,7 +579,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 8",
+    "round": "ROUND 8",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
   },
@@ -568,7 +590,8 @@
     "status": "Regular Season",
     "title": "The 6th Official Daytona 250",
     "track": "Daytona International Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 1"
   },
   {
     "date": "2026-09-18",
@@ -597,7 +620,9 @@
     "status": "Regular Season",
     "title": "Queen City 500",
     "track": "Charlotte Motor Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 2",
+    "specialTag": "CROWN JEWEL"
   },
   {
     "date": "2026-09-20",
@@ -606,7 +631,8 @@
     "status": "Regular Season",
     "title": "Snowball Summer Classic",
     "track": "Five Flags Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 2"
   },
   {
     "league": "kmart",
@@ -617,7 +643,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 9",
+    "round": "ROUND 9",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
   },
@@ -628,7 +654,8 @@
     "status": "Regular Season",
     "title": "Carolina Freight 200",
     "track": "Charlotte Motor Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 2"
   },
   {
     "date": "2026-09-22",
@@ -637,7 +664,8 @@
     "status": "The Chase",
     "title": "Southern 500",
     "track": "Darlington Raceway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 20"
   },
   {
     "date": "2026-09-25",
@@ -666,7 +694,8 @@
     "status": "Regular Season",
     "title": "Aztec Grand Prix 400",
     "track": "Mexico City",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 3"
   },
   {
     "date": "2026-09-27",
@@ -675,7 +704,8 @@
     "status": "Regular Season",
     "title": "Southern Heritage 100",
     "track": "Sunny South Raceway Park",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 3"
   },
   {
     "league": "kmart",
@@ -686,7 +716,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 10",
+    "round": "ROUND 10",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
   },
@@ -697,7 +727,8 @@
     "status": "Regular Season",
     "title": "Borderlands Truck Challenge 150",
     "track": "Mexico City",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 3"
   },
   {
     "date": "2026-09-29",
@@ -706,7 +737,8 @@
     "status": "The Chase",
     "title": "Tyson Holly Farms 400",
     "track": "North Wilkesboro Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 21"
   },
   {
     "date": "2026-10-02",
@@ -735,7 +767,8 @@
     "status": "Regular Season",
     "title": "Echo Park Thunder 400",
     "track": "Echo Park Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 4"
   },
   {
     "date": "2026-10-04",
@@ -744,7 +777,8 @@
     "status": "Regular Season",
     "title": "Queen City Dirt Nationals",
     "track": "The Dirt Track At Charlotte",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 4"
   },
   {
     "league": "kmart",
@@ -765,7 +799,8 @@
     "status": "Regular Season",
     "title": "Echo Park Hauler 200",
     "track": "Echo Park Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 4"
   },
   {
     "date": "2026-10-06",
@@ -774,7 +809,8 @@
     "status": "The Chase",
     "title": "Pure Michigan 400",
     "track": "Michigan International Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 22"
   },
   {
     "date": "2026-10-17",
@@ -792,7 +828,8 @@
     "status": "Regular Season",
     "title": "Music City 300",
     "track": "Nashville Fairgrounds",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 5"
   },
   {
     "date": "2026-10-11",
@@ -801,7 +838,8 @@
     "status": "Regular Season",
     "title": "Capital Cup",
     "track": "Wake County Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 5"
   },
   {
     "league": "kmart",
@@ -812,7 +850,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 11",
+    "round": "ROUND 11",
     "status": "Regular Season"
   },
   {
@@ -822,7 +860,8 @@
     "status": "Regular Season",
     "title": "Honky-Tonk Hauler 200",
     "track": "Nashville Fairgrounds",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 5"
   },
   {
     "date": "2026-10-13",
@@ -831,7 +870,8 @@
     "status": "The Chase",
     "title": "Toyota/Save Mart 350",
     "track": "Sonoma Raceway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 23"
   },
   {
     "date": "2026-10-16",
@@ -860,7 +900,8 @@
     "status": "Regular Season",
     "title": "Jackpot 400",
     "track": "Las Vegas Motor Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 6"
   },
   {
     "date": "2026-10-18",
@@ -869,7 +910,8 @@
     "status": "Regular Season",
     "title": "Badger State 150",
     "track": "Slinger Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 6"
   },
   {
     "league": "kmart",
@@ -880,7 +922,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 12",
+    "round": "ROUND 12",
     "status": "Regular Season"
   },
   {
@@ -890,7 +932,8 @@
     "status": "Regular Season",
     "title": "High Roller Truck Shootout 200",
     "track": "Las Vegas Motor Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 6"
   },
   {
     "date": "2026-10-20",
@@ -899,7 +942,8 @@
     "status": "The Chase",
     "title": "Sylvania 300",
     "track": "New Hampshire Motor Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 24"
   },
   {
     "date": "2026-10-24",
@@ -908,7 +952,8 @@
     "status": "Regular Season",
     "title": "British Crown 300",
     "track": "Silverstone Circuit",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 7"
   },
   {
     "date": "2026-10-25",
@@ -917,7 +962,8 @@
     "status": "Regular Season",
     "title": "Appalachian Challenge",
     "track": "Tyler County Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 7"
   },
   {
     "league": "kmart",
@@ -928,7 +974,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 13",
+    "round": "ROUND 13",
     "status": "Regular Season"
   },
   {
@@ -938,7 +984,8 @@
     "status": "Regular Season",
     "title": "Union Jack Truck Classic 150",
     "track": "Silverstone Circuit",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 7"
   },
   {
     "date": "2026-10-27",
@@ -947,7 +994,8 @@
     "status": "Championship",
     "title": "Ford 400",
     "track": "Homestead-Miami Speedway",
-    "time": "7:30 PM ET"
+    "time": "7:30 PM ET",
+    "round": "ROUND 25"
   },
   {
     "date": "2026-10-30",
@@ -967,7 +1015,8 @@
     "status": "Regular Season",
     "title": "Great Lakes Showdown",
     "track": "Cedar Lake Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 8"
   },
   {
     "date": "2026-11-01",
@@ -976,7 +1025,8 @@
     "status": "Regular Season",
     "title": "Lone Star 500",
     "track": "Texas Motor Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 8"
   },
   {
     "league": "kmart",
@@ -987,7 +1037,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 14",
+    "round": "ROUND 14",
     "status": "Regular Season"
   },
   {
@@ -997,7 +1047,8 @@
     "status": "Regular Season",
     "title": "Texas Trailblazer 250",
     "track": "Texas Motor Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 8"
   },
   {
     "date": "2026-11-04",
@@ -1026,7 +1077,8 @@
     "status": "Regular Season",
     "title": "North Country Classic",
     "track": "ABC Raceway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 9"
   },
   {
     "league": "kmart",
@@ -1037,7 +1089,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 15",
+    "round": "ROUND 15",
     "status": "Regular Season"
   },
   {
@@ -1047,7 +1099,8 @@
     "status": "Regular Season",
     "title": "Italian Freight Challenge 175",
     "track": "Monza Oval",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 9"
   },
   {
     "date": "2026-11-13",
@@ -1067,7 +1120,8 @@
     "status": "Regular Season",
     "title": "Monza Speed Festival 350",
     "track": "Monza Oval",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 9"
   },
   {
     "date": "2026-11-15",
@@ -1076,7 +1130,8 @@
     "status": "Regular Season",
     "title": "Pine Tree State 150",
     "track": "Baileyville Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 10"
   },
   {
     "league": "kmart",
@@ -1087,7 +1142,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 16",
+    "round": "ROUND 16",
     "status": "Regular Season"
   },
   {
@@ -1097,7 +1152,8 @@
     "status": "Regular Season",
     "title": "Aegean Truck Classic 150",
     "track": "Greece Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 10"
   },
   {
     "date": "2026-11-17",
@@ -1117,7 +1173,8 @@
     "status": "Regular Season",
     "title": "Olympian 300",
     "track": "Greece Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 10"
   },
   {
     "date": "2026-11-22",
@@ -1126,7 +1183,8 @@
     "status": "Regular Season",
     "title": "Heartland Dirt Crown",
     "track": "Eldora Speedway",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 11"
   },
   {
     "league": "kmart",
@@ -1137,7 +1195,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 17",
+    "round": "ROUND 17",
     "status": "Regular Season"
   },
   {
@@ -1147,7 +1205,8 @@
     "status": "Regular Season",
     "title": "Tri-Corner Freight 200",
     "track": "Pocono Raceway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 11"
   },
   {
     "date": "2026-11-28",
@@ -1156,7 +1215,8 @@
     "status": "Regular Season",
     "title": "Mountain Peak 400",
     "track": "Pocono Raceway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 11"
   },
   {
     "date": "2026-11-29",
@@ -1165,7 +1225,8 @@
     "status": "Regular Season",
     "title": "Madhouse 100",
     "track": "Bowman Gray Stadium",
-    "time": "11:30 AM ET"
+    "time": "11:30 AM ET",
+    "round": "ROUND 12"
   },
   {
     "league": "kmart",
@@ -1176,8 +1237,9 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 18",
-    "status": "The Chase"
+    "round": "ROUND 18",
+    "status": "The Chase",
+    "specialTag": "CROWN JEWEL"
   },
   {
     "date": "2026-11-30",
@@ -1186,7 +1248,8 @@
     "status": "Regular Season",
     "title": "Crossroads Truck Classic 200",
     "track": "Indianapolis Motor Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 12"
   },
   {
     "date": "2026-12-02",
@@ -1206,7 +1269,8 @@
     "status": "Regular Season",
     "title": "Brickyard 500",
     "track": "Indianapolis Motor Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 12"
   },
   {
     "league": "kmart",
@@ -1217,7 +1281,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 19",
+    "round": "ROUND 19",
     "status": "The Chase"
   },
   {
@@ -1227,7 +1291,8 @@
     "status": "Regular Season",
     "title": "Pacific Hauler Challenge 125",
     "track": "Twin Ring Motegi",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 13"
   },
   {
     "date": "2026-12-12",
@@ -1236,7 +1301,8 @@
     "status": "Regular Season",
     "title": "Rising Sun 300",
     "track": "Twin Ring Motegi",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 13"
   },
   {
     "league": "kmart",
@@ -1247,7 +1313,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 20",
+    "round": "ROUND 20",
     "status": "The Chase"
   },
   {
@@ -1257,7 +1323,8 @@
     "status": "The Chase",
     "title": "Lakefront Truck Clash 125",
     "track": "Chicago Street Course",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 14"
   },
   {
     "date": "2026-12-15",
@@ -1288,7 +1355,8 @@
     "status": "The Chase",
     "title": "Windy City Grand Prix",
     "track": "Chicago Street Course",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 14"
   },
   {
     "league": "kmart",
@@ -1299,7 +1367,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 21",
+    "round": "ROUND 21",
     "status": "The Chase"
   },
   {
@@ -1309,7 +1377,8 @@
     "status": "The Chase",
     "title": "Heartland Hauler 200",
     "track": "Chicagoland Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 15"
   },
   {
     "date": "2026-12-23",
@@ -1318,7 +1387,8 @@
     "status": "The Chase",
     "title": "Midwest 400",
     "track": "Chicagoland Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 15"
   },
   {
     "date": "2026-12-27",
@@ -1327,7 +1397,8 @@
     "status": "The Chase",
     "title": "Gateway 400",
     "track": "World Wide Technology Raceway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 16"
   },
   {
     "league": "kmart",
@@ -1338,7 +1409,7 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 22",
+    "round": "ROUND 22",
     "status": "The Chase"
   },
   {
@@ -1348,7 +1419,8 @@
     "status": "The Chase",
     "title": "Mississippi Freight 200",
     "track": "World Wide Technology Raceway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 16"
   },
   {
     "date": "2027-01-02",
@@ -1357,7 +1429,8 @@
     "status": "The Chase",
     "title": "Southern 500",
     "track": "Darlington Raceway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 17"
   },
   {
     "league": "kmart",
@@ -1368,8 +1441,8 @@
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
-    "round": "RACE 23",
-    "status": "The Chase"
+    "round": "ROUND 23",
+    "status": "Championship"
   },
   {
     "date": "2027-01-04",
@@ -1378,7 +1451,8 @@
     "status": "The Chase",
     "title": "Palmetto Truck Classic 200",
     "track": "Darlington Raceway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 17"
   },
   {
     "date": "2027-01-09",
@@ -1387,7 +1461,8 @@
     "status": "Championship",
     "title": "L.L. Bean Championship Finale",
     "track": "Homestead-Miami Speedway",
-    "time": "8:30 PM ET"
+    "time": "8:30 PM ET",
+    "round": "ROUND 18"
   },
   {
     "date": "2027-01-11",
@@ -1396,6 +1471,7 @@
     "status": "Championship",
     "title": "The 6th Trader Joes Truck Championship",
     "track": "Homestead-Miami Speedway",
-    "time": "6:45 PM ET"
+    "time": "6:45 PM ET",
+    "round": "ROUND 18"
   }
 ]

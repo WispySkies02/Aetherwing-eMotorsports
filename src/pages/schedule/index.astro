@@ -22,18 +22,21 @@ const groups = Object.entries(scheduleEvents.reduce((map,event,index) => {
 },{}));
 const leagueClass = (league) => league === 'open' ? 'open' : league;
 const isAlliance = (league) => league === 'kmart' || league === 'sunoco';
-const crownJewelPattern = /(daytona 500|coca-cola 600|lowe['’]?s 600|southern 500|brickyard 400|brickyard 500)/i;
+const crownJewelPattern = /(daytona 500|coca-cola 600|lowe['’]?s 600|southern 500|brickyard 400|brickyard 500|queen city 500|goodyear southern 300)/i;
 const eventCriteria = (event) => {
   const tags = [];
   const status = String(event.status || '').toLowerCase();
   const special = String(event.specialTag || '');
+  const title = String(event.title || '');
   if (/dash4cash/i.test(special)) tags.push({kind:/qualifier/i.test(special)?'d4cqual':'d4c',label:/qualifier/i.test(special)?'D4C Qualifier':'Dash4Cash'});
-  if (status.includes('the chase') || status === 'chase') tags.push({kind:'chase',label:'Chase Race'});
-  if (status.includes('championship')) tags.push({kind:'championship',label:'Championship Finale'});
+  if (/regular season finale/i.test(special)) tags.push({kind:'finale',label:'Regular Season Finale'});
+  if (status.includes('the chase') || status === 'chase') tags.push({kind:'chase',label:'The Chase'});
+  if (status.includes('championship')) tags.push({kind:'championship',label:'Championship'});
   if (status.includes('all-star')) tags.push({kind:'allstar',label:'All-Star'});
-  if (status.includes('pre-season') || status.includes('preseason')) tags.push({kind:'preseason',label:'Preseason'});
+  if ((status.includes('pre-season') || status.includes('preseason')) && /clash/i.test(title)) tags.push({kind:'clash',label:'Clash'});
+  else if (status.includes('pre-season') || status.includes('preseason')) tags.push({kind:'preseason',label:'Preseason'});
   if (event.league === 'iracing' || status.includes('special event')) tags.push({kind:'special',label:'Special Event'});
-  if (crownJewelPattern.test(String(event.title || ''))) tags.push({kind:'crown',label:'Crown Jewel'});
+  if (/crown jewel/i.test(special) || crownJewelPattern.test(title)) tags.push({kind:'crown',label:'Crown Jewel'});
   if (event.offWeek) tags.push({kind:'offweek',label:'Off Week'});
   return tags.filter((tag,index,array)=>array.findIndex((item)=>item.kind===tag.kind&&item.label===tag.label)===index);
 };
@@ -300,7 +303,7 @@ const displayDate = (event) => {
   const announceShare = (text) => { if (!(scheduleToast instanceof HTMLElement)) return; scheduleToast.textContent=text; scheduleToast.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>scheduleToast.hidden=true,1500); };
   page.querySelectorAll('[data-event-share]').forEach(button => button.addEventListener('click', async () => {
     const slug=button.dataset.eventShare || ''; if(!slug) return;
-    await copyText(`${location.origin}/event/${encodeURIComponent(slug)}/?v=46`);
+    await copyText(`${location.origin}/event/${encodeURIComponent(slug)}/?v=47`);
     announceShare('Event link copied');
   }));
 

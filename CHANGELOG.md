@@ -1,3 +1,10 @@
+## v0.4.8
+
+- Updated the full site bundle to carry forward the latest schedule/share-card logic and corrected badge behavior.
+- Confirmed UARL D2 uses countable rounds 1–18, with Rounds 14–17 marked as The Chase and Round 18 marked as Championship.
+- Preserved the current league-badge system across share cards, including Clash, All-Star, Crown Jewel, Chase, and Championship states.
+- Carried forward the cleaned schedule-logo assets already in the working site tree, including the transparent SCR and Kmart Chase logo files.
+
 # Changelog
 
 ## 0.4.0 — 2026-09-08
@@ -166,3 +173,15 @@
 - Re-rendered affected Kmart/Sunoco event share cards and cache-busted all 143 event images to `-v46.jpg`.
 - Event share links now use `?v=46` so Discord performs a fresh scrape.
 - Added transparent `scr.png` and `kmart-chase.png` source assets and removed the old JPG source versions.
+
+
+## v0.4.7
+- Built from the user-updated v0.4.6 source ZIP so current replacement images are preserved.
+- NRRS now numbers countable events with Clash and All-Star excluded; Pepsi 400 is Round 19 and labeled Regular Season Finale; Chase/Championship continue through Round 25.
+- UARL D1 now numbers countable events Round 1–18 with Clash and All-Star excluded; UARL D2 is Round 1–18; UARL Open is Round 1–12.
+- Added universal high-contrast Clash, All-Star, The Chase, Championship, Crown Jewel, Regular Season Finale, Dash4Cash, and Special Event share-card badges where applicable.
+- Queen City 500 (UARL D1) and Goodyear Southern 300 (Kmart) are explicitly marked Crown Jewels.
+- Kmart WeatherTech Championship 300 is explicitly a Championship event.
+- Re-rendered all 143 share cards from the updated source logo assets with actual Edo SZ event-name typography.
+- Kmart Chase and SCR assets are composited directly with their transparency; no artificial white matte is added.
+- Cache-busted all event share images and copied share URLs to v47.

@@ -1,2 +1,2 @@
-Aetherwing eMotorsports v0.4.6
-Full clean restore with transparent SCR/Kmart Chase share branding and cache-busted v46 event images.
+Aetherwing eMotorsports v0.4.8
+Round numbering + universal special-event badges + clean transparent alliance/chase share branding; cache-busted v47 event images.
