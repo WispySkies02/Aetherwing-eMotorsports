@@ -5,8 +5,8 @@ Schedule share branding map
 - sunoco: NASCAR Sunoco Truck Series
 - kmart-regular: NASCAR Kmart Auto Parts Series
 - kmart-d4c: NASCAR Dash4Cash Kmart
-- kmart-chase: NASCAR Kmart Auto Parts Series — The Chase
+- kmart-chase.png: NASCAR Kmart Auto Parts Series — The Chase (transparent outside logo)
 - nrrs: final red Town Fair Tire Cup Series general logo (black TOWN FAIR TIRE text)
 - nrrs-pepsi: Pepsi 400-only alternate NRRS/Town Fair Tire mark
 - iracing: iRacing
-- scr: StarClutch Racing alliance mark for Kmart/Sunoco
+- scr.png: StarClutch Racing alliance mark for Kmart/Sunoco (transparent outside sticker-shaped backing)

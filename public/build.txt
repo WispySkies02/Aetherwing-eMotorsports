@@ -1,4 +1,2 @@
-Aetherwing eMotorsports custom site
-Build: v0.4.5 FULL CLEAN RESTORE
-Schedule share graphics: 143 cache-busted -v45.jpg cards
-Favicon: PNG primary + SVG fallback; validator accepts either
+Aetherwing eMotorsports v0.4.6
+Full clean restore with transparent SCR/Kmart Chase share branding and cache-busted v46 event images.

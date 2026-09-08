@@ -159,3 +159,10 @@
 - StarClutch Racing alliance branding is separated from Kmart/Sunoco series branding for readability.
 - Removed stale pre-v45 event share JPEGs from the clean package.
 - Added PNG favicon support with SVG fallback; validation accepts either format to prevent PNG swaps from killing Netlify builds.
+
+## v0.4.6
+- Removed the unintended rectangular white matte around SCR alliance branding while preserving the intended white sticker-shaped backing inside the SCR logo.
+- Removed the unintended outside white matte from the Kmart Chase logo.
+- Re-rendered affected Kmart/Sunoco event share cards and cache-busted all 143 event images to `-v46.jpg`.
+- Event share links now use `?v=46` so Discord performs a fresh scrape.
+- Added transparent `scr.png` and `kmart-chase.png` source assets and removed the old JPG source versions.
