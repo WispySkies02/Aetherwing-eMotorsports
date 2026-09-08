@@ -1,12 +1,42 @@
 [
-  {"label":"Home","href":"/"},
-  {"label":"Drivers","href":"/drivers/"},
-  {"label":"Schedule","href":"/schedule/"},
-  {"label":"Paint Booth","href":"/paint-booth/"},
-  {"label":"Partners","href":"/partners/"},
-  {"label":"News","href":"/news/"},
-  {"label":"History","href":"/wins-history/"},
-  {"label":"Mission","href":"/mission-values/"},
-  {"label":"Handbook","href":"/team-handbook/"},
-  {"label":"Contact","href":"/contact/"}
+  {
+    "label": "Home",
+    "href": "/"
+  },
+  {
+    "label": "Drivers",
+    "href": "/drivers/"
+  },
+  {
+    "label": "Schedule",
+    "href": "/schedule/"
+  },
+  {
+    "label": "Paint Booth",
+    "href": "https://paint.aetherwing.net/"
+  },
+  {
+    "label": "Partners",
+    "href": "/partners/"
+  },
+  {
+    "label": "News",
+    "href": "/news/"
+  },
+  {
+    "label": "History",
+    "href": "/wins-history/"
+  },
+  {
+    "label": "Mission",
+    "href": "/mission-values/"
+  },
+  {
+    "label": "Handbook",
+    "href": "/team-handbook/"
+  },
+  {
+    "label": "Contact",
+    "href": "/contact/"
+  }
 ]

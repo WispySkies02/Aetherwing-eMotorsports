@@ -1,3 +1,12 @@
+# Changelog
+
+## 0.4.0 — 2026-09-08
+- Promoted `https://paint.aetherwing.net` to the canonical full Paint Booth application.
+- Main-site header, footer, and navigation now link directly to the Paint Booth subdomain.
+- Replaced the old main-site Paint Booth implementation with a compatibility bridge only for legacy `aetherwing.net/paint-booth#paint-...` links.
+- Legacy hash links preserve the selected paint and forward to `paint.aetherwing.net/<paint-slug>/`.
+- Paint data remains in the main repository for validation/source continuity; the production Paint Booth is deployed as its own Netlify project.
+
 ## v0.3.9
 - Added Clutch’s #29 Sinder Dodge to the Kmart / StarClutch Racing Alliance Paint Booth garage.
 - Added Scheme ID `132350921119875` and render `https://i.ibb.co/zV26LQkF/Clutch-Kmart-Sinder.png`.

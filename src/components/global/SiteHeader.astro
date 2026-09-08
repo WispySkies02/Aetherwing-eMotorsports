@@ -2,7 +2,7 @@
 const path=Astro.url.pathname;
 const active=(href:string)=>href==='/'?path==='/':path.startsWith(href);
 const groups=[
-  {label:'Team',links:[['Drivers','/drivers/'],['Paint Booth','/paint-booth/'],['Mission & Values','/mission-values/'],['Team Handbook','/team-handbook/']]},
+  {label:'Team',links:[['Drivers','/drivers/'],['Paint Booth','https://paint.aetherwing.net/'],['Mission & Values','/mission-values/'],['Team Handbook','/team-handbook/']]},
   {label:'Race',links:[['Schedule','/schedule/'],['Wins & History','/wins-history/'],['News & Updates','/news/']]},
   {label:'Connect',links:[['Partners','/partners/'],['Contact HQ','/contact/']]}
 ];

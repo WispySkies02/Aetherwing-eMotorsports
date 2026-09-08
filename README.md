@@ -1,5 +1,10 @@
 Current build: v0.3.9
 
+## Paint Booth host
+
+As of 0.4.0 the production Paint Booth is a dedicated application at `https://paint.aetherwing.net`. Main-site navigation links directly to that host. `/paint-booth/` remains only as a compatibility bridge for old hash deep links.
+
+
 # Aetherwing eMotorsports — Main Website
 
 Custom Astro rebuild of the Aetherwing eMotorsports main website.
