@@ -1,7 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import scheduleSource from '../../data/schedule-events.json';
-import { eventSlug, eventDisplayDate, eventShareDescription } from '../../lib/schedule-events.mjs';
+import { eventSlug } from '../../lib/schedule-events.mjs';
 
 export function getStaticPaths() {
   return scheduleSource.map((event) => ({
@@ -11,35 +10,39 @@ export function getStaticPaths() {
 }
 
 const { event } = Astro.props;
-const target = `/schedule#event-${event.shareSlug}`;
-const relationship = event.league === 'kmart' || event.league === 'sunoco'
-  ? 'StarClutch Racing Alliance'
-  : 'Aetherwing Program';
-const description = eventShareDescription(event);
+const target = `/schedule/?league=${encodeURIComponent(event.league)}#event-${event.shareSlug}`;
+const canonicalUrl = new URL(`/event/${event.shareSlug}/`, Astro.site);
+const imageUrl = new URL(`/images/social/events/${event.shareSlug}.jpg`, Astro.site);
 ---
-<BaseLayout
-  title={event.title}
-  description={description}
-  canonical={`/event/${event.shareSlug}/`}
-  image="/images/social/default-social.png"
-  noindex={true}
->
-  <section class="section" style="min-height:65vh;display:grid;place-items:center">
-    <div class="shell" style="max-width:860px">
-      <article style="border:3px solid #fff;background:#050505;box-shadow:10px 10px 0 #000;padding:clamp(1.2rem,4vw,2.2rem)">
-        <p class="eyebrow">Shared Schedule Event</p>
-        <h1 class="section-title" style="margin:.35rem 0 .8rem">{event.title}</h1>
-        <p class="lede" style="margin:0 0 1rem">{event.leagueName} · {relationship}</p>
-        <div style="display:grid;gap:.55rem;font-family:var(--font-mono);text-transform:uppercase;font-size:.72rem;color:#aaa">
-          <strong style="color:#fff">{eventDisplayDate(event)} · {event.time}</strong>
-          <span>{event.track}</span>
-          <span>{event.status ?? 'Scheduled'}{event.specialTag ? ` · ${event.specialTag}` : ''}</span>
-        </div>
-        <a class="btn" href={target} style="margin-top:1.25rem">Open in Aetherwing Schedule</a>
-      </article>
-    </div>
-  </section>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>&#8203;</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="&#8203;" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={imageUrl} />
+  <meta property="og:image:secure_url" content={imageUrl} />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="&#8203;" />
+  <meta name="twitter:image" content={imageUrl} />
+  <style>
+    html,body{margin:0;min-height:100%;background:#030303;color:#fff;font-family:system-ui,sans-serif}
+    body{display:grid;place-items:center;min-height:100vh;text-align:center}
+    a{color:#fff;text-decoration:none;border:2px solid #fff;padding:.8rem 1rem;background:#000}
+  </style>
+</head>
+<body>
+  <a href={target}>Open Aetherwing Schedule</a>
   <script is:inline define:vars={{ target }}>
     window.location.replace(target);
   </script>
-</BaseLayout>
+</body>
+</html>

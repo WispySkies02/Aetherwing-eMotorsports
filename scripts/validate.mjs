@@ -13,6 +13,18 @@ const assert = (condition, message) => {
   }
 };
 
+const eventSlugForValidation = (event = {}) => {
+  const slugify = (value = '') => String(value)
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[’']/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+  return `${event.date || 'tbd'}-${event.league || 'event'}-${slugify(event.title || event.track || 'scheduled-event')}`;
+};
+
 const site = json('site.json');
 const leadership = json('leadership.json');
 const competitions = json('competitions.json');
@@ -94,6 +106,12 @@ assert(schedulePage.includes('data-event-dock') && schedulePage.includes('update
 assert(schedulePage.includes('eventCriteria') && schedulePage.includes('Crown Jewel') && schedulePage.includes('Dash4Cash'), 'Schedule includes semantic special-criteria tags');
 assert(schedulePage.includes('data-event-share') && schedulePage.includes('revealEventHash'), 'Schedule includes share buttons and exact event deep-link reveal logic');
 assert(existsSync(resolve(root, 'src/pages/event/[slug].astro')), 'Static share route exists for schedule events');
+const eventShareRoute = text('src/pages/event/[slug].astro');
+assert(eventShareRoute.includes('/images/social/events/${event.shareSlug}.jpg'), 'Schedule event shares use event-specific image cards');
+assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;') && !eventShareRoute.includes('og:description'), 'Schedule event embeds suppress visible Discord title/description text');
+assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
+assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
+assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}.jpg`))), 'All 143 schedule events have share-card images');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
 const siteHeader = text('src/components/global/SiteHeader.astro');

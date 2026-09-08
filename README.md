@@ -130,3 +130,7 @@ Paint Booth v0.3.9 server-renders the complete **35-paint collection** into the 
 
 
 Latest patch: v0.4.1 adds page-specific metadata images so major site links no longer all share the same default embed art.
+
+
+### v0.4.2 schedule sharing
+Each Schedule event has a dedicated `/event/<slug>/` share URL and generated image card. Discord receives the image-focused metadata page; users who click through are sent to `/schedule/` with the matching league/division filter active and the shared event opened.

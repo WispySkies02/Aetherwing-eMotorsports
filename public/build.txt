@@ -1,3 +1,4 @@
-Aetherwing eMotorsports 0.4.0
+Aetherwing eMotorsports 0.4.2
 Paint Booth canonical host: https://paint.aetherwing.net
 Main /paint-booth route retained only as legacy hash bridge.
+Schedule event shares: 143 image-only Discord cards with league-aware deep links.

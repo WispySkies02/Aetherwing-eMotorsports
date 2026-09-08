@@ -136,3 +136,9 @@
 ## v0.4.1
 - Added page-specific Open Graph / Discord social images for Home, Drivers, Schedule, Paint Booth, Partners, News, Wins & History, Mission & Values, Team Handbook, and Contact HQ.
 - Updated paint.aetherwing.net root embed image to use a dedicated Paint Booth social graphic.
+
+## v0.4.2
+- Rebuilt schedule event sharing around 143 event-specific 1200×630 image cards.
+- Event Discord embeds suppress visible title/description text so the image carries the event information.
+- Shared event links open the Schedule with that event's exact league/UARL division selected, then open and highlight the shared event.
+- Share crawler pages stay stationary for metadata; human visitors are forwarded with JavaScript only.

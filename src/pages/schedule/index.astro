@@ -304,13 +304,28 @@ const displayDate = (event) => {
     announceShare('Event link copied');
   }));
 
+  function applyLeagueSelection(league) {
+    const isUarl = ['uarl-d1','uarl-d2','open'].includes(league);
+    activeFilter = isUarl ? 'uarl-group' : league;
+    activeSubfilter = isUarl ? league : 'uarl-all';
+    toolbar?.querySelectorAll('[data-filter]').forEach(item => {
+      const selected = item.dataset.filter === activeFilter;
+      item.classList.toggle('is-active',selected);
+      item.setAttribute('aria-pressed',String(selected));
+    });
+    if (uarlSubfilters instanceof HTMLElement) uarlSubfilters.hidden = !isUarl;
+    toolbar?.querySelectorAll('[data-subfilter]').forEach(item => {
+      const selected = item.dataset.subfilter === activeSubfilter;
+      item.classList.toggle('is-active',selected);
+      item.setAttribute('aria-pressed',String(selected));
+    });
+  }
+
   function revealEventHash() {
     if (!location.hash.startsWith('#event-')) return false;
     const slug=decodeURIComponent(location.hash.slice(7));
     const target=scheduleEvents.find(event=>event.shareSlug===slug); if(!target) return false;
-    forcedEventSlug=slug; activeFilter='all'; activeSubfilter='uarl-all'; showFullSchedule=true;
-    toolbar?.querySelectorAll('[data-filter]').forEach(item=>{const selected=item.dataset.filter==='all';item.classList.toggle('is-active',selected);item.setAttribute('aria-pressed',String(selected));});
-    if(uarlSubfilters instanceof HTMLElement)uarlSubfilters.hidden=true;
+    forcedEventSlug=slug; showFullSchedule=true; applyLeagueSelection(target.league);
     renderSchedule(); updateNextOperation(); updateDockCountdowns();
     const card=document.getElementById(`event-${slug}`); const toggle=card?.querySelector('[data-event-toggle]'); const dock=card?.querySelector('[data-event-dock]');
     if(dock instanceof HTMLElement){page.querySelectorAll('[data-event-dock]').forEach(other=>{if(other!==dock && other instanceof HTMLElement)other.hidden=true;});dock.hidden=false;toggle?.setAttribute('aria-expanded','true');card?.classList.add('is-open','is-share-target');setTimeout(()=>card?.classList.remove('is-share-target'),2400);card?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});}
