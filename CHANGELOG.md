@@ -150,3 +150,9 @@
 - Reworked event-name typography into the site's distressed Edo-style display treatment.
 - Removed the subtle bottom-right Aetherwing.net watermark from event-share images.
 - Preserved image-only Discord embeds and league-aware Schedule deep links/highlighting from v0.4.2.
+
+## v0.4.4
+- Regenerated all 143 Schedule event share images with the actual Edo SZ font supplied for build-time rendering.
+- Versioned all event OG image filenames with `-v44` and cache-busted copied event URLs with `?v=44` so Discord does not reuse v0.4.3 image caches.
+- Preserved all final league-logo mappings, including the red/black Town Fair Tire NRRS logo for general NRRS events and the special Pepsi 400 NRRS logo.
+- Favicon validation now accepts PNG or SVG so a PNG favicon cannot fail the build.

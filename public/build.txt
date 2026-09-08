@@ -1,5 +1,2 @@
-Aetherwing eMotorsports 0.4.3
-Paint Booth canonical host: https://paint.aetherwing.net
-Main /paint-booth route retained only as legacy hash bridge.
-Schedule event shares: 143 image-only Discord cards with league-aware deep links.
-Schedule share graphics: league/series logos, special Pepsi 400 NRRS branding, final red/black Town Fair Tire NRRS branding, distressed Edo-style event-name treatment, no bottom-right Aetherwing.net watermark.
+Aetherwing eMotorsports v0.4.4
+Schedule event-share patch: actual Edo SZ + versioned Discord OG images

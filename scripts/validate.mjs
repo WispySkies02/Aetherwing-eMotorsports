@@ -105,13 +105,14 @@ const paintPage = text('src/pages/paint-booth/index.astro');
 assert(schedulePage.includes('data-event-dock') && schedulePage.includes('updateNextOperation'), 'Schedule includes expandable event docks and reactive Next Operation logic');
 assert(schedulePage.includes('eventCriteria') && schedulePage.includes('Crown Jewel') && schedulePage.includes('Dash4Cash'), 'Schedule includes semantic special-criteria tags');
 assert(schedulePage.includes('data-event-share') && schedulePage.includes('revealEventHash'), 'Schedule includes share buttons and exact event deep-link reveal logic');
+assert(schedulePage.includes('?v=44'), 'Schedule share links cache-bust Discord metadata for v0.4.4');
 assert(existsSync(resolve(root, 'src/pages/event/[slug].astro')), 'Static share route exists for schedule events');
 const eventShareRoute = text('src/pages/event/[slug].astro');
-assert(eventShareRoute.includes('/images/social/events/${event.shareSlug}.jpg'), 'Schedule event shares use event-specific image cards');
+assert(eventShareRoute.includes('/images/social/events/${event.shareSlug}-v44.jpg'), 'Schedule event shares use event-specific image cards');
 assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;') && !eventShareRoute.includes('og:description'), 'Schedule event embeds suppress visible Discord title/description text');
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
-assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}.jpg`))), 'All 143 schedule events have share-card images');
+assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v44.jpg`))), 'All 143 schedule events have share-card images');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
 const siteHeader = text('src/components/global/SiteHeader.astro');
@@ -137,7 +138,8 @@ const requiredRoutes = [
 ];
 for (const route of requiredRoutes) assert(existsSync(resolve(root, route)), `Route exists: ${route.replace('src/pages/','')}`);
 
-const requiredAssets = ['public/images/brand/aetherwing-logo.png','public/images/textures/aetherwing-editorial.webp','public/images/social/default-social.png','public/favicon/favicon.svg'];
+const requiredAssets = ['public/images/brand/aetherwing-logo.png','public/images/textures/aetherwing-editorial.webp','public/images/social/default-social.png'];
+assert(existsSync(resolve(root, 'public/favicon/favicon.png')) || existsSync(resolve(root, 'public/favicon/favicon.svg')), 'Local Aetherwing favicon exists as PNG or SVG');
 for (const asset of requiredAssets) assert(existsSync(resolve(root, asset)), `Local Aetherwing asset exists: ${asset.replace('public/','')}`);
 
 const redirects = text('public/_redirects');
