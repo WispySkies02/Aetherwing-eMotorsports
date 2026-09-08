@@ -142,3 +142,11 @@
 - Event Discord embeds suppress visible title/description text so the image carries the event information.
 - Shared event links open the Schedule with that event's exact league/UARL division selected, then open and highlight the shared event.
 - Share crawler pages stay stationary for metadata; human visitors are forwarded with JavaScript only.
+
+## v0.4.3
+- Added official/user-supplied series branding to all 143 Schedule share graphics: UARL D1, UARL D2, UARL Open, Sunoco Trucks, Kmart, NRRS, iRacing, and StarClutch Racing alliance marks.
+- Kmart share graphics now switch between Regular, Dash4Cash, and Chase branding based on each event.
+- NRRS uses the final red Town Fair Tire Cup Series logo with black TOWN FAIR TIRE text for general races; the Pepsi 400 keeps its dedicated alternate NRRS/Town Fair Tire mark.
+- Reworked event-name typography into the site's distressed Edo-style display treatment.
+- Removed the subtle bottom-right Aetherwing.net watermark from event-share images.
+- Preserved image-only Discord embeds and league-aware Schedule deep links/highlighting from v0.4.2.

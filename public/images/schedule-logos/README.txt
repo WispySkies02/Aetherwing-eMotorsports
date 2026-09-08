@@ -1,0 +1,12 @@
+Schedule share branding map
+- uarl-d1: UARL L.L. Bean Cup Series
+- uarl-d2: UARL NFFF Grand National Series
+- open: UARL Bangor Savings Bank Super Late Model Open Series
+- sunoco: NASCAR Sunoco Truck Series
+- kmart-regular: NASCAR Kmart Auto Parts Series
+- kmart-d4c: NASCAR Dash4Cash Kmart
+- kmart-chase: NASCAR Kmart Auto Parts Series — The Chase
+- nrrs: final red Town Fair Tire Cup Series general logo (black TOWN FAIR TIRE text)
+- nrrs-pepsi: Pepsi 400-only alternate NRRS/Town Fair Tire mark
+- iracing: iRacing
+- scr: StarClutch Racing alliance mark for Kmart/Sunoco
