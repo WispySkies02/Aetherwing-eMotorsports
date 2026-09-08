@@ -127,3 +127,6 @@ Paint Booth v0.3.9 server-renders the complete **35-paint collection** into the 
 - Scheme ID: `132350921119875`
 - Paint Booth deep link: `/paint-booth#paint-kmart-clutch-sinder`
 - Paint Share route: `https://paint.aetherwing.net/kmart-clutch-sinder/`
+
+
+Latest patch: v0.4.1 adds page-specific metadata images so major site links no longer all share the same default embed art.

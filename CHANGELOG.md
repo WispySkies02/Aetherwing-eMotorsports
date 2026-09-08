@@ -132,3 +132,7 @@
 - Added initial interaction prototypes.
 - Added migration and final-domain-cutover checklists.
 - Kept `paint.aetherwing.net` completely outside this project.
+
+## v0.4.1
+- Added page-specific Open Graph / Discord social images for Home, Drivers, Schedule, Paint Booth, Partners, News, Wins & History, Mission & Values, Team Handbook, and Contact HQ.
+- Updated paint.aetherwing.net root embed image to use a dedicated Paint Booth social graphic.
