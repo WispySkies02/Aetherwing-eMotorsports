@@ -13,7 +13,6 @@ const { event } = Astro.props;
 const target = `/schedule/?league=${encodeURIComponent(event.league)}#event-${event.shareSlug}`;
 const canonicalUrl = new URL(`/event/${event.shareSlug}/`, Astro.site);
 const imageUrl = new URL(`/images/social/events/${event.shareSlug}-v45.jpg`, Astro.site);
-// Legacy validation marker retained for overlay compatibility: /images/social/events/${event.shareSlug}.jpg
 ---
 <!doctype html>
 <html lang="en">

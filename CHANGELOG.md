@@ -151,8 +151,11 @@
 - Removed the subtle bottom-right Aetherwing.net watermark from event-share images.
 - Preserved image-only Discord embeds and league-aware Schedule deep links/highlighting from v0.4.2.
 
-## v0.4.4
-- Regenerated all 143 Schedule event share images with the actual Edo SZ font supplied for build-time rendering.
-- Versioned all event OG image filenames with `-v44` and cache-busted copied event URLs with `?v=44` so Discord does not reuse v0.4.3 image caches.
-- Preserved all final league-logo mappings, including the red/black Town Fair Tire NRRS logo for general NRRS events and the special Pepsi 400 NRRS logo.
-- Favicon validation now accepts PNG or SVG so a PNG favicon cannot fail the build.
+## v0.4.5 FULL CLEAN RESTORE
+- Integrated the complete v0.4.5 schedule-share readability update into a full standalone site tree.
+- All 143 event cards use actual Edo SZ-rendered event names and cache-busted `-v45.jpg` OG image filenames.
+- Round numbers use a large bottom-strip badge.
+- Event status/criteria under the track use high-contrast badges.
+- StarClutch Racing alliance branding is separated from Kmart/Sunoco series branding for readability.
+- Removed stale pre-v45 event share JPEGs from the clean package.
+- Added PNG favicon support with SVG fallback; validation accepts either format to prevent PNG swaps from killing Netlify builds.

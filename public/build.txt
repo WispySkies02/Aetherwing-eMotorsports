@@ -1,2 +1,4 @@
-Aetherwing eMotorsports v0.4.4
-Schedule event-share patch: actual Edo SZ + versioned Discord OG images
+Aetherwing eMotorsports custom site
+Build: v0.4.5 FULL CLEAN RESTORE
+Schedule share graphics: 143 cache-busted -v45.jpg cards
+Favicon: PNG primary + SVG fallback; validator accepts either
