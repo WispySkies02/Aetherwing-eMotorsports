@@ -300,7 +300,7 @@ const displayDate = (event) => {
   const announceShare = (text) => { if (!(scheduleToast instanceof HTMLElement)) return; scheduleToast.textContent=text; scheduleToast.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>scheduleToast.hidden=true,1500); };
   page.querySelectorAll('[data-event-share]').forEach(button => button.addEventListener('click', async () => {
     const slug=button.dataset.eventShare || ''; if(!slug) return;
-    await copyText(`${location.origin}/event/${encodeURIComponent(slug)}/?v=44`);
+    await copyText(`${location.origin}/event/${encodeURIComponent(slug)}/?v=45`);
     announceShare('Event link copied');
   }));
 
