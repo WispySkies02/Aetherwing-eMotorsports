@@ -1,0 +1,45 @@
+---
+const definitions = {
+  nrrs:{label:'NRRS',target:'nrrs'},
+  kmart:{label:'Kmart Auto Parts Series',target:'kmart'},
+  sunoco:{label:'Sunoco Truck Series',target:'sunoco'},
+  'uarl-all':{label:'UARL · All Divisions',target:'uarl-all'},
+  'uarl-d1':{label:'UARL D1 · L.L. Bean Cup Series',target:'uarl-d1'},
+  'uarl-d2':{label:'UARL D2 · NFFF Grand National Series',target:'uarl-d2'},
+  open:{label:'UARL Open Series',target:'open'},
+  iracing:{label:'iRacing Factory Program',target:'iracing'}
+};
+export function getStaticPaths() {
+  return Object.entries(definitions).map(([league,details])=>({params:{league},props:{league,details}}));
+}
+const { league, details } = Astro.props;
+const target = `/schedule/?league=${encodeURIComponent(details.target)}#race-calendar`;
+const canonicalUrl = new URL(`/schedule/share/${league}/`, Astro.site);
+const imageUrl = new URL(`/images/social/leagues/${league}-v49.jpg`, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>&#8203;</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="&#8203;" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={imageUrl} />
+  <meta property="og:image:secure_url" content={imageUrl} />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="&#8203;" />
+  <meta name="twitter:image" content={imageUrl} />
+  <style>html,body{margin:0;min-height:100%;background:#030303;color:#fff;font-family:system-ui,sans-serif}body{display:grid;place-items:center;min-height:100vh;text-align:center}a{color:#fff;text-decoration:none;border:2px solid #fff;padding:.8rem 1rem;background:#000}</style>
+</head>
+<body>
+  <a href={target}>Open {details.label} Schedule</a>
+  <script is:inline define:vars={{ target }}>window.location.replace(target);</script>
+</body>
+</html>

@@ -98,6 +98,11 @@ assert(uarlD1Rounds.length === 18 && uarlD1Rounds[0] === 'ROUND 1' && uarlD1Roun
 const uarlD1Clash = scheduleEvents.find((event) => event.league === 'uarl-d1' && /Bean Clash/i.test(event.title));
 const uarlD1AllStar = scheduleEvents.find((event) => event.league === 'uarl-d1' && /All-Star Race/i.test(event.title));
 assert(!uarlD1Clash?.round && !uarlD1AllStar?.round, 'UARL D1 Clash and All-Star are excluded from round numbering');
+assert(uarlD1Clash?.date === '2026-09-09', 'UARL D1 L.L. Bean Clash remains on September 9');
+const uarlD1PostClashSaturdays = scheduleEvents.filter((event) => event.league === 'uarl-d1' && event.date !== '2026-09-09' && new Date(`${event.date}T12:00:00Z`).getUTCDay() === 6);
+assert(uarlD1PostClashSaturdays.length === 0, 'UARL D1 Saturday dates have moved to Sundays while special non-Saturday dates remain intact');
+const uarlD1Competition = competitions.find((item) => item.id === 'uarl-d1');
+assert(uarlD1Competition?.schedule === 'Sundays · 8:30 PM ET', 'UARL D1 recurring schedule is Sundays at 8:30 PM ET');
 assert(scheduleEvents.filter((event) => event.league === 'uarl-d2' && event.round).length === 18, 'UARL D2 is numbered across 18 rounds');
 assert(scheduleEvents.filter((event) => event.league === 'open' && event.round).length === 12, 'UARL Open is numbered across 12 rounds');
 assert(scheduleEvents.some((event) => event.league === 'uarl-d1' && event.title === 'Queen City 500' && event.specialTag === 'CROWN JEWEL'), 'UARL D1 Queen City 500 is a Crown Jewel');
@@ -149,6 +154,12 @@ assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
 assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 143 schedule events have v47 share-card images');
+assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=49'), 'Schedule can share the currently selected league');
+assert(existsSync(resolve(root, 'src/pages/schedule/share/[league].astro')), 'Static league-share route exists for schedule filters');
+const leagueShareRoute = text('src/pages/schedule/share/[league].astro');
+assert(leagueShareRoute.includes('/images/social/leagues/${league}-v49.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v49 next-race cards');
+for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v49.jpg`)), `League share image exists: ${league}`); }
+assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
 const siteHeader = text('src/components/global/SiteHeader.astro');

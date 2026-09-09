@@ -187,3 +187,7 @@
   .aw-mobile-standings-nav>span{font-size:.64rem}
   .aw-mobile-standings-nav>a{font-size:.66rem;padding-inline:.45rem}
 }
+
+/* v0.4.19 — shareable league snapshots */
+.aw-league-share-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:.65rem;padding-top:.65rem;border-top:1px solid #333}.aw-league-share-row>div span,.aw-league-share-row>div small{display:block}.aw-league-share-row>div span{color:var(--aw-blue);font:900 .72rem/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}.aw-league-share-row>div small{margin-top:.28rem;color:#777;font:700 .72rem/1.3 var(--font-mono)}.aw-league-share-row button{margin-left:auto;border-color:var(--aw-blue);color:var(--aw-blue);background:#071017}.aw-league-share-row button:not(:disabled):hover,.aw-league-share-row button:not(:disabled):focus-visible{background:var(--aw-blue);border-color:var(--aw-blue);color:#001018;outline:none}.aw-league-share-row button:disabled{opacity:.46;cursor:not-allowed;border-color:#444;color:#777;background:#080808}
+@media(max-width:620px){.aw-league-share-row{align-items:stretch;flex-direction:column}.aw-league-share-row>div small{font-size:.68rem}.aw-league-share-row button{width:100%;margin-left:0;min-height:42px}}

@@ -104,7 +104,7 @@ Driver livery brands are not automatically team partners.
 ## Weekly schedule times
 
 - NRRS — Tuesday, 7:30 PM ET
-- UARL D1 / L.L. Bean Cup — Saturday, 8:30 PM ET
+- UARL D1 / L.L. Bean Cup — Sunday, 8:30 PM ET
 - UARL Open — Sunday, 11:30 AM ET
 - UARL D2 / NFFF Grand National — Monday, **6:45 PM ET**
 - Kmart Auto Parts Series — Monday, 8:30 PM ET

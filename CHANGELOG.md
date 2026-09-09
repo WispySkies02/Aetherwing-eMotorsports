@@ -1,3 +1,8 @@
+# v0.4.19
+- UARL D1 Saturday events moved to Sundays; the Sep 9 L.L. Bean Clash remains tonight.
+- Added shareable league schedule cards showing the next five races, including combined UARL All Divisions snapshots.
+- Added league-share controls to the Schedule filters and static social-preview routes.
+
 # v0.4.18 — Mobile Schedule Cockpit
 
 - Reworked the Schedule page on phones so championship information no longer becomes a long vertical wall before the calendar.

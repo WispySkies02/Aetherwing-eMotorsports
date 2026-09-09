@@ -217,6 +217,10 @@ const displayDate = (event) => {
           <button type="button" data-subfilter="uarl-d2" aria-pressed="false">UARL D2</button>
           <button type="button" data-subfilter="open" aria-pressed="false">UARL Open</button>
         </div>
+        <div class="aw-league-share-row">
+          <div><span>League Share</span><small>Copies a Discord/social preview with the next five races.</small></div>
+          <button type="button" data-league-share disabled>↗ SELECT A LEAGUE</button>
+        </div>
       </div>
 
       <div class="aw-schedule-readout"><span>Upcoming Operations</span><strong data-visible-count>—</strong><small>Tap any event to open its information dock.</small></div>
@@ -288,6 +292,7 @@ const displayDate = (event) => {
   const monthBlocks = Array.from(page.querySelectorAll('[data-month-key]'));
   const toolbar = page.querySelector('[data-schedule-toolbar]');
   const uarlSubfilters = page.querySelector('[data-uarl-subfilters]');
+  const leagueShareButton = page.querySelector('[data-league-share]');
   const visibleCount = page.querySelector('[data-visible-count]');
   const empty = page.querySelector('[data-schedule-empty]');
   const toggleFull = page.querySelector('[data-schedule-toggle]');
@@ -297,6 +302,16 @@ const displayDate = (event) => {
   const weatherTarget = page.querySelector('[data-weather-target]');
   const weatherScreens = Array.from(page.querySelectorAll('[data-weather-screen]'));
   let activeFilter = 'all'; let activeSubfilter = 'uarl-all'; let showFullSchedule = false; let currentWeatherTrack = null; let weatherCycle = null; let forcedEventSlug = ''; let toastTimer = null;
+  const leagueShareMap = {
+    nrrs:{key:'nrrs',label:'NRRS'},
+    kmart:{key:'kmart',label:'Kmart'},
+    sunoco:{key:'sunoco',label:'Sunoco Trucks'},
+    iracing:{key:'iracing',label:'iRacing'},
+    'uarl-all':{key:'uarl-all',label:'UARL · All Divisions'},
+    'uarl-d1':{key:'uarl-d1',label:'UARL D1'},
+    'uarl-d2':{key:'uarl-d2',label:'UARL D2'},
+    open:{key:'open',label:'UARL Open'}
+  };
 
   const pad = (number) => String(number).padStart(2,'0');
   function getOffsetForDateKey(dateKey) {
@@ -332,6 +347,17 @@ const displayDate = (event) => {
     return event.league === activeFilter;
   }
   function filteredEvents() { return scheduleEvents.filter(event => isUpcoming(event) && matchesFilter(event)).sort((a,b) => getEventStart(a)-getEventStart(b)); }
+  function selectedShareLeague() {
+    if (activeFilter === 'all') return null;
+    if (activeFilter === 'uarl-group') return leagueShareMap[activeSubfilter] || leagueShareMap['uarl-all'];
+    return leagueShareMap[activeFilter] || null;
+  }
+  function updateLeagueShareControl() {
+    if (!(leagueShareButton instanceof HTMLButtonElement)) return;
+    const selected = selectedShareLeague();
+    leagueShareButton.disabled = !selected;
+    leagueShareButton.textContent = selected ? `↗ SHARE ${selected.label.toUpperCase()}` : '↗ SELECT A LEAGUE';
+  }
   function competitionLabel(event) { return `${event.leagueName}${isAlliance(event.league) ? ' · StarClutch Racing Alliance' : ''}`; }
   function displayDate(event) {
     if (event.tbd) return 'TBD'; if (event.displayDate) return event.displayDate.toUpperCase();
@@ -357,6 +383,7 @@ const displayDate = (event) => {
     if (empty instanceof HTMLElement) empty.hidden = shown > 0;
     const hiddenByCondense = monthBlocks.some(block => { const hasVisible = Array.from(block.querySelectorAll('[data-event-card]')).some(card=>!card.hidden); return hasVisible && block.hidden; });
     if (toggleFull instanceof HTMLElement) { toggleFull.hidden = !hiddenByCondense && !showFullSchedule; toggleFull.textContent = showFullSchedule ? 'Show Condensed Schedule' : 'Show Full Upcoming Schedule'; toggleFull.setAttribute('aria-expanded',String(showFullSchedule)); }
+    updateLeagueShareControl();
   }
 
   function formatCountdown(event, now = new Date()) {
@@ -419,10 +446,23 @@ const displayDate = (event) => {
     announceShare('Event link copied');
   }));
 
+  leagueShareButton?.addEventListener('click', async () => {
+    const selected = selectedShareLeague();
+    if (!selected) { announceShare('Select a league first'); return; }
+    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=49`;
+    if (navigator.share && matchMedia('(pointer:coarse)').matches) {
+      try { await navigator.share({title:`${selected.label} Schedule`,url}); return; } catch (error) { if (error?.name === 'AbortError') return; }
+    }
+    await copyText(url);
+    announceShare(`${selected.label} share link copied`);
+  });
+
   function applyLeagueSelection(league) {
-    const isUarl = ['uarl-d1','uarl-d2','open'].includes(league);
-    activeFilter = isUarl ? 'uarl-group' : league;
-    activeSubfilter = isUarl ? league : 'uarl-all';
+    const isUarlDivision = ['uarl-d1','uarl-d2','open'].includes(league);
+    const isUarlAll = league === 'uarl-all' || league === 'uarl-group';
+    const isUarl = isUarlDivision || isUarlAll;
+    activeFilter = isUarl ? 'uarl-group' : (leagueShareMap[league] ? league : 'all');
+    activeSubfilter = isUarlDivision ? league : 'uarl-all';
     toolbar?.querySelectorAll('[data-filter]').forEach(item => {
       const selected = item.dataset.filter === activeFilter;
       item.classList.toggle('is-active',selected);
@@ -434,6 +474,15 @@ const displayDate = (event) => {
       item.classList.toggle('is-active',selected);
       item.setAttribute('aria-pressed',String(selected));
     });
+    updateLeagueShareControl();
+  }
+
+  function applyLeagueQuery() {
+    const requested = new URLSearchParams(location.search).get('league');
+    if (!requested || !leagueShareMap[requested]) return false;
+    forcedEventSlug=''; showFullSchedule=false; applyLeagueSelection(requested);
+    renderSchedule(); updateNextOperation();
+    return true;
   }
 
   function revealEventHash() {
@@ -468,7 +517,10 @@ const displayDate = (event) => {
     try { await openMeteo(loc); if(weatherLoading instanceof HTMLElement)weatherLoading.classList.remove('is-active'); cycleWeather(); } catch { if(weatherTarget)weatherTarget.textContent='COMMUNICATION ERROR'; }
   }
 
-  if (!revealEventHash()) { renderSchedule(); updateNextOperation(); updateDockCountdowns(); }
+  const hashRevealed = revealEventHash();
+  const queryApplied = !hashRevealed && applyLeagueQuery();
+  if (!hashRevealed && !queryApplied) { renderSchedule(); updateNextOperation(); }
+  updateDockCountdowns();
   addEventListener('hashchange', revealEventHash);
   const timer=setInterval(()=>{updateNextOperation();updateDockCountdowns();},1000);
   const refresh=()=>{renderSchedule();updateNextOperation();updateDockCountdowns();};
