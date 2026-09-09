@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.15 — Broadcast Results / Readability / Portfolio Cleanup
+- Rebuilt Wins & History Latest Result as a readable TV-broadcast-style race information package instead of the oversized P4 poster treatment.
+- Added clear start, Stage 2, finish, Chase standing, race summary, and next-race information to the latest-result package.
+- Raised the site-wide explicit microtype floor so important labels and controls no longer render at 7–10px on desktop.
+- Replaced white driver sponsor/livery-brand tiles with integrated dark graphite treatments and transparent logo presentation.
+- Driver brand portfolios now all start collapsed; Wispy is no longer automatically expanded on page load.
+- Preserves v0.4.14 standings, NRRS Chase dates, schedule data, routes, partners, and paint architecture.
+
 ## v0.4.14 — Aetherwing LIVE visual overhaul
 - Site-wide visual system pass: wider canvas, stronger page hierarchy, animated/interactive panels, race-week editorial treatments, and less dead black space.
 - Schedule Championship Tracker rebuilt as a full championship wall with featured NRRS postseason treatment and larger standings presentation.

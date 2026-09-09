@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.14 — LIVE visual overhaul
+Aetherwing eMotorsports v0.4.15 — broadcast results + readability + sponsor portfolio cleanup

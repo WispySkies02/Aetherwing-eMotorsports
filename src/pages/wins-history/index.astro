@@ -3,9 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
 import wins from '../../data/wins.json';
 import results from '../../data/results.json';
+import standings from '../../data/standings.json';
 import '../../styles/pages/content.css';
 import '../../styles/pages/history.css';
 const latest=results.latestResult;
+const nrrsStanding=standings.find((item)=>item.id==='nrrs');
+const nrrsRow=nrrsStanding?.rows?.[0];
+const gainedFromStart=latest.start-latest.finish;
 const newest=wins.slice(-4).reverse();
 const milestones=[
  ['Aug 26, 2025','First Recorded Modern Start','MRRA D1 Coca-Cola 600 at Charlotte. Wispy qualified 6th and finished 2nd.'],
@@ -25,18 +29,38 @@ const milestones=[
 
       <section id="scope" class="aw-record-scope"><div class="section-head"><div><p class="eyebrow">How the Record Book Works</p><h2 class="section-title">Record Scope</h2></div></div><div class="aw-scope-grid"><article class="panel"><span>Aetherwing Record</span><h3>What Counts As A Team Win</h3><p>The verified total counts results recorded under the BellSouth or Aetherwing team banner. The archive below is the source for that total.</p><b>27 Verified Team Wins</b></article><article class="panel"><span>Historical Record</span><h3>Kmart Results Stay Where They Belong</h3><p>Historic Kmart Cup wins remain preserved as Aetherwing/BellSouth-era results because that is how those races were recorded at the time.</p><b>Historical AEM Era</b></article><article class="panel panel--alliance"><span>Current Structure</span><h3>Alliance Results Are Separate</h3><p>Current Kmart and Sunoco entries compete under StarClutch Racing through the alliance. Current alliance results do not increase the Aetherwing team-win total.</p><b>5 AEM Programs · 2 Alliance Series</b></article></div></section>
 
-      <section id="latest-result" class="aw-latest-result aw-result-feature"><div class="section-head"><div><p class="eyebrow">Post-Race // Most Recent Race</p><h2 class="section-title">Latest Result</h2></div><p class="lede">A race-night recap, not a spreadsheet. The latest Aetherwing result gets the same visual weight as the race itself.</p></div>
-        <article class="aw-result-graphic" aria-label={`${latest.title} result for ${latest.driver}`}>
-          <div class="aw-result-graphic__flag"><span>CHECKERED</span><b>{latest.specialTag}</b></div>
-          <div class="aw-result-graphic__event">
-            <div class="aw-result-series"><span>{latest.series}</span><em>{latest.round} OF 25</em></div>
-            <h3>{latest.title}</h3>
-            <p>{latest.track} <i>•</i> {latest.date}</p>
-            <div class="aw-result-driver"><b>#{latest.number}</b><span><strong>{latest.driver}</strong><small>NRRS // THE CHASE QUALIFIED</small></span></div>
+      <section id="latest-result" class="aw-latest-result aw-broadcast-result"><div class="section-head"><div><p class="eyebrow">Post-Race // Broadcast Recap</p><h2 class="section-title">Latest Result</h2></div><p class="lede">Race result, race progression, postseason context, and what comes next — packaged like a motorsports broadcast instead of a spreadsheet.</p></div>
+        <article class="aw-tv-result" aria-label={`${latest.title} result for ${latest.driver}`}>
+          <header class="aw-tv-result__topline">
+            <div><span>NRRS</span><strong>{latest.series}</strong></div>
+            <div class="aw-tv-result__status"><span>CHECKERED</span><b>{latest.specialTag}</b></div>
+          </header>
+
+          <div class="aw-tv-result__main">
+            <div class="aw-tv-result__event">
+              <div class="aw-tv-result__meta"><span>{latest.round} OF 25</span><b>{latest.track}</b><em>{latest.date}</em></div>
+              <h3>{latest.title}</h3>
+              <p class="aw-tv-result__headline">P4 AT DAYTONA. <strong>THE CHASE IS NEXT.</strong></p>
+              <div class="aw-tv-result__driver"><b>#{latest.number}</b><span><strong>{latest.driver}</strong><small>Aetherwing eMotorsports · Chase Qualified</small></span></div>
+            </div>
+            <aside class="aw-tv-result__finish">
+              <span>OFFICIAL FINISH</span>
+              <strong>P{latest.finish}</strong>
+              <div><b>TOP 5</b><em>{gainedFromStart>0?`+${gainedFromStart} FROM START`:`${gainedFromStart} FROM START`}</em></div>
+            </aside>
           </div>
-          <div class="aw-result-graphic__finish"><span>FINISH</span><strong>P{latest.finish}</strong><b>TOP 5</b></div>
-          <div class="aw-result-run"><span>RACE PROGRESSION</span><div><article><small>GREEN FLAG</small><strong>P{latest.start}</strong><em>START</em></article><i>→</i><article><small>STAGE 2</small><strong>P{latest.stage2.finish}</strong><em>STAGE FINISH</em></article><i>→</i><article class="is-finish"><small>CHECKERED</small><strong>P{latest.finish}</strong><em>FINAL</em></article></div></div>
-          <div class="aw-result-graphic__story"><span>RACE NOTE</span><p>Wispy started seventh, climbed to fourth by Stage 2, and brought the #32 home P4 in the Pepsi 400 regular-season finale before the NRRS Chase begins.</p><strong>NEXT: THE CHASE // DARLINGTON</strong></div>
+
+          <div class="aw-tv-result__stats" aria-label="Race progression and championship status">
+            <div><span>START</span><strong>P{latest.start}</strong><small>Green flag</small></div>
+            <div><span>STAGE 2</span><strong>P{latest.stage2.finish}</strong><small>Stage finish</small></div>
+            <div class="is-finish"><span>FINISH</span><strong>P{latest.finish}</strong><small>Checkered flag</small></div>
+            <div class="is-chase"><span>CHASE STANDING</span><strong>{nrrsRow?.position || '—'}</strong><small>{nrrsRow ? `${nrrsRow.points.toLocaleString()} pts · ${nrrsRow.delta}` : 'Qualified'}</small></div>
+          </div>
+
+          <div class="aw-tv-result__lower">
+            <div><span>RACE SUMMARY</span><p>Wispy rolled off seventh, reached fourth by Stage 2, and finished P4 in the Pepsi 400 to close the NRRS regular season with a top-five run.</p></div>
+            <div class="aw-tv-result__next"><span>UP NEXT</span><strong>SOUTHERN 500</strong><small>THE CHASE · DARLINGTON · SEP 15</small></div>
+          </div>
         </article>
       </section>
 
