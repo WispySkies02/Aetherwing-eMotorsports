@@ -80,6 +80,7 @@ const displayDate = (event) => {
                 </div>
               </header>
               {series.rows.length ? (
+                <>
                 <div class="aw-standings-table">
                   {series.rows.map((row) => (
                     <div class="aw-standings-row">
@@ -109,6 +110,7 @@ const displayDate = (event) => {
                     </div>
                   </section>
                 )}
+                </>
               ) : (
                 <div class="aw-standings-empty">
                   <span>SEASON STATUS</span>

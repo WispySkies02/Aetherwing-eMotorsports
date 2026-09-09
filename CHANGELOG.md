@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.13 — Netlify Build Hotfix
+- Fixed the Schedule page Astro compiler error introduced by the Kmart #29 SCR part-time standings subsection.
+- Wrapped the active standings table and optional PT-entry block in a single Astro fragment so the conditional renders valid markup.
+- Preserved all v0.4.12 standings positions, Chase eligibility, points, and schedule data unchanged.
+
 ## v0.4.12 — Standings Positions + Chase Eligibility
 - Added confirmed Kmart standings positions: Jaxon P1, Will P2, Wispy P4.
 - Added confirmed Sunoco standings positions: Will P1, Clutch P2, Eazy P4, Wispy P10.
