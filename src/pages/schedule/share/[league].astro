@@ -1,15 +1,15 @@
 ---
-const definitions = {
-  nrrs:{label:'NRRS',target:'nrrs'},
-  kmart:{label:'Kmart Auto Parts Series',target:'kmart'},
-  sunoco:{label:'Sunoco Truck Series',target:'sunoco'},
-  'uarl-all':{label:'UARL · All Divisions',target:'uarl-all'},
-  'uarl-d1':{label:'UARL D1 · L.L. Bean Cup Series',target:'uarl-d1'},
-  'uarl-d2':{label:'UARL D2 · NFFF Grand National Series',target:'uarl-d2'},
-  open:{label:'UARL Open Series',target:'open'},
-  iracing:{label:'iRacing Factory Program',target:'iracing'}
-};
 export function getStaticPaths() {
+  const definitions = {
+    nrrs:{label:'NRRS',target:'nrrs'},
+    kmart:{label:'Kmart Auto Parts Series',target:'kmart'},
+    sunoco:{label:'Sunoco Truck Series',target:'sunoco'},
+    'uarl-all':{label:'UARL · All Divisions',target:'uarl-all'},
+    'uarl-d1':{label:'UARL D1 · L.L. Bean Cup Series',target:'uarl-d1'},
+    'uarl-d2':{label:'UARL D2 · NFFF Grand National Series',target:'uarl-d2'},
+    open:{label:'UARL Open Series',target:'open'},
+    iracing:{label:'iRacing Factory Program',target:'iracing'}
+  };
   return Object.entries(definitions).map(([league,details])=>({params:{league},props:{league,details}}));
 }
 const { league, details } = Astro.props;

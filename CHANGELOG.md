@@ -1,3 +1,9 @@
+# v0.4.20 — League Share Static-Route Hotfix
+
+- Fixed Astro prerender failure in `src/pages/schedule/share/[league].astro`.
+- `getStaticPaths()` now defines its route map inside the function scope, which Astro can safely execute during static route generation.
+- No schedule, standings, UARL date, share-card, or visual data changed from v0.4.19.
+
 # v0.4.19
 - UARL D1 Saturday events moved to Sundays; the Sep 9 L.L. Bean Clash remains tonight.
 - Added shareable league schedule cards showing the next five races, including combined UARL All Divisions snapshots.
