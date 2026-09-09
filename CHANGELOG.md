@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.12 — Standings Positions + Chase Eligibility
+- Added confirmed Kmart standings positions: Jaxon P1, Will P2, Wispy P4.
+- Added confirmed Sunoco standings positions: Will P1, Clutch P2, Eazy P4, Wispy P10.
+- Added Sunoco Chase eligibility labels: Will, Clutch, and Eazy in the Chase; Wispy not in the Chase.
+- Added the Kmart #29 SCR part-time entry subsection: Clutch 135 pts, Eazy 59 pts, Matty 58 pts.
+- Marked #29 part-time drivers as not Chase eligible.
+
 ## v0.4.11 — Championship Tracker Readability
 - Redesigned the Schedule page Championship Tracker for faster scanning and stronger desktop/mobile readability.
 - Removed equal-height card stretching that created large empty black areas in short standings cards.

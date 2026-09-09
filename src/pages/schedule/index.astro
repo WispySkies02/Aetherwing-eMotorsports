@@ -87,7 +87,8 @@ const displayDate = (event) => {
                         <b>{row.position ?? `#${row.number}`}</b>
                         <div>
                           <strong>{row.driver}</strong>
-                          <small>{row.position ? `CAR #${row.number}` : `CAR #${row.number}`}</small>
+                          <small>CAR #{row.number}</small>
+                          {row.chaseStatus && <em class:list={["aw-row-status", {"is-out": row.chaseStatus === "NOT IN CHASE"}]}>{row.chaseStatus}</em>}
                         </div>
                       </div>
                       <div class="aw-standings-points"><small>POINTS</small><strong>{row.points.toLocaleString('en-US')}</strong></div>
@@ -95,6 +96,19 @@ const displayDate = (event) => {
                     </div>
                   ))}
                 </div>
+                {series.ptEntry && (
+                  <section class="aw-pt-entry" aria-label={`${series.ptEntry.title} standings`}>
+                    <header>
+                      <div><span>#{series.ptEntry.number}</span><strong>{series.ptEntry.title}</strong></div>
+                      <em>{series.ptEntry.status}</em>
+                    </header>
+                    <div class="aw-pt-driver-grid">
+                      {series.ptEntry.drivers.map((driver) => (
+                        <div><strong>{driver.driver}</strong><span>{driver.points.toLocaleString('en-US')} PTS</span></div>
+                      ))}
+                    </div>
+                  </section>
+                )}
               ) : (
                 <div class="aw-standings-empty">
                   <span>SEASON STATUS</span>

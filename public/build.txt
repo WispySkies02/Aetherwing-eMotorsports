@@ -1,1 +1,2 @@
-Aetherwing eMotorsports v0.4.11 — Championship Tracker readability redesign
+Aetherwing eMotorsports v0.4.12
+Standings positions and Chase eligibility update

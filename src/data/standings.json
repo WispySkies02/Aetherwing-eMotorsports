@@ -23,24 +23,46 @@
     "status": "CURRENT",
     "rows": [
       {
+        "position": "P1",
         "number": "34",
         "driver": "Jaxon",
         "points": 231,
         "delta": "+111"
       },
       {
+        "position": "P2",
         "number": "24",
         "driver": "Will",
         "points": 180,
         "delta": "+60"
       },
       {
+        "position": "P4",
         "number": "15",
         "driver": "Wispy",
         "points": 156,
         "delta": "+36"
       }
-    ]
+    ],
+    "ptEntry": {
+      "number": "29",
+      "title": "SCR PT Car",
+      "status": "NOT CHASE ELIGIBLE",
+      "drivers": [
+        {
+          "driver": "Clutch",
+          "points": 135
+        },
+        {
+          "driver": "Eazy",
+          "points": 59
+        },
+        {
+          "driver": "Matty",
+          "points": 58
+        }
+      ]
+    }
   },
   {
     "id": "sunoco",
@@ -50,28 +72,36 @@
     "status": "CHASE ACTIVE",
     "rows": [
       {
+        "position": "P1",
         "number": "42",
         "driver": "Will",
         "points": 881,
-        "delta": "+391"
+        "delta": "+391",
+        "chaseStatus": "CHASE"
       },
       {
+        "position": "P2",
         "number": "46",
         "driver": "Clutch",
         "points": 725,
-        "delta": "+219"
+        "delta": "+219",
+        "chaseStatus": "CHASE"
       },
       {
+        "position": "P4",
         "number": "27",
         "driver": "Eazy",
         "points": 606,
-        "delta": "+156"
+        "delta": "+156",
+        "chaseStatus": "CHASE"
       },
       {
+        "position": "P10",
         "number": "54",
         "driver": "Wispy",
         "points": 261,
-        "delta": "-126"
+        "delta": "-126",
+        "chaseStatus": "NOT IN CHASE"
       }
     ]
   },
