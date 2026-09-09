@@ -69,6 +69,53 @@ const displayDate = (event) => {
           <div><span>NRRS // POSTSEASON STATUS</span><strong>WISPY IS IN THE CHASE</strong><small>P5 · 2,055 PTS · -45</small></div>
           <div><span>CHASE RACE 1 OF 6</span><strong>SOUTHERN 500</strong><small>DARLINGTON · SEP 15 · 7:30 PM ET</small></div>
         </article>
+        <div class="aw-mobile-standings" aria-label="Championship snapshots for mobile">
+          <div class="aw-mobile-standings-nav">
+            <span>Swipe series cards</span>
+            <a href="#race-calendar">Jump to calendar ↓</a>
+          </div>
+          <div class="aw-mobile-standings-rail" tabindex="0">
+            {standings.map((series) => (
+              <article class:list={["aw-mobile-standing-card", {"is-waiting": !series.rows.length}]} data-league={series.league}>
+                <header>
+                  <div><span>{series.status}</span><h3>{series.title}</h3></div>
+                  <small>{series.subtitle}</small>
+                </header>
+                {series.rows.length ? (
+                  <>
+                    <div class="aw-mobile-standing-rows">
+                      {series.rows.map((row) => (
+                        <div class="aw-mobile-standing-row">
+                          <b>{row.position ?? `#${row.number}`}</b>
+                          <div class="aw-mobile-standing-driver">
+                            <strong>{row.driver}</strong>
+                            <small>#{row.number}{row.chaseStatus ? ` · ${row.chaseStatus}` : ''}</small>
+                          </div>
+                          <div class="aw-mobile-standing-points"><strong>{row.points.toLocaleString('en-US')}</strong><small>PTS</small></div>
+                          <em class:list={[{'is-negative':String(row.delta).startsWith('-'),'is-positive':String(row.delta).startsWith('+')}]}>{row.delta}</em>
+                        </div>
+                      ))}
+                    </div>
+                    {series.ptEntry && (
+                      <div class="aw-mobile-pt-entry">
+                        <div><b>#{series.ptEntry.number}</b><strong>{series.ptEntry.title}</strong><em>{series.ptEntry.status}</em></div>
+                        <p>{series.ptEntry.drivers.map((driver) => `${driver.driver} ${driver.points.toLocaleString('en-US')}`).join(' · ')}</p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div class="aw-mobile-standing-empty">
+                    <strong>{series.emptyMessage}</strong>
+                    <span>Season 6 · D1 8:30 PM · Open 11:30 AM · D2 6:45 PM ET</span>
+                    <div><b>D1</b><b>D2</b><b>OPEN</b></div>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+          <p class="aw-mobile-swipe-hint">Swipe for Kmart, Sunoco and UARL snapshots →</p>
+        </div>
+
         <div class="aw-standings-grid">
           {standings.map((series) => (
             <article class:list={["aw-standings-card", {"is-waiting": !series.rows.length}]} data-league={series.league}>
@@ -155,7 +202,7 @@ const displayDate = (event) => {
         </div>
       </section>
 
-      <div class="aw-schedule-toolbar" data-schedule-toolbar>
+      <div class="aw-schedule-toolbar" id="race-calendar" data-schedule-toolbar>
         <div class="aw-filter-row">
           <button class="is-active" type="button" data-filter="all" aria-pressed="true">All Events</button>
           <button type="button" data-filter="kmart" aria-pressed="false">Kmart</button>

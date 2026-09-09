@@ -85,3 +85,105 @@
 .aw-standings-grid{position:relative;z-index:1;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.aw-standings-card[data-league="nrrs"]{grid-column:1/-1}.aw-standings-card[data-league="nrrs"] .aw-standings-table{grid-template-columns:1fr}.aw-standings-card[data-league="uarl"]{grid-column:1/-1}.aw-standings-card[data-league="uarl"] .aw-standings-empty{min-height:110px}.aw-standings-card{border-left-width:8px}.aw-standings-card-head{padding:1.1rem 1.2rem}.aw-standings-card-head h3{font-size:clamp(1.55rem,2.4vw,2.2rem)}.aw-standings-row{min-height:84px;padding:.9rem 1rem}.aw-standings-driver>b{min-width:62px;height:45px;font-size:1.2rem}.aw-standings-driver strong{font-size:1.15rem}.aw-standings-points strong{font-size:1.15rem}.aw-standings-delta em{min-width:70px;font-size:.86rem}.aw-row-status{display:inline-flex;margin-top:.35rem;padding:.22rem .34rem;border:1px solid var(--league);color:var(--league);font:normal 900 .8rem/1 var(--font-mono);text-transform:uppercase}.aw-row-status.is-out{border-color:#a83b43;color:#ff747d}.aw-pt-entry{border-top:1px solid #333;background:linear-gradient(100deg,rgba(230,26,36,.08),#070707)}.aw-pt-entry>header{display:flex;justify-content:space-between;align-items:center;gap:.8rem;padding:.8rem 1rem;border-bottom:1px solid #282828}.aw-pt-entry>header>div{display:flex;align-items:center;gap:.6rem}.aw-pt-entry>header span{font:900 1.3rem/1 var(--font-number);color:var(--aw-red)}.aw-pt-entry>header strong{font:900 .9rem/1 var(--font-condensed)}.aw-pt-entry>header em{font:normal 900 .8rem/1 var(--font-mono);padding:.3rem .45rem;border:1px solid #8c343a;color:#ff777f}.aw-pt-driver-grid{display:grid;grid-template-columns:repeat(3,1fr)}.aw-pt-driver-grid>div{display:flex;justify-content:space-between;padding:.7rem 1rem;border-right:1px solid #222}.aw-pt-driver-grid>div:last-child{border-right:0}.aw-pt-driver-grid strong{font:900 .8rem/1 var(--font-condensed)}.aw-pt-driver-grid span{color:#aaa;font:900 .8rem/1 var(--font-mono)}
 .aw-next-operation{min-height:330px}.aw-next-main h2{font-size:clamp(4rem,8vw,8rem)!important;text-shadow:5px 5px 0 #000}.aw-month-heading h2{font-size:clamp(2.2rem,4vw,4rem)!important}.aw-event-card{transition:transform .18s,border-color .18s}.aw-event-card:hover{transform:translateX(5px)}
 @media(max-width:760px){.aw-championship-tracker{padding:.7rem}.aw-standings-card[data-league="nrrs"],.aw-standings-card[data-league="uarl"]{grid-column:auto}.aw-standings-driver>b{min-width:45px;height:35px;font-size:.9rem}.aw-standings-row{min-height:68px}.aw-pt-driver-grid{grid-template-columns:1fr}.aw-pt-driver-grid>div{border-right:0;border-bottom:1px solid #222}.aw-pt-driver-grid>div:last-child{border-bottom:0}.aw-next-main h2{font-size:clamp(3rem,15vw,5rem)!important}}
+
+/* v0.4.18 — mobile schedule cockpit
+   Keep championship context useful without forcing phone users through a long
+   vertical standings wall before reaching Race Control and the calendar. */
+.aw-mobile-standings{display:none}
+
+@media(max-width:760px){
+  .aw-schedule-page>.shell{padding-inline:.7rem}
+
+  /* One compact swipe rail instead of a 2x2 stat block on phones. */
+  .aw-schedule-stats{display:flex;gap:0;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;margin-bottom:1rem;border-width:2px;box-shadow:5px 5px 0 #000;scrollbar-width:none}
+  .aw-schedule-stats::-webkit-scrollbar{display:none}
+  .aw-schedule-stats>div{flex:0 0 150px;min-height:92px;padding:.72rem .75rem;border-right:1px solid #333!important;border-bottom:0!important;scroll-snap-align:start}
+  .aw-schedule-stats>div:last-child{border-right:0!important}
+  .aw-schedule-stats span,.aw-schedule-stats small{font-size:.72rem;line-height:1.2}
+  .aw-schedule-stats strong{margin:.25rem 0;font-size:1.72rem}
+
+  .aw-championship-tracker{margin-top:1rem;padding:.72rem;border-color:#353535;box-shadow:6px 6px 0 #000;overflow:visible}
+  .aw-championship-tracker::before{font-size:7rem;top:.25rem;right:-.04em;opacity:.7}
+  .aw-standings-head{display:grid;grid-template-columns:1fr;gap:.3rem;margin-bottom:.65rem}
+  .aw-standings-head>div>span{font-size:.72rem}
+  .aw-standings-head h2{font-size:clamp(2.15rem,11vw,3.15rem);line-height:.82}
+  .aw-standings-head p{margin:0;max-width:34rem;color:#858585;font-size:.76rem;line-height:1.4}
+
+  /* Chase status becomes a tight post-race ticker rather than a hero-sized block. */
+  .aw-chase-banner{grid-template-columns:1fr;min-height:0;margin-bottom:.72rem;border-left-width:5px}
+  .aw-chase-banner>div{min-height:0;padding:.68rem .75rem}
+  .aw-chase-banner>div+div{border-left:0;border-top:1px solid rgba(255,210,54,.28)}
+  .aw-chase-banner span{font-size:.7rem}
+  .aw-chase-banner strong{margin:.18rem 0;font-size:1.25rem;line-height:.92}
+  .aw-chase-banner small{font-size:.72rem;line-height:1.28}
+
+  /* Desktop standings remain untouched; mobile gets a sideways broadcast rail. */
+  .aw-standings-grid{display:none}
+  .aw-mobile-standings{position:relative;z-index:2;display:block}
+  .aw-mobile-standings-nav{display:flex;align-items:center;justify-content:space-between;gap:.65rem;margin:.1rem 0 .55rem}
+  .aw-mobile-standings-nav>span{color:#777;font:900 .7rem/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+  .aw-mobile-standings-nav>a{display:inline-flex;align-items:center;min-height:34px;padding:.42rem .55rem;border:1px solid #4b4b4b;background:#090909;color:#fff;text-decoration:none;font:900 .72rem/1 var(--font-mono);letter-spacing:.045em;text-transform:uppercase}
+  .aw-mobile-standings-nav>a:focus-visible,.aw-mobile-standings-nav>a:hover{border-color:var(--aw-blue);color:var(--aw-blue)}
+  .aw-mobile-standings-rail{display:flex;gap:.62rem;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;padding:0 .05rem .42rem;scrollbar-width:none}
+  .aw-mobile-standings-rail::-webkit-scrollbar{display:none}
+  .aw-mobile-standing-card{--league:#fff;flex:0 0 min(87vw,350px);align-self:flex-start;scroll-snap-align:start;overflow:hidden;border:1px solid #3b3b3b;border-top:4px solid var(--league);background:linear-gradient(145deg,color-mix(in srgb,var(--league) 7%,#090909),#050505 72%);box-shadow:5px 5px 0 rgba(0,0,0,.72)}
+  .aw-mobile-standing-card[data-league=nrrs]{--league:#2962ff}
+  .aw-mobile-standing-card[data-league=kmart]{--league:#e61a24}
+  .aw-mobile-standing-card[data-league=sunoco]{--league:#ffb800}
+  .aw-mobile-standing-card[data-league=uarl]{--league:#8e5bff}
+  .aw-mobile-standing-card>header{display:grid;gap:.38rem;padding:.72rem .78rem .65rem;border-bottom:1px solid #303030;background:linear-gradient(105deg,color-mix(in srgb,var(--league) 17%,#0b0b0b),#080808 76%)}
+  .aw-mobile-standing-card>header>div{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem}
+  .aw-mobile-standing-card>header span{display:inline-flex;flex:0 0 auto;padding:.24rem .34rem;border:1px solid color-mix(in srgb,var(--league) 70%,#fff);background:color-mix(in srgb,var(--league) 16%,#080808);color:color-mix(in srgb,var(--league) 92%,#fff);font:900 .66rem/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}
+  .aw-mobile-standing-card>header h3{order:-1;margin:0;max-width:72%;color:#fff;font:900 1.16rem/.92 var(--font-condensed);letter-spacing:.015em;text-transform:uppercase}
+  .aw-mobile-standing-card>header>small{color:#8b8b8b;font:800 .68rem/1.32 var(--font-mono);letter-spacing:.035em;text-transform:uppercase}
+  .aw-mobile-standing-rows{display:grid;gap:1px;background:#262626}
+  .aw-mobile-standing-row{display:grid;grid-template-columns:42px minmax(0,1fr) 54px 55px;align-items:center;gap:.42rem;min-height:52px;padding:.46rem .55rem;background:#090909}
+  .aw-mobile-standing-row:nth-child(even){background:#0d0d0d}
+  .aw-mobile-standing-row>b{display:grid;place-items:center;min-height:31px;border:1px solid color-mix(in srgb,var(--league) 65%,#fff);background:color-mix(in srgb,var(--league) 18%,#060606);color:color-mix(in srgb,var(--league) 92%,#fff);font:900 .86rem/1 var(--font-condensed)}
+  .aw-mobile-standing-driver{min-width:0}
+  .aw-mobile-standing-driver strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font:900 .86rem/1 var(--font-condensed);text-transform:uppercase}
+  .aw-mobile-standing-driver small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:.17rem;color:#777;font:800 .6rem/1.05 var(--font-mono);text-transform:uppercase}
+  .aw-mobile-standing-points{display:grid;justify-items:end;gap:.08rem}
+  .aw-mobile-standing-points strong{font:900 .78rem/1 var(--font-mono);color:#fff}
+  .aw-mobile-standing-points small{color:#666;font:900 .56rem/1 var(--font-mono)}
+  .aw-mobile-standing-row>em{display:grid;place-items:center;min-height:27px;padding:.2rem .25rem;border:1px solid #444;background:#151515;color:#ccc;font:normal 900 .68rem/1 var(--font-mono)}
+  .aw-mobile-standing-row>em.is-positive{border-color:#1f7d43;background:rgba(26,156,76,.14);color:#69f397}
+  .aw-mobile-standing-row>em.is-negative{border-color:#8f2d34;background:rgba(188,48,60,.14);color:#ff7a83}
+  .aw-mobile-pt-entry{padding:.58rem .62rem .62rem;border-top:1px solid #343434;background:linear-gradient(100deg,rgba(230,26,36,.09),#070707)}
+  .aw-mobile-pt-entry>div{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.42rem}
+  .aw-mobile-pt-entry b{color:#ff6068;font:900 .92rem/1 var(--font-condensed)}
+  .aw-mobile-pt-entry strong{font:900 .76rem/1 var(--font-condensed);text-transform:uppercase}
+  .aw-mobile-pt-entry em{padding:.2rem .3rem;border:1px solid #8c343a;color:#ff777f;font:normal 900 .56rem/1 var(--font-mono);text-transform:uppercase}
+  .aw-mobile-pt-entry p{margin:.42rem 0 0;color:#aaa;font:800 .64rem/1.35 var(--font-mono);text-transform:uppercase}
+  .aw-mobile-standing-empty{display:grid;gap:.65rem;padding:1rem .8rem 1.05rem;min-height:155px;align-content:center}
+  .aw-mobile-standing-empty>strong{color:#fff;font:900 1.3rem/.94 var(--font-condensed);text-transform:uppercase}
+  .aw-mobile-standing-empty>span{color:#8c8c8c;font:800 .68rem/1.4 var(--font-mono);text-transform:uppercase}
+  .aw-mobile-standing-empty>div{display:flex;gap:.35rem}
+  .aw-mobile-standing-empty b{min-width:48px;padding:.38rem .45rem;border:1px solid color-mix(in srgb,var(--league) 64%,#fff);color:#e8ddff;text-align:center;font:900 .68rem/1 var(--font-mono)}
+  .aw-mobile-swipe-hint{margin:.4rem 0 .05rem;color:#626262;font:800 .64rem/1.3 var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+
+  /* Race Control keeps the useful next-event context, but no longer eats a full screen. */
+  .aw-race-control{margin-top:.9rem;margin-bottom:1rem}
+  .aw-next-operation{grid-template-columns:1fr;min-height:0;border-width:2px;box-shadow:5px 5px 0 var(--next-color)}
+  .aw-next-rail{flex-direction:row;align-items:center;min-height:42px;padding:.55rem .7rem}
+  .aw-next-rail span{writing-mode:horizontal-tb;transform:none;font-size:1.25rem}
+  .aw-next-rail b{font-size:.7rem}
+  .aw-next-main{padding:.8rem .85rem .75rem;border-right:0}
+  .aw-next-tags span,.aw-next-tags b,.aw-next-tags em{font-size:.66rem}
+  .aw-next-main h2{margin:.52rem 0 .4rem;font-size:clamp(2.35rem,12vw,3.35rem)!important;line-height:.78;text-shadow:3px 3px 0 #000}
+  .aw-next-main p{font-size:.7rem;line-height:1.4}
+  .aw-next-clock{grid-column:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"label count" "state count";align-items:center;gap:.18rem .7rem;min-height:72px;padding:.62rem .8rem;border-top:1px solid #333}
+  .aw-next-clock small{grid-area:label;font-size:.66rem}
+  .aw-next-clock strong{grid-area:count;margin:0;font-size:1.65rem;white-space:nowrap}
+  .aw-next-clock span{grid-area:state;font-size:.64rem}
+
+  .aw-schedule-toolbar{scroll-margin-top:86px}
+}
+
+@media(max-width:430px){
+  .aw-mobile-standing-card{flex-basis:91vw}
+  .aw-mobile-standing-row{grid-template-columns:39px minmax(0,1fr) 50px 51px;gap:.32rem;padding-inline:.45rem}
+  .aw-mobile-standing-card>header h3{font-size:1.08rem}
+  .aw-mobile-standings-nav>span{font-size:.64rem}
+  .aw-mobile-standings-nav>a{font-size:.66rem;padding-inline:.45rem}
+}

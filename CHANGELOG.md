@@ -1,3 +1,13 @@
+# v0.4.18 — Mobile Schedule Cockpit
+
+- Reworked the Schedule page on phones so championship information no longer becomes a long vertical wall before the calendar.
+- Converted the four schedule summary stats into a compact horizontal swipe rail on mobile.
+- Added mobile-only horizontally swipeable championship cards for NRRS, Kmart, Sunoco, and UARL while preserving the full desktop Championship Tracker.
+- Preserved every authoritative standings value, Kmart #29 part-time Chase ineligibility note, Sunoco Chase status, and UARL Season 6 waiting state.
+- Added a visible mobile “Jump to calendar” shortcut from the Championship Tracker.
+- Compressed the mobile Race Control / Next Operation module so the actual race calendar begins substantially sooner without removing next-event context.
+- Desktop Schedule presentation and all schedule/result data remain unchanged.
+
 # v0.4.17 — Pepsi 400 Post-Race Broadcast Redesign
 
 - Rebuilt the Wins & History Latest Result package into a tighter motorsports-TV information graphic with no dead two-column parent-grid space.
