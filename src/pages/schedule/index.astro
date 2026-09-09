@@ -219,7 +219,7 @@ const displayDate = (event) => {
         </div>
         <div class="aw-league-share-row">
           <div><span>League Share</span><small>Copies a Discord/social preview with the next five races.</small></div>
-          <button type="button" data-league-share disabled>↗ SELECT A LEAGUE</button>
+          <button type="button" data-league-share disabled>⧉ SELECT A LEAGUE</button>
         </div>
       </div>
 
@@ -356,7 +356,7 @@ const displayDate = (event) => {
     if (!(leagueShareButton instanceof HTMLButtonElement)) return;
     const selected = selectedShareLeague();
     leagueShareButton.disabled = !selected;
-    leagueShareButton.textContent = selected ? `↗ SHARE ${selected.label.toUpperCase()}` : '↗ SELECT A LEAGUE';
+    leagueShareButton.textContent = selected ? `⧉ COPY ${selected.label.toUpperCase()} LINK` : '⧉ SELECT A LEAGUE';
   }
   function competitionLabel(event) { return `${event.leagueName}${isAlliance(event.league) ? ' · StarClutch Racing Alliance' : ''}`; }
   function displayDate(event) {
@@ -449,12 +449,9 @@ const displayDate = (event) => {
   leagueShareButton?.addEventListener('click', async () => {
     const selected = selectedShareLeague();
     if (!selected) { announceShare('Select a league first'); return; }
-    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=49`;
-    if (navigator.share && matchMedia('(pointer:coarse)').matches) {
-      try { await navigator.share({title:`${selected.label} Schedule`,url}); return; } catch (error) { if (error?.name === 'AbortError') return; }
-    }
+    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=50`;
     await copyText(url);
-    announceShare(`${selected.label} share link copied`);
+    announceShare(`${selected.label} link copied`);
   });
 
   function applyLeagueSelection(league) {

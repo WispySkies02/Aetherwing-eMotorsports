@@ -1,3 +1,10 @@
+# v0.4.21 — League Share Polish
+
+- Removed the bottom-right Aetherwing text/footer watermark from league-share preview images.
+- League share control now always copies the URL on desktop and mobile; it no longer opens the native mobile share sheet.
+- Updated the league-share OG images and cache-busting version to v50.
+- Preserved all next-five-race league/UARL-combined embed behavior from v0.4.20.
+
 # v0.4.20 — League Share Static-Route Hotfix
 
 - Fixed Astro prerender failure in `src/pages/schedule/share/[league].astro`.
