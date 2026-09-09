@@ -1,4 +1,4 @@
-Current build: v0.3.9
+Current build: v0.4.17
 
 ## Paint Booth host
 
@@ -11,7 +11,7 @@ Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 ## Status
 
-**v0.4.16 — Broadcast Results / Readability / Portfolio Cleanup**
+**v0.4.17 — Pepsi 400 Post-Race Broadcast Redesign**
 
 This version keeps the current Aetherwing visual identity while fully migrating the current Schedule and Paint Booth source data. The Schedule carries the complete 126-race season calendar plus iRacing special-event windows and expandable event docks. Paint Booth v0.3.5 keeps the immersive facility while making `ALL PAINTS` the complete 35-paint collection, improving mobile selection, moving five lighting presets into the booth itself, and optimizing remote render loading so the active car is prioritized over offscreen thumbnails. Every current source driver remains visible even when their render has not yet been supplied.
 

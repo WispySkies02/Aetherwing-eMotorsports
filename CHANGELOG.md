@@ -1,3 +1,12 @@
+# v0.4.17 — Pepsi 400 Post-Race Broadcast Redesign
+
+- Rebuilt the Wins & History Latest Result package into a tighter motorsports-TV information graphic with no dead two-column parent-grid space.
+- Uses Edo SZ only for the expressive Pepsi 400 event title; all position, car-number, points, and delta data in the result graphic use clean Saira Condensed / mono broadcast typography.
+- Preserves the confirmed Pepsi 400 progression (P7 start, P4 Stage 2, P4 finish), NRRS Chase standing (P5, 2,055 pts, -45), and September 15 Darlington Chase opener.
+- Added explicit Checkered, Regular Season Finale, and Chase Qualified status treatments plus a compact Up Next Chase module.
+- Corrected the current result series label to NRRS Town Fair Tire Cup Series.
+- Preserves the v0.4.16 readability pass, collapsed driver portfolios, standings, partner presentation, and all unrelated routes/data/assets.
+
 # v0.4.16 — CSS Build Hotfix
 
 - Fixed malformed literal `\n` escape sequences in the TV-broadcast latest-result stylesheet that caused Lightning CSS/Vite minification to fail on Netlify.
