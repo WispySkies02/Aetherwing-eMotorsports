@@ -10,7 +10,7 @@ import '../styles/pages/home.css';
 const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
 const liveEvent=events.find((event)=>event.league==='iracing' && event.title==='Southern 500' && event.date==='2026-09-02') ?? events[0];
-const latest=result.latestKnownMartinsville;
+const latest=result.latestResult;
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
   <section class="aw-home-hero">
@@ -106,10 +106,10 @@ const latest=result.latestKnownMartinsville;
       <div class="aw-news-grid">
         <a class="aw-feature-story panel" href="/news/"><span class="tag tag--gold">Team Dispatch</span><small>July 2026</small><h3>How the 2026 Schedule Prepares Aetherwing for Full-Time Work</h3><p>A look at how the current competition calendar shapes the team’s rhythm, race-week preparation, and long-term program direction.</p><b>Read the News Hub →</b></a>
         <article class="aw-result-card panel">
-          <div class="aw-result-card__top"><span class="tag tag--red">Latest Result</span>{latest.standings.chaseLocked && <span class="tag tag--gold">Chase Locked</span>}</div>
-          <small>NRRS Town Fair Cup Series</small><h3>Goody's Fast Relief 500 at Martinsville</h3><p class="mono">Martinsville Speedway · August 25, 2026 · #{latest.number} {latest.driver}</p>
-          <div class="aw-result-stats"><div><span>Start</span><strong>P{latest.start}</strong></div><div><span>Finish</span><strong>P{latest.finish}</strong></div><div><span>Points</span><strong>+{latest.pointsChange}</strong></div></div>
-          <details><summary>Race detail</summary><p>Stage 1: P{latest.stage1.finish} · {latest.stage1.points} pts // Stage 2: P{latest.stage2.finish} · {latest.stage2.points} pts</p><p>P{latest.standings.position} · {latest.standings.points} pts | {latest.standings.leaderGap} Leader | +{latest.standings.chaseMargin} Chase</p></details>
+          <div class="aw-result-card__top"><span class="tag tag--red">Latest Result</span><span class="tag tag--gold">{latest.specialTag}</span></div>
+          <small>{latest.series}</small><h3>{latest.title}</h3><p class="mono">{latest.track} · {latest.date} · #{latest.number} {latest.driver}</p>
+          <div class="aw-result-stats"><div><span>Start</span><strong>P{latest.start}</strong></div><div><span>Stage 2</span><strong>P{latest.stage2.finish}</strong></div><div><span>Finish</span><strong>P{latest.finish}</strong></div></div>
+          <details><summary>Race detail</summary><p>{latest.round} · Started P{latest.start} · Stage 2 P{latest.stage2.finish} · Finished P{latest.finish}</p></details>
           <a href="/wins-history/">View Full Result →</a>
         </article>
         <div class="aw-quick-links">

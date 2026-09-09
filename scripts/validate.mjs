@@ -39,6 +39,7 @@ const wins = json('wins.json');
 const paints = json('paints.json');
 const paintLeagues = json('paint-leagues.json');
 const news = json('news.json');
+const standings = json('standings.json');
 
 
 assert(news.length === 10, 'News archive matches the current 10-story Team Wire');
@@ -64,12 +65,30 @@ assert(!leadership.some((p) => /trent/i.test(p.name)), 'Trent is absent from cur
 assert(!leadership.some((p) => p.roles.some((r) => /co-owner|co-founder/i.test(r))), 'No Co-Owner/Co-Founder role in current leadership');
 assert(leadership.some((p) => p.name === 'Callornot' && p.roles.includes('Team Principal')), 'Callornot is Team Principal');
 
+const results = json('results.json');
+const latestResult = results.latestResult;
+assert(latestResult?.title === 'Pepsi 400' && latestResult?.start === 7 && latestResult?.stage2?.finish === 4 && latestResult?.finish === 4, 'Latest NRRS result is Pepsi 400: P7 start, P4 Stage 2, P4 finish');
+
 const d2 = schedule.find((event) => event.id === 'uarl-d2');
 assert(d2?.day === 1 && d2?.time === '18:45', 'Recurring UARL D2 time locked to Monday 6:45 PM ET');
 const d2Event = scheduleEvents.find((event) => event.league === 'uarl-d2' && event.date === '2026-09-14');
 assert(d2Event?.time === '6:45 PM ET' && /Daytona 250/i.test(d2Event?.title || ''), 'September 14 UARL D2 Daytona event remains 6:45 PM ET');
 const pepsi400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Pepsi 400');
 assert(pepsi400?.round === 'ROUND 19' && pepsi400?.specialTag === 'REGULAR SEASON FINALE', 'NRRS Pepsi 400 is Round 19 and the Regular Season Finale');
+const nrrsSouthern500 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Southern 500' && event.round === 'ROUND 20');
+const nrrsFord400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Ford 400' && event.round === 'ROUND 25');
+assert(nrrsSouthern500?.date === '2026-09-15' && nrrsSouthern500?.status === 'The Chase', 'NRRS Chase begins at Darlington on September 15');
+assert(nrrsFord400?.date === '2026-10-20' && nrrsFord400?.status === 'Championship', 'NRRS Championship finale is Ford 400 on October 20');
+assert(scheduleEvents.filter((event) => event.league === 'nrrs' && event.status === 'The Chase').length === 5, 'NRRS has five The Chase races before the Championship finale');
+const nrrsStanding = standings.find((series) => series.id === 'nrrs');
+const kmartStanding = standings.find((series) => series.id === 'kmart');
+const sunocoStanding = standings.find((series) => series.id === 'sunoco');
+const uarlStanding = standings.find((series) => series.id === 'uarl');
+assert(nrrsStanding?.rows?.[0]?.driver === 'Wispy' && nrrsStanding.rows[0].position === 'P5' && nrrsStanding.rows[0].points === 2055 && nrrsStanding.rows[0].delta === '-45', 'NRRS Chase standings snapshot: Wispy P5, 2,055 points, -45');
+assert(kmartStanding?.rows?.length === 3 && kmartStanding.rows[0].driver === 'Jaxon' && kmartStanding.rows[2].driver === 'Wispy', 'Kmart standings snapshot contains Jaxon, Will, and Wispy');
+assert(sunocoStanding?.rows?.length === 4 && sunocoStanding.rows[0].driver === 'Will' && sunocoStanding.rows[3].driver === 'Wispy', 'Sunoco Chase snapshot contains four SCR drivers');
+assert(uarlStanding?.rows?.length === 0 && /Awaiting the start of Season 6/i.test(uarlStanding?.emptyMessage || ''), 'UARL standings remain awaiting Season 6');
+
 const nrrsClash = scheduleEvents.find((event) => event.league === 'nrrs' && /Clash at the Coliseum/i.test(event.title));
 const nrrsAllStar = scheduleEvents.find((event) => event.league === 'nrrs' && /All-Star Race/i.test(event.title));
 assert(!nrrsClash?.round && !nrrsAllStar?.round, 'NRRS Clash and All-Star are excluded from round numbering');
@@ -119,6 +138,7 @@ assert(paints.some((p) => p.slug === 'truck-mopar-starclutch-racing' && String(p
 const schedulePage = text('src/pages/schedule/index.astro');
 const paintPage = text('src/pages/paint-booth/index.astro');
 assert(schedulePage.includes('data-event-dock') && schedulePage.includes('updateNextOperation'), 'Schedule includes expandable event docks and reactive Next Operation logic');
+assert(schedulePage.includes('Championship Tracker') && schedulePage.includes('WISPY IS IN THE CHASE'), 'Schedule surfaces current standings and NRRS Chase status');
 assert(schedulePage.includes('eventCriteria') && schedulePage.includes('Crown Jewel') && schedulePage.includes('Dash4Cash') && schedulePage.includes('Regular Season Finale') && schedulePage.includes("label:'Clash'"), 'Schedule includes semantic special-criteria tags');
 assert(schedulePage.includes('data-event-share') && schedulePage.includes('revealEventHash'), 'Schedule includes share buttons and exact event deep-link reveal logic');
 assert(existsSync(resolve(root, 'src/pages/event/[slug].astro')), 'Static share route exists for schedule events');

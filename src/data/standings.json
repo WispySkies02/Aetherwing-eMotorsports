@@ -1,0 +1,87 @@
+[
+  {
+    "id": "nrrs",
+    "title": "NRRS Chase for the Cup",
+    "subtitle": "After Race 19 of 25 \u00b7 Before Chase Race 1 of 6",
+    "league": "nrrs",
+    "status": "THE CHASE",
+    "rows": [
+      {
+        "position": "P5",
+        "number": "32",
+        "driver": "Wispy",
+        "points": 2055,
+        "delta": "-45"
+      }
+    ]
+  },
+  {
+    "id": "kmart",
+    "title": "Kmart Auto Parts Series",
+    "subtitle": "After Race 6 of 23 \u00b7 SCR Drivers Only",
+    "league": "kmart",
+    "status": "CURRENT",
+    "rows": [
+      {
+        "number": "34",
+        "driver": "Jaxon",
+        "points": 231,
+        "delta": "+111"
+      },
+      {
+        "number": "24",
+        "driver": "Will",
+        "points": 180,
+        "delta": "+60"
+      },
+      {
+        "number": "15",
+        "driver": "Wispy",
+        "points": 156,
+        "delta": "+36"
+      }
+    ]
+  },
+  {
+    "id": "sunoco",
+    "title": "Sunoco Truck Series Chase",
+    "subtitle": "After Round 18 of 25 \u00b7 After Chase Race 3 of 10",
+    "league": "sunoco",
+    "status": "CHASE ACTIVE",
+    "rows": [
+      {
+        "number": "42",
+        "driver": "Will",
+        "points": 881,
+        "delta": "+391"
+      },
+      {
+        "number": "46",
+        "driver": "Clutch",
+        "points": 725,
+        "delta": "+219"
+      },
+      {
+        "number": "27",
+        "driver": "Eazy",
+        "points": 606,
+        "delta": "+156"
+      },
+      {
+        "number": "54",
+        "driver": "Wispy",
+        "points": 261,
+        "delta": "-126"
+      }
+    ]
+  },
+  {
+    "id": "uarl",
+    "title": "UARL \u00b7 All Three Divisions",
+    "subtitle": "Season 6",
+    "league": "uarl",
+    "status": "AWAITING START",
+    "emptyMessage": "Awaiting the start of Season 6",
+    "rows": []
+  }
+]

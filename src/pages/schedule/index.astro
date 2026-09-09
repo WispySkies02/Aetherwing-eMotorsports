@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
 import scheduleSource from '../../data/schedule-events.json';
 import trackSource from '../../data/schedule-track-locations.json';
+import standings from '../../data/standings.json';
 import '../../styles/pages/schedule.css';
 import { eventSlug } from '../../lib/schedule-events.mjs';
 
@@ -58,6 +59,38 @@ const displayDate = (event) => {
         <div><span>Calendar Window</span><strong>26–27</strong><small>2026 through 2027</small></div>
         <div><span>Calendar Review</span><strong>SEP 05</strong><small>September 5, 2026</small></div>
       </div>
+
+      <section class="aw-championship-tracker" id="standings" aria-labelledby="aw-standings-title">
+        <div class="aw-standings-head">
+          <div><span>Current Competition Snapshot</span><h2 id="aw-standings-title">Championship Tracker</h2></div>
+          <p>Team-maintained standings snapshots updated as league results are confirmed.</p>
+        </div>
+        <article class="aw-chase-banner" data-league="nrrs">
+          <div><span>NRRS // POSTSEASON STATUS</span><strong>WISPY IS IN THE CHASE</strong><small>P5 · 2,055 PTS · -45</small></div>
+          <div><span>CHASE RACE 1 OF 6</span><strong>SOUTHERN 500</strong><small>DARLINGTON · SEP 15 · 7:30 PM ET</small></div>
+        </article>
+        <div class="aw-standings-grid">
+          {standings.map((series) => (
+            <article class="aw-standings-card" data-league={series.league}>
+              <header><div><span>{series.status}</span><h3>{series.title}</h3><small>{series.subtitle}</small></div></header>
+              {series.rows.length ? (
+                <div class="aw-standings-table">
+                  <div class="aw-standings-row aw-standings-row--head"><span>Driver</span><span>Points</span><span>±</span></div>
+                  {series.rows.map((row) => (
+                    <div class="aw-standings-row">
+                      <span><b>{row.position ?? `#${row.number}`}</b><strong>{row.position ? `#${row.number} ${row.driver}` : row.driver}</strong></span>
+                      <strong>{row.points.toLocaleString('en-US')}</strong>
+                      <em class:list={[{'is-negative':String(row.delta).startsWith('-'),'is-positive':String(row.delta).startsWith('+')}]}>{row.delta}</em>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div class="aw-standings-empty"><span>STATUS</span><strong>{series.emptyMessage}</strong><small>Standings will populate when Season 6 competition begins.</small></div>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section class="aw-race-control" aria-labelledby="aw-next-title">
         <article class="aw-next-operation" id="next-operation" data-next-operation data-league="iracing">

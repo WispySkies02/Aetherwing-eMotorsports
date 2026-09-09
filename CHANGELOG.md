@@ -1,3 +1,17 @@
+# Changelog
+
+## v0.4.10 — Championship Tracker / NRRS Chase Schedule
+- Added current team-maintained standings snapshots for NRRS, Kmart, Sunoco, and UARL.
+- NRRS Chase status now appears prominently on the Schedule page: Wispy P5, 2,055 points (-45).
+- Shifted all six NRRS Chase dates one week earlier, beginning with the Southern 500 at Darlington on September 15, 2026.
+- UARL standings display an Awaiting Season 6 state until competition begins.
+
+## v0.4.9
+
+- Updated the authoritative latest NRRS result to the September 8 Pepsi 400 at Daytona International Speedway.
+- Wispy: started P7, finished P4 in Stage 2, and finished P4.
+- Removed stale Martinsville points/standings details from the Latest Result modules rather than carrying them into the Pepsi 400 without confirmed data.
+
 ## v0.4.8
 
 - Updated the full site bundle to carry forward the latest schedule/share-card logic and corrected badge behavior.

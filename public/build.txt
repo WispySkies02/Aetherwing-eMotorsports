@@ -1,2 +1,1 @@
-Aetherwing eMotorsports v0.4.8
-Round numbering + universal special-event badges + clean transparent alliance/chase share branding; cache-busted v47 event images.
+Aetherwing eMotorsports v0.4.10 — Championship Tracker + NRRS Chase schedule

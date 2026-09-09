@@ -5,8 +5,35 @@
     "start": 7,
     "finish": 4,
     "pointsChange": 39,
-    "stage1": {"finish": 8, "points": 0},
-    "stage2": {"finish": 5, "points": 6},
-    "standings": {"position": 6, "points": 553, "leaderGap": -196, "chaseMargin": 211, "chaseLocked": true}
+    "stage1": {
+      "finish": 8,
+      "points": 0
+    },
+    "stage2": {
+      "finish": 5,
+      "points": 6
+    },
+    "standings": {
+      "position": 6,
+      "points": 553,
+      "leaderGap": -196,
+      "chaseMargin": 211,
+      "chaseLocked": true
+    }
+  },
+  "latestResult": {
+    "driver": "Wispy",
+    "number": "32",
+    "series": "NRRS Town Fair Cup Series",
+    "title": "Pepsi 400",
+    "track": "Daytona International Speedway",
+    "date": "September 8, 2026",
+    "round": "Round 19",
+    "specialTag": "Regular Season Finale",
+    "start": 7,
+    "stage2": {
+      "finish": 4
+    },
+    "finish": 4
   }
 }

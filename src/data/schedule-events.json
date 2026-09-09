@@ -658,7 +658,7 @@
     "round": "ROUND 2"
   },
   {
-    "date": "2026-09-22",
+    "date": "2026-09-15",
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
@@ -731,7 +731,7 @@
     "round": "ROUND 3"
   },
   {
-    "date": "2026-09-29",
+    "date": "2026-09-22",
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
@@ -803,7 +803,7 @@
     "round": "ROUND 4"
   },
   {
-    "date": "2026-10-06",
+    "date": "2026-09-29",
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
@@ -864,7 +864,7 @@
     "round": "ROUND 5"
   },
   {
-    "date": "2026-10-13",
+    "date": "2026-10-06",
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
@@ -936,7 +936,7 @@
     "round": "ROUND 6"
   },
   {
-    "date": "2026-10-20",
+    "date": "2026-10-13",
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
@@ -988,7 +988,7 @@
     "round": "ROUND 7"
   },
   {
-    "date": "2026-10-27",
+    "date": "2026-10-20",
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "Championship",
