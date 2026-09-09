@@ -154,13 +154,13 @@ assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
 assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 143 schedule events have v47 share-card images');
-assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=50'), 'Schedule can share the currently selected league');
+assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=51'), 'Schedule can share the currently selected league');
 assert(!schedulePage.includes('navigator.share') && schedulePage.includes('COPY ${selected.label.toUpperCase()} LINK'), 'League share button always copies the URL instead of opening the native share sheet');
 assert(existsSync(resolve(root, 'src/pages/schedule/share/[league].astro')), 'Static league-share route exists for schedule filters');
 const leagueShareRoute = text('src/pages/schedule/share/[league].astro');
 assert(leagueShareRoute.includes('export function getStaticPaths() {\n  const definitions = {'), 'League-share route keeps static-path definitions inside getStaticPaths isolated scope');
-assert(leagueShareRoute.includes('/images/social/leagues/${league}-v50.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v50 next-race cards');
-for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v50.jpg`)), `League share image exists: ${league}`); }
+assert(leagueShareRoute.includes('/images/social/leagues/${league}-v51.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v51 next-race cards with race-type badges');
+for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v51.jpg`)), `League share image exists: ${league}`); }
 assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');

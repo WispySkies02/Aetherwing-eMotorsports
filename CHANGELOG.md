@@ -1,3 +1,11 @@
+# v0.4.22 — League Share Race-Type Badges
+
+- Added compact race-type badges to the next-five league social/embed cards.
+- Badge logic matches the Schedule page categories: Chase, Championship, Crown Jewel, All-Star, Special Event, Clash/Preseason, Dash4Cash/D4C Qualifier, Regular Season Finale, and Off Week where applicable.
+- Multiple statuses can appear together when meaningful, such as `CHASE` + `CROWN JEWEL` on the NRRS Southern 500.
+- Updated all eight league-share OG images and bumped the social-image cache revision to v51.
+- Preserved the copy-link-only league sharing behavior and all existing schedule data.
+
 # v0.4.21 — League Share Polish
 
 - Removed the bottom-right Aetherwing text/footer watermark from league-share preview images.
