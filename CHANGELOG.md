@@ -1,3 +1,8 @@
+# v0.4.16 — CSS Build Hotfix
+
+- Fixed malformed literal `\n` escape sequences in the TV-broadcast latest-result stylesheet that caused Lightning CSS/Vite minification to fail on Netlify.
+- Preserves the v0.4.15 broadcast result redesign, readability pass, dark sponsor presentation, and collapsed driver portfolios.
+
 # Changelog
 
 ## v0.4.15 — Broadcast Results / Readability / Portfolio Cleanup
