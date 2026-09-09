@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.10 — Championship Tracker + NRRS Chase schedule
+Aetherwing eMotorsports v0.4.11 — Championship Tracker readability redesign

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.11 — Championship Tracker Readability
+- Redesigned the Schedule page Championship Tracker for faster scanning and stronger desktop/mobile readability.
+- Removed equal-height card stretching that created large empty black areas in short standings cards.
+- Increased league headings, driver names, points, and current +/- values; added high-contrast position/car badges and colored value pills.
+- Reworked UARL into a compact Season 6 waiting-state panel with D1, D2, and Open division chips.
+- Preserved the authoritative NRRS, Kmart, Sunoco, and UARL standings snapshot from v0.4.10.
+
 ## v0.4.10 — Championship Tracker / NRRS Chase Schedule
 - Added current team-maintained standings snapshots for NRRS, Kmart, Sunoco, and UARL.
 - NRRS Chase status now appears prominently on the Schedule page: Wispy P5, 2,055 points (-45).

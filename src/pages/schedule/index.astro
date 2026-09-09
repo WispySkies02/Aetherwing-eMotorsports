@@ -71,21 +71,37 @@ const displayDate = (event) => {
         </article>
         <div class="aw-standings-grid">
           {standings.map((series) => (
-            <article class="aw-standings-card" data-league={series.league}>
-              <header><div><span>{series.status}</span><h3>{series.title}</h3><small>{series.subtitle}</small></div></header>
+            <article class:list={["aw-standings-card", {"is-waiting": !series.rows.length}]} data-league={series.league}>
+              <header class="aw-standings-card-head">
+                <div>
+                  <span class="aw-standings-status">{series.status}</span>
+                  <h3>{series.title}</h3>
+                  <p>{series.subtitle}</p>
+                </div>
+              </header>
               {series.rows.length ? (
                 <div class="aw-standings-table">
-                  <div class="aw-standings-row aw-standings-row--head"><span>Driver</span><span>Points</span><span>±</span></div>
                   {series.rows.map((row) => (
                     <div class="aw-standings-row">
-                      <span><b>{row.position ?? `#${row.number}`}</b><strong>{row.position ? `#${row.number} ${row.driver}` : row.driver}</strong></span>
-                      <strong>{row.points.toLocaleString('en-US')}</strong>
-                      <em class:list={[{'is-negative':String(row.delta).startsWith('-'),'is-positive':String(row.delta).startsWith('+')}]}>{row.delta}</em>
+                      <div class="aw-standings-driver">
+                        <b>{row.position ?? `#${row.number}`}</b>
+                        <div>
+                          <strong>{row.driver}</strong>
+                          <small>{row.position ? `CAR #${row.number}` : `CAR #${row.number}`}</small>
+                        </div>
+                      </div>
+                      <div class="aw-standings-points"><small>POINTS</small><strong>{row.points.toLocaleString('en-US')}</strong></div>
+                      <div class="aw-standings-delta"><small>±</small><em class:list={[{'is-negative':String(row.delta).startsWith('-'),'is-positive':String(row.delta).startsWith('+')}]}>{row.delta}</em></div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div class="aw-standings-empty"><span>STATUS</span><strong>{series.emptyMessage}</strong><small>Standings will populate when Season 6 competition begins.</small></div>
+                <div class="aw-standings-empty">
+                  <span>SEASON STATUS</span>
+                  <strong>{series.emptyMessage}</strong>
+                  <small>Standings will populate when Season 6 competition begins.</small>
+                  <div class="aw-uarl-division-chips" aria-label="UARL Season 6 divisions"><b>D1</b><b>D2</b><b>OPEN</b></div>
+                </div>
               )}
             </article>
           ))}
