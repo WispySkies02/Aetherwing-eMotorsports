@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.14 — Aetherwing LIVE visual overhaul
+- Site-wide visual system pass: wider canvas, stronger page hierarchy, animated/interactive panels, race-week editorial treatments, and less dead black space.
+- Schedule Championship Tracker rebuilt as a full championship wall with featured NRRS postseason treatment and larger standings presentation.
+- Wins & History Latest Result replaced with a dedicated Pepsi 400 post-race graphic: P7 start → P4 Stage 2 → P4 finish, Chase qualified.
+- Homepage Latest Result replaced with a compact post-race ticket rather than a plain stat table.
+- Drivers, News, Partners/content pages, Handbook/editorial pages, and Paint Booth bridge receive visual hierarchy and interaction upgrades.
+- Preserves v0.4.13 data, standings, schedule dates, routes, partner facts, and paint architecture.
+
+# Changelog
+
 ## v0.4.13 — Netlify Build Hotfix
 - Fixed the Schedule page Astro compiler error introduced by the Kmart #29 SCR part-time standings subsection.
 - Wrapped the active standings table and optional PT-entry block in a single Astro fragment so the conditional renders valid markup.

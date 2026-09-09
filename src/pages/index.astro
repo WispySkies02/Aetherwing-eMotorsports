@@ -105,12 +105,11 @@ const latest=result.latestResult;
       <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
       <div class="aw-news-grid">
         <a class="aw-feature-story panel" href="/news/"><span class="tag tag--gold">Team Dispatch</span><small>July 2026</small><h3>How the 2026 Schedule Prepares Aetherwing for Full-Time Work</h3><p>A look at how the current competition calendar shapes the team’s rhythm, race-week preparation, and long-term program direction.</p><b>Read the News Hub →</b></a>
-        <article class="aw-result-card panel">
-          <div class="aw-result-card__top"><span class="tag tag--red">Latest Result</span><span class="tag tag--gold">{latest.specialTag}</span></div>
-          <small>{latest.series}</small><h3>{latest.title}</h3><p class="mono">{latest.track} · {latest.date} · #{latest.number} {latest.driver}</p>
-          <div class="aw-result-stats"><div><span>Start</span><strong>P{latest.start}</strong></div><div><span>Stage 2</span><strong>P{latest.stage2.finish}</strong></div><div><span>Finish</span><strong>P{latest.finish}</strong></div></div>
-          <details><summary>Race detail</summary><p>{latest.round} · Started P{latest.start} · Stage 2 P{latest.stage2.finish} · Finished P{latest.finish}</p></details>
-          <a href="/wins-history/">View Full Result →</a>
+        <article class="aw-result-card aw-result-ticket">
+          <div class="aw-result-ticket__head"><span>CHECKERED // LATEST RESULT</span><b>{latest.specialTag}</b></div>
+          <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>TOP 5</em></div></div>
+          <div class="aw-result-ticket__run"><span>P{latest.start}<small>START</small></span><i>→</i><span>P{latest.stage2.finish}<small>STAGE 2</small></span><i>→</i><span class="is-final">P{latest.finish}<small>CHECKERED</small></span></div>
+          <div class="aw-result-ticket__foot"><span>THE CHASE QUALIFIED</span><a href="/wins-history/#latest-result">Open Post-Race Graphic →</a></div>
         </article>
         <div class="aw-quick-links">
           <a class="panel" href="/drivers/"><small>Roster Updated</small><strong>Driver Hub</strong><span>Current drivers, programs, and Factory entries →</span></a>

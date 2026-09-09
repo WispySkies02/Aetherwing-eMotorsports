@@ -1,2 +1,1 @@
-Aetherwing eMotorsports v0.4.12
-Standings positions and Chase eligibility update
+Aetherwing eMotorsports v0.4.14 — LIVE visual overhaul

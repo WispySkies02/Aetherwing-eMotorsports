@@ -176,3 +176,6 @@
 .aw-paint-rack>button{contain:layout paint style}
 .aw-collection-grid{content-visibility:auto;contain-intrinsic-size:1500px}
 .aw-booth-car .aw-car-open img{will-change:opacity}
+
+/* v0.4.14 bridge page visual pass */
+.aw-paint-bridge{position:relative;overflow:hidden}.aw-paint-bridge::after{content:"PAINT";position:absolute;right:-.08em;bottom:-.18em;color:rgba(255,255,255,.035);font:900 12rem/.8 var(--font-condensed);pointer-events:none}

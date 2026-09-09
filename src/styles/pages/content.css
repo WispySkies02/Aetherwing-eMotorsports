@@ -4,3 +4,6 @@
 @media(max-width:900px){.aw-partner-summary{grid-template-columns:repeat(2,1fr)}.aw-featured-partner{grid-template-columns:220px 1fr}.aw-value-rail{grid-template-columns:repeat(2,1fr)}.aw-brand-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.content-grid{grid-template-columns:1fr}.side-note{position:static}.aw-featured-partner{grid-template-columns:1fr}.aw-featured-partner__logo{border-right:0;border-bottom:2px solid #333;min-height:210px}.aw-value-rail{grid-template-columns:1fr}.aw-value-rail article{border-right:0;border-bottom:1px solid #333}.aw-value-rail article:last-child{border-bottom:0}.aw-brand-grid{grid-template-columns:repeat(2,1fr)}.aw-portfolio-list summary{align-items:flex-start;flex-direction:column}}
 @media(max-width:480px){.aw-partner-summary{grid-template-columns:1fr 1fr}.aw-brand-grid{grid-template-columns:1fr 1fr}.aw-brand-tile{min-height:90px}}
+
+/* v0.4.14 visual pass */
+.aw-content-page article,.aw-content-grid article,.aw-partner-card,.aw-contact-card{transition:transform .2s,border-color .2s}.aw-content-page article:hover,.aw-content-grid article:hover,.aw-partner-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.55)}

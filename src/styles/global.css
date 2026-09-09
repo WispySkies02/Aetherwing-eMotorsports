@@ -27,3 +27,29 @@ img{max-width:100%;display:block}a{color:inherit}button,input,select,textarea{fo
 @media(max-width:900px){.grid-4,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid #333}.section-head{align-items:start;flex-direction:column}}
 @media(max-width:620px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}.display{font-size:clamp(3.1rem,18vw,5.2rem)}.page-hero{padding-top:3.7rem}.stat{padding:1rem}.stat strong{font-size:2.2rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important}}
+
+
+/* v0.4.14 — Aetherwing LIVE visual system */
+:root{--aw-stage:linear-gradient(120deg,rgba(230,26,36,.12),transparent 32%),linear-gradient(300deg,rgba(0,166,255,.08),transparent 28%)}
+body{background:#020202}
+main{position:relative;isolation:isolate}
+main::before{content:"";position:fixed;z-index:-1;inset:70px 0 0;pointer-events:none;background:linear-gradient(105deg,transparent 0 12%,rgba(255,255,255,.014) 12% 12.15%,transparent 12.15% 70%,rgba(255,184,0,.018) 70% 70.12%,transparent 70.12%),radial-gradient(circle at 85% 18%,rgba(0,166,255,.07),transparent 25%),radial-gradient(circle at 8% 74%,rgba(230,26,36,.065),transparent 22%)}
+.shell{position:relative}
+.section{isolation:isolate}
+.section:nth-of-type(even)::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,.018),transparent 18% 82%,rgba(255,255,255,.018))}
+.section-head{position:relative;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.15)}
+.section-head::before{content:"";position:absolute;left:0;bottom:-2px;width:clamp(72px,10vw,160px);height:4px;background:linear-gradient(90deg,var(--aw-red),var(--aw-gold),var(--aw-blue));transform:skewX(-24deg)}
+.section-title{text-shadow:3px 3px 0 #000}
+.panel{overflow:hidden;transition:transform .2s var(--ease-race),border-color .2s,box-shadow .2s}
+.panel::after{content:"";position:absolute;z-index:0;right:-4rem;bottom:-5rem;width:12rem;height:12rem;border:1px solid rgba(255,255,255,.045);transform:rotate(28deg);pointer-events:none}
+.panel:hover{border-color:rgba(255,255,255,.46);box-shadow:11px 11px 0 rgba(0,0,0,.95);transform:translateY(-2px)}
+.panel>*{position:relative;z-index:1}
+.page-hero{min-height:min(560px,62vh);display:grid;align-items:end;background:linear-gradient(102deg,rgba(0,0,0,.94) 0 44%,rgba(0,0,0,.55) 72%,rgba(0,0,0,.8)),url('/images/textures/aetherwing-editorial.webp') center/cover}
+.page-hero::before{opacity:1;text-shadow:0 0 80px rgba(255,255,255,.025)}
+.page-hero .display{font-size:clamp(4rem,9vw,9rem)}
+.page-hero .lede{max-width:62rem;border-left-width:6px;box-shadow:inset 34px 0 80px rgba(230,26,36,.035)}
+.stat-rail{position:relative;overflow:hidden;border-block:1px solid rgba(255,255,255,.45);background:linear-gradient(90deg,#050505,#0b0b0b 50%,#050505)}
+.stat{min-height:112px;display:flex;flex-direction:column;justify-content:center}.stat::before{content:"";position:absolute;inset:auto 0 0;height:3px;background:transparent;transition:background .2s}.stat:hover::before{background:var(--aw-blue)}
+.btn{position:relative;overflow:hidden}.btn::after{content:"";position:absolute;inset:-30% auto -30% -40%;width:30%;background:rgba(255,255,255,.18);transform:skewX(-20deg);transition:left .28s ease}.btn:hover::after{left:120%}
+@media(min-width:1200px){.section{padding-block:clamp(4.5rem,6vw,7.5rem)}.shell{padding-inline:clamp(2rem,3vw,3.75rem)}}
+@media(max-width:700px){.page-hero{min-height:430px}.page-hero .display{font-size:clamp(3.5rem,18vw,6rem)}.panel:hover{transform:none}}
