@@ -1,3 +1,12 @@
+# v0.4.23 — UARL D2 Friday Schedule
+
+- Official UARL D2 race night moved from Mondays to Fridays at 6:45 PM ET.
+- Shifted all 18 UARL D2 rounds to the Friday of the same scheduled race week, beginning Sep 18, 2026.
+- Updated recurring competition metadata and project source notes to Friday.
+- Regenerated all 18 D2 event-share cards under their new date-based slugs.
+- Updated UARL D2 and UARL All Divisions next-five league embeds; UARL All now starts with Sep 13 Open/D1, Sep 18 D2, then Sep 20 Open/D1.
+- Bumped all league-share images to v52 for cache refresh while preserving race-type badges and copy-link behavior.
+
 # v0.4.22 — League Share Race-Type Badges
 
 - Added compact race-type badges to the next-five league social/embed cards.

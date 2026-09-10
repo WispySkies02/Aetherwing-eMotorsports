@@ -106,7 +106,7 @@ Driver livery brands are not automatically team partners.
 - NRRS — Tuesday, 7:30 PM ET
 - UARL D1 / L.L. Bean Cup — Sunday, 8:30 PM ET
 - UARL Open — Sunday, 11:30 AM ET
-- UARL D2 / NFFF Grand National — Monday, **6:45 PM ET**
+- UARL D2 / NFFF Grand National — Friday, **6:45 PM ET**
 - Kmart Auto Parts Series — Monday, 8:30 PM ET
 - Sunoco Truck Series — Saturday, 8:00 PM ET
 - iRacing Specials — multi-day windows, not a recurring weekly start time

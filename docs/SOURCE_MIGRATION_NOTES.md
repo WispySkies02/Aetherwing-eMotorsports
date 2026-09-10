@@ -12,7 +12,7 @@ Structured migration:
 - 1 Kmart off-week marker
 - 62 track-location weather targets
 - 20 short-name track aliases
-- UARL D2 remains Monday at 6:45 PM ET
+- UARL D2 runs Fridays at 6:45 PM ET
 - Kmart/Sunoco remain StarClutch Racing alliance competition
 
 Preserved behavior:

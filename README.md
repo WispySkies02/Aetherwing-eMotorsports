@@ -1,4 +1,4 @@
-Current build: v0.4.22
+Current build: v0.4.23
 
 ## Paint Booth host
 
@@ -10,6 +10,13 @@ As of 0.4.0 the production Paint Booth is a dedicated application at `https://pa
 Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 ## Status
+
+
+**v0.4.23 — UARL D2 Friday Schedule**
+- UARL D2 / NFFF Grand National Series now runs Fridays at 6:45 PM ET.
+- Shifted all 18 D2 rounds from Monday to the Friday of the same race week.
+- Updated site-wide competition metadata, Schedule data, event-share cards, and UARL league-share snapshots.
+- UARL All Divisions share preview now reflects D2 Fridays chronologically alongside D1 and Open.
 
 **v0.4.22 — League Share Race-Type Badges**
 
