@@ -1,3 +1,11 @@
+# v0.4.24 — UARL D2 Start-Date Correction
+
+- Pulled the entire 18-round UARL D2 Friday calendar forward one week.
+- UARL D2 now begins Friday, Sep 11, 2026 at 6:45 PM ET with The 6th Official Daytona 250.
+- Round 18 now lands Friday, Jan 8, 2027.
+- Regenerated all D2 event-share cards under the corrected date-based slugs.
+- Refreshed UARL D2 and UARL All Divisions next-five league embeds and bumped league-share images to v53 for cache refresh.
+
 # v0.4.23 — UARL D2 Friday Schedule
 
 - Official UARL D2 race night moved from Mondays to Fridays at 6:45 PM ET.

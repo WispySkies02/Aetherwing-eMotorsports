@@ -70,7 +70,7 @@
     "league": "sunoco",
     "leagueName": "Sunoco Trucks",
     "status": "Regular Season",
-    "title": "Black\u2019s Tire 200",
+    "title": "Black’s Tire 200",
     "track": "Rockingham Speedway",
     "time": "8:00 PM ET"
   },
@@ -156,7 +156,7 @@
     "league": "sunoco",
     "leagueName": "Sunoco Trucks",
     "status": "Regular Season",
-    "title": "Men\u2019s Mental Health Awareness Month 200",
+    "title": "Men’s Mental Health Awareness Month 200",
     "track": "Martinsville Speedway",
     "time": "8:00 PM ET"
   },
@@ -320,7 +320,7 @@
   {
     "date": "2026-08-04",
     "endDate": "2026-08-09",
-    "displayDate": "Aug 4\u20139",
+    "displayDate": "Aug 4–9",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -352,7 +352,7 @@
   {
     "date": "2026-08-14",
     "endDate": "2026-08-15",
-    "displayDate": "Aug 14\u201315",
+    "displayDate": "Aug 14–15",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -425,7 +425,7 @@
   {
     "date": "2026-08-25",
     "endDate": "2026-08-30",
-    "displayDate": "Aug 25\u201330",
+    "displayDate": "Aug 25–30",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -480,7 +480,7 @@
   {
     "date": "2026-09-02",
     "endDate": "2026-09-07",
-    "displayDate": "Sep 2\u20137",
+    "displayDate": "Sep 2–7",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -533,7 +533,7 @@
   {
     "date": "2026-09-10",
     "endDate": "2026-09-15",
-    "displayDate": "Sep 10\u201315",
+    "displayDate": "Sep 10–15",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -584,7 +584,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-09-18",
+    "date": "2026-09-11",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -596,7 +596,7 @@
   {
     "date": "2026-09-18",
     "endDate": "2026-09-20",
-    "displayDate": "Sep 18\u201320",
+    "displayDate": "Sep 18–20",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -648,7 +648,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-09-25",
+    "date": "2026-09-18",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -670,7 +670,7 @@
   {
     "date": "2026-09-25",
     "endDate": "2026-09-27",
-    "displayDate": "Sep 25\u201327",
+    "displayDate": "Sep 25–27",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -721,7 +721,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-10-02",
+    "date": "2026-09-25",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -743,7 +743,7 @@
   {
     "date": "2026-10-02",
     "endDate": "2026-10-04",
-    "displayDate": "Oct 2\u20134",
+    "displayDate": "Oct 2–4",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -793,7 +793,7 @@
     "status": "All-Star Race"
   },
   {
-    "date": "2026-10-09",
+    "date": "2026-10-02",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -854,7 +854,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-10-16",
+    "date": "2026-10-09",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -876,7 +876,7 @@
   {
     "date": "2026-10-16",
     "endDate": "2026-10-18",
-    "displayDate": "Oct 16\u201318",
+    "displayDate": "Oct 16–18",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -926,7 +926,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-10-23",
+    "date": "2026-10-16",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -978,7 +978,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-10-30",
+    "date": "2026-10-23",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1000,7 +1000,7 @@
   {
     "date": "2026-10-30",
     "endDate": "2026-10-31",
-    "displayDate": "Oct 30\u201331",
+    "displayDate": "Oct 30–31",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1041,7 +1041,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-11-06",
+    "date": "2026-10-30",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1053,7 +1053,7 @@
   {
     "date": "2026-11-04",
     "endDate": "2026-11-09",
-    "displayDate": "Nov 4\u20139",
+    "displayDate": "Nov 4–9",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1093,7 +1093,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-11-13",
+    "date": "2026-11-06",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1105,7 +1105,7 @@
   {
     "date": "2026-11-13",
     "endDate": "2026-11-15",
-    "displayDate": "Nov 13\u201315",
+    "displayDate": "Nov 13–15",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1146,7 +1146,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-11-20",
+    "date": "2026-11-13",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1158,7 +1158,7 @@
   {
     "date": "2026-11-17",
     "endDate": "2026-11-21",
-    "displayDate": "Nov 17\u201321",
+    "displayDate": "Nov 17–21",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1199,7 +1199,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-11-27",
+    "date": "2026-11-20",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1242,7 +1242,7 @@
     "specialTag": "CROWN JEWEL"
   },
   {
-    "date": "2026-12-04",
+    "date": "2026-11-27",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1254,7 +1254,7 @@
   {
     "date": "2026-12-02",
     "endDate": "2026-12-07",
-    "displayDate": "Dec 2\u20137",
+    "displayDate": "Dec 2–7",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1285,7 +1285,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2026-12-11",
+    "date": "2026-12-04",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
@@ -1317,7 +1317,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2026-12-18",
+    "date": "2026-12-11",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "The Chase",
@@ -1329,7 +1329,7 @@
   {
     "date": "2026-12-15",
     "endDate": "2026-12-20",
-    "displayDate": "Dec 15\u201320",
+    "displayDate": "Dec 15–20",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1340,7 +1340,7 @@
   {
     "date": "2026-12-18",
     "endDate": "2026-12-19",
-    "displayDate": "Dec 18\u201319",
+    "displayDate": "Dec 18–19",
     "league": "iracing",
     "leagueName": "iRacing Events",
     "status": "Special Event",
@@ -1371,7 +1371,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2026-12-25",
+    "date": "2026-12-18",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "The Chase",
@@ -1413,7 +1413,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2027-01-01",
+    "date": "2026-12-25",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "The Chase",
@@ -1445,7 +1445,7 @@
     "status": "Championship"
   },
   {
-    "date": "2027-01-08",
+    "date": "2027-01-01",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "The Chase",
@@ -1465,7 +1465,7 @@
     "round": "ROUND 18"
   },
   {
-    "date": "2027-01-15",
+    "date": "2027-01-08",
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Championship",

@@ -449,7 +449,7 @@ const displayDate = (event) => {
   leagueShareButton?.addEventListener('click', async () => {
     const selected = selectedShareLeague();
     if (!selected) { announceShare('Select a league first'); return; }
-    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=52`;
+    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=53`;
     await copyText(url);
     announceShare(`${selected.label} link copied`);
   });
