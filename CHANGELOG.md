@@ -1,3 +1,9 @@
+## v0.4.26 — September 11, 2026
+
+- Fixed the mobile/Safari Schedule toolbar showing UARL subfilters outside the UARL filter state.
+- Made the mobile League Share control compact instead of stacking a large description and full-width button.
+- Reduced mobile toolbar chrome while keeping all filter behavior, copy-link behavior, and desktop layout intact.
+
 # v0.4.24 — UARL D2 Start-Date Correction
 
 - Pulled the entire 18-round UARL D2 Friday calendar forward one week.

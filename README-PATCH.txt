@@ -1,1 +1,1 @@
-v0.4.20 hotfix: fixes Astro static route generation for league-share URLs. No content/data changes from v0.4.19.
+Aetherwing eMotorsports v0.4.26 FULL — mobile Schedule filter cockpit fix.

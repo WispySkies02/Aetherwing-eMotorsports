@@ -367,8 +367,11 @@ const displayDate = (event) => {
   function updateLeagueShareControl() {
     if (!(leagueShareButton instanceof HTMLButtonElement)) return;
     const selected = selectedShareLeague();
+    const compact = matchMedia('(max-width:620px)').matches;
     leagueShareButton.disabled = !selected;
-    leagueShareButton.textContent = selected ? `⧉ COPY ${selected.label.toUpperCase()} LINK` : '⧉ SELECT A LEAGUE';
+    leagueShareButton.textContent = selected
+      ? (compact ? '⧉ COPY LINK' : `⧉ COPY ${selected.label.toUpperCase()} LINK`)
+      : (compact ? '⧉ SELECT LEAGUE' : '⧉ SELECT A LEAGUE');
   }
   function competitionLabel(event) { return `${event.leagueName}${isAlliance(event.league) ? ' · StarClutch Racing Alliance' : ''}`; }
   function displayDate(event) {
@@ -535,6 +538,7 @@ const displayDate = (event) => {
   const timer=setInterval(()=>{updateNextOperation();updateDockCountdowns();},1000);
   const refresh=()=>{renderSchedule();updateNextOperation();updateDockCountdowns();};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();}); addEventListener('focus',refresh); addEventListener('pageshow',refresh);
+  addEventListener('resize',updateLeagueShareControl,{passive:true});
   window.awScheduleIntervals={timer};
 })();
 </script>

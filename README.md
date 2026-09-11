@@ -1,4 +1,4 @@
-Current build: v0.4.25
+Current build: v0.4.26
 
 ## Paint Booth host
 
@@ -11,6 +11,12 @@ Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 ## Status
 
+
+**v0.4.26 — Compact Mobile Schedule Filter Cockpit**
+- Fixed Safari/mobile rendering that exposed the UARL subfilter row while All Events or another non-UARL filter was active.
+- UARL D1/D2/Open controls now appear only when UARL is active.
+- Mobile League Share is now a compact one-line control with short Copy Link text.
+- Reduced mobile toolbar padding/chrome while preserving horizontal swipe filters and all desktop behavior.
 
 **v0.4.25 — Race Control / Drivers / Homepage Fix Pass**
 - Fixed Next Operation priority so imminent fixed-time races outrank active multiday iRacing windows.

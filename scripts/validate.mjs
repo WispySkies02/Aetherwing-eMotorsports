@@ -215,4 +215,10 @@ assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('
 assert(homePage.includes('wispy-clinches-nrrs-s3-chase-martinsville') && homePage.includes('Read the Chase-Clinch Story'), 'Homepage Latest Updates features the Martinsville Chase-clinch story');
 const chaseStory = news.find((story) => story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville');
 assert(chaseStory?.category === 'Race & Competition', 'Martinsville Chase-clinch story uses Race & Competition category');
+// v0.4.26 mobile Schedule cockpit guards
+const scheduleCss = text('src/styles/pages/schedule.css');
+assert(scheduleCss.includes('.aw-subfilter-row[hidden]{display:none!important}'), 'Schedule CSS forces hidden UARL subfilters off on Safari/mobile');
+assert(scheduleCss.includes('v0.4.26 — compact mobile schedule filter cockpit'), 'Schedule includes compact mobile filter cockpit overrides');
+assert(schedulePage.includes("compact ? '⧉ COPY LINK'"), 'Mobile league-share control uses compact copy-link text');
+
 console.log('\nAetherwing locked-fact validation passed.');
