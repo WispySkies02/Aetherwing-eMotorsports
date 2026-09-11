@@ -4,6 +4,7 @@ import PageHero from '../../components/ui/PageHero.astro';
 import roster from '../../data/roster-profiles.json';
 import iracing from '../../data/iracing-garage.json';
 import profiles from '../../data/driver-profiles.json';
+import driverEntries from '../../data/drivers.json';
 import '../../styles/pages/drivers.css';
 const selected=roster[0];
 const wispyStats=profiles[0].stats;
@@ -29,6 +30,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
           <button type="button" data-filter="NRRS">NRRS</button>
           <button type="button" data-filter="UARL D1">UARL D1</button>
           <button type="button" data-filter="UARL D2">UARL D2</button>
+          <button type="button" data-filter="UARL Open">UARL Open</button>
           <button type="button" class="is-alliance" data-filter="Kmart">Kmart</button>
           <button type="button" class="is-alliance" data-filter="Sunoco">Sunoco</button>
         </div>
@@ -68,7 +70,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     </div>
   </section>
 </BaseLayout>
-<script define:vars={{ roster }}>
+<script define:vars={{ roster, driverEntries }}>
   const browser=document.querySelector('[data-driver-browser]');
   const toolbar=document.querySelector('[data-driver-toolbar]');
   const count=document.querySelector('[data-driver-count]');
@@ -77,10 +79,14 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     const stage=browser.querySelector('[data-driver-stage]');
     const options=Array.from(browser.querySelectorAll('[role="option"]'));
     const formatNumbers=(value)=>String(value||'').split('/').map(part=>part.trim()).filter(Boolean).map(part=>`#${part.replace(/^#/, '')}`).join(' / ');
-    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';const numbers=formatNumbers(driver.numbers);stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">${numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>Active numbers</span><strong>${numbers}</strong></div>`;};
+    const competitionIdByFilter={'NRRS':'nrrs','UARL D1':'uarl-d1','UARL D2':'uarl-d2','UARL Open':'uarl-open','Kmart':'kmart','Sunoco':'sunoco'};
+    let activeRosterFilter='all';
+    const numbersFor=(driver,filter=activeRosterFilter)=>{const competitionId=competitionIdByFilter[filter];if(competitionId){const entry=driverEntries.find(item=>item.profile===driver.slug&&item.competitionId===competitionId);if(entry?.number)return `#${entry.number}`;}return formatNumbers(driver.numbers);};
+    const renderOptionNumber=(option,driver)=>{const node=option.querySelector('.aw-driver-num');if(!(node instanceof HTMLElement)||!driver)return;const parts=numbersFor(driver).split(' / ').filter(Boolean);node.classList.toggle('is-multi',parts.length>1);node.innerHTML=parts.map(part=>`<b>${part}</b>`).join('');};
+    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';const numbers=numbersFor(driver);stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">${numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>${competitionIdByFilter[activeRosterFilter]?'Series number':'Active numbers'}</span><strong>${numbers}</strong></div>`;};
     options.forEach(option=>option.addEventListener('click',()=>{options.forEach(o=>o.setAttribute('aria-selected','false'));option.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===option.dataset.slug));}));
     toolbar?.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
-      if(!(button instanceof HTMLButtonElement))return;toolbar.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');const filter=button.dataset.filter;let shown=0;let first=null;options.forEach(option=>{const programs=(option.dataset.programs||'').split('|');const show=filter==='all'||option.dataset.affiliation===filter||programs.includes(filter||'');option.hidden=!show;if(show){shown++;if(!first)first=option;}});if(count)count.textContent=`${shown} shown`;if(first instanceof HTMLButtonElement){options.forEach(o=>o.setAttribute('aria-selected','false'));first.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===first.dataset.slug));}if(list instanceof HTMLElement)list.scrollTo({top:0,behavior:'smooth'});
+      if(!(button instanceof HTMLButtonElement))return;toolbar.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');const filter=button.dataset.filter||'all';activeRosterFilter=filter;let shown=0;let first=null;options.forEach(option=>{const programs=(option.dataset.programs||'').split('|');const driver=roster.find(d=>d.slug===option.dataset.slug);const show=filter==='all'||option.dataset.affiliation===filter||programs.includes(filter);option.hidden=!show;renderOptionNumber(option,driver);if(show){shown++;if(!first)first=option;}});if(count)count.textContent=`${shown} shown`;if(first instanceof HTMLButtonElement){options.forEach(o=>o.setAttribute('aria-selected','false'));first.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===first.dataset.slug));}if(list instanceof HTMLElement)list.scrollTo({top:0,behavior:'smooth'});
     }));
   }
 </script>

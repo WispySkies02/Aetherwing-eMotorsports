@@ -303,3 +303,11 @@
 - Re-rendered all 143 share cards from the updated source logo assets with actual Edo SZ event-name typography.
 - Kmart Chase and SCR assets are composited directly with their transparency; no artificial white matte is added.
 - Cache-busted all event share images and copied share URLs to v47.
+
+## v0.4.25 — Race Control / Drivers / Homepage Fix Pass — 2026-09-11
+- Prioritized fixed-time live/soon races ahead of active multiday iRacing windows in Schedule Race Control and the homepage Next Event module.
+- Made UARL D1/D2/Open subfilters automatically activate the UARL parent category.
+- Updated the Schedule calendar-review stamp to September 11, 2026.
+- Added the missing UARL Open driver filter.
+- Refreshed Homepage Latest Updates to the August 25 Martinsville Chase-clinch story and classified it under Race & Competition.
+- Left UARL Season 6 standings in awaiting-results state pending official D2 opener results.

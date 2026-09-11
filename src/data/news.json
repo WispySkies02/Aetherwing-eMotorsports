@@ -2,7 +2,7 @@
   {
     "slug": "wispy-clinches-nrrs-s3-chase-martinsville",
     "legacyRoute": "/wispy-clinches-nrrs-s3-chase-martinsville",
-    "category": "Milestones",
+    "category": "Race & Competition",
     "date": "August 25, 2026",
     "dateIso": "2026-08-25",
     "context": "NRRS Town Fair Cup Series",
@@ -14,7 +14,7 @@
       "NRRS",
       "Martinsville",
       "3 Straight NRRS",
-      "5× Chase Qualifier"
+      "5\u00d7 Chase Qualifier"
     ],
     "featured": true,
     "byline": "Aetherwing eMotorsports",
@@ -33,7 +33,7 @@
       },
       {
         "label": "Standings",
-        "value": "P6 · 553"
+        "value": "P6 \u00b7 553"
       },
       {
         "label": "Chase Cut",
@@ -41,7 +41,7 @@
       },
       {
         "label": "Career Berths",
-        "value": "5×"
+        "value": "5\u00d7"
       }
     ],
     "sections": [
@@ -62,7 +62,7 @@
       {
         "heading": "Five Berths, Three Series",
         "paragraphs": [
-          "NRRS accounts for three of the five confirmed Chase appearances, but the postseason résumé extends beyond one league. A Kmart Season 1 berth was earned on points after Kansas, while the UARL Season 4 regular-season finale at Indianapolis produced a race-winning ticket into that championship field.",
+          "NRRS accounts for three of the five confirmed Chase appearances, but the postseason r\u00e9sum\u00e9 extends beyond one league. A Kmart Season 1 berth was earned on points after Kansas, while the UARL Season 4 regular-season finale at Indianapolis produced a race-winning ticket into that championship field.",
           "The record now stands at three NRRS berths, one Kmart berth, and one UARL berth. Two of those five were secured directly through victories: the NRRS Season 2 All-Star Race at Miami and the UARL Season 4 finale at Indianapolis."
         ]
       },
@@ -75,9 +75,9 @@
       }
     ],
     "callout": {
-      "label": "Postseason Résumé",
+      "label": "Postseason R\u00e9sum\u00e9",
       "title": "Five Trips Into The Fight",
-      "text": "NRRS ×3 · Kmart ×1 · UARL ×1. Two of the five confirmed berths were secured through race victories."
+      "text": "NRRS \u00d73 \u00b7 Kmart \u00d71 \u00b7 UARL \u00d71. Two of the five confirmed berths were secured through race victories."
     },
     "timeline": [
       {
@@ -181,13 +181,13 @@
         "heading": "A Milestone That Moved the Standings",
         "paragraphs": [
           "The Talladega result moved Wispy up one position to fourth in the NRRS standings. Instead of the 100th start living only as a career-count statistic, it directly improved the competitive position of the #32 team.",
-          "The story was preserved in the Team Wire because it combined the personal milestone with an actual race-day result — exactly the kind of moment the archive was built to keep."
+          "The story was preserved in the Team Wire because it combined the personal milestone with an actual race-day result \u2014 exactly the kind of moment the archive was built to keep."
         ]
       }
     ],
     "callout": {
       "label": "Milestone File",
-      "title": "100 Starts · 50 Points",
+      "title": "100 Starts \u00b7 50 Points",
       "text": "Stage 1 win, runner-up finish, and a move to fourth in the NRRS standings in Wispy's 100th recorded RoRacing start."
     }
   },
@@ -243,7 +243,7 @@
         "heading": "The Truck Win Marked Number 25",
         "paragraphs": [
           "The Class C Series - Fixed victory also carried an organizational milestone: it became Aetherwing's 25th recorded team win in the modern record book.",
-          "That placed the Michigan truck result in two parts of the archive at once — as the completion of Waggoner's Michigan double and as the victory that pushed the team-win count to 25."
+          "That placed the Michigan truck result in two parts of the archive at once \u2014 as the completion of Waggoner's Michigan double and as the victory that pushed the team-win count to 25."
         ]
       },
       {
@@ -269,7 +269,7 @@
     "context": "NASCAR iRacing Series",
     "kicker": "Photo Finish",
     "title": "Waggoner Wins Michigan NIS Thriller for Rowdy",
-    "summary": "Nicholas Waggoner scored an emotional NASCAR iRacing Series victory at Michigan in a photo finish, winning by 0.029 seconds in the #28 Cheddar’s Scratch Kitchen Toyota and dedicating the win to Kyle “Rowdy” Busch.",
+    "summary": "Nicholas Waggoner scored an emotional NASCAR iRacing Series victory at Michigan in a photo finish, winning by 0.029 seconds in the #28 Cheddar\u2019s Scratch Kitchen Toyota and dedicating the win to Kyle \u201cRowdy\u201d Busch.",
     "tags": [
       "Race Win",
       "iRacing",
@@ -311,7 +311,7 @@
       {
         "heading": "For Rowdy",
         "paragraphs": [
-          "The result carried an emotional layer beyond the finishing margin. Waggoner dedicated the Michigan victory to Kyle “Rowdy” Busch, making the race one of the more personal wins preserved in the team's iRacing history.",
+          "The result carried an emotional layer beyond the finishing margin. Waggoner dedicated the Michigan victory to Kyle \u201cRowdy\u201d Busch, making the race one of the more personal wins preserved in the team's iRacing history.",
           "The combination of the #28 entry, Cheddar's Scratch Kitchen livery, razor-thin margin, and dedication is why the Team Wire keeps the event as more than a line in the win table."
         ]
       },
@@ -338,7 +338,7 @@
     "context": "iRacing",
     "kicker": "Crown Jewel",
     "title": "Waggoner Wins the Indianapolis 500 on iRacing",
-    "summary": "Nicholas Waggoner delivered a crown-jewel victory for Aetherwing, winning the Indianapolis 500 on iRacing and adding one of sim racing’s biggest oval trophies to the team record book.",
+    "summary": "Nicholas Waggoner delivered a crown-jewel victory for Aetherwing, winning the Indianapolis 500 on iRacing and adding one of sim racing\u2019s biggest oval trophies to the team record book.",
     "tags": [
       "Race Win",
       "iRacing",
@@ -456,12 +456,12 @@
       }
     ],
     "quote": {
-      "text": "Winning a Clash event is about more than just grabbing a trophy—it’s about establishing dominance before the championship points even start counting.",
+      "text": "Winning a Clash event is about more than just grabbing a trophy\u2014it\u2019s about establishing dominance before the championship points even start counting.",
       "attribution": "Original Aetherwing race report"
     },
     "callout": {
       "label": "Opening Statement",
-      "title": "Two Clashes · Two Wins",
+      "title": "Two Clashes \u00b7 Two Wins",
       "text": "Jaxon won the NRRS Clash at Target Speedway and Jayden completed the sweep with a UARL Clash victory."
     }
   },
@@ -520,7 +520,7 @@
         ]
       },
       {
-        "heading": "Scout · Develop · Promote",
+        "heading": "Scout \u00b7 Develop \u00b7 Promote",
         "paragraphs": [
           "The pathway was organized around three steps. Scout meant identifying new drivers, watching race craft, and tracking availability. Develop meant building consistency, improving communication, and learning team standards. Promote meant opening reserve or primary opportunities for drivers who proved they fit the long-term organization.",
           "The structure gave Aetherwing a middle step between outside competition and direct signing, while NGM provided a development partner familiar with the RoRacing environment."
@@ -535,12 +535,12 @@
       }
     ],
     "quote": {
-      "text": "This is about building the next wave — not just finding fast drivers, but finding the right drivers.",
+      "text": "This is about building the next wave \u2014 not just finding fast drivers, but finding the right drivers.",
       "attribution": "Aetherwing team note"
     },
     "callout": {
       "label": "Evaluation Focus",
-      "title": "Consistency · Availability · Attitude",
+      "title": "Consistency \u00b7 Availability \u00b7 Attitude",
       "text": "Race craft, preparation, communication and long-term team fit were part of the development review alongside outright speed."
     }
   },
@@ -619,7 +619,7 @@
     },
     "callout": {
       "label": "Identity File",
-      "title": "BellSouth → Aetherwing",
+      "title": "BellSouth \u2192 Aetherwing",
       "text": "A new name and visual direction carried the existing modern team history forward into the 2026 Aetherwing era."
     }
   },
@@ -687,7 +687,7 @@
     ],
     "callout": {
       "label": "Career First",
-      "title": "Victory Lane · Dec 2, 2025",
+      "title": "Victory Lane \u00b7 Dec 2, 2025",
       "text": "The #28 Aetherwing entry won the NRRS Season 2 All-Star Race for Wispy's first recorded career RoRacing victory."
     }
   },
@@ -719,7 +719,7 @@
       },
       {
         "label": "Finish",
-        "value": "1–2"
+        "value": "1\u20132"
       },
       {
         "label": "Event",
@@ -734,7 +734,7 @@
       {
         "heading": "A Landmark Daytona 500 Win",
         "paragraphs": [
-          "The 2025–26 Kmart Cup Series opened with Flamingo taking the #22 Apex Sim Racing Chevrolet to victory in the Daytona 500 on September 22, 2025.",
+          "The 2025\u201326 Kmart Cup Series opened with Flamingo taking the #22 Apex Sim Racing Chevrolet to victory in the Daytona 500 on September 22, 2025.",
           "The win became Aetherwing's first points-paying victory and delivered a crown-jewel result at the beginning of the season."
         ]
       },
@@ -749,7 +749,7 @@
         "heading": "The White Flag Protection",
         "paragraphs": [
           "On the final lap, Will protected Flamingo's rear quarter while the pair worked through Turns 3 and 4 and defended against a late challenge from behind.",
-          "Flamingo reached the checkered flag first and Will finished second, completing the 1–2 sweep in one of the biggest races on the Kmart Cup schedule."
+          "Flamingo reached the checkered flag first and Will finished second, completing the 1\u20132 sweep in one of the biggest races on the Kmart Cup schedule."
         ]
       },
       {
@@ -762,7 +762,7 @@
     ],
     "callout": {
       "label": "Historic Finish",
-      "title": "Aetherwing 1–2 at Daytona",
+      "title": "Aetherwing 1\u20132 at Daytona",
       "text": "Flamingo won the Daytona 500 with teammate Will second, delivering the team's first points-paying victory and a crown-jewel sweep of the top two positions."
     }
   }

@@ -1,4 +1,4 @@
-Current build: v0.4.24
+Current build: v0.4.25
 
 ## Paint Booth host
 
@@ -12,10 +12,13 @@ Custom Astro rebuild of the Aetherwing eMotorsports main website.
 ## Status
 
 
-**v0.4.24 — UARL D2 Start-Date Correction**
-- UARL D2 remains Fridays at 6:45 PM ET, but the complete 18-round calendar is pulled forward one week.
-- Season 6 D2 now opens Friday, Sep 11, 2026 and ends Friday, Jan 8, 2027.
-- Event-share and league-share previews use the corrected dates.
+**v0.4.25 — Race Control / Drivers / Homepage Fix Pass**
+- Fixed Next Operation priority so imminent fixed-time races outrank active multiday iRacing windows.
+- UARL D1/D2/Open subfilters now activate the UARL parent automatically.
+- Calendar review stamp updated to September 11, 2026.
+- Added UARL Open to the Drivers page filter bar.
+- Homepage Latest Updates now features the August 25 Martinsville Chase-clinch story.
+- UARL standings remain in the awaiting-results state until official Season 6 results are supplied.
 
 **v0.4.23 — UARL D2 Friday Schedule**
 - UARL D2 / NFFF Grand National Series now runs Fridays at 6:45 PM ET.

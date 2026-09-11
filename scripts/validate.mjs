@@ -44,8 +44,8 @@ const standings = json('standings.json');
 
 assert(news.length === 10, 'News archive matches the current 10-story Team Wire');
 assert(new Set(news.map((story) => story.slug)).size === news.length, 'All Team Wire story slugs are unique');
-assert(news.filter((story) => story.category === 'Race & Competition').length === 5, 'Team Wire contains five Race & Competition stories');
-assert(news.filter((story) => story.category === 'Milestones').length === 3, 'Team Wire contains three Milestones stories');
+assert(news.filter((story) => story.category === 'Race & Competition').length === 6, 'Team Wire contains six Race & Competition stories');
+assert(news.filter((story) => story.category === 'Milestones').length === 2, 'Team Wire contains two Milestones stories');
 assert(news.filter((story) => story.category === 'Team & Organization').length === 2, 'Team Wire contains two Team & Organization stories');
 assert(news.some((story) => story.featured && story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville'), 'Martinsville Chase clinch remains the Team Wire headline');
 assert(news.some((story) => story.slug === 'wispy-100th-roracing-start-talladega'), '100th RoRacing start story is migrated');
@@ -204,4 +204,15 @@ if (process.exitCode) {
   console.error('\nAetherwing data validation failed. Fix locked facts before building.');
   process.exit(process.exitCode);
 }
+
+// v0.4.25 regression guards
+const homePage = text('src/pages/index.astro');
+assert(schedulePage.includes('SEP 11') && schedulePage.includes('September 11, 2026'), 'Schedule review stamp is September 11, 2026');
+assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.includes("event.league === 'iracing'"), 'Schedule Next Operation uses fixed-race priority over active iRacing windows');
+assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
+assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
+assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
+assert(homePage.includes('wispy-clinches-nrrs-s3-chase-martinsville') && homePage.includes('Read the Chase-Clinch Story'), 'Homepage Latest Updates features the Martinsville Chase-clinch story');
+const chaseStory = news.find((story) => story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville');
+assert(chaseStory?.category === 'Race & Competition', 'Martinsville Chase-clinch story uses Race & Competition category');
 console.log('\nAetherwing locked-fact validation passed.');

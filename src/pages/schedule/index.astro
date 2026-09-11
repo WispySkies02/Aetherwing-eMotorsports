@@ -57,7 +57,7 @@ const displayDate = (event) => {
         <div><span>Competition Relationships</span><strong>07</strong><small>5 Aetherwing · 2 Alliance</small></div>
         <div><span>Total Season Races</span><strong>{totalSeasonRaces}</strong><small>Off-weeks excluded</small></div>
         <div><span>Calendar Window</span><strong>26–27</strong><small>2026 through 2027</small></div>
-        <div><span>Calendar Review</span><strong>SEP 05</strong><small>September 5, 2026</small></div>
+        <div><span>Calendar Review</span><strong>SEP 11</strong><small>September 11, 2026</small></div>
       </div>
 
       <section class="aw-championship-tracker" id="standings" aria-labelledby="aw-standings-title">
@@ -347,6 +347,18 @@ const displayDate = (event) => {
     return event.league === activeFilter;
   }
   function filteredEvents() { return scheduleEvents.filter(event => isUpcoming(event) && matchesFilter(event)).sort((a,b) => getEventStart(a)-getEventStart(b)); }
+  function selectPrimaryOperation(events, now = new Date()) {
+    const candidates = events.filter(event => !event.offWeek);
+    const fixed = candidates.filter(event => event.league !== 'iracing' && !event.tbd);
+    const fixedLive = fixed.filter(event => now >= getEventStart(event) && now <= getEventEnd(event)).sort((a,b) => getEventStart(a)-getEventStart(b));
+    if (fixedLive.length) return fixedLive[0];
+    const soonLimit = new Date(now.getTime() + 36 * 60 * 60 * 1000);
+    const fixedSoon = fixed.filter(event => getEventStart(event) > now && getEventStart(event) <= soonLimit).sort((a,b) => getEventStart(a)-getEventStart(b));
+    if (fixedSoon.length) return fixedSoon[0];
+    const activeWindow = candidates.filter(event => event.league === 'iracing' && now >= getEventStart(event) && now <= getEventEnd(event)).sort((a,b) => getEventStart(a)-getEventStart(b));
+    if (activeWindow.length) return activeWindow[0];
+    return candidates.filter(event => getEventStart(event) > now).sort((a,b) => getEventStart(a)-getEventStart(b))[0] || candidates[0] || null;
+  }
   function selectedShareLeague() {
     if (activeFilter === 'all') return null;
     if (activeFilter === 'uarl-group') return leagueShareMap[activeSubfilter] || leagueShareMap['uarl-all'];
@@ -371,7 +383,7 @@ const displayDate = (event) => {
       card.hidden = !visible; card.classList.remove('is-next');
       if (visible) { shown++; const key = event.tbd ? 'tbd' : event.date.slice(0,7); if (!visibleMonthKeys.includes(key)) visibleMonthKeys.push(key); }
     });
-    const next = filteredEvents().find(event => !event.offWeek) || filteredEvents()[0];
+    const next = selectPrimaryOperation(filteredEvents());
     if (next) { const nextIndex = scheduleEvents.indexOf(next); cards[nextIndex]?.classList.add('is-next'); }
     monthBlocks.forEach(block => {
       const key = block.dataset.monthKey || ''; const hasVisible = Array.from(block.querySelectorAll('[data-event-card]')).some(card => !card.hidden);
@@ -396,7 +408,7 @@ const displayDate = (event) => {
   }
 
   function updateNextOperation() {
-    const events = filteredEvents(); const event = events.find(item => !item.offWeek) || events[0];
+    const events = filteredEvents(); const event = selectPrimaryOperation(events);
     const title = nextCard?.querySelector('[data-next-title]'); const meta = nextCard?.querySelector('[data-next-meta]'); const league = nextCard?.querySelector('[data-next-league]'); const status = nextCard?.querySelector('[data-next-status]'); const special = nextCard?.querySelector('[data-next-special]'); const state = nextCard?.querySelector('[data-next-state]'); const count = nextCard?.querySelector('[data-next-count]'); const countLabel = nextCard?.querySelector('[data-next-count-label]');
     if (!event) {
       if (nextCard instanceof HTMLElement) nextCard.removeAttribute('data-league'); if (title) title.textContent='Season Complete'; if (meta) meta.textContent='No upcoming events match the selected filter.'; if (league) league.textContent='Schedule'; if (status) status.textContent='Complete'; if (state) state.textContent='COMPLETE'; if (count) count.textContent='--'; if (countLabel) countLabel.textContent='Schedule pending'; updateWeather(null); return;
@@ -423,7 +435,8 @@ const displayDate = (event) => {
     forcedEventSlug=''; showFullSchedule=false; renderSchedule(); updateNextOperation();
   }));
   toolbar?.querySelectorAll('[data-subfilter]').forEach(button => button.addEventListener('click', () => {
-    toolbar.querySelectorAll('[data-subfilter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeSubfilter=button.dataset.subfilter || 'uarl-all'; forcedEventSlug=''; showFullSchedule=false; renderSchedule(); updateNextOperation();
+    const requested = button.dataset.subfilter || 'uarl-all';
+    forcedEventSlug=''; showFullSchedule=false; applyLeagueSelection(requested); renderSchedule(); updateNextOperation();
   }));
   toggleFull?.addEventListener('click',()=>{showFullSchedule=!showFullSchedule;renderSchedule();});
 

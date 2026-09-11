@@ -6,11 +6,13 @@ import roster from '../data/roster-profiles.json';
 import events from '../data/schedule-events.json';
 import partners from '../data/partners.json';
 import result from '../data/results.json';
+import news from '../data/news.json';
 import '../styles/pages/home.css';
 const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
-const liveEvent=events.find((event)=>event.league==='iracing' && event.title==='Southern 500' && event.date==='2026-09-02') ?? events[0];
+const liveEvent=events.find((event)=>event.league==='uarl-d2' && event.date==='2026-09-11') ?? events[0];
 const latest=result.latestResult;
+const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase-martinsville') ?? news[0];
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
   <section class="aw-home-hero">
@@ -53,15 +55,15 @@ const latest=result.latestResult;
       </div>
       <a class="aw-next-event panel" href="/schedule/#next-operation">
         <div class="aw-next-event__left">
-          <span class="tag tag--live">LIVE</span>
+          <span class="tag" data-home-event-state>UPCOMING</span>
           <small data-home-event-league>{liveEvent.leagueName} · {liveEvent.status}</small>
           <h3 data-home-event-title>{liveEvent.title}</h3>
           <p data-home-event-meta>{liveEvent.track} · {liveEvent.displayDate ?? liveEvent.date} · {liveEvent.time}</p>
         </div>
         <div class="aw-next-event__right">
-          <span>Event Window</span>
-          <strong data-home-countdown>LIVE</strong>
-          <small data-home-count-label>Current iRacing special-event window</small>
+          <span>Next Operation</span>
+          <strong data-home-countdown>CALCULATING</strong>
+          <small data-home-count-label>Race Control syncing…</small>
         </div>
       </a>
     </div>
@@ -104,7 +106,7 @@ const latest=result.latestResult;
     <div class="shell">
       <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
       <div class="aw-news-grid">
-        <a class="aw-feature-story panel" href="/news/"><span class="tag tag--gold">Team Dispatch</span><small>July 2026</small><h3>How the 2026 Schedule Prepares Aetherwing for Full-Time Work</h3><p>A look at how the current competition calendar shapes the team’s rhythm, race-week preparation, and long-term program direction.</p><b>Read the News Hub →</b></a>
+        <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">Race &amp; Competition</span><small>{featuredNews.date} · NRRS · Chase Clinched</small><h3>{featuredNews.title}</h3><p>P4 at Martinsville secured Wispy’s third consecutive NRRS Chase berth and fifth confirmed Chase qualification overall.</p><b>Read the Chase-Clinch Story →</b></a>
         <article class="aw-result-card aw-result-ticket">
           <div class="aw-result-ticket__head"><span>CHECKERED // LATEST RESULT</span><b>{latest.specialTag}</b></div>
           <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>TOP 5</em></div></div>
@@ -144,13 +146,15 @@ const latest=result.latestResult;
   const homeTitle=document.querySelector('[data-home-event-title]');
   const homeMeta=document.querySelector('[data-home-event-meta]');
   const homeLabel=document.querySelector('[data-home-count-label]');
+  const homeState=document.querySelector('[data-home-event-state]');
   const pad=(n)=>String(n).padStart(2,'0');
   const offsetFor=(dateKey)=>{const [y,m,d]=dateKey.split('-').map(Number);const noon=new Date(Date.UTC(y,m-1,d,12));const tz=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset',hour:'2-digit'}).formatToParts(noon).find(p=>p.type==='timeZoneName')?.value||'GMT-4';const match=tz.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/);return match?`${match[1]}${pad(match[2])}:${pad(match[3]||'00')}`:'-04:00';};
   const parseTime=(text)=>{if(!text||text==='Event Window'||text==='TBD'||text==='NO RACE')return{hour:12,minute:0};const match=text.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);if(!match)return{hour:20,minute:0};let hour=Number(match[1]);const minute=Number(match[2]);if(match[3].toUpperCase()==='PM'&&hour!==12)hour+=12;if(match[3].toUpperCase()==='AM'&&hour===12)hour=0;return{hour,minute};};
   const startOf=(event)=>{if(event.league==='iracing'||event.offWeek)return new Date(`${event.date}T00:00:00${offsetFor(event.date)}`);const t=parseTime(event.time);return new Date(`${event.date}T${pad(t.hour)}:${pad(t.minute)}:00${offsetFor(event.date)}`);};
   const endOf=(event)=>{if(event.league==='iracing'||event.offWeek||event.tbd){const key=event.endDate||event.date;return new Date(`${key}T23:59:59${offsetFor(key)}`);}return new Date(startOf(event).getTime()+((event.durationMinutes||90)*60000));};
   const displayDate=(event)=>{if(event.displayDate)return event.displayDate.toUpperCase();const [y,m,d]=event.date.split('-').map(Number);return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();};
-  const updateHomeEvent=()=>{const now=new Date();const upcoming=events.filter(event=>!event.offWeek&&endOf(event)>=now).sort((a,b)=>startOf(a)-startOf(b));const event=upcoming[0];if(!event||!(countdown instanceof HTMLElement))return;homeLeague.textContent=`${event.leagueName} · ${event.status||'Scheduled'}`;homeTitle.textContent=event.title;homeMeta.textContent=`${event.track} · ${displayDate(event)} · ${event.time}`;const start=startOf(event),end=endOf(event);if(now>=start&&now<=end){countdown.textContent='LIVE';countdown.classList.add('is-live');homeLabel.textContent=event.league==='iracing'?'Current iRacing special-event window':'Event currently active';return;}countdown.classList.remove('is-live');const diff=Math.max(0,start-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);countdown.textContent=d>0?`${d}D ${pad(h)}H`:`${pad(h)}H ${pad(m)}M`;homeLabel.textContent='Until next operation';};
+  const selectPrimaryOperation=(items,now=new Date())=>{const candidates=items.filter(event=>!event.offWeek&&endOf(event)>=now);const fixed=candidates.filter(event=>event.league!=='iracing'&&!event.tbd);const live=fixed.filter(event=>now>=startOf(event)&&now<=endOf(event)).sort((a,b)=>startOf(a)-startOf(b));if(live.length)return live[0];const soonLimit=new Date(now.getTime()+36*60*60*1000);const soon=fixed.filter(event=>startOf(event)>now&&startOf(event)<=soonLimit).sort((a,b)=>startOf(a)-startOf(b));if(soon.length)return soon[0];const windows=candidates.filter(event=>event.league==='iracing'&&now>=startOf(event)&&now<=endOf(event)).sort((a,b)=>startOf(a)-startOf(b));if(windows.length)return windows[0];return candidates.filter(event=>startOf(event)>now).sort((a,b)=>startOf(a)-startOf(b))[0]||candidates[0];};
+  const updateHomeEvent=()=>{const now=new Date();const event=selectPrimaryOperation(events,now);if(!event||!(countdown instanceof HTMLElement))return;homeLeague.textContent=`${event.leagueName} · ${event.status||'Scheduled'}`;homeTitle.textContent=event.title;homeMeta.textContent=`${event.track} · ${displayDate(event)} · ${event.time}`;const start=startOf(event),end=endOf(event);if(now>=start&&now<=end){countdown.textContent='LIVE';countdown.classList.add('is-live');if(homeState){homeState.textContent='LIVE';homeState.classList.add('tag--live');}homeLabel.textContent=event.league==='iracing'?'Current iRacing special-event window':'Event currently active';return;}countdown.classList.remove('is-live');if(homeState){homeState.textContent='UPCOMING';homeState.classList.remove('tag--live');}const diff=Math.max(0,start-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);countdown.textContent=d>0?`${d}D ${pad(h)}H`:`${pad(h)}H ${pad(m)}M`;homeLabel.textContent='Until next operation';};
   updateHomeEvent();setInterval(updateHomeEvent,60000);
   const teamBrowser=document.querySelector('[data-team-browser]');
   if(teamBrowser){

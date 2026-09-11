@@ -1,1 +1,7 @@
-Aetherwing eMotorsports v0.4.24 — UARL D2 Sept. 11 start-date correction
+Aetherwing eMotorsports v0.4.25 — Race Control + UARL filtering + driver/news refresh
+- Fixed Race Control priority so imminent fixed-time races outrank active multiday iRacing windows.
+- UARL division subfilters now activate their parent category automatically.
+- Calendar review stamp updated to September 11, 2026.
+- Added UARL Open to Drivers filters.
+- Homepage Latest Updates now features the August 25 Martinsville Chase-clinch story.
+- UARL standings remain awaiting official Season 6 results until the September 11 D2 opener is complete and confirmed.
