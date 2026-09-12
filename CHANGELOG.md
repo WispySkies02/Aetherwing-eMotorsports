@@ -1,3 +1,11 @@
+## v0.4.27 — September 11, 2026
+
+- Postponed the UARL D2 Season 6 opener, The 6th Official Daytona 250, from Friday Sep 11 at 6:45 PM ET to Saturday Sep 12 at 7:00 PM ET.
+- Kept the normal UARL D2 recurring schedule locked to Fridays at 6:45 PM ET for every round after the opener.
+- Added a visible POSTPONED schedule badge for the rescheduled Daytona event.
+- Updated homepage/Schedule Next Operation data, the event share card, and UARL D2 + UARL All league-share snapshots.
+- Bumped league-share cache revision to v54.
+
 ## v0.4.26 — September 11, 2026
 
 - Fixed the mobile/Safari Schedule toolbar showing UARL subfilters outside the UARL filter state.

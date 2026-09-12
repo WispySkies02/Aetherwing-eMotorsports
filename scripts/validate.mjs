@@ -71,9 +71,9 @@ assert(latestResult?.title === 'Pepsi 400' && latestResult?.start === 7 && lates
 
 const d2 = schedule.find((event) => event.id === 'uarl-d2');
 assert(d2?.day === 5 && d2?.time === '18:45', 'Recurring UARL D2 time locked to Friday 6:45 PM ET');
-const d2Event = scheduleEvents.find((event) => event.league === 'uarl-d2' && event.date === '2026-09-11');
-assert(d2Event?.time === '6:45 PM ET' && /Daytona 250/i.test(d2Event?.title || ''), 'September 11 UARL D2 Daytona opener is Friday at 6:45 PM ET');
-assert(scheduleEvents.filter((event) => event.league === 'uarl-d2').every((event) => new Date(`${event.date}T12:00:00Z`).getUTCDay() === 5), 'Every dated UARL D2 event is on Friday');
+const d2Event = scheduleEvents.find((event) => event.league === 'uarl-d2' && /Daytona 250/i.test(event.title || ''));
+assert(d2Event?.date === '2026-09-12' && d2Event?.time === '7:00 PM ET' && d2Event?.specialTag === 'POSTPONED', 'UARL D2 Daytona opener is postponed to Saturday September 12 at 7:00 PM ET');
+assert(scheduleEvents.filter((event) => event.league === 'uarl-d2' && event.title !== 'The 6th Official Daytona 250').every((event) => new Date(`${event.date}T12:00:00Z`).getUTCDay() === 5), 'All UARL D2 rounds after the postponed opener remain on Fridays');
 assert(scheduleEvents.find((event) => event.league === 'uarl-d2' && event.round === 'ROUND 18')?.date === '2027-01-08', 'UARL D2 18-round Friday calendar ends January 8, 2027 after one-week pull-forward');
 const pepsi400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Pepsi 400');
 assert(pepsi400?.round === 'ROUND 19' && pepsi400?.specialTag === 'REGULAR SEASON FINALE', 'NRRS Pepsi 400 is Round 19 and the Regular Season Finale');
@@ -156,13 +156,13 @@ assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
 assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 143 schedule events have v47 share-card images');
-assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=53'), 'Schedule can share the currently selected league');
+assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=54'), 'Schedule can share the currently selected league');
 assert(!schedulePage.includes('navigator.share') && schedulePage.includes('COPY ${selected.label.toUpperCase()} LINK'), 'League share button always copies the URL instead of opening the native share sheet');
 assert(existsSync(resolve(root, 'src/pages/schedule/share/[league].astro')), 'Static league-share route exists for schedule filters');
 const leagueShareRoute = text('src/pages/schedule/share/[league].astro');
 assert(leagueShareRoute.includes('export function getStaticPaths() {\n  const definitions = {'), 'League-share route keeps static-path definitions inside getStaticPaths isolated scope');
-assert(leagueShareRoute.includes('/images/social/leagues/${league}-v53.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v53 next-race cards with race-type badges');
-for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v53.jpg`)), `League share image exists: ${league}`); }
+assert(leagueShareRoute.includes('/images/social/leagues/${league}-v54.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v54 next-race cards with race-type badges');
+for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v54.jpg`)), `League share image exists: ${league}`); }
 assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
@@ -213,6 +213,7 @@ assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division 
 assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
 assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
 assert(homePage.includes('wispy-clinches-nrrs-s3-chase-martinsville') && homePage.includes('Read the Chase-Clinch Story'), 'Homepage Latest Updates features the Martinsville Chase-clinch story');
+assert(homePage.includes('/Daytona 250/i.test(event.title)') && !homePage.includes("event.date==='2026-09-11'"), 'Homepage initial Next Event follows the Daytona 250 identity instead of the obsolete Sep 11 date');
 const chaseStory = news.find((story) => story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville');
 assert(chaseStory?.category === 'Race & Competition', 'Martinsville Chase-clinch story uses Race & Competition category');
 // v0.4.26 mobile Schedule cockpit guards
@@ -220,5 +221,7 @@ const scheduleCss = text('src/styles/pages/schedule.css');
 assert(scheduleCss.includes('.aw-subfilter-row[hidden]{display:none!important}'), 'Schedule CSS forces hidden UARL subfilters off on Safari/mobile');
 assert(scheduleCss.includes('v0.4.26 — compact mobile schedule filter cockpit'), 'Schedule includes compact mobile filter cockpit overrides');
 assert(schedulePage.includes("compact ? '⧉ COPY LINK'"), 'Mobile league-share control uses compact copy-link text');
+// v0.4.27 UARL D2 Daytona postponement guard
+assert(schedulePage.includes("kind:'postponed',label:'Postponed'"), 'Schedule renders a Postponed criteria badge when an event is rescheduled');
 
 console.log('\nAetherwing locked-fact validation passed.');

@@ -12,7 +12,7 @@ Structured migration:
 - 1 Kmart off-week marker
 - 62 track-location weather targets
 - 20 short-name track aliases
-- UARL D2 runs Fridays at 6:45 PM ET
+- UARL D2 runs Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday Sep 12, 2026 at 7:00 PM ET
 - Kmart/Sunoco remain StarClutch Racing alliance competition
 
 Preserved behavior:

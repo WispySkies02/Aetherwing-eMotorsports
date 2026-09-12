@@ -10,7 +10,7 @@ import news from '../data/news.json';
 import '../styles/pages/home.css';
 const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
-const liveEvent=events.find((event)=>event.league==='uarl-d2' && event.date==='2026-09-11') ?? events[0];
+const liveEvent=events.find((event)=>event.league==='uarl-d2' && /Daytona 250/i.test(event.title)) ?? events[0];
 const latest=result.latestResult;
 const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase-martinsville') ?? news[0];
 ---

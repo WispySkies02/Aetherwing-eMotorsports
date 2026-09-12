@@ -31,6 +31,7 @@ const eventCriteria = (event) => {
   const title = String(event.title || '');
   if (/dash4cash/i.test(special)) tags.push({kind:/qualifier/i.test(special)?'d4cqual':'d4c',label:/qualifier/i.test(special)?'D4C Qualifier':'Dash4Cash'});
   if (/regular season finale/i.test(special)) tags.push({kind:'finale',label:'Regular Season Finale'});
+  if (/postponed/i.test(special)) tags.push({kind:'postponed',label:'Postponed'});
   if (status.includes('the chase') || status === 'chase') tags.push({kind:'chase',label:'The Chase'});
   if (status.includes('championship')) tags.push({kind:'championship',label:'Championship'});
   if (status.includes('all-star')) tags.push({kind:'allstar',label:'All-Star'});
@@ -465,7 +466,7 @@ const displayDate = (event) => {
   leagueShareButton?.addEventListener('click', async () => {
     const selected = selectedShareLeague();
     if (!selected) { announceShare('Select a league first'); return; }
-    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=53`;
+    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=54`;
     await copyText(url);
     announceShare(`${selected.label} link copied`);
   });

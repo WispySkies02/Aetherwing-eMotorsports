@@ -1,6 +1,5 @@
-Aetherwing eMotorsports v0.4.26 — compact mobile Schedule filter cockpit
-- Fixed Safari/mobile hidden-state bug that exposed UARL subfilters while non-UARL filters were active.
-- UARL subfilters now render only while the UARL parent/division filter is active.
-- Compressed the mobile League Share row into a one-line control and shortened its mobile button copy.
-- Reduced mobile toolbar padding, button height, borders and shadow while preserving horizontal swipe filters.
-- Desktop Schedule filtering and sharing remain unchanged.
+Aetherwing eMotorsports v0.4.27 — UARL D2 Daytona postponement
+- The 6th Official Daytona 250 moved to Saturday, September 12, 2026 at 7:00 PM ET.
+- All later UARL D2 rounds remain Fridays at 6:45 PM ET.
+- Schedule/Race Control and homepage Next Event now follow the rescheduled race.
+- Added POSTPONED event treatment and refreshed UARL league-share embeds to v54.

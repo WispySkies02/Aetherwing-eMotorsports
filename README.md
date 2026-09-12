@@ -1,4 +1,5 @@
-Current build: v0.4.26
+Current build: v0.4.27
+- UARL D2 recurring race night remains Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday, September 12, 2026 at 7:00 PM ET.
 
 ## Paint Booth host
 
@@ -10,6 +11,13 @@ As of 0.4.0 the production Paint Booth is a dedicated application at `https://pa
 Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 ## Status
+
+
+**v0.4.27 — UARL D2 Daytona 250 Postponement**
+- The 6th Official Daytona 250 is now Saturday, September 12, 2026 at 7:00 PM ET.
+- This is a one-race postponement; the normal D2 schedule remains Fridays at 6:45 PM ET afterward.
+- Race Control, homepage Next Event, event share card, and UARL league-share cards were refreshed.
+- League-share cache revision is v54.
 
 
 **v0.4.26 — Compact Mobile Schedule Filter Cockpit**
