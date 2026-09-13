@@ -1,14 +1,22 @@
-# v0.4.29 — UARL D2 Daytona Team Run
+# v0.4.32 — NRRS PT/Development Charter Correction
 
-- Recorded the official UARL D2 Cracker Barrel 250 team run at Daytona on September 12, 2026.
-- Aetherwing results: #19 Rocky P1, #54 Dale P2, #62 Wispy P4.
-- Qualifying: Dale P1, Rocky P2, Wispy P4. Both stages: Rocky P2, Dale P3, Wispy P4.
-- All three drivers were non-FT D2 entries, so no D2 driver points were awarded.
-- Promoted the homepage and Wins & History Latest Result treatment to a three-car Latest Team Run recap.
-- Rocky's victory becomes Aetherwing's 28th verified team win.
-- Marked UARL Season 6 as D2-active without inventing standings rows; D1 and Open still await their openers.
-- Updated the D2 opener's official race title to The Cracker Barrel 250 while preserving the September 12 postponement history.
-- Refreshed the UARL D2 and UARL All next-five social cards and bumped league-share cache revision to v55.
+- Corrected the NRRS Aetherwing Part-Time / Development Charter from the erroneous #64 to **#62**.
+- Aetherwing now uses **#62 as the Part-Time / Development Charter in NRRS, UARL D1, and UARL D2**.
+- There is no Aetherwing #64 charter.
+- Added validation that rejects any #64 charter assignment and requires #62 in all three programs.
+
+# v0.4.31 — Authoritative charter assignments
+
+- Split the Drivers-page charter board into separate NRRS, UARL D1, and UARL D2 allocations.
+- NRRS FT: #32 Wispy, #43 Plarker, #54 Open; #62 Part-Time / Development Charter.
+- UARL D1 FT: #28 Wispy, #32 Open, #54 Open, #92 Rocky; #62 Part-Time / Development Charter.
+- UARL D2 FT: #11 BurgerTown2Good, #19 Gk3r, #28 Open, #54 Open; #62 Part-Time / Development Charter.
+- Full-time charters now display assigned drivers, while vacant FT charters display OPEN.
+- PT / Development charters are driver-neutral and no longer display a permanent driver name.
+- Updated visible competition rosters on the homepage and Mission & Values page to match the charter board.
+- Updated #43 display name from Parker to Plarker across the active main-site roster.
+- Kept Wispy's current #62 UARL D2 program entry as Part-Time without presenting Wispy as permanently assigned to the PT / Development charter.
+- Built from v0.4.28 so the unrelated v0.4.29 race-result changes remain excluded.
 
 # v0.4.28 — Charter board refresh
 

@@ -55,7 +55,7 @@ assert(news.every((story) => Array.isArray(story.sections) && story.sections.len
 
 assert(site.competitionRelationships === 7, 'Seven competition relationships');
 assert(site.featuredPartners === 2 && partners.filter((p) => p.featured).length === 2, 'Exactly two featured partners');
-assert(site.verifiedWins === 28 && wins.length === 28, '28 verified Aetherwing wins and 28 history rows');
+assert(site.verifiedWins === 27 && wins.length === 27, '27 verified Aetherwing wins and 27 history rows');
 assert(site.activeRoRacingDrivers === 10 && roster.length === 10, 'Ten current RoRacing driver profiles');
 assert(site.aetherwingDrivers === 5 && site.allianceOnlyDrivers === 5, 'Drivers split is five Aetherwing / five alliance-only');
 assert(competitions.length === 7, 'Competition data contains seven relationships');
@@ -68,15 +68,13 @@ assert(leadership.some((p) => p.name === 'Callornot' && p.roles.includes('Team P
 
 const results = json('results.json');
 const latestResult = results.latestResult;
-const latestTeamRun = results.latestTeamRun;
-assert(latestResult?.title === 'Pepsi 400' && latestResult?.start === 7 && latestResult?.stage2?.finish === 4 && latestResult?.finish === 4, 'Previous NRRS result remains Pepsi 400: P7 start, P4 Stage 2, P4 finish');
-assert(latestTeamRun?.title === 'The Cracker Barrel 250' && latestTeamRun?.entries?.length === 3 && latestTeamRun.entries[0]?.driver === 'Rocky' && latestTeamRun.entries[0]?.finish === 1 && latestTeamRun.entries[1]?.driver === 'Dale' && latestTeamRun.entries[1]?.finish === 2 && latestTeamRun.entries[2]?.driver === 'Wispy' && latestTeamRun.entries[2]?.finish === 4 && latestTeamRun.entries.every((entry) => entry.pointsEligible === false), 'Latest team run is UARL D2 Cracker Barrel 250: Rocky P1, Dale P2, Wispy P4; all non-FT/no points');
+assert(latestResult?.title === 'Pepsi 400' && latestResult?.start === 7 && latestResult?.stage2?.finish === 4 && latestResult?.finish === 4, 'Latest NRRS result is Pepsi 400: P7 start, P4 Stage 2, P4 finish');
 
 const d2 = schedule.find((event) => event.id === 'uarl-d2');
 assert(d2?.day === 5 && d2?.time === '18:45', 'Recurring UARL D2 time locked to Friday 6:45 PM ET');
-const d2Event = scheduleEvents.find((event) => event.league === 'uarl-d2' && event.round === 'ROUND 1');
-assert(d2Event?.title === 'The Cracker Barrel 250' && d2Event?.date === '2026-09-12' && d2Event?.time === '7:00 PM ET' && d2Event?.specialTag === 'POSTPONED', 'UARL D2 Cracker Barrel 250 opener is recorded on Saturday September 12 at 7:00 PM ET after postponement');
-assert(scheduleEvents.filter((event) => event.league === 'uarl-d2' && event.round !== 'ROUND 1').every((event) => new Date(`${event.date}T12:00:00Z`).getUTCDay() === 5), 'All UARL D2 rounds after the postponed opener remain on Fridays');
+const d2Event = scheduleEvents.find((event) => event.league === 'uarl-d2' && /Daytona 250/i.test(event.title || ''));
+assert(d2Event?.date === '2026-09-12' && d2Event?.time === '7:00 PM ET' && d2Event?.specialTag === 'POSTPONED', 'UARL D2 Daytona opener is postponed to Saturday September 12 at 7:00 PM ET');
+assert(scheduleEvents.filter((event) => event.league === 'uarl-d2' && event.title !== 'The 6th Official Daytona 250').every((event) => new Date(`${event.date}T12:00:00Z`).getUTCDay() === 5), 'All UARL D2 rounds after the postponed opener remain on Fridays');
 assert(scheduleEvents.find((event) => event.league === 'uarl-d2' && event.round === 'ROUND 18')?.date === '2027-01-08', 'UARL D2 18-round Friday calendar ends January 8, 2027 after one-week pull-forward');
 const pepsi400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Pepsi 400');
 assert(pepsi400?.round === 'ROUND 19' && pepsi400?.specialTag === 'REGULAR SEASON FINALE', 'NRRS Pepsi 400 is Round 19 and the Regular Season Finale');
@@ -93,7 +91,7 @@ assert(nrrsStanding?.rows?.[0]?.driver === 'Wispy' && nrrsStanding.rows[0].posit
 assert(kmartStanding?.rows?.length === 3 && kmartStanding.rows[0].driver === 'Jaxon' && kmartStanding.rows[0].position === 'P1' && kmartStanding.rows[1].driver === 'Will' && kmartStanding.rows[1].position === 'P2' && kmartStanding.rows[2].driver === 'Wispy' && kmartStanding.rows[2].position === 'P4', 'Kmart standings positions: Jaxon P1, Will P2, Wispy P4');
 assert(kmartStanding?.ptEntry?.number === '29' && kmartStanding.ptEntry.status === 'NOT CHASE ELIGIBLE' && kmartStanding.ptEntry.drivers?.[0]?.driver === 'Clutch' && kmartStanding.ptEntry.drivers[0].points === 135 && kmartStanding.ptEntry.drivers[1].driver === 'Eazy' && kmartStanding.ptEntry.drivers[1].points === 59 && kmartStanding.ptEntry.drivers[2].driver === 'Matty' && kmartStanding.ptEntry.drivers[2].points === 58, 'Kmart #29 SCR PT car points and Chase ineligibility');
 assert(sunocoStanding?.rows?.length === 4 && sunocoStanding.rows[0].driver === 'Will' && sunocoStanding.rows[0].position === 'P1' && sunocoStanding.rows[0].chaseStatus === 'CHASE' && sunocoStanding.rows[1].driver === 'Clutch' && sunocoStanding.rows[1].position === 'P2' && sunocoStanding.rows[1].chaseStatus === 'CHASE' && sunocoStanding.rows[2].driver === 'Eazy' && sunocoStanding.rows[2].position === 'P4' && sunocoStanding.rows[2].chaseStatus === 'CHASE' && sunocoStanding.rows[3].driver === 'Wispy' && sunocoStanding.rows[3].position === 'P10' && sunocoStanding.rows[3].chaseStatus === 'NOT IN CHASE', 'Sunoco positions and Chase status: Will P1, Clutch P2, Eazy P4, Wispy P10');
-assert(uarlStanding?.status === 'D2 ACTIVE' && uarlStanding?.rows?.length === 0 && /non-FT/i.test(uarlStanding?.emptyMessage || ''), 'UARL Season 6 is active after D2 Round 1, with no Aetherwing D2 driver points for the non-FT opener entries');
+assert(uarlStanding?.rows?.length === 0 && /Awaiting the start of Season 6/i.test(uarlStanding?.emptyMessage || ''), 'UARL standings remain awaiting Season 6');
 
 const nrrsClash = scheduleEvents.find((event) => event.league === 'nrrs' && /Clash at the Coliseum/i.test(event.title));
 const nrrsAllStar = scheduleEvents.find((event) => event.league === 'nrrs' && /All-Star Race/i.test(event.title));
@@ -159,13 +157,13 @@ assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
 assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 143 schedule events have v47 share-card images');
-assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=55'), 'Schedule can share the currently selected league');
+assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=54'), 'Schedule can share the currently selected league');
 assert(!schedulePage.includes('navigator.share') && schedulePage.includes('COPY ${selected.label.toUpperCase()} LINK'), 'League share button always copies the URL instead of opening the native share sheet');
 assert(existsSync(resolve(root, 'src/pages/schedule/share/[league].astro')), 'Static league-share route exists for schedule filters');
 const leagueShareRoute = text('src/pages/schedule/share/[league].astro');
 assert(leagueShareRoute.includes('export function getStaticPaths() {\n  const definitions = {'), 'League-share route keeps static-path definitions inside getStaticPaths isolated scope');
-assert(leagueShareRoute.includes('/images/social/leagues/${league}-v55.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v55 next-race cards with race-type badges');
-for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v55.jpg`)), `League share image exists: ${league}`); }
+assert(leagueShareRoute.includes('/images/social/leagues/${league}-v54.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v54 next-race cards with race-type badges');
+for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v54.jpg`)), `League share image exists: ${league}`); }
 assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
@@ -180,12 +178,20 @@ assert(baseLayout.includes('preconnect" href="https://i.ibb.co'), 'Global shell 
 const driversPage = text('src/pages/drivers/index.astro');
 assert(driversPage.includes('aw-driver-num') && driversPage.includes('numberParts'), 'Drivers page uses split multi-number rendering for Wispy and other multi-program drivers');
 assert(driversPage.includes('Aetherwing Charter Board') && driversPage.includes('data-charter-group'), 'Drivers page includes the Aetherwing Charter Board');
-const nrrsD1Charters = charters.find((group) => group.id === 'nrrs-uarl-d1');
+const nrrsCharters = charters.find((group) => group.id === 'nrrs');
+const d1Charters = charters.find((group) => group.id === 'uarl-d1');
 const d2Charters = charters.find((group) => group.id === 'uarl-d2');
-assert(JSON.stringify(nrrsD1Charters?.fullTime) === JSON.stringify(['28','32','54','92']) && JSON.stringify(nrrsD1Charters?.development) === JSON.stringify(['62']), 'NRRS + UARL D1 charters are #28, #32, #54, #92 with #62 PT/Development');
-assert(JSON.stringify(d2Charters?.fullTime) === JSON.stringify(['11','19','28','54']) && JSON.stringify(d2Charters?.development) === JSON.stringify(['62']), 'UARL D2 charters are #11, #19, #28, #54 with #62 PT/Development');
+assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Wispy'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && JSON.stringify(nrrsCharters?.development) === JSON.stringify([{number:'62',label:'Part-Time / Development Charter'}]), 'NRRS charter assignments: #32 Wispy, #43 Plarker, #54 Open, #62 PT/Development');
+assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Wispy'},{number:'32',driver:'Open'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && JSON.stringify(d1Charters?.development) === JSON.stringify([{number:'62',label:'Part-Time / Development Charter'}]), 'UARL D1 charter assignments: #28 Wispy, #32/#54 Open, #92 Rocky, #62 PT/Development');
+assert(JSON.stringify(d2Charters?.fullTime) === JSON.stringify([{number:'11',driver:'BurgerTown2Good'},{number:'19',driver:'Gk3r'},{number:'28',driver:'Open'},{number:'54',driver:'Open'}]) && JSON.stringify(d2Charters?.development) === JSON.stringify([{number:'62',label:'Part-Time / Development Charter'}]), 'UARL D2 charter assignments: #11 BurgerTown2Good, #19 Gk3r, #28/#54 Open, #62 PT/Development');
+assert([nrrsCharters,d1Charters,d2Charters].every((entry) => entry?.development?.length === 1 && entry.development[0]?.number === '62'), 'All Aetherwing PT/Development charters must use #62');
+assert(!JSON.stringify(charters).includes('\"64\"'), 'No Aetherwing #64 charter may exist');
+assert(charters.every((group) => group.development.every((entry) => !('driver' in entry))), 'PT / Development charters remain driver-neutral');
 const wispyD2Entry = drivers.find((entry) => entry.id === 'wispy-uarl-d2');
-assert(wispyD2Entry?.number === '62' && /PT \/ Development/i.test(wispyD2Entry?.status || ''), 'Wispy UARL D2 contextual entry is #62 PT / Development');
+assert(wispyD2Entry?.number === '62' && wispyD2Entry?.status === 'Part-Time', 'Wispy UARL D2 program entry remains #62 Part-Time without a permanent charter assignment label');
+assert(roster.find((entry) => entry.slug === 'parker')?.name === 'Plarker', '#43 NRRS driver displays as Plarker');
+assert(competitions.find((entry) => entry.id === 'nrrs')?.roster?.includes('#62 PART-TIME / DEVELOPMENT CHARTER'), 'Homepage/mission NRRS roster includes driver-neutral #62 PT/Development charter');
+assert(competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.includes('#62 PART-TIME / DEVELOPMENT CHARTER') && competitions.find((entry) => entry.id === 'uarl-d2')?.roster?.includes('#62 PART-TIME / DEVELOPMENT CHARTER'), 'UARL D1/D2 visible rosters include driver-neutral #62 PT/Development charters');
 
 
 const newsIndex = text('src/pages/news/index.astro');
@@ -217,13 +223,13 @@ if (process.exitCode) {
 
 // v0.4.25 regression guards
 const homePage = text('src/pages/index.astro');
-assert(schedulePage.includes('SEP 12') && schedulePage.includes('September 12, 2026'), 'Schedule review stamp is September 12, 2026');
+assert(schedulePage.includes('SEP 11') && schedulePage.includes('September 11, 2026'), 'Schedule review stamp is September 11, 2026');
 assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.includes("event.league === 'iracing'"), 'Schedule Next Operation uses fixed-race priority over active iRacing windows');
 assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
 assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
 assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
 assert(homePage.includes('wispy-clinches-nrrs-s3-chase-martinsville') && homePage.includes('Read the Chase-Clinch Story'), 'Homepage Latest Updates features the Martinsville Chase-clinch story');
-assert(homePage.includes("event.league==='open' && event.date==='2026-09-13'"), 'Homepage initial Next Event now points beyond the completed D2 opener to the September 13 UARL Open race');
+assert(homePage.includes('/Daytona 250/i.test(event.title)') && !homePage.includes("event.date==='2026-09-11'"), 'Homepage initial Next Event follows the Daytona 250 identity instead of the obsolete Sep 11 date');
 const chaseStory = news.find((story) => story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville');
 assert(chaseStory?.category === 'Race & Competition', 'Martinsville Chase-clinch story uses Race & Competition category');
 // v0.4.26 mobile Schedule cockpit guards
@@ -233,11 +239,5 @@ assert(scheduleCss.includes('v0.4.26 — compact mobile schedule filter cockpit'
 assert(schedulePage.includes("compact ? '⧉ COPY LINK'"), 'Mobile league-share control uses compact copy-link text');
 // v0.4.27 UARL D2 Daytona postponement guard
 assert(schedulePage.includes("kind:'postponed',label:'Postponed'"), 'Schedule renders a Postponed criteria badge when an event is rescheduled');
-// v0.4.29 UARL D2 Daytona team-result guards
-assert(wins.at(-1)?.league === 'UARL D2' && wins.at(-1)?.driver === 'Rocky' && wins.at(-1)?.date === 'Sep 12, 2026', 'Rocky Daytona UARL D2 win is the 28th verified Aetherwing win');
-assert(homePage.includes('CHECKERED // LATEST TEAM RUN') && homePage.includes('latestTeamRun.entries.map'), 'Homepage Latest Result module is now a three-car Latest Team Run card');
-const historyPage = text('src/pages/wins-history/index.astro');
-assert(historyPage.includes('Latest Team Run') && historyPage.includes('0 · NON-FT') && historyPage.includes('Rocky') && historyPage.includes('Dale'), 'Wins & History shows the full UARL D2 team recap with no-points eligibility note');
-assert(d2Event?.resultSummary?.includes('Rocky P1') && d2Event.resultSummary.includes('no D2 driver points'), 'D2 opener schedule entry stores the official Aetherwing team result summary');
 
 console.log('\nAetherwing locked-fact validation passed.');

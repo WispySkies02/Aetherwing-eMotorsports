@@ -1,12 +1,13 @@
-Aetherwing v0.4.29 FULL
+AETHERWING v0.4.32 PATCH
+- Corrected NRRS PT/Development charter to #62. There is no #64 charter.
 
-UARL D2 Daytona latest-team-run update:
-- Event: The Cracker Barrel 250 at Daytona International Speedway
-- #19 Rocky: Q P2 / Stage 1 P2 / Stage 2 P2 / Finish P1
-- #54 Dale: Q P1 / Stage 1 P3 / Stage 2 P3 / Finish P2
-- #62 Wispy: Q P4 / Stage 1 P4 / Stage 2 P4 / Finish P4
-- All three entries were non-FT D2 entries and received 0 D2 driver points.
-- Rocky's win raises the verified Aetherwing team-win total from 27 to 28.
-- UARL Season 6 is now D2-active; D1 and Open remain awaiting their Sep 13 openers.
-- Homepage and Wins & History now use a multi-car Latest Team Run recap.
-- League-share cards bumped to v55; the completed Daytona opener no longer appears in next-five UARL D2/UARL All previews.
+Aetherwing eMotorsports v0.4.31 — authoritative charter assignments
+
+Drivers / charter board:
+- NRRS FT: #32 Wispy, #43 Plarker, #54 Open; #62 Part-Time / Development Charter.
+- UARL D1 FT: #28 Wispy, #32 Open, #54 Open, #92 Rocky; #62 Part-Time / Development Charter.
+- UARL D2 FT: #11 BurgerTown2Good, #19 Gk3r, #28 Open, #54 Open; #62 Part-Time / Development Charter.
+- FT charters show assigned drivers; vacant FT seats show OPEN.
+- PT / Development charters remain driver-neutral and never permanently display a driver assignment.
+- Wispy remains a current part-time UARL D2 entrant in #62 on the individual program map, without being labeled as the permanent PT/Development charter driver.
+- This build is based on v0.4.28; the unrelated v0.4.29 race-result change is intentionally not carried forward.

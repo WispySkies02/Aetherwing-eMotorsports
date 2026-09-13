@@ -588,12 +588,11 @@
     "league": "uarl-d2",
     "leagueName": "NFFF Grand National",
     "status": "Regular Season",
-    "title": "The Cracker Barrel 250",
+    "title": "The 6th Official Daytona 250",
     "track": "Daytona International Speedway",
     "time": "7:00 PM ET",
     "round": "ROUND 1",
-    "specialTag": "POSTPONED",
-    "resultSummary": "Rocky P1 \u00b7 Dale P2 \u00b7 Wispy P4 \u00b7 all three non-FT / no D2 driver points"
+    "specialTag": "POSTPONED"
   },
   {
     "date": "2026-09-18",

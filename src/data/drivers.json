@@ -6,17 +6,17 @@
     "number": "32",
     "competition": "NRRS",
     "competitionId": "nrrs",
-    "status": "Active",
+    "status": "Full-Time",
     "affiliation": "aetherwing"
   },
   {
     "id": "parker-nrrs",
     "profile": "parker",
-    "displayName": "Parker",
+    "displayName": "Plarker",
     "number": "43",
     "competition": "NRRS",
     "competitionId": "nrrs",
-    "status": "Active",
+    "status": "Full-Time",
     "affiliation": "aetherwing"
   },
   {
@@ -47,7 +47,7 @@
     "number": "11",
     "competition": "UARL Division 2",
     "competitionId": "uarl-d2",
-    "status": "Active",
+    "status": "Full-Time",
     "affiliation": "aetherwing"
   },
   {
@@ -58,7 +58,7 @@
     "number": "19",
     "competition": "UARL Division 2",
     "competitionId": "uarl-d2",
-    "status": "Active",
+    "status": "Full-Time",
     "affiliation": "aetherwing"
   },
   {
@@ -69,7 +69,7 @@
     "number": "62",
     "competition": "UARL Division 2",
     "competitionId": "uarl-d2",
-    "status": "Aetherwing PT / Development",
+    "status": "Part-Time",
     "affiliation": "aetherwing"
   },
   {

@@ -35,43 +35,5 @@
       "finish": 4
     },
     "finish": 4
-  },
-  "latestTeamRun": {
-    "series": "UARL D2 \u00b7 NFFF Grand National",
-    "title": "The Cracker Barrel 250",
-    "track": "Daytona International Speedway",
-    "date": "September 12, 2026",
-    "round": "Round 1",
-    "specialTag": "D2 OPENER",
-    "pointsNote": "NON-FT ENTRIES \u00b7 NO D2 POINTS",
-    "entries": [
-      {
-        "driver": "Rocky",
-        "number": "19",
-        "qualifying": 2,
-        "stage1": 2,
-        "stage2": 2,
-        "finish": 1,
-        "pointsEligible": false
-      },
-      {
-        "driver": "Dale",
-        "number": "54",
-        "qualifying": 1,
-        "stage1": 3,
-        "stage2": 3,
-        "finish": 2,
-        "pointsEligible": false
-      },
-      {
-        "driver": "Wispy",
-        "number": "62",
-        "qualifying": 4,
-        "stage1": 4,
-        "stage2": 4,
-        "finish": 4,
-        "pointsEligible": false
-      }
-    ]
   }
 }

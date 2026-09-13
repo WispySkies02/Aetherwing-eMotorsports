@@ -107,11 +107,11 @@
   },
   {
     "id": "uarl",
-    "title": "UARL \u00b7 Season 6",
-    "subtitle": "After D2 Round 1 \u00b7 D1/Open Awaiting Openers",
+    "title": "UARL \u00b7 All Three Divisions",
+    "subtitle": "Season 6",
     "league": "uarl",
-    "status": "D2 ACTIVE",
-    "emptyMessage": "D2 opener complete \u2014 Aetherwing entries were non-FT and received no D2 driver points.",
+    "status": "AWAITING START",
+    "emptyMessage": "Awaiting the start of Season 6",
     "rows": []
   }
 ]

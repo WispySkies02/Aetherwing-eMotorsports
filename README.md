@@ -1,5 +1,11 @@
-Current build: v0.4.29
-- UARL D2 recurring race night remains Fridays at 6:45 PM ET. The postponed Sep 12 opener is complete: Rocky won The Cracker Barrel 250 at Daytona, with Dale P2 and Wispy P4; all three were non-FT and received no D2 driver points.
+**v0.4.31 — Authoritative Charter Assignments**
+- NRRS: #32 Wispy, #43 Plarker, #54 Open; #62 Part-Time / Development Charter.
+- UARL D1: #28 Wispy, #32 Open, #54 Open, #92 Rocky; #62 Part-Time / Development Charter.
+- UARL D2: #11 BurgerTown2Good, #19 Gk3r, #28 Open, #54 Open; #62 Part-Time / Development Charter.
+- FT charters carry assigned driver names; PT / Development charters remain driver-neutral.
+
+Current build: v0.4.27
+- UARL D2 recurring race night remains Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday, September 12, 2026 at 7:00 PM ET.
 
 ## Paint Booth host
 
@@ -12,14 +18,6 @@ Custom Astro rebuild of the Aetherwing eMotorsports main website.
 
 ## Status
 
-
-**v0.4.29 — UARL D2 Daytona Team Run**
-- Latest Team Run: #19 Rocky P1, #54 Dale P2, #62 Wispy P4 in The Cracker Barrel 250 at Daytona.
-- Dale qualified P1; Rocky P2; Wispy P4. Stage 1 and Stage 2 were Rocky P2, Dale P3, Wispy P4.
-- All three entries were non-FT D2 entries and received no D2 driver points.
-- Aetherwing verified team wins increased to 28.
-- UARL Season 6 is now D2-active; D1 and Open still await their Sep 13 openers.
-- League-share cards use v55, with the completed Daytona opener removed from the next-five D2/UARL-All previews.
 
 **v0.4.27 — UARL D2 Daytona 250 Postponement**
 - The 6th Official Daytona 250 is now Saturday, September 12, 2026 at 7:00 PM ET.
@@ -107,7 +105,7 @@ For projects where Netlify displays its platform badge, disable it in **Project 
 - Paint Booth: full-height industrial paint facility, dedicated mobile bay/control layout, complete 35-paint ALL rack plus Wispy identity filter, permanent seven-garage rail with source paint counts, current-driver stall wall with READY/PENDING states, iPhone Garage → Driver → Paint picker, five near-car lighting presets, previous/next/random loading, prioritized active-render loading, exact paint deep links, archive search/filtering, lightbox, Scheme ID copy, and Paint Share URL copy
 - Partners: featured relationship profiles and expandable livery-brand portfolios kept separate from actual partnerships
 - News: editorial filtering/search and standalone story routes with page-specific metadata
-- Wins & History: filterable 28-win record book, milestones, and organization timeline
+- Wins & History: filterable 27-win record book, milestones, and organization timeline
 - Mission / Handbook / Contact: editorial, expandable, and purpose-driven layouts rather than repeated Squarespace cards
 
 ## Migration workflow

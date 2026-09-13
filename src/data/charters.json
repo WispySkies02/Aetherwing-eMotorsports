@@ -1,16 +1,85 @@
 [
   {
-    "id": "nrrs-uarl-d1",
-    "label": "NRRS + UARL D1",
-    "seriesNote": "Aetherwing charter pool",
-    "fullTime": ["28", "32", "54", "92"],
-    "development": ["62"]
+    "id": "nrrs",
+    "label": "NRRS",
+    "seriesNote": "Aetherwing charter allocation",
+    "fullTime": [
+      {
+        "number": "32",
+        "driver": "Wispy"
+      },
+      {
+        "number": "43",
+        "driver": "Plarker"
+      },
+      {
+        "number": "54",
+        "driver": "Open"
+      }
+    ],
+    "development": [
+      {
+        "number": "62",
+        "label": "Part-Time / Development Charter"
+      }
+    ]
+  },
+  {
+    "id": "uarl-d1",
+    "label": "UARL D1",
+    "seriesNote": "Aetherwing charter allocation",
+    "fullTime": [
+      {
+        "number": "28",
+        "driver": "Wispy"
+      },
+      {
+        "number": "32",
+        "driver": "Open"
+      },
+      {
+        "number": "54",
+        "driver": "Open"
+      },
+      {
+        "number": "92",
+        "driver": "Rocky"
+      }
+    ],
+    "development": [
+      {
+        "number": "62",
+        "label": "Part-Time / Development Charter"
+      }
+    ]
   },
   {
     "id": "uarl-d2",
     "label": "UARL D2",
-    "seriesNote": "Aetherwing charter pool",
-    "fullTime": ["11", "19", "28", "54"],
-    "development": ["62"]
+    "seriesNote": "Aetherwing charter allocation",
+    "fullTime": [
+      {
+        "number": "11",
+        "driver": "BurgerTown2Good"
+      },
+      {
+        "number": "19",
+        "driver": "Gk3r"
+      },
+      {
+        "number": "28",
+        "driver": "Open"
+      },
+      {
+        "number": "54",
+        "driver": "Open"
+      }
+    ],
+    "development": [
+      {
+        "number": "62",
+        "label": "Part-Time / Development Charter"
+      }
+    ]
   }
 ]

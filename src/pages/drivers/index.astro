@@ -26,13 +26,13 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
       <section class="aw-charter-board" aria-labelledby="charter-board-title">
         <div class="aw-charter-board__head">
           <div><span class="eyebrow">2026 Charter Allocation</span><h2 id="charter-board-title">Aetherwing Charter Board</h2></div>
-          <p>Current Aetherwing entry numbers. Full-time charters and the shared PT / Development charter are tracked separately from individual driver assignments below.</p>
+          <p>Full-time charters show their season-long driver assignment. Open full-time seats stay marked OPEN, while PT / Development charters remain driver-neutral so rotating entries are never presented as permanent assignments.</p>
         </div>
         <div class="aw-charter-grid">
           {charters.map((group)=><article class="aw-charter-card" data-charter-group={group.id}>
             <div class="aw-charter-card__title"><span>{group.seriesNote}</span><h3>{group.label}</h3></div>
-            <div class="aw-charter-row"><span>Full-Time</span><div>{group.fullTime.map((number)=><b>#{number}</b>)}</div></div>
-            <div class="aw-charter-row aw-charter-row--development"><span>PT / Development</span><div>{group.development.map((number)=><b>#{number}</b>)}</div></div>
+            <div class="aw-charter-row"><span>Full-Time</span><div class="aw-charter-assignments">{group.fullTime.map((entry)=><div class:list={["aw-charter-assignment",{"is-open":entry.driver==="Open"}]}><b>#{entry.number}</b><small>{entry.driver}</small></div>)}</div></div>
+            <div class="aw-charter-row aw-charter-row--development"><span>PT / Development</span><div class="aw-charter-assignments">{group.development.map((entry)=><div class="aw-charter-assignment aw-charter-assignment--development"><b>#{entry.number}</b><small>{entry.label}</small></div>)}</div></div>
           </article>)}
         </div>
       </section>

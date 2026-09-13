@@ -14,17 +14,23 @@
 .aw-charter-board__head .eyebrow{display:block;margin-bottom:.25rem;color:var(--aw-blue);font:900 .72rem/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase}
 .aw-charter-board__head h2{margin:0;font:900 clamp(1.55rem,3vw,2.5rem)/.92 var(--font-condensed);text-transform:uppercase}
 .aw-charter-board__head p{margin:0;color:#a6a6a6;font-size:.9rem;line-height:1.45}
-.aw-charter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.aw-charter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
 .aw-charter-card{position:relative;overflow:hidden;padding:.9rem;border:1px solid #333;background:#060606}
 .aw-charter-card::after{content:'CHARTER';position:absolute;right:-.05em;bottom:-.22em;color:rgba(255,255,255,.035);font:900 4rem/1 var(--font-condensed);letter-spacing:-.04em;pointer-events:none}
 .aw-charter-card>*{position:relative;z-index:1}
 .aw-charter-card__title{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;margin-bottom:.75rem}
 .aw-charter-card__title span{color:#666;font:900 .62rem/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
 .aw-charter-card__title h3{margin:0;color:#fff;font:900 1.35rem/1 var(--font-condensed);text-transform:uppercase;text-align:right}
-.aw-charter-row{display:grid;grid-template-columns:130px minmax(0,1fr);gap:.65rem;align-items:center;padding:.65rem 0;border-top:1px solid #232323}
+.aw-charter-row{display:grid;grid-template-columns:112px minmax(0,1fr);gap:.65rem;align-items:start;padding:.65rem 0;border-top:1px solid #232323}
 .aw-charter-row>span{color:#898989;font:900 .68rem/1.15 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}
-.aw-charter-row>div{display:flex;justify-content:flex-end;gap:.35rem;flex-wrap:wrap}
-.aw-charter-row b{display:grid;place-items:center;min-width:48px;min-height:38px;padding:.25rem .48rem;border:1px solid #3d3d3d;background:#0d0d0d;color:#fff;font:900 1.35rem/1 var(--font-condensed)}
-.aw-charter-row--development b{border-color:var(--aw-gold);background:rgba(255,184,0,.08);color:var(--aw-gold)}
+.aw-charter-row>.aw-charter-assignments{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.38rem}
+.aw-charter-assignment{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:.45rem;min-width:0;padding:.38rem;border:1px solid #303030;background:#0b0b0b}
+.aw-charter-assignment b{display:grid;place-items:center;min-width:42px;min-height:36px;padding:.22rem .42rem;border:1px solid #3d3d3d;background:#111;color:#fff;font:900 1.25rem/1 var(--font-condensed)}
+.aw-charter-assignment small{min-width:0;color:#d7d7d7;font:800 .72rem/1.15 var(--font-condensed);letter-spacing:.025em;text-transform:uppercase;overflow-wrap:anywhere}
+.aw-charter-assignment.is-open small{color:#777;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.09em}
+.aw-charter-assignment--development{grid-template-columns:auto minmax(0,1fr);grid-column:1/-1;border-color:rgba(224,200,145,.45);background:rgba(255,184,0,.055)}
+.aw-charter-row--development .aw-charter-assignment b{border-color:var(--aw-gold);background:rgba(255,184,0,.08);color:var(--aw-gold)}
+.aw-charter-row--development .aw-charter-assignment small{color:var(--aw-gold);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.065em}
 .aw-charter-row--development>span{color:var(--aw-gold)}
-@media(max-width:760px){.aw-charter-board{padding:.75rem}.aw-charter-board__head{grid-template-columns:1fr;gap:.55rem}.aw-charter-board__head p{font-size:.8rem}.aw-charter-grid{grid-template-columns:1fr}.aw-charter-card__title{align-items:flex-end}.aw-charter-row{grid-template-columns:112px minmax(0,1fr)}.aw-charter-row b{min-width:44px;min-height:36px;font-size:1.2rem}}
+@media(max-width:1050px){.aw-charter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.aw-charter-card:last-child{grid-column:1/-1}}
+@media(max-width:760px){.aw-charter-board{padding:.75rem}.aw-charter-board__head{grid-template-columns:1fr;gap:.55rem}.aw-charter-board__head p{font-size:.8rem}.aw-charter-grid{grid-template-columns:1fr}.aw-charter-card:last-child{grid-column:auto}.aw-charter-card__title{align-items:flex-end}.aw-charter-row{grid-template-columns:96px minmax(0,1fr)}.aw-charter-row>.aw-charter-assignments{grid-template-columns:1fr}.aw-charter-assignment--development{grid-column:auto}.aw-charter-assignment b{min-width:42px;min-height:34px;font-size:1.15rem}}
