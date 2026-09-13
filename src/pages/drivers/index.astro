@@ -5,6 +5,7 @@ import roster from '../../data/roster-profiles.json';
 import iracing from '../../data/iracing-garage.json';
 import profiles from '../../data/driver-profiles.json';
 import driverEntries from '../../data/drivers.json';
+import charters from '../../data/charters.json';
 import '../../styles/pages/drivers.css';
 const selected=roster[0];
 const wispyStats=profiles[0].stats;
@@ -22,6 +23,19 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
         <div class="stat"><strong>3</strong><span>iRacing Factory Entries</span></div>
         <div class="stat"><strong>5 / 5</strong><span>Aetherwing / Alliance-Only</span></div>
       </div>
+      <section class="aw-charter-board" aria-labelledby="charter-board-title">
+        <div class="aw-charter-board__head">
+          <div><span class="eyebrow">2026 Charter Allocation</span><h2 id="charter-board-title">Aetherwing Charter Board</h2></div>
+          <p>Current Aetherwing entry numbers. Full-time charters and the shared PT / Development charter are tracked separately from individual driver assignments below.</p>
+        </div>
+        <div class="aw-charter-grid">
+          {charters.map((group)=><article class="aw-charter-card" data-charter-group={group.id}>
+            <div class="aw-charter-card__title"><span>{group.seriesNote}</span><h3>{group.label}</h3></div>
+            <div class="aw-charter-row"><span>Full-Time</span><div>{group.fullTime.map((number)=><b>#{number}</b>)}</div></div>
+            <div class="aw-charter-row aw-charter-row--development"><span>PT / Development</span><div>{group.development.map((number)=><b>#{number}</b>)}</div></div>
+          </article>)}
+        </div>
+      </section>
       <div class="aw-driver-toolbar" data-driver-toolbar>
         <div><span>Roster View</span><strong data-driver-count>10 shown</strong></div>
         <div class="aw-driver-filters" role="group" aria-label="Filter drivers">

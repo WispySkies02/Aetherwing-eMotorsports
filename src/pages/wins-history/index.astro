@@ -7,11 +7,8 @@ import standings from '../../data/standings.json';
 import scheduleEvents from '../../data/schedule-events.json';
 import '../../styles/pages/content.css';
 import '../../styles/pages/history.css';
-const latest=results.latestResult;
-const nrrsStanding=standings.find((item)=>item.id==='nrrs');
-const nrrsRow=nrrsStanding?.rows?.[0];
-const gainedFromStart=latest.start-latest.finish;
-const chaseOpener=scheduleEvents.find((item)=>item.league==='nrrs'&&item.date==='2026-09-15');
+const latest=results.latestTeamRun;
+const nextD2=scheduleEvents.find((item)=>item.league==='uarl-d2'&&item.date==='2026-09-18');
 const newest=wins.slice(-4).reverse();
 const milestones=[
  ['Aug 26, 2025','First Recorded Modern Start','MRRA D1 Coca-Cola 600 at Charlotte. Wispy qualified 6th and finished 2nd.'],
@@ -19,27 +16,28 @@ const milestones=[
  ['Dec 19, 2025','First iRacing Dirt Win','Joshua Douglas scored a major dirt victory in the Chili Bowl on iRacing.'],
  ['May 15, 2026','First iRacing Crown Jewel','Nicholas Waggoner won the Indianapolis 500, adding a major crown jewel to the record book.'],
  ['Jun 7, 2026','25th Recorded Team Win','Nicholas Waggoner added an iRacing Trucks victory at Michigan, giving Aetherwing its 25th recorded win.'],
- ['Aug 25, 2026','Wispy — 5× Chase Qualifier','The NRRS Season 3 berth became Wispy’s fifth confirmed Chase appearance across NRRS, Kmart, and UARL.']
+ ['Aug 25, 2026','Wispy — 5× Chase Qualifier','The NRRS Season 3 berth became Wispy’s fifth confirmed Chase appearance across NRRS, Kmart, and UARL.'],
+ ['Sep 12, 2026','Rocky Wins UARL D2 Opener','Rocky won the Cracker Barrel 250 at Daytona as Aetherwing finished P1, P2 and P4 with three non-FT entries.']
 ];
 ---
 <BaseLayout title="Wins & History" description="The official Aetherwing record book — verified team wins, major milestones, postseason achievements, and organization lineage.">
   <PageHero eyebrow="The Official Aetherwing Record Book" title="Wins & History" description="Verified team wins, major milestones, postseason achievements, and the lineage that built the modern organization." ghost="RECORD BOOK" />
   <section class="section section--tight aw-history" data-history>
     <div class="shell">
-      <div class="stat-rail"><div class="stat"><strong>27</strong><span>Verified Team Wins</span></div><div class="stat"><strong>05</strong><span>Aetherwing Programs</span></div><div class="stat"><strong>02</strong><span>Alliance Series</span></div><div class="stat"><strong>2023</strong><span>Modern Team Era</span></div></div>
-      <nav class="aw-history-jump" aria-label="Record book sections"><a href="#scope">Record Scope</a><a href="#latest-result">Latest Result</a><a href="#victory-lane">Victory Lane</a><a href="#win-list">Win Archive</a><a href="#milestones">Milestones</a><a href="#history-log">History Log</a></nav>
+      <div class="stat-rail"><div class="stat"><strong>28</strong><span>Verified Team Wins</span></div><div class="stat"><strong>05</strong><span>Aetherwing Programs</span></div><div class="stat"><strong>02</strong><span>Alliance Series</span></div><div class="stat"><strong>2023</strong><span>Modern Team Era</span></div></div>
+      <nav class="aw-history-jump" aria-label="Record book sections"><a href="#scope">Record Scope</a><a href="#latest-result">Latest Team Run</a><a href="#victory-lane">Victory Lane</a><a href="#win-list">Win Archive</a><a href="#milestones">Milestones</a><a href="#history-log">History Log</a></nav>
 
-      <section id="scope" class="aw-record-scope"><div class="section-head"><div><p class="eyebrow">How the Record Book Works</p><h2 class="section-title">Record Scope</h2></div></div><div class="aw-scope-grid"><article class="panel"><span>Aetherwing Record</span><h3>What Counts As A Team Win</h3><p>The verified total counts results recorded under the BellSouth or Aetherwing team banner. The archive below is the source for that total.</p><b>27 Verified Team Wins</b></article><article class="panel"><span>Historical Record</span><h3>Kmart Results Stay Where They Belong</h3><p>Historic Kmart Cup wins remain preserved as Aetherwing/BellSouth-era results because that is how those races were recorded at the time.</p><b>Historical AEM Era</b></article><article class="panel panel--alliance"><span>Current Structure</span><h3>Alliance Results Are Separate</h3><p>Current Kmart and Sunoco entries compete under StarClutch Racing through the alliance. Current alliance results do not increase the Aetherwing team-win total.</p><b>5 AEM Programs · 2 Alliance Series</b></article></div></section>
+      <section id="scope" class="aw-record-scope"><div class="section-head"><div><p class="eyebrow">How the Record Book Works</p><h2 class="section-title">Record Scope</h2></div></div><div class="aw-scope-grid"><article class="panel"><span>Aetherwing Record</span><h3>What Counts As A Team Win</h3><p>The verified total counts results recorded under the BellSouth or Aetherwing team banner. The archive below is the source for that total.</p><b>28 Verified Team Wins</b></article><article class="panel"><span>Historical Record</span><h3>Kmart Results Stay Where They Belong</h3><p>Historic Kmart Cup wins remain preserved as Aetherwing/BellSouth-era results because that is how those races were recorded at the time.</p><b>Historical AEM Era</b></article><article class="panel panel--alliance"><span>Current Structure</span><h3>Alliance Results Are Separate</h3><p>Current Kmart and Sunoco entries compete under StarClutch Racing through the alliance. Current alliance results do not increase the Aetherwing team-win total.</p><b>5 AEM Programs · 2 Alliance Series</b></article></div></section>
 
-      <section id="latest-result" class="aw-latest-result aw-broadcast-result"><div class="section-head"><div><p class="eyebrow">Post-Race // Broadcast Recap</p><h2 class="section-title">Latest Result</h2></div><p class="lede">Race result, progression, postseason context, and the next assignment — built like a post-race television graphic, not a standings table.</p></div>
-        <article class="aw-tv-result" aria-label={`${latest.title} result for ${latest.driver}`}>
+      <section id="latest-result" class="aw-latest-result aw-broadcast-result"><div class="section-head"><div><p class="eyebrow">Post-Race // Team Broadcast Recap</p><h2 class="section-title">Latest Team Run</h2></div><p class="lede">Three Aetherwing cars, a Daytona win, and a complete qualifying-to-checkered progression. Driver points remain at zero because all three entries were non-FT in D2.</p></div>
+        <article class="aw-tv-result aw-tv-result--team" aria-label={`${latest.title} Aetherwing team result`}>
           <header class="aw-tv-result__topline">
-            <div class="aw-tv-result__series"><span>NRRS</span><strong>{latest.series}</strong></div>
+            <div class="aw-tv-result__series"><span>UARL D2</span><strong>{latest.series}</strong></div>
             <div class="aw-tv-result__status" aria-label="Event status">
-              <span>{latest.round} OF 25</span>
+              <span>{latest.round}</span>
               <span class="is-checkered">CHECKERED</span>
-              <b>{latest.specialTag}</b>
-              <b class="is-chase">CHASE QUALIFIED</b>
+              <b>DAYTONA</b>
+              <b class="is-no-points">NON-FT · NO POINTS</b>
             </div>
           </header>
 
@@ -47,33 +45,31 @@ const milestones=[
             <div class="aw-tv-result__event">
               <div class="aw-tv-result__meta"><b>{latest.track}</b><em>{latest.date}</em></div>
               <h3>{latest.title}</h3>
-              <p class="aw-tv-result__headline">P4 FINISH SENDS WISPY INTO <strong>THE CHASE</strong></p>
-              <div class="aw-tv-result__driver"><b>#{latest.number}</b><span><strong>{latest.driver}</strong><small>Aetherwing eMotorsports · NRRS Chase Qualifier</small></span></div>
+              <p class="aw-tv-result__headline">AETHERWING GOES <strong>P1 · P2 · P4</strong> IN THE D2 OPENER</p>
+              <div class="aw-tv-result__driver"><b>#19</b><span><strong>Rocky</strong><small>Race Winner · Aetherwing eMotorsports</small></span></div>
             </div>
-            <aside class="aw-tv-result__finish" aria-label={`Official finish P${latest.finish}`}>
-              <span>OFFICIAL FINISH</span>
-              <strong>P{latest.finish}</strong>
-              <div><b>TOP 5</b><em>{gainedFromStart>0?`+${gainedFromStart} FROM START`:`${gainedFromStart} FROM START`}</em></div>
+            <aside class="aw-tv-result__finish" aria-label="Aetherwing team best finish P1">
+              <span>TEAM BEST</span>
+              <strong>P1</strong>
+              <div><b>WIN</b><em>3 CARS · TOP 4</em></div>
             </aside>
           </div>
 
-          <div class="aw-tv-result__stats" aria-label="Race at a glance">
-            <div><span>START</span><strong>P{latest.start}</strong><small>Green flag</small></div>
-            <div><span>STAGE 2</span><strong>P{latest.stage2.finish}</strong><small>Stage finish</small></div>
-            <div class="is-finish"><span>FINISH</span><strong>P{latest.finish}</strong><small>Checkered flag</small></div>
-            <div class="is-chase"><span>CHASE STANDING</span><strong>{nrrsRow?.position || '—'}</strong><small>{nrrsRow ? `${nrrsRow.points.toLocaleString()} pts` : 'Qualified'}<em>{nrrsRow?.delta || ''}</em></small></div>
+          <div class="aw-team-result-table" aria-label="Aetherwing Cracker Barrel 250 results">
+            <div class="aw-team-result-row aw-team-result-head"><span>CAR</span><span>DRIVER</span><span>QUAL</span><span>STAGE 1</span><span>STAGE 2</span><span>FINISH</span><span>POINTS</span></div>
+            {latest.entries.map((entry)=><div class:list={["aw-team-result-row",{"is-winner":entry.finish===1}]}><strong>#{entry.number}</strong><b>{entry.driver}</b><span>P{entry.qualifying}</span><span>P{entry.stage1}</span><span>P{entry.stage2}</span><em>P{entry.finish}</em><small>0 · NON-FT</small></div>)}
           </div>
 
           <div class="aw-tv-result__lower">
-            <div class="aw-tv-result__summary"><span>RACE SUMMARY</span><p>Wispy started seventh, climbed to fourth by Stage 2, and finished P4 in the Pepsi 400 regular-season finale.</p></div>
-            <div class="aw-tv-result__next"><span>UP NEXT // THE CHASE</span><strong>{chaseOpener?.title || 'Southern 500'}</strong><small>{chaseOpener?.track || 'Darlington Raceway'} · SEP 15</small></div>
+            <div class="aw-tv-result__summary"><span>RACE SUMMARY</span><p>Dale put the #54 on pole. Rocky ran P2 in qualifying and both stages before taking the win. Dale finished P2, while Wispy ran P4 from qualifying through both stages and the checkered flag. None of the three entries earn D2 driver points because none were full-time D2 drivers.</p></div>
+            <div class="aw-tv-result__next"><span>UP NEXT // UARL D2</span><strong>{nextD2?.title || 'Carolina Freight 200'}</strong><small>{nextD2?.track || 'Charlotte Motor Speedway'} · SEP 18 · 6:45 PM ET</small></div>
           </div>
         </article>
       </section>
 
       <section id="victory-lane"><div class="section-head"><div><p class="eyebrow">Victory Lane</p><h2 class="section-title">Latest Victories</h2></div></div><div class="aw-victory-grid">{newest.map((win)=><article class="panel"><span>🏆</span><small>{win.league}</small><h3>{win.track}</h3><p>{win.driver}</p><b>{win.date}</b></article>)}</div></section>
 
-      <section id="win-list" class="aw-win-archive"><div class="section-head"><div><p class="eyebrow">Complete Record</p><h2 class="section-title">Win List</h2></div><p class="lede">Historical results stay under the series and team relationship that existed when each race was run.</p></div><div class="aw-win-filters"><button class="is-active" type="button" data-win-filter="all">All</button><button type="button" data-win-filter="Kmart">Kmart · Historic AEM</button><button type="button" data-win-filter="NRRS">NRRS</button><button type="button" data-win-filter="UARL">UARL</button><button type="button" data-win-filter="iRacing">iRacing</button></div><div class="aw-win-table"><div class="aw-win-row aw-win-head"><span>League</span><span>Track / Event</span><span>Driver</span><span>Date</span></div>{wins.map((win)=><div class="aw-win-row" data-win-row data-league={win.league}><span>{win.league}</span><strong>{win.track}</strong><span>{win.driver}</span><span>{win.date}</span></div>)}</div><p class="mono muted" data-win-count>Showing 27 recorded wins.</p></section>
+      <section id="win-list" class="aw-win-archive"><div class="section-head"><div><p class="eyebrow">Complete Record</p><h2 class="section-title">Win List</h2></div><p class="lede">Historical results stay under the series and team relationship that existed when each race was run.</p></div><div class="aw-win-filters"><button class="is-active" type="button" data-win-filter="all">All</button><button type="button" data-win-filter="Kmart">Kmart · Historic AEM</button><button type="button" data-win-filter="NRRS">NRRS</button><button type="button" data-win-filter="UARL">UARL</button><button type="button" data-win-filter="iRacing">iRacing</button></div><div class="aw-win-table"><div class="aw-win-row aw-win-head"><span>League</span><span>Track / Event</span><span>Driver</span><span>Date</span></div>{wins.map((win)=><div class="aw-win-row" data-win-row data-league={win.league}><span>{win.league}</span><strong>{win.track}</strong><span>{win.driver}</span><span>{win.date}</span></div>)}</div><p class="mono muted" data-win-count>Showing 28 recorded wins.</p></section>
 
       <section id="milestones" class="aw-milestones"><div class="section-head"><div><p class="eyebrow">Milestones</p><h2 class="section-title">Firsts & Records</h2></div></div><div class="timeline">{milestones.map((item)=><article class="timeline-item"><span class="tag">{item[0]}</span><h3>{item[1]}</h3><p class="muted">{item[2]}</p></article>)}</div></section>
 

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "nrrs-uarl-d1",
+    "label": "NRRS + UARL D1",
+    "seriesNote": "Aetherwing charter pool",
+    "fullTime": ["28", "32", "54", "92"],
+    "development": ["62"]
+  },
+  {
+    "id": "uarl-d2",
+    "label": "UARL D2",
+    "seriesNote": "Aetherwing charter pool",
+    "fullTime": ["11", "19", "28", "54"],
+    "development": ["62"]
+  }
+]

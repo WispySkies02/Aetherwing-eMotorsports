@@ -1,3 +1,22 @@
+# v0.4.29 — UARL D2 Daytona Team Run
+
+- Recorded the official UARL D2 Cracker Barrel 250 team run at Daytona on September 12, 2026.
+- Aetherwing results: #19 Rocky P1, #54 Dale P2, #62 Wispy P4.
+- Qualifying: Dale P1, Rocky P2, Wispy P4. Both stages: Rocky P2, Dale P3, Wispy P4.
+- All three drivers were non-FT D2 entries, so no D2 driver points were awarded.
+- Promoted the homepage and Wins & History Latest Result treatment to a three-car Latest Team Run recap.
+- Rocky's victory becomes Aetherwing's 28th verified team win.
+- Marked UARL Season 6 as D2-active without inventing standings rows; D1 and Open still await their openers.
+- Updated the D2 opener's official race title to The Cracker Barrel 250 while preserving the September 12 postponement history.
+- Refreshed the UARL D2 and UARL All next-five social cards and bumped league-share cache revision to v55.
+
+# v0.4.28 — Charter board refresh
+
+- Added a dedicated Drivers-page Aetherwing Charter Board.
+- NRRS + UARL D1 full-time charter pool: #28, #32, #54, #92; #62 PT / Development.
+- UARL D2 full-time charter pool: #11, #19, #28, #54; #62 PT / Development.
+- Wispy’s UARL D2 contextual number is now #62 PT / Development; other newly listed charter slots remain unassigned until explicitly named.
+
 ## v0.4.27 — September 11, 2026
 
 - Postponed the UARL D2 Season 6 opener, The 6th Official Daytona 250, from Friday Sep 11 at 6:45 PM ET to Saturday Sep 12 at 7:00 PM ET.

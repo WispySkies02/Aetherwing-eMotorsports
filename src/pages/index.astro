@@ -10,8 +10,8 @@ import news from '../data/news.json';
 import '../styles/pages/home.css';
 const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
-const liveEvent=events.find((event)=>event.league==='uarl-d2' && /Daytona 250/i.test(event.title)) ?? events[0];
-const latest=result.latestResult;
+const liveEvent=events.find((event)=>event.league==='open' && event.date==='2026-09-13') ?? events.find((event)=>event.league==='uarl-d1' && event.date==='2026-09-13') ?? events[0];
+const latestTeamRun=result.latestTeamRun;
 const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase-martinsville') ?? news[0];
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
@@ -77,7 +77,7 @@ const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase
           {initialTeam.map((driver,index)=><button class:list={['aw-team-card',{'is-selected':index===0}]} type="button" data-driver-slug={driver.slug}><small>{driver.role}</small><strong>#{driver.numbers}</strong><h3>{driver.name}</h3><span>{driver.feature}</span></button>)}
         </div>
         <article class="aw-team-detail panel" data-team-detail>
-          <div><span class="tag">Founder / Driver</span><h3>Wispy</h3><p class="mono">@Aokikoto · #15 / #28 / #32 / #54</p><p>Aetherwing founder and multi-program driver across RoRacing and iRacing.</p></div>
+          <div><span class="tag">Founder / Driver</span><h3>Wispy</h3><p class="mono">@Aokikoto · #15 / #28 / #32 / #54 / #62</p><p>Aetherwing founder and multi-program driver across RoRacing and iRacing.</p></div>
           <a class="btn" href="/drivers/">Open Driver Hub</a>
         </article>
       </div>
@@ -107,11 +107,13 @@ const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase
       <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
       <div class="aw-news-grid">
         <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">Race &amp; Competition</span><small>{featuredNews.date} · NRRS · Chase Clinched</small><h3>{featuredNews.title}</h3><p>P4 at Martinsville secured Wispy’s third consecutive NRRS Chase berth and fifth confirmed Chase qualification overall.</p><b>Read the Chase-Clinch Story →</b></a>
-        <article class="aw-result-card aw-result-ticket">
-          <div class="aw-result-ticket__head"><span>CHECKERED // LATEST RESULT</span><b>{latest.specialTag}</b></div>
-          <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>TOP 5</em></div></div>
-          <div class="aw-result-ticket__run"><span>P{latest.start}<small>START</small></span><i>→</i><span>P{latest.stage2.finish}<small>STAGE 2</small></span><i>→</i><span class="is-final">P{latest.finish}<small>CHECKERED</small></span></div>
-          <div class="aw-result-ticket__foot"><span>THE CHASE QUALIFIED</span><a href="/wins-history/#latest-result">Open Post-Race Graphic →</a></div>
+        <article class="aw-result-card aw-result-ticket aw-result-ticket--team">
+          <div class="aw-result-ticket__head"><span>CHECKERED // LATEST TEAM RUN</span><b>{latestTeamRun.specialTag}</b></div>
+          <div class="aw-result-ticket__body"><div><small>{latestTeamRun.series}</small><h3>{latestTeamRun.title}</h3><p>{latestTeamRun.track} · {latestTeamRun.date}</p><strong>THREE AETHERWING ENTRIES · ROCKY WINS</strong></div><div class="aw-result-ticket__p4"><span>TEAM BEST</span><b>P1</b><em>WIN</em></div></div>
+          <div class="aw-team-run-rows" aria-label="Aetherwing team results">
+            {latestTeamRun.entries.map((entry)=><div class:list={["aw-team-run-row",{"is-winner":entry.finish===1}]}><strong>#{entry.number}</strong><b>{entry.driver}</b><span>Q P{entry.qualifying}</span><span>S1 P{entry.stage1}</span><span>S2 P{entry.stage2}</span><em>FIN P{entry.finish}</em></div>)}
+          </div>
+          <div class="aw-result-ticket__foot"><span>{latestTeamRun.pointsNote}</span><a href="/wins-history/#latest-result">Open Team Recap →</a></div>
         </article>
         <div class="aw-quick-links">
           <a class="panel" href="/drivers/"><small>Roster Updated</small><strong>Driver Hub</strong><span>Current drivers, programs, and Factory entries →</span></a>

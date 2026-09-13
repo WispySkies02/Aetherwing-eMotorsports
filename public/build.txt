@@ -1,5 +1,1 @@
-Aetherwing eMotorsports v0.4.27 — UARL D2 Daytona postponement
-- The 6th Official Daytona 250 moved to Saturday, September 12, 2026 at 7:00 PM ET.
-- All later UARL D2 rounds remain Fridays at 6:45 PM ET.
-- Schedule/Race Control and homepage Next Event now follow the rescheduled race.
-- Added POSTPONED event treatment and refreshed UARL league-share embeds to v54.
+Aetherwing eMotorsports v0.4.29

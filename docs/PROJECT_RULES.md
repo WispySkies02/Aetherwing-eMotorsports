@@ -64,7 +64,7 @@ FloRacing was intentionally removed and must not be re-added.
 ## Locked site stats
 
 - 10 active RoRacing drivers
-- 27 verified Aetherwing wins
+- 28 verified Aetherwing wins
 - 600+ estimated racing starts
 - 7 competition relationships
 - Founded 2023
@@ -107,7 +107,7 @@ Driver livery brands are not automatically team partners.
 - UARL D1 / L.L. Bean Cup — Sunday, 8:30 PM ET
 - UARL Open — Sunday, 11:30 AM ET
 - UARL D2 / NFFF Grand National — Friday, **6:45 PM ET**
-  - One-race exception: the Season 6 Daytona 250 opener was postponed to **Saturday, September 12, 2026 at 7:00 PM ET**. The normal Friday 6:45 PM cadence resumes afterward.
+  - One-race exception: the Season 6 opener, **The Cracker Barrel 250**, was postponed to **Saturday, September 12, 2026 at 7:00 PM ET** and completed with Rocky P1, Dale P2, and Wispy P4. All three Aetherwing drivers were non-FT D2 entries and received no D2 driver points. The normal Friday 6:45 PM cadence resumes afterward.
 - Kmart Auto Parts Series — Monday, 8:30 PM ET
 - Sunoco Truck Series — Saturday, 8:00 PM ET
 - iRacing Specials — multi-day windows, not a recurring weekly start time
