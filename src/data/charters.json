@@ -17,12 +17,17 @@
         "driver": "Open"
       }
     ],
-    "development": [
-      {
+    "openCharter": {
+      "label": "Aetherwing Open Charter",
+      "partTime": {
         "number": "62",
-        "label": "Part-Time / Development Charter"
+        "label": "Part-Time"
+      },
+      "development": {
+        "number": "82",
+        "label": "Development"
       }
-    ]
+    }
   },
   {
     "id": "uarl-d1",
@@ -34,10 +39,6 @@
         "driver": "Wispy"
       },
       {
-        "number": "32",
-        "driver": "Open"
-      },
-      {
         "number": "54",
         "driver": "Open"
       },
@@ -46,12 +47,17 @@
         "driver": "Rocky"
       }
     ],
-    "development": [
-      {
+    "openCharter": {
+      "label": "Aetherwing Open Charter",
+      "partTime": {
         "number": "62",
-        "label": "Part-Time / Development Charter"
+        "label": "Part-Time"
+      },
+      "development": {
+        "number": "82",
+        "label": "Development"
       }
-    ]
+    }
   },
   {
     "id": "uarl-d2",
@@ -67,19 +73,20 @@
         "driver": "Gk3r"
       },
       {
-        "number": "28",
-        "driver": "Open"
-      },
-      {
         "number": "54",
         "driver": "Open"
       }
     ],
-    "development": [
-      {
+    "openCharter": {
+      "label": "Aetherwing Open Charter",
+      "partTime": {
         "number": "62",
-        "label": "Part-Time / Development Charter"
+        "label": "Part-Time"
+      },
+      "development": {
+        "number": "82",
+        "label": "Development"
       }
-    ]
+    }
   }
 ]

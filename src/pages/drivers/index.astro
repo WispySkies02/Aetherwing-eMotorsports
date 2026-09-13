@@ -26,13 +26,22 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
       <section class="aw-charter-board" aria-labelledby="charter-board-title">
         <div class="aw-charter-board__head">
           <div><span class="eyebrow">2026 Charter Allocation</span><h2 id="charter-board-title">Aetherwing Charter Board</h2></div>
-          <p>Full-time charters show their season-long driver assignment. Open full-time seats stay marked OPEN, while PT / Development charters remain driver-neutral so rotating entries are never presented as permanent assignments.</p>
+          <p>Each program carries three full-time charters plus one shared Aetherwing Open Charter. Vacant full-time seats are marked OPEN; the fourth charter uses #62 for Part-Time entries or #82 for Development entries and is one shared slot, not two charters.</p>
         </div>
         <div class="aw-charter-grid">
           {charters.map((group)=><article class="aw-charter-card" data-charter-group={group.id}>
             <div class="aw-charter-card__title"><span>{group.seriesNote}</span><h3>{group.label}</h3></div>
             <div class="aw-charter-row"><span>Full-Time</span><div class="aw-charter-assignments">{group.fullTime.map((entry)=><div class:list={["aw-charter-assignment",{"is-open":entry.driver==="Open"}]}><b>#{entry.number}</b><small>{entry.driver}</small></div>)}</div></div>
-            <div class="aw-charter-row aw-charter-row--development"><span>PT / Development</span><div class="aw-charter-assignments">{group.development.map((entry)=><div class="aw-charter-assignment aw-charter-assignment--development"><b>#{entry.number}</b><small>{entry.label}</small></div>)}</div></div>
+            <div class="aw-charter-row aw-charter-row--open-charter">
+              <span>4th Charter</span>
+              <div class="aw-open-charter">
+                <div class="aw-open-charter__head"><strong>{group.openCharter.label}</strong><small>One shared slot · two entry identities</small></div>
+                <div class="aw-open-charter__modes">
+                  <div class="aw-charter-assignment aw-charter-assignment--part-time"><b>#{group.openCharter.partTime.number}</b><small>{group.openCharter.partTime.label}</small></div>
+                  <div class="aw-charter-assignment aw-charter-assignment--development"><b>#{group.openCharter.development.number}</b><small>{group.openCharter.development.label}</small></div>
+                </div>
+              </div>
+            </div>
           </article>)}
         </div>
       </section>

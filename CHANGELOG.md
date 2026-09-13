@@ -1,3 +1,14 @@
+# v0.4.33 — Shared Aetherwing Open Charter
+
+- Reworked NRRS, UARL D1 and UARL D2 to exactly three full-time charters plus one shared fourth charter.
+- UARL D1 FT charters are #28 Wispy, #54 Open and #92 Rocky. Removed #32 from the D1 FT allocation.
+- UARL D2 FT charters are #11 BurgerTown2Good, #19 Gk3r and #54 Open. Removed #28 from the D2 FT allocation.
+- NRRS FT charters remain #32 Wispy, #43 Plarker and #54 Open.
+- The fourth slot in all three programs is now labeled **Aetherwing Open Charter** and uses #62 for Part-Time entries or #82 for Development entries.
+- #62 and #82 are two identities for one shared charter and are never presented as two simultaneous charter slots.
+- Added distinct Drivers-page styling so the named Aetherwing Open Charter cannot be confused with a vacant full-time seat marked OPEN.
+- Updated homepage / Mission & Values competition rosters and locked validation to the new four-charter structure.
+
 # v0.4.32 — NRRS PT/Development Charter Correction
 
 - Corrected the NRRS Aetherwing Part-Time / Development Charter from the erroneous #64 to **#62**.

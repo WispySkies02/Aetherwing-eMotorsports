@@ -1,8 +1,9 @@
-**v0.4.31 — Authoritative Charter Assignments**
-- NRRS: #32 Wispy, #43 Plarker, #54 Open; #62 Part-Time / Development Charter.
-- UARL D1: #28 Wispy, #32 Open, #54 Open, #92 Rocky; #62 Part-Time / Development Charter.
-- UARL D2: #11 BurgerTown2Good, #19 Gk3r, #28 Open, #54 Open; #62 Part-Time / Development Charter.
-- FT charters carry assigned driver names; PT / Development charters remain driver-neutral.
+**v0.4.33 — Shared Aetherwing Open Charter**
+- NRRS FT: #32 Wispy, #43 Plarker, #54 Open. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
+- UARL D1 FT: #28 Wispy, #54 Open, #92 Rocky. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
+- UARL D2 FT: #11 BurgerTown2Good, #19 Gk3r, #54 Open. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
+- #62 and #82 are two identities for one shared fourth charter slot, never two simultaneous charters.
+- Vacant FT seats remain labeled OPEN; the named Aetherwing Open Charter is visually and semantically separate from an unfilled FT seat.
 
 Current build: v0.4.27
 - UARL D2 recurring race night remains Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday, September 12, 2026 at 7:00 PM ET.

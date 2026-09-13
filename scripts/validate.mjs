@@ -181,17 +181,21 @@ assert(driversPage.includes('Aetherwing Charter Board') && driversPage.includes(
 const nrrsCharters = charters.find((group) => group.id === 'nrrs');
 const d1Charters = charters.find((group) => group.id === 'uarl-d1');
 const d2Charters = charters.find((group) => group.id === 'uarl-d2');
-assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Wispy'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && JSON.stringify(nrrsCharters?.development) === JSON.stringify([{number:'62',label:'Part-Time / Development Charter'}]), 'NRRS charter assignments: #32 Wispy, #43 Plarker, #54 Open, #62 PT/Development');
-assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Wispy'},{number:'32',driver:'Open'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && JSON.stringify(d1Charters?.development) === JSON.stringify([{number:'62',label:'Part-Time / Development Charter'}]), 'UARL D1 charter assignments: #28 Wispy, #32/#54 Open, #92 Rocky, #62 PT/Development');
-assert(JSON.stringify(d2Charters?.fullTime) === JSON.stringify([{number:'11',driver:'BurgerTown2Good'},{number:'19',driver:'Gk3r'},{number:'28',driver:'Open'},{number:'54',driver:'Open'}]) && JSON.stringify(d2Charters?.development) === JSON.stringify([{number:'62',label:'Part-Time / Development Charter'}]), 'UARL D2 charter assignments: #11 BurgerTown2Good, #19 Gk3r, #28/#54 Open, #62 PT/Development');
-assert([nrrsCharters,d1Charters,d2Charters].every((entry) => entry?.development?.length === 1 && entry.development[0]?.number === '62'), 'All Aetherwing PT/Development charters must use #62');
+const sharedOpenCharter = {label:'Aetherwing Open Charter',partTime:{number:'62',label:'Part-Time'},development:{number:'82',label:'Development'}};
+assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Wispy'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && JSON.stringify(nrrsCharters?.openCharter) === JSON.stringify(sharedOpenCharter), 'NRRS has FT #32 Wispy / #43 Plarker / #54 Open plus shared 4th #62 PT / #82 Development');
+assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Wispy'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && JSON.stringify(d1Charters?.openCharter) === JSON.stringify(sharedOpenCharter), 'UARL D1 has FT #28 Wispy / #54 Open / #92 Rocky plus shared 4th #62 PT / #82 Development');
+assert(JSON.stringify(d2Charters?.fullTime) === JSON.stringify([{number:'11',driver:'BurgerTown2Good'},{number:'19',driver:'Gk3r'},{number:'54',driver:'Open'}]) && JSON.stringify(d2Charters?.openCharter) === JSON.stringify(sharedOpenCharter), 'UARL D2 has FT #11 BurgerTown2Good / #19 Gk3r / #54 Open plus shared 4th #62 PT / #82 Development');
+assert([nrrsCharters,d1Charters,d2Charters].every((group) => group?.fullTime?.length === 3), 'NRRS, UARL D1 and UARL D2 each have exactly three full-time charters');
+assert([nrrsCharters,d1Charters,d2Charters].every((group) => group?.openCharter?.partTime?.number === '62' && group?.openCharter?.development?.number === '82'), 'All three Aetherwing Open Charters use #62 for Part-Time and #82 for Development');
+assert([nrrsCharters,d1Charters,d2Charters].every((group) => !('driver' in group.openCharter.partTime) && !('driver' in group.openCharter.development)), 'Shared Aetherwing Open Charters remain driver-neutral');
 assert(!JSON.stringify(charters).includes('\"64\"'), 'No Aetherwing #64 charter may exist');
-assert(charters.every((group) => group.development.every((entry) => !('driver' in entry))), 'PT / Development charters remain driver-neutral');
+assert(driversPage.includes('Aetherwing Open Charter') && driversPage.includes('One shared slot · two entry identities'), 'Drivers charter board explains the shared 4th charter model');
 const wispyD2Entry = drivers.find((entry) => entry.id === 'wispy-uarl-d2');
 assert(wispyD2Entry?.number === '62' && wispyD2Entry?.status === 'Part-Time', 'Wispy UARL D2 program entry remains #62 Part-Time without a permanent charter assignment label');
 assert(roster.find((entry) => entry.slug === 'parker')?.name === 'Plarker', '#43 NRRS driver displays as Plarker');
-assert(competitions.find((entry) => entry.id === 'nrrs')?.roster?.includes('#62 PART-TIME / DEVELOPMENT CHARTER'), 'Homepage/mission NRRS roster includes driver-neutral #62 PT/Development charter');
-assert(competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.includes('#62 PART-TIME / DEVELOPMENT CHARTER') && competitions.find((entry) => entry.id === 'uarl-d2')?.roster?.includes('#62 PART-TIME / DEVELOPMENT CHARTER'), 'UARL D1/D2 visible rosters include driver-neutral #62 PT/Development charters');
+assert(['nrrs','uarl-d1','uarl-d2'].every((id) => competitions.find((entry) => entry.id === id)?.roster?.includes('4TH · AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT')), 'Homepage/mission rosters show one shared #62 PT / #82 Development Aetherwing Open Charter in all three programs');
+assert(!competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.some((line) => line.startsWith('#32 ')), 'UARL D1 no longer carries a #32 FT charter');
+assert(!competitions.find((entry) => entry.id === 'uarl-d2')?.roster?.some((line) => line.startsWith('#28 ')), 'UARL D2 no longer carries a #28 FT charter');
 
 
 const newsIndex = text('src/pages/news/index.astro');
