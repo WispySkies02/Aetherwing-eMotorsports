@@ -1,3 +1,10 @@
+## v0.4.34 — September 13, 2026
+
+- Rebuilt the Drivers charter boards so #62 Part-Time and #82 Development are two interactive states of one shared fourth Aetherwing Open Charter module.
+- Each NRRS, UARL D1, and UARL D2 board presents exactly three full-time slots plus one shared fourth slot.
+- Added keyboard-accessible tab behavior (arrow keys, Home/End), touch/click support, live number/role/description updates, and a mobile-safe shared-slot layout.
+- #62/#82 states are never presented as OPEN or AVAILABLE roster slots.
+
 # v0.4.33 — Shared Aetherwing Open Charter
 
 - Reworked NRRS, UARL D1 and UARL D2 to exactly three full-time charters plus one shared fourth charter.

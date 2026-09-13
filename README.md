@@ -1,4 +1,4 @@
-**v0.4.33 — Shared Aetherwing Open Charter**
+**v0.4.34 — Shared Aetherwing Open Charter**
 - NRRS FT: #32 Wispy, #43 Plarker, #54 Open. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
 - UARL D1 FT: #28 Wispy, #54 Open, #92 Rocky. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
 - UARL D2 FT: #11 BurgerTown2Good, #19 Gk3r, #54 Open. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.

@@ -21,11 +21,13 @@
       "label": "Aetherwing Open Charter",
       "partTime": {
         "number": "62",
-        "label": "Part-Time"
+        "label": "Part-Time",
+        "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot."
       },
       "development": {
         "number": "82",
-        "label": "Development"
+        "label": "Development",
+        "description": "Development entry identity for this shared fourth charter. It does not add another roster slot."
       }
     }
   },
@@ -51,11 +53,13 @@
       "label": "Aetherwing Open Charter",
       "partTime": {
         "number": "62",
-        "label": "Part-Time"
+        "label": "Part-Time",
+        "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot."
       },
       "development": {
         "number": "82",
-        "label": "Development"
+        "label": "Development",
+        "description": "Development entry identity for this shared fourth charter. It does not add another roster slot."
       }
     }
   },
@@ -81,11 +85,13 @@
       "label": "Aetherwing Open Charter",
       "partTime": {
         "number": "62",
-        "label": "Part-Time"
+        "label": "Part-Time",
+        "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot."
       },
       "development": {
         "number": "82",
-        "label": "Development"
+        "label": "Development",
+        "description": "Development entry identity for this shared fourth charter. It does not add another roster slot."
       }
     }
   }
