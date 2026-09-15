@@ -1,3 +1,15 @@
+# Aetherwing eMotorsports — Changelog
+
+## v0.4.35 — September 15, 2026
+- Marked UARL D2 closed/inactive and removed it from active competition, schedule, driver, filter, and league-share data.
+- Active structure is now four Aetherwing programs plus two StarClutch Racing alliance series (six relationships).
+- Expanded UARL D1 to five full-time charters: #28 Wispy, #32 BurgerTown2Good, #52 Gk3r, #54 OPEN, #92 Rocky.
+- Preserved one shared Aetherwing Open Charter using #62 for Part-Time and #82 for Development.
+- Moved BurgerTown2Good (@uhhbzb) and Gk3r (@sealsntags) to UARL D1.
+- Postponed the remaining UARL D1 and Kmart calendars one week: next D1 race is Daytona on Sep. 20; next Kmart race is Rockingham on Sep. 21.
+- Refreshed event share cards and league next-five cards to v56.
+- Updated Schedule review/state copy for September 15 and UARL D2 closure.
+
 ## v0.4.34 — September 13, 2026
 
 - Rebuilt the Drivers charter boards so #62 Part-Time and #82 Development are two interactive states of one shared fourth Aetherwing Open Charter module.

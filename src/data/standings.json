@@ -107,11 +107,11 @@
   },
   {
     "id": "uarl",
-    "title": "UARL \u00b7 All Three Divisions",
-    "subtitle": "Season 6",
+    "title": "UARL \u00b7 Division 1 + Open",
+    "subtitle": "Season 6 \u00b7 D2 Closed",
     "league": "uarl",
-    "status": "AWAITING START",
-    "emptyMessage": "Awaiting the start of Season 6",
+    "status": "D1 POSTPONED",
+    "emptyMessage": "No official UARL standings snapshot published yet",
     "rows": []
   }
 ]

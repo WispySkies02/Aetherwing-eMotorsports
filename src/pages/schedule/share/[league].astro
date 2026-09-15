@@ -4,9 +4,8 @@ export function getStaticPaths() {
     nrrs:{label:'NRRS',target:'nrrs'},
     kmart:{label:'Kmart Auto Parts Series',target:'kmart'},
     sunoco:{label:'Sunoco Truck Series',target:'sunoco'},
-    'uarl-all':{label:'UARL · All Divisions',target:'uarl-all'},
+    'uarl-all':{label:'UARL · D1 + Open',target:'uarl-all'},
     'uarl-d1':{label:'UARL D1 · L.L. Bean Cup Series',target:'uarl-d1'},
-    'uarl-d2':{label:'UARL D2 · NFFF Grand National Series',target:'uarl-d2'},
     open:{label:'UARL Open Series',target:'open'},
     iracing:{label:'iRacing Factory Program',target:'iracing'}
   };
@@ -15,7 +14,7 @@ export function getStaticPaths() {
 const { league, details } = Astro.props;
 const target = `/schedule/?league=${encodeURIComponent(details.target)}#race-calendar`;
 const canonicalUrl = new URL(`/schedule/share/${league}/`, Astro.site);
-const imageUrl = new URL(`/images/social/leagues/${league}-v54.jpg`, Astro.site);
+const imageUrl = new URL(`/images/social/leagues/${league}-v56.jpg`, Astro.site);
 ---
 <!doctype html>
 <html lang="en">

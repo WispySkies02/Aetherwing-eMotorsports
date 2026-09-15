@@ -53,13 +53,13 @@ assert(news.some((story) => story.slug === 'wispy-100th-roracing-start-talladega
 assert(news.some((story) => story.slug === 'aetherwing-ngm-driver-development'), 'NGM Driver Development story is migrated');
 assert(news.every((story) => Array.isArray(story.sections) && story.sections.length >= 3), 'Every Team Wire story has a full article body');
 
-assert(site.competitionRelationships === 7, 'Seven competition relationships');
+assert(site.competitionRelationships === 6, 'Six active competition relationships');
 assert(site.featuredPartners === 2 && partners.filter((p) => p.featured).length === 2, 'Exactly two featured partners');
 assert(site.verifiedWins === 27 && wins.length === 27, '27 verified Aetherwing wins and 27 history rows');
 assert(site.activeRoRacingDrivers === 10 && roster.length === 10, 'Ten current RoRacing driver profiles');
 assert(site.aetherwingDrivers === 5 && site.allianceOnlyDrivers === 5, 'Drivers split is five Aetherwing / five alliance-only');
-assert(competitions.length === 7, 'Competition data contains seven relationships');
-assert(competitions.filter((c) => c.type === 'aetherwing').length === 5, 'Five Aetherwing programs');
+assert(competitions.length === 6, 'Competition data contains six active relationships');
+assert(competitions.filter((c) => c.type === 'aetherwing').length === 4, 'Four active Aetherwing programs');
 assert(competitions.filter((c) => c.type === 'alliance').length === 2, 'Two StarClutch Racing Alliance series');
 assert(!competitions.some((c) => /flo/i.test(c.name)), 'FloRacing remains intentionally absent');
 assert(!leadership.some((p) => /trent/i.test(p.name)), 'Trent is absent from current leadership');
@@ -70,12 +70,7 @@ const results = json('results.json');
 const latestResult = results.latestResult;
 assert(latestResult?.title === 'Pepsi 400' && latestResult?.start === 7 && latestResult?.stage2?.finish === 4 && latestResult?.finish === 4, 'Latest NRRS result is Pepsi 400: P7 start, P4 Stage 2, P4 finish');
 
-const d2 = schedule.find((event) => event.id === 'uarl-d2');
-assert(d2?.day === 5 && d2?.time === '18:45', 'Recurring UARL D2 time locked to Friday 6:45 PM ET');
-const d2Event = scheduleEvents.find((event) => event.league === 'uarl-d2' && /Daytona 250/i.test(event.title || ''));
-assert(d2Event?.date === '2026-09-12' && d2Event?.time === '7:00 PM ET' && d2Event?.specialTag === 'POSTPONED', 'UARL D2 Daytona opener is postponed to Saturday September 12 at 7:00 PM ET');
-assert(scheduleEvents.filter((event) => event.league === 'uarl-d2' && event.title !== 'The 6th Official Daytona 250').every((event) => new Date(`${event.date}T12:00:00Z`).getUTCDay() === 5), 'All UARL D2 rounds after the postponed opener remain on Fridays');
-assert(scheduleEvents.find((event) => event.league === 'uarl-d2' && event.round === 'ROUND 18')?.date === '2027-01-08', 'UARL D2 18-round Friday calendar ends January 8, 2027 after one-week pull-forward');
+assert(!schedule.some((event) => event.id === 'uarl-d2') && !competitions.some((event) => event.id === 'uarl-d2') && !scheduleEvents.some((event) => event.league === 'uarl-d2'), 'UARL D2 is closed and removed from active competition/schedule data');
 const pepsi400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Pepsi 400');
 assert(pepsi400?.round === 'ROUND 19' && pepsi400?.specialTag === 'REGULAR SEASON FINALE', 'NRRS Pepsi 400 is Round 19 and the Regular Season Finale');
 const nrrsSouthern500 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Southern 500' && event.round === 'ROUND 20');
@@ -91,7 +86,7 @@ assert(nrrsStanding?.rows?.[0]?.driver === 'Wispy' && nrrsStanding.rows[0].posit
 assert(kmartStanding?.rows?.length === 3 && kmartStanding.rows[0].driver === 'Jaxon' && kmartStanding.rows[0].position === 'P1' && kmartStanding.rows[1].driver === 'Will' && kmartStanding.rows[1].position === 'P2' && kmartStanding.rows[2].driver === 'Wispy' && kmartStanding.rows[2].position === 'P4', 'Kmart standings positions: Jaxon P1, Will P2, Wispy P4');
 assert(kmartStanding?.ptEntry?.number === '29' && kmartStanding.ptEntry.status === 'NOT CHASE ELIGIBLE' && kmartStanding.ptEntry.drivers?.[0]?.driver === 'Clutch' && kmartStanding.ptEntry.drivers[0].points === 135 && kmartStanding.ptEntry.drivers[1].driver === 'Eazy' && kmartStanding.ptEntry.drivers[1].points === 59 && kmartStanding.ptEntry.drivers[2].driver === 'Matty' && kmartStanding.ptEntry.drivers[2].points === 58, 'Kmart #29 SCR PT car points and Chase ineligibility');
 assert(sunocoStanding?.rows?.length === 4 && sunocoStanding.rows[0].driver === 'Will' && sunocoStanding.rows[0].position === 'P1' && sunocoStanding.rows[0].chaseStatus === 'CHASE' && sunocoStanding.rows[1].driver === 'Clutch' && sunocoStanding.rows[1].position === 'P2' && sunocoStanding.rows[1].chaseStatus === 'CHASE' && sunocoStanding.rows[2].driver === 'Eazy' && sunocoStanding.rows[2].position === 'P4' && sunocoStanding.rows[2].chaseStatus === 'CHASE' && sunocoStanding.rows[3].driver === 'Wispy' && sunocoStanding.rows[3].position === 'P10' && sunocoStanding.rows[3].chaseStatus === 'NOT IN CHASE', 'Sunoco positions and Chase status: Will P1, Clutch P2, Eazy P4, Wispy P10');
-assert(uarlStanding?.rows?.length === 0 && /Awaiting the start of Season 6/i.test(uarlStanding?.emptyMessage || ''), 'UARL standings remain awaiting Season 6');
+assert(uarlStanding?.rows?.length === 0 && /No official UARL standings snapshot published yet/i.test(uarlStanding?.emptyMessage || '') && uarlStanding?.status === 'D1 POSTPONED', 'UARL standings remain empty while D1 is postponed and D2 is closed');
 
 const nrrsClash = scheduleEvents.find((event) => event.league === 'nrrs' && /Clash at the Coliseum/i.test(event.title));
 const nrrsAllStar = scheduleEvents.find((event) => event.league === 'nrrs' && /All-Star Race/i.test(event.title));
@@ -106,15 +101,21 @@ const uarlD1PostClashSaturdays = scheduleEvents.filter((event) => event.league =
 assert(uarlD1PostClashSaturdays.length === 0, 'UARL D1 Saturday dates have moved to Sundays while special non-Saturday dates remain intact');
 const uarlD1Competition = competitions.find((item) => item.id === 'uarl-d1');
 assert(uarlD1Competition?.schedule === 'Sundays · 8:30 PM ET', 'UARL D1 recurring schedule is Sundays at 8:30 PM ET');
-assert(scheduleEvents.filter((event) => event.league === 'uarl-d2' && event.round).length === 18, 'UARL D2 is numbered across 18 rounds');
+const uarlD1Daytona = scheduleEvents.find((event) => event.league === 'uarl-d1' && event.round === 'ROUND 1');
+assert(uarlD1Daytona?.date === '2026-09-20' && uarlD1Daytona?.time === '8:30 PM ET' && /POSTPONED/i.test(uarlD1Daytona?.specialTag || ''), 'UARL D1 resumes with postponed Daytona 500 on September 20 at 8:30 PM ET');
+const kmartRockingham = scheduleEvents.find((event) => event.league === 'kmart' && event.round === 'ROUND 7');
+const kmartPortland = scheduleEvents.find((event) => event.league === 'kmart' && event.round === 'ROUND 8');
+assert(kmartRockingham?.date === '2026-09-21' && kmartRockingham?.time === '8:30 PM ET' && /POSTPONED/i.test(kmartRockingham?.specialTag || '') && /DASH4CASH/i.test(kmartRockingham?.specialTag || ''), 'Kmart resumes with postponed Rockingham Round 7 on September 21 at 8:30 PM ET');
+assert(kmartPortland?.date === '2026-09-28', 'Kmart remaining calendar is shifted one week after Rockingham postponement');
+assert(scheduleEvents.filter((event) => event.league === 'uarl-d2').length === 0, 'UARL D2 contributes no active schedule entries after closure');
 assert(scheduleEvents.filter((event) => event.league === 'open' && event.round).length === 12, 'UARL Open is numbered across 12 rounds');
 assert(scheduleEvents.some((event) => event.league === 'uarl-d1' && event.title === 'Queen City 500' && event.specialTag === 'CROWN JEWEL'), 'UARL D1 Queen City 500 is a Crown Jewel');
 assert(scheduleEvents.some((event) => event.league === 'kmart' && event.title === 'Goodyear Southern 300' && event.specialTag === 'CROWN JEWEL'), 'Kmart Goodyear Southern 300 is a Crown Jewel');
 assert(scheduleEvents.some((event) => event.league === 'kmart' && event.title === 'WeatherTech Championship 300' && event.status === 'Championship'), 'Kmart finale is the Championship');
 
-assert(scheduleEvents.filter((event) => event.league !== 'iracing' && !event.offWeek).length === 126, 'Full source contains 126 season races');
+assert(scheduleEvents.filter((event) => event.league !== 'iracing' && !event.offWeek).length === 108, 'Active source contains 108 season races after UARL D2 closure');
 assert(scheduleEvents.filter((event) => event.league === 'iracing').length === 16, 'Full source contains 16 iRacing special-event windows');
-assert(scheduleEvents.length === 143, 'Complete schedule source contains 143 calendar entries including specials/off-week');
+assert(scheduleEvents.length === 125, 'Complete active schedule source contains 125 calendar entries including specials/off-week');
 assert(scheduleEvents.some((event) => event.league === 'iracing' && event.title === 'Southern 500' && event.endDate === '2026-09-07'), 'iRacing Southern 500 is a multi-day event window');
 assert(scheduleEvents.some((event) => event.title === 'Suzuka 1000km' && event.endDate === '2026-09-15'), 'Suzuka 1000km is represented as a multi-day event window');
 assert(Object.keys(tracks.locations || {}).length >= 60, 'Schedule retains track-location weather mapping');
@@ -156,14 +157,14 @@ assert(eventShareRoute.includes('/images/social/events/${event.shareSlug}-v47.jp
 assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;') && !eventShareRoute.includes('og:description'), 'Schedule event embeds suppress visible Discord title/description text');
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
-assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 143 schedule events have v47 share-card images');
-assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=54'), 'Schedule can share the currently selected league');
+assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 125 active schedule events have v47 share-card images');
+assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=56'), 'Schedule can share the currently selected league with v56 cache revision');
 assert(!schedulePage.includes('navigator.share') && schedulePage.includes('COPY ${selected.label.toUpperCase()} LINK'), 'League share button always copies the URL instead of opening the native share sheet');
 assert(existsSync(resolve(root, 'src/pages/schedule/share/[league].astro')), 'Static league-share route exists for schedule filters');
 const leagueShareRoute = text('src/pages/schedule/share/[league].astro');
 assert(leagueShareRoute.includes('export function getStaticPaths() {\n  const definitions = {'), 'League-share route keeps static-path definitions inside getStaticPaths isolated scope');
-assert(leagueShareRoute.includes('/images/social/leagues/${league}-v54.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v54 next-race cards with race-type badges');
-for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','uarl-d2','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v54.jpg`)), `League share image exists: ${league}`); }
+assert(leagueShareRoute.includes('/images/social/leagues/${league}-v56.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v56 next-race cards with race-type badges');
+for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v56.jpg`)), `League share image exists: ${league}`); }
 assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
@@ -180,25 +181,27 @@ assert(driversPage.includes('aw-driver-num') && driversPage.includes('numberPart
 assert(driversPage.includes('Aetherwing Charter Board') && driversPage.includes('data-charter-group'), 'Drivers page includes the Aetherwing Charter Board');
 const nrrsCharters = charters.find((group) => group.id === 'nrrs');
 const d1Charters = charters.find((group) => group.id === 'uarl-d1');
-const d2Charters = charters.find((group) => group.id === 'uarl-d2');
 const hasSharedOpenCharter=(group)=>group?.openCharter?.label==='Aetherwing Open Charter'&&group.openCharter.partTime?.number==='62'&&group.openCharter.partTime?.label==='Part-Time'&&group.openCharter.development?.number==='82'&&group.openCharter.development?.label==='Development';
 assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Wispy'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && hasSharedOpenCharter(nrrsCharters), 'NRRS has FT #32 Wispy / #43 Plarker / #54 Open plus shared 4th #62 PT / #82 Development');
-assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Wispy'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && hasSharedOpenCharter(d1Charters), 'UARL D1 has FT #28 Wispy / #54 Open / #92 Rocky plus shared 4th #62 PT / #82 Development');
-assert(JSON.stringify(d2Charters?.fullTime) === JSON.stringify([{number:'11',driver:'BurgerTown2Good'},{number:'19',driver:'Gk3r'},{number:'54',driver:'Open'}]) && hasSharedOpenCharter(d2Charters), 'UARL D2 has FT #11 BurgerTown2Good / #19 Gk3r / #54 Open plus shared 4th #62 PT / #82 Development');
-assert([nrrsCharters,d1Charters,d2Charters].every((group) => group?.fullTime?.length === 3), 'NRRS, UARL D1 and UARL D2 each have exactly three full-time charters');
-assert([nrrsCharters,d1Charters,d2Charters].every((group) => group?.openCharter?.partTime?.number === '62' && group?.openCharter?.development?.number === '82'), 'All three Aetherwing Open Charters use #62 for Part-Time and #82 for Development');
-assert([nrrsCharters,d1Charters,d2Charters].every((group) => !('driver' in group.openCharter.partTime) && !('driver' in group.openCharter.development)), 'Shared Aetherwing Open Charters remain driver-neutral');
+assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Wispy'},{number:'32',driver:'BurgerTown2Good'},{number:'52',driver:'Gk3r'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && hasSharedOpenCharter(d1Charters), 'UARL D1 has FT #28 Wispy / #32 BurgerTown2Good / #52 Gk3r / #54 Open / #92 Rocky plus one shared #62 PT / #82 Development Open Charter');
+assert(nrrsCharters?.fullTime?.length === 3 && d1Charters?.fullTime?.length === 5 && charters.length === 2, 'NRRS has three FT charters; UARL D1 has five FT charters; D2 charter board is removed');
+assert([nrrsCharters,d1Charters].every((group) => group?.openCharter?.partTime?.number === '62' && group?.openCharter?.development?.number === '82'), 'Active Aetherwing Open Charters use #62 for Part-Time and #82 for Development');
+assert([nrrsCharters,d1Charters].every((group) => !('driver' in group.openCharter.partTime) && !('driver' in group.openCharter.development)), 'Shared Aetherwing Open Charters remain driver-neutral');
 assert(!JSON.stringify(charters).includes('\"64\"'), 'No Aetherwing #64 charter may exist');
 assert(driversPage.includes('Aetherwing Open Charter') && driversPage.includes('One shared slot · two uses'), 'Drivers charter board explains the shared 4th charter model');
 assert(driversPage.includes('role="tablist"') && driversPage.includes('role="tab"') && driversPage.includes('data-charter-panel'), 'Shared fourth-charter module uses accessible tab semantics');
 assert(driversPage.includes("event.key==='ArrowRight'") && driversPage.includes("event.key==='Home'") && driversPage.includes("tab.addEventListener('click'"), 'Shared fourth-charter switch supports keyboard and touch/click interaction');
 assert(driversPage.includes('data-charter-slot') && driversPage.includes('aw-open-charter__switch-line'), 'Drivers board renders one shared visual slot with an Aether Blue switch line');
-const wispyD2Entry = drivers.find((entry) => entry.id === 'wispy-uarl-d2');
-assert(wispyD2Entry?.number === '62' && wispyD2Entry?.status === 'Part-Time', 'Wispy UARL D2 program entry remains #62 Part-Time without a permanent charter assignment label');
+assert(!drivers.some((entry) => entry.competitionId === 'uarl-d2'), 'Driver program data contains no active UARL D2 assignments');
+const burgerD1Entry = drivers.find((entry) => entry.id === 'burgertown-uarl-d1');
+const gk3rD1Entry = drivers.find((entry) => entry.id === 'gk3r-uarl-d1');
+assert(burgerD1Entry?.number === '32' && burgerD1Entry?.status === 'Full-Time', 'BurgerTown2Good moves to UARL D1 FT #32');
+assert(gk3rD1Entry?.number === '52' && gk3rD1Entry?.status === 'Full-Time' && gk3rD1Entry?.handle === '@sealsntags', 'Gk3r moves to UARL D1 FT #52 with @sealsntags');
 assert(roster.find((entry) => entry.slug === 'parker')?.name === 'Plarker', '#43 NRRS driver displays as Plarker');
-assert(['nrrs','uarl-d1','uarl-d2'].every((id) => competitions.find((entry) => entry.id === id)?.roster?.includes('4TH · AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT')), 'Homepage/mission rosters show one shared #62 PT / #82 Development Aetherwing Open Charter in all three programs');
-assert(!competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.some((line) => line.startsWith('#32 ')), 'UARL D1 no longer carries a #32 FT charter');
-assert(!competitions.find((entry) => entry.id === 'uarl-d2')?.roster?.some((line) => line.startsWith('#28 ')), 'UARL D2 no longer carries a #28 FT charter');
+assert(roster.find((entry) => entry.slug === 'burgertown2good')?.programs?.includes('UARL D1'), 'BurgerTown2Good profile now belongs to UARL D1');
+assert(roster.find((entry) => entry.slug === 'gk3r')?.programs?.includes('UARL D1') && roster.find((entry) => entry.slug === 'gk3r')?.handle === '@sealsntags', 'Gk3r profile now belongs to UARL D1 as @sealsntags');
+assert(competitions.find((entry) => entry.id === 'nrrs')?.roster?.includes('4TH · AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT') && competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.includes('AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT'), 'Active program rosters show one shared #62 PT / #82 Development Aetherwing Open Charter');
+assert(competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.includes('#32 BurgerTown2Good') && competitions.find((entry) => entry.id === 'uarl-d1')?.roster?.includes('#52 Gk3r'), 'UARL D1 roster carries #32 BurgerTown2Good and #52 Gk3r FT charters');
 
 
 const newsIndex = text('src/pages/news/index.astro');
@@ -230,13 +233,13 @@ if (process.exitCode) {
 
 // v0.4.25 regression guards
 const homePage = text('src/pages/index.astro');
-assert(schedulePage.includes('SEP 11') && schedulePage.includes('September 11, 2026'), 'Schedule review stamp is September 11, 2026');
+assert(schedulePage.includes('SEP 15') && schedulePage.includes('September 15, 2026'), 'Schedule review stamp is September 15, 2026');
 assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.includes("event.league === 'iracing'"), 'Schedule Next Operation uses fixed-race priority over active iRacing windows');
 assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
 assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
 assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
 assert(homePage.includes('wispy-clinches-nrrs-s3-chase-martinsville') && homePage.includes('Read the Chase-Clinch Story'), 'Homepage Latest Updates features the Martinsville Chase-clinch story');
-assert(homePage.includes('/Daytona 250/i.test(event.title)') && !homePage.includes("event.date==='2026-09-11'"), 'Homepage initial Next Event follows the Daytona 250 identity instead of the obsolete Sep 11 date');
+assert(homePage.includes('/Daytona 500/i.test(event.title)') && !homePage.includes('uarl-d2'), 'Homepage initial UARL fallback follows the active D1 Daytona 500 rather than closed D2');
 const chaseStory = news.find((story) => story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville');
 assert(chaseStory?.category === 'Race & Competition', 'Martinsville Chase-clinch story uses Race & Competition category');
 // v0.4.26 mobile Schedule cockpit guards

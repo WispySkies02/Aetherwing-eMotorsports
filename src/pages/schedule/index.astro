@@ -49,16 +49,16 @@ const displayDate = (event) => {
   return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
 };
 ---
-<BaseLayout title="Schedule" description="The complete Aetherwing 2026–27 race calendar: 126 season races across seven competition relationships plus iRacing special-event windows, with reactive Race Control and expandable event information docks.">
-  <PageHero eyebrow="2026–27 Competition Calendar" title="Aetherwing Events" description="The complete calendar across five Aetherwing programs, two StarClutch Racing alliance series, and iRacing special events. Filter the grid and Race Control immediately retargets the next operation for that selection." ghost="RACE" />
+<BaseLayout title="Schedule" description={`The complete Aetherwing 2026–27 race calendar: ${totalSeasonRaces} season races across six active competition relationships plus iRacing special-event windows, with reactive Race Control and expandable event information docks.`}>
+  <PageHero eyebrow="2026–27 Competition Calendar" title="Aetherwing Events" description="The complete calendar across four active Aetherwing programs, two StarClutch Racing alliance series, and iRacing special events. UARL D2 has closed operations; D1 and Open remain active." ghost="RACE" />
 
   <section class="section section--tight aw-schedule-page" data-schedule-page>
     <div class="shell">
       <div class="aw-schedule-stats">
-        <div><span>Competition Relationships</span><strong>07</strong><small>5 Aetherwing · 2 Alliance</small></div>
+        <div><span>Competition Relationships</span><strong>06</strong><small>4 Aetherwing · 2 Alliance</small></div>
         <div><span>Total Season Races</span><strong>{totalSeasonRaces}</strong><small>Off-weeks excluded</small></div>
         <div><span>Calendar Window</span><strong>26–27</strong><small>2026 through 2027</small></div>
-        <div><span>Calendar Review</span><strong>SEP 11</strong><small>September 11, 2026</small></div>
+        <div><span>Calendar Review</span><strong>SEP 15</strong><small>September 15, 2026</small></div>
       </div>
 
       <section class="aw-championship-tracker" id="standings" aria-labelledby="aw-standings-title">
@@ -107,8 +107,8 @@ const displayDate = (event) => {
                 ) : (
                   <div class="aw-mobile-standing-empty">
                     <strong>{series.emptyMessage}</strong>
-                    <span>Season 6 · D1 8:30 PM · Open 11:30 AM · D2 6:45 PM ET</span>
-                    <div><b>D1</b><b>D2</b><b>OPEN</b></div>
+                    <span>Season 6 · D1 8:30 PM · Open 11:30 AM · D2 CLOSED</span>
+                    <div><b>D1</b><b>OPEN</b><b>D2 CLOSED</b></div>
                   </div>
                 )}
               </article>
@@ -209,13 +209,12 @@ const displayDate = (event) => {
           <button type="button" data-filter="kmart" aria-pressed="false">Kmart</button>
           <button type="button" data-filter="sunoco" aria-pressed="false">Sunoco Trucks</button>
           <button type="button" data-filter="nrrs" aria-pressed="false">NRRS</button>
-          <button type="button" data-filter="uarl-group" aria-pressed="false">UARL Divisions</button>
+          <button type="button" data-filter="uarl-group" aria-pressed="false">UARL</button>
           <button type="button" data-filter="iracing" aria-pressed="false">iRacing Special Events</button>
         </div>
         <div class="aw-subfilter-row" data-uarl-subfilters hidden>
           <button class="is-active" type="button" data-subfilter="uarl-all" aria-pressed="true">All UARL</button>
           <button type="button" data-subfilter="uarl-d1" aria-pressed="false">UARL D1</button>
-          <button type="button" data-subfilter="uarl-d2" aria-pressed="false">UARL D2</button>
           <button type="button" data-subfilter="open" aria-pressed="false">UARL Open</button>
         </div>
         <div class="aw-league-share-row">
@@ -308,9 +307,8 @@ const displayDate = (event) => {
     kmart:{key:'kmart',label:'Kmart'},
     sunoco:{key:'sunoco',label:'Sunoco Trucks'},
     iracing:{key:'iracing',label:'iRacing'},
-    'uarl-all':{key:'uarl-all',label:'UARL · All Divisions'},
+    'uarl-all':{key:'uarl-all',label:'UARL · D1 + Open'},
     'uarl-d1':{key:'uarl-d1',label:'UARL D1'},
-    'uarl-d2':{key:'uarl-d2',label:'UARL D2'},
     open:{key:'open',label:'UARL Open'}
   };
 
@@ -344,7 +342,7 @@ const displayDate = (event) => {
   function isAlliance(league) { return league === 'kmart' || league === 'sunoco'; }
   function matchesFilter(event) {
     if (activeFilter === 'all') return true;
-    if (activeFilter === 'uarl-group') return activeSubfilter === 'uarl-all' ? ['uarl-d1','uarl-d2','open'].includes(event.league) : event.league === activeSubfilter;
+    if (activeFilter === 'uarl-group') return activeSubfilter === 'uarl-all' ? ['uarl-d1','open'].includes(event.league) : event.league === activeSubfilter;
     return event.league === activeFilter;
   }
   function filteredEvents() { return scheduleEvents.filter(event => isUpcoming(event) && matchesFilter(event)).sort((a,b) => getEventStart(a)-getEventStart(b)); }
@@ -466,13 +464,13 @@ const displayDate = (event) => {
   leagueShareButton?.addEventListener('click', async () => {
     const selected = selectedShareLeague();
     if (!selected) { announceShare('Select a league first'); return; }
-    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=54`;
+    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=56`;
     await copyText(url);
     announceShare(`${selected.label} link copied`);
   });
 
   function applyLeagueSelection(league) {
-    const isUarlDivision = ['uarl-d1','uarl-d2','open'].includes(league);
+    const isUarlDivision = ['uarl-d1','open'].includes(league);
     const isUarlAll = league === 'uarl-all' || league === 'uarl-group';
     const isUarl = isUarlDivision || isUarlAll;
     activeFilter = isUarl ? 'uarl-group' : (leagueShareMap[league] ? league : 'all');

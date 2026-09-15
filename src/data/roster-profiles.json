@@ -5,11 +5,10 @@
     "handle": "@Aokikoto",
     "role": "Founder / Driver",
     "affiliation": "aetherwing",
-    "numbers": "32 / 28 / 62 / 15 / 54",
+    "numbers": "32 / 28 / 15 / 54",
     "programs": [
       "NRRS",
       "UARL D1",
-      "UARL D2",
       "UARL Open",
       "Kmart",
       "Sunoco"
@@ -50,25 +49,25 @@
     "handle": "@uhhbzb",
     "role": "Driver",
     "affiliation": "aetherwing",
-    "numbers": "11",
+    "numbers": "32",
     "programs": [
-      "UARL D2"
+      "UARL D1"
     ],
-    "feature": "UARL D2",
-    "bio": "Active Aetherwing UARL Division 2 driver in the #11."
+    "feature": "UARL D1",
+    "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
   },
   {
     "slug": "gk3r",
     "name": "Gk3r",
-    "handle": "@seals",
+    "handle": "@sealsntags",
     "role": "Driver",
     "affiliation": "aetherwing",
-    "numbers": "19",
+    "numbers": "52",
     "programs": [
-      "UARL D2"
+      "UARL D1"
     ],
-    "feature": "UARL D2",
-    "bio": "Active Aetherwing UARL Division 2 driver in the #19."
+    "feature": "UARL D1",
+    "bio": "Full-time Aetherwing UARL Division 1 driver in the #52."
   },
   {
     "slug": "will",

@@ -19,14 +19,14 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     <div class="shell">
       <div class="aw-roster-stats stat-rail">
         <div class="stat"><strong>10</strong><span>Active RoRacing Drivers</span></div>
-        <div class="stat"><strong>7</strong><span>Competition Relationships</span></div>
+        <div class="stat"><strong>6</strong><span>Competition Relationships</span></div>
         <div class="stat"><strong>3</strong><span>iRacing Factory Entries</span></div>
         <div class="stat"><strong>5 / 5</strong><span>Aetherwing / Alliance-Only</span></div>
       </div>
       <section class="aw-charter-board" aria-labelledby="charter-board-title">
         <div class="aw-charter-board__head">
           <div><span class="eyebrow">2026 Charter Allocation</span><h2 id="charter-board-title">Aetherwing Charter Board</h2></div>
-          <p>Each program carries three full-time charters plus one shared Aetherwing Open Charter. Vacant full-time seats are marked OPEN; the fourth charter uses #62 for Part-Time entries or #82 for Development entries and is one shared slot, not two charters.</p>
+          <p>Current allocations are shown by program. NRRS carries three full-time charters plus one shared Aetherwing Open Charter; UARL D1 carries five full-time charters plus one shared Aetherwing Open Charter. Vacant full-time seats are marked OPEN. In every shared Open Charter module, #62 Part-Time and #82 Development are two uses of one charter, never simultaneous roster slots.</p>
         </div>
         <div class="aw-charter-grid">
           {charters.map((group)=><article class="aw-charter-card" data-charter-group={group.id}>
@@ -39,7 +39,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
               </div>)}
               <div class="aw-open-charter" data-open-charter data-charter-slot data-active-mode="part-time">
                 <div class="aw-open-charter__head">
-                  <div><span class="aw-charter-slot__index">4TH CHARTER</span><strong>{group.openCharter.label}</strong></div>
+                  <div><span class="aw-charter-slot__index">{group.openCharter.slotLabel ?? `${group.fullTime.length + 1}TH CHARTER`}</span><strong>{group.openCharter.label}</strong></div>
                   <small>One shared slot · two uses</small>
                 </div>
                 <div class="aw-open-charter__tabs" role="tablist" aria-label={`${group.label} Aetherwing Open Charter use`}>
@@ -67,7 +67,6 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
           <button type="button" data-filter="aetherwing">Aetherwing</button>
           <button type="button" data-filter="NRRS">NRRS</button>
           <button type="button" data-filter="UARL D1">UARL D1</button>
-          <button type="button" data-filter="UARL D2">UARL D2</button>
           <button type="button" data-filter="UARL Open">UARL Open</button>
           <button type="button" class="is-alliance" data-filter="Kmart">Kmart</button>
           <button type="button" class="is-alliance" data-filter="Sunoco">Sunoco</button>
@@ -148,7 +147,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     const stage=browser.querySelector('[data-driver-stage]');
     const options=Array.from(browser.querySelectorAll('[role="option"]'));
     const formatNumbers=(value)=>String(value||'').split('/').map(part=>part.trim()).filter(Boolean).map(part=>`#${part.replace(/^#/, '')}`).join(' / ');
-    const competitionIdByFilter={'NRRS':'nrrs','UARL D1':'uarl-d1','UARL D2':'uarl-d2','UARL Open':'uarl-open','Kmart':'kmart','Sunoco':'sunoco'};
+    const competitionIdByFilter={'NRRS':'nrrs','UARL D1':'uarl-d1','UARL Open':'uarl-open','Kmart':'kmart','Sunoco':'sunoco'};
     let activeRosterFilter='all';
     const numbersFor=(driver,filter=activeRosterFilter)=>{const competitionId=competitionIdByFilter[filter];if(competitionId){const entry=driverEntries.find(item=>item.profile===driver.slug&&item.competitionId===competitionId);if(entry?.number)return `#${entry.number}`;}return formatNumbers(driver.numbers);};
     const renderOptionNumber=(option,driver)=>{const node=option.querySelector('.aw-driver-num');if(!(node instanceof HTMLElement)||!driver)return;const parts=numbersFor(driver).split(' / ').filter(Boolean);node.classList.toggle('is-multi',parts.length>1);node.innerHTML=parts.map(part=>`<b>${part}</b>`).join('');};

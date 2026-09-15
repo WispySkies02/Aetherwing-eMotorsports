@@ -502,12 +502,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Advance Auto Parts 250",
     "track": "Rockingham",
-    "date": "2026-09-14",
+    "date": "2026-09-21",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 7",
-    "specialTag": "DASH4CASH",
+    "specialTag": "POSTPONED \u00b7 DASH4CASH",
     "status": "Regular Season"
   },
   {
@@ -551,14 +551,15 @@
     "time": "8:00 PM ET"
   },
   {
-    "date": "2026-09-13",
+    "date": "2026-09-20",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
     "title": "The 6th Annual Daytona 500",
     "track": "Daytona International Speedway",
     "time": "8:30 PM ET",
-    "round": "ROUND 1"
+    "round": "ROUND 1",
+    "specialTag": "POSTPONED"
   },
   {
     "date": "2026-09-13",
@@ -575,24 +576,13 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Brembo Performance 200",
     "track": "Portland",
-    "date": "2026-09-21",
+    "date": "2026-09-28",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 8",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-09-12",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "The 6th Official Daytona 250",
-    "track": "Daytona International Speedway",
-    "time": "7:00 PM ET",
-    "round": "ROUND 1",
-    "specialTag": "POSTPONED"
   },
   {
     "date": "2026-09-18",
@@ -615,7 +605,7 @@
     "time": "8:00 PM ET"
   },
   {
-    "date": "2026-09-20",
+    "date": "2026-09-27",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -640,23 +630,13 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "BrakeBest Brake Pads 250",
     "track": "Martinsville",
-    "date": "2026-09-28",
+    "date": "2026-10-05",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 9",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-09-18",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Carolina Freight 200",
-    "track": "Charlotte Motor Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 2"
   },
   {
     "date": "2026-09-15",
@@ -689,7 +669,7 @@
     "time": "8:00 PM ET"
   },
   {
-    "date": "2026-09-27",
+    "date": "2026-10-04",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -713,23 +693,13 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Valvoline 300",
     "track": "Talladega",
-    "date": "2026-10-05",
+    "date": "2026-10-12",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 10",
     "specialTag": "DASH4CASH",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-09-25",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Borderlands Truck Challenge 150",
-    "track": "Mexico City",
-    "time": "6:45 PM ET",
-    "round": "ROUND 3"
   },
   {
     "date": "2026-09-22",
@@ -762,7 +732,7 @@
     "time": "8:00 PM ET"
   },
   {
-    "date": "2026-10-04",
+    "date": "2026-10-11",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -786,22 +756,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "O'Reilly Auto Parts All-Star",
     "track": "Charlotte",
-    "date": "2026-10-12",
+    "date": "2026-10-19",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ALL-STAR",
     "status": "All-Star Race"
-  },
-  {
-    "date": "2026-10-02",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Echo Park Hauler 200",
-    "track": "Echo Park Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 4"
   },
   {
     "date": "2026-09-29",
@@ -823,7 +783,7 @@
     "time": "8:00 PM ET"
   },
   {
-    "date": "2026-10-11",
+    "date": "2026-10-18",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -847,22 +807,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "MasterPro Milwaukee Mile 200",
     "track": "Milwaukee",
-    "date": "2026-10-19",
+    "date": "2026-10-26",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 11",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-10-09",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Honky-Tonk Hauler 200",
-    "track": "Nashville Fairgrounds",
-    "time": "6:45 PM ET",
-    "round": "ROUND 5"
   },
   {
     "date": "2026-10-06",
@@ -895,7 +845,7 @@
     "time": "8:00 PM ET"
   },
   {
-    "date": "2026-10-18",
+    "date": "2026-10-25",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -919,22 +869,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Corona Mexico 250",
     "track": "Mexico City",
-    "date": "2026-10-26",
+    "date": "2026-11-02",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 12",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-10-16",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "High Roller Truck Shootout 200",
-    "track": "Las Vegas Motor Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 6"
   },
   {
     "date": "2026-10-13",
@@ -947,7 +887,7 @@
     "round": "ROUND 24"
   },
   {
-    "date": "2026-10-25",
+    "date": "2026-11-01",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -971,22 +911,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "USAA Salute to Service 250",
     "track": "Naval Base Coronado",
-    "date": "2026-11-02",
+    "date": "2026-11-09",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 13",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-10-23",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Union Jack Truck Classic 150",
-    "track": "Silverstone Circuit",
-    "time": "6:45 PM ET",
-    "round": "ROUND 7"
   },
   {
     "date": "2026-10-20",
@@ -1020,7 +950,7 @@
     "round": "ROUND 8"
   },
   {
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -1034,22 +964,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Lowe's 600",
     "track": "Charlotte",
-    "date": "2026-11-09",
+    "date": "2026-11-16",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 14",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-10-30",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Texas Trailblazer 250",
-    "track": "Texas Motor Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 8"
   },
   {
     "date": "2026-11-04",
@@ -1063,7 +983,7 @@
     "time": "Event Window"
   },
   {
-    "date": "2026-11-08",
+    "date": "2026-11-15",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "All-Star",
@@ -1086,22 +1006,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "MicroGard 300",
     "track": "Chicagoland",
-    "date": "2026-11-16",
+    "date": "2026-11-23",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 15",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-11-06",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Italian Freight Challenge 175",
-    "track": "Monza Oval",
-    "time": "6:45 PM ET",
-    "round": "ROUND 9"
   },
   {
     "date": "2026-11-13",
@@ -1115,7 +1025,7 @@
     "time": "Event Window"
   },
   {
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -1139,22 +1049,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "MasterPro 200 at The Glen",
     "track": "Watkins Glen",
-    "date": "2026-11-23",
+    "date": "2026-11-30",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 16",
     "status": "Regular Season"
-  },
-  {
-    "date": "2026-11-13",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Aegean Truck Classic 150",
-    "track": "Greece Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 10"
   },
   {
     "date": "2026-11-17",
@@ -1168,7 +1068,7 @@
     "time": "Event Window"
   },
   {
-    "date": "2026-11-22",
+    "date": "2026-11-29",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -1192,7 +1092,7 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Super Start Batteries 200",
     "track": "New Hampshire",
-    "date": "2026-11-30",
+    "date": "2026-12-07",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
@@ -1200,17 +1100,7 @@
     "status": "Regular Season"
   },
   {
-    "date": "2026-11-20",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Tri-Corner Freight 200",
-    "track": "Pocono Raceway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 11"
-  },
-  {
-    "date": "2026-11-29",
+    "date": "2026-12-06",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -1234,23 +1124,13 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Goodyear Southern 300",
     "track": "Darlington",
-    "date": "2026-12-07",
+    "date": "2026-12-14",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 18",
     "status": "The Chase",
     "specialTag": "CROWN JEWEL"
-  },
-  {
-    "date": "2026-11-27",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Crossroads Truck Classic 200",
-    "track": "Indianapolis Motor Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 12"
   },
   {
     "date": "2026-12-02",
@@ -1264,7 +1144,7 @@
     "time": "Event Window"
   },
   {
-    "date": "2026-12-06",
+    "date": "2026-12-13",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -1278,7 +1158,7 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "BrakeBest 200 at Indianapolis",
     "track": "Indy Road Course",
-    "date": "2026-12-14",
+    "date": "2026-12-21",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
@@ -1286,17 +1166,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2026-12-04",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Regular Season",
-    "title": "Pacific Hauler Challenge 125",
-    "track": "Twin Ring Motegi",
-    "time": "6:45 PM ET",
-    "round": "ROUND 13"
-  },
-  {
-    "date": "2026-12-13",
+    "date": "2026-12-20",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Regular Season",
@@ -1310,22 +1180,12 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Bush's Beans 250",
     "track": "Bristol",
-    "date": "2026-12-21",
+    "date": "2026-12-28",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
     "round": "ROUND 20",
     "status": "The Chase"
-  },
-  {
-    "date": "2026-12-11",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "The Chase",
-    "title": "Lakefront Truck Clash 125",
-    "track": "Chicago Street Course",
-    "time": "6:45 PM ET",
-    "round": "ROUND 14"
   },
   {
     "date": "2026-12-15",
@@ -1350,7 +1210,7 @@
     "time": "Event Window"
   },
   {
-    "date": "2026-12-20",
+    "date": "2026-12-27",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "The Chase",
@@ -1364,7 +1224,7 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "MasterPro 250",
     "track": "Kansas",
-    "date": "2026-12-28",
+    "date": "2027-01-04",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
@@ -1372,17 +1232,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2026-12-18",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "The Chase",
-    "title": "Heartland Hauler 200",
-    "track": "Chicagoland Speedway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 15"
-  },
-  {
-    "date": "2026-12-23",
+    "date": "2026-12-30",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "The Chase",
@@ -1392,7 +1242,7 @@
     "round": "ROUND 15"
   },
   {
-    "date": "2026-12-27",
+    "date": "2027-01-03",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "The Chase",
@@ -1406,7 +1256,7 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "Menards 200",
     "track": "Indianapolis Raceway Park",
-    "date": "2027-01-04",
+    "date": "2027-01-11",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
@@ -1414,17 +1264,7 @@
     "status": "The Chase"
   },
   {
-    "date": "2026-12-25",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "The Chase",
-    "title": "Mississippi Freight 200",
-    "track": "World Wide Technology Raceway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 16"
-  },
-  {
-    "date": "2027-01-03",
+    "date": "2027-01-10",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "The Chase",
@@ -1438,7 +1278,7 @@
     "leagueName": "NASCAR Kmart Auto Parts Series",
     "title": "WeatherTech Championship 300",
     "track": "Homestead-Miami",
-    "date": "2027-01-11",
+    "date": "2027-01-18",
     "time": "8:30 PM ET",
     "durationMinutes": 90,
     "series": "Kmart",
@@ -1446,33 +1286,13 @@
     "status": "Championship"
   },
   {
-    "date": "2027-01-01",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "The Chase",
-    "title": "Palmetto Truck Classic 200",
-    "track": "Darlington Raceway",
-    "time": "6:45 PM ET",
-    "round": "ROUND 17"
-  },
-  {
-    "date": "2027-01-10",
+    "date": "2027-01-17",
     "league": "uarl-d1",
     "leagueName": "L.L. Bean Cup Series",
     "status": "Championship",
     "title": "L.L. Bean Championship Finale",
     "track": "Homestead-Miami Speedway",
     "time": "8:30 PM ET",
-    "round": "ROUND 18"
-  },
-  {
-    "date": "2027-01-08",
-    "league": "uarl-d2",
-    "leagueName": "NFFF Grand National",
-    "status": "Championship",
-    "title": "The 6th Trader Joes Truck Championship",
-    "track": "Homestead-Miami Speedway",
-    "time": "6:45 PM ET",
     "round": "ROUND 18"
   }
 ]

@@ -40,39 +40,6 @@
     "affiliation": "aetherwing"
   },
   {
-    "id": "burgertown-uarl-d2",
-    "profile": "burgertown2good",
-    "displayName": "BurgerTown2Good",
-    "handle": "@uhhbzb",
-    "number": "11",
-    "competition": "UARL Division 2",
-    "competitionId": "uarl-d2",
-    "status": "Full-Time",
-    "affiliation": "aetherwing"
-  },
-  {
-    "id": "gk3r-uarl-d2",
-    "profile": "gk3r",
-    "displayName": "Gk3r",
-    "handle": "@seals",
-    "number": "19",
-    "competition": "UARL Division 2",
-    "competitionId": "uarl-d2",
-    "status": "Full-Time",
-    "affiliation": "aetherwing"
-  },
-  {
-    "id": "wispy-uarl-d2",
-    "profile": "wispy",
-    "displayName": "Wispy",
-    "handle": "@Aokikoto",
-    "number": "62",
-    "competition": "UARL Division 2",
-    "competitionId": "uarl-d2",
-    "status": "Part-Time",
-    "affiliation": "aetherwing"
-  },
-  {
     "id": "wispy-uarl-open",
     "profile": "wispy",
     "displayName": "Wispy",
@@ -196,6 +163,28 @@
     "competition": "iRacing Factory Program",
     "competitionId": "iracing-factory",
     "status": "Factory Driver",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "burgertown-uarl-d1",
+    "profile": "burgertown2good",
+    "displayName": "BurgerTown2Good",
+    "handle": "@uhhbzb",
+    "number": "32",
+    "competition": "UARL Division 1",
+    "competitionId": "uarl-d1",
+    "status": "Full-Time",
+    "affiliation": "aetherwing"
+  },
+  {
+    "id": "gk3r-uarl-d1",
+    "profile": "gk3r",
+    "displayName": "Gk3r",
+    "handle": "@sealsntags",
+    "number": "52",
+    "competition": "UARL Division 1",
+    "competitionId": "uarl-d1",
+    "status": "Full-Time",
     "affiliation": "aetherwing"
   }
 ]

@@ -19,6 +19,7 @@
     ],
     "openCharter": {
       "label": "Aetherwing Open Charter",
+      "slotLabel": "4TH CHARTER",
       "partTime": {
         "number": "62",
         "label": "Part-Time",
@@ -34,11 +35,19 @@
   {
     "id": "uarl-d1",
     "label": "UARL D1",
-    "seriesNote": "Aetherwing charter allocation",
+    "seriesNote": "Aetherwing Season 6 charter allocation",
     "fullTime": [
       {
         "number": "28",
         "driver": "Wispy"
+      },
+      {
+        "number": "32",
+        "driver": "BurgerTown2Good"
+      },
+      {
+        "number": "52",
+        "driver": "Gk3r"
       },
       {
         "number": "54",
@@ -51,47 +60,16 @@
     ],
     "openCharter": {
       "label": "Aetherwing Open Charter",
+      "slotLabel": "6TH CHARTER",
       "partTime": {
         "number": "62",
         "label": "Part-Time",
-        "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot."
+        "description": "Part-time identity for the one shared Aetherwing Open Charter. #62 and #82 are never simultaneous charter slots."
       },
       "development": {
         "number": "82",
         "label": "Development",
-        "description": "Development entry identity for this shared fourth charter. It does not add another roster slot."
-      }
-    }
-  },
-  {
-    "id": "uarl-d2",
-    "label": "UARL D2",
-    "seriesNote": "Aetherwing charter allocation",
-    "fullTime": [
-      {
-        "number": "11",
-        "driver": "BurgerTown2Good"
-      },
-      {
-        "number": "19",
-        "driver": "Gk3r"
-      },
-      {
-        "number": "54",
-        "driver": "Open"
-      }
-    ],
-    "openCharter": {
-      "label": "Aetherwing Open Charter",
-      "partTime": {
-        "number": "62",
-        "label": "Part-Time",
-        "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot."
-      },
-      "development": {
-        "number": "82",
-        "label": "Development",
-        "description": "Development entry identity for this shared fourth charter. It does not add another roster slot."
+        "description": "Development identity for the one shared Aetherwing Open Charter. #62 and #82 are never simultaneous charter slots."
       }
     }
   }

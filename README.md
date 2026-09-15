@@ -1,3 +1,12 @@
+**v0.4.35 — UARL D2 Closure / D1 + Kmart Postponement / UARL Charter Expansion**
+- UARL D2 / NFFF Grand National has closed operations and is removed from the active competition structure.
+- Active structure is now 4 Aetherwing programs + 2 StarClutch Racing alliance series = 6 competition relationships.
+- UARL D1 resumes with the postponed Daytona 500 on Sunday, September 20 at 8:30 PM ET; all remaining D1 dates move one week later.
+- Kmart resumes with the postponed Advance Auto Parts 250 at Rockingham on Monday, September 21 at 8:30 PM ET; all remaining Kmart dates move one week later.
+- UARL D1 FT charters: #28 Wispy, #32 BurgerTown2Good, #52 Gk3r, #54 OPEN, #92 Rocky.
+- One shared Aetherwing Open Charter: #62 Part-Time / #82 Development. #62 and #82 are never simultaneous charter slots.
+- League-share cards are refreshed to v56 and UARL All now means D1 + Open.
+
 **v0.4.34 — Shared Aetherwing Open Charter**
 - NRRS FT: #32 Wispy, #43 Plarker, #54 Open. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
 - UARL D1 FT: #28 Wispy, #54 Open, #92 Rocky. 4th charter: Aetherwing Open Charter — #62 Part-Time / #82 Development.
@@ -5,7 +14,7 @@
 - #62 and #82 are two identities for one shared fourth charter slot, never two simultaneous charters.
 - Vacant FT seats remain labeled OPEN; the named Aetherwing Open Charter is visually and semantically separate from an unfilled FT seat.
 
-Current build: v0.4.27
+Current build: v0.4.35
 - UARL D2 recurring race night remains Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday, September 12, 2026 at 7:00 PM ET.
 
 ## Paint Booth host

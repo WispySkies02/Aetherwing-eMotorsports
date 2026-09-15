@@ -10,7 +10,7 @@ import news from '../data/news.json';
 import '../styles/pages/home.css';
 const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
-const liveEvent=events.find((event)=>event.league==='uarl-d2' && /Daytona 250/i.test(event.title)) ?? events[0];
+const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.test(event.title)) ?? events[0];
 const latest=result.latestResult;
 const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase-martinsville') ?? news[0];
 ---
@@ -33,7 +33,7 @@ const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase
           <div><strong>{String(site.featuredPartners).padStart(2,'0')}</strong><span>Featured Partners</span></div>
           <div><strong>03</strong><span>Competition Worlds</span></div>
         </div>
-        <p>5 Aetherwing drivers and 5 alliance-only drivers across 5 Aetherwing programs and 2 alliance series.</p>
+        <p>5 Aetherwing drivers and 5 alliance-only drivers across 4 active Aetherwing programs and 2 alliance series.</p>
       </aside>
     </div>
   </section>
@@ -86,7 +86,7 @@ const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase
 
   <section class="section aw-programs" data-brush="WHERE WE COMPETE">
     <div class="shell">
-      <div class="section-head"><div><p class="eyebrow">Aetherwing Competition Relationships</p><h2 class="section-title">Where We Compete</h2></div><p class="lede">Seven current relationships: 5 programs under the Aetherwing banner and 2 alliance series represented through StarClutch Racing.</p></div>
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Competition Relationships</p><h2 class="section-title">Where We Compete</h2></div><p class="lede">Six current relationships: 4 active programs under the Aetherwing banner and 2 alliance series represented through StarClutch Racing. UARL D2 has closed operations.</p></div>
       <div class="aw-program-browser" data-program-browser>
         <div class="aw-program-tabs" role="tablist" aria-label="Competition relationships">
           {competitions.map((competition,index)=><button type="button" role="tab" aria-selected={index===0?'true':'false'} data-program={competition.id} class:list={[{'is-alliance':competition.type==='alliance'}]}><span>{String(index+1).padStart(2,'0')}</span>{competition.name}</button>)}

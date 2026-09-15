@@ -13,7 +13,7 @@
     "id": "uarl-d1",
     "name": "UARL Division 1",
     "series": "L.L. Bean Cup Series",
-    "day": 6,
+    "day": 0,
     "time": "20:30",
     "timezone": "America/New_York",
     "type": "aetherwing",
@@ -25,16 +25,6 @@
     "series": "Open Series",
     "day": 0,
     "time": "11:30",
-    "timezone": "America/New_York",
-    "type": "aetherwing",
-    "frequency": "weekly"
-  },
-  {
-    "id": "uarl-d2",
-    "name": "UARL Division 2",
-    "series": "NFFF Grand National Series",
-    "day": 5,
-    "time": "18:45",
     "timezone": "America/New_York",
     "type": "aetherwing",
     "frequency": "weekly"

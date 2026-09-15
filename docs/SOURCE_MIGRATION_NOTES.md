@@ -6,13 +6,14 @@ Source used: `Aetherwing-Schedule-Full-V10-Spelling-Audit-Fixes-2026-09-05(1).tx
 
 Structured migration:
 
-- 143 total calendar entries
-- 126 season races (iRacing special events and off-weeks excluded)
+- 125 current calendar entries
+- 108 active season races (iRacing special events and off-weeks excluded)
 - 16 iRacing special-event windows
 - 1 Kmart off-week marker
 - 62 track-location weather targets
 - 20 short-name track aliases
-- UARL D2 runs Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday Sep 12, 2026 at 7:00 PM ET
+- UARL D2 / NFFF Grand National closed operations on September 15, 2026; future D2 events are removed from the active main-site calendar
+- UARL D1 and Kmart were each postponed one week; D1 resumes with Daytona on Sep 20 and Kmart resumes with Rockingham on Sep 21
 - Kmart/Sunoco remain StarClutch Racing alliance competition
 
 Preserved behavior:

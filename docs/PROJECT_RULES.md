@@ -44,20 +44,21 @@ Trent is no longer part of the team. There is no Co-Owner role. Do not present C
 
 ## Competition structure
 
-Five Aetherwing programs:
+Four active Aetherwing programs:
 
 1. NRRS
 2. UARL Division 1
-3. UARL Division 2
-4. UARL Open
-5. iRacing Factory Program
+3. UARL Open
+4. iRacing Factory Program
+
+UARL Division 2 / NFFF Grand National has closed operations and is not an active competition relationship.
 
 Two StarClutch Racing Alliance series:
 
 1. Kmart Auto Parts Series
 2. Sunoco Truck Series
 
-Total: seven competition relationships. Kmart and Sunoco do not race under the Aetherwing banner. Use the label **STARCLUTCH RACING ALLIANCE** and a distinct purple/galaxy visual treatment.
+Total: six active competition relationships. Kmart and Sunoco do not race under the Aetherwing banner. Use the label **STARCLUTCH RACING ALLIANCE** and a distinct purple/galaxy visual treatment.
 
 FloRacing was intentionally removed and must not be re-added.
 
@@ -66,7 +67,7 @@ FloRacing was intentionally removed and must not be re-added.
 - 10 active RoRacing drivers
 - 27 verified Aetherwing wins
 - 600+ estimated racing starts
-- 7 competition relationships
+- 6 competition relationships
 - Founded 2023
 - 02 Featured Partners
 - Drivers: 10 RoRacing drivers / 5 Aetherwing drivers / 5 alliance-only drivers
@@ -101,20 +102,30 @@ Palmetto Gaming is an established public-facing relationship. Do not expose priv
 
 Driver livery brands are not automatically team partners.
 
+## Current UARL D1 charter allocation
+
+Five full-time charters plus one shared Aetherwing Open Charter:
+
+- #28 — Wispy (`@Aokikoto`)
+- #32 — BurgerTown2Good (`@uhhbzb`)
+- #52 — Gk3r (`@sealsntags`)
+- #54 — OPEN
+- #92 — Rocky
+- Aetherwing Open Charter — #62 Part-Time / #82 Development
+
+#62 and #82 are two uses of one shared charter and must never be displayed as simultaneous separate charter slots.
+
 ## Weekly schedule times
 
 - NRRS — Tuesday, 7:30 PM ET
 - UARL D1 / L.L. Bean Cup — Sunday, 8:30 PM ET
 - UARL Open — Sunday, 11:30 AM ET
-- UARL D2 / NFFF Grand National — Friday, **6:45 PM ET**
-  - One-race exception: the Season 6 Daytona 250 opener was postponed to **Saturday, September 12, 2026 at 7:00 PM ET**. The normal Friday 6:45 PM cadence resumes afterward.
 - Kmart Auto Parts Series — Monday, 8:30 PM ET
 - Sunoco Truck Series — Saturday, 8:00 PM ET
 - iRacing Specials — multi-day windows, not a recurring weekly start time
 
-UARL D2 at 6:45 PM ET is locked. Do not revert it to 8:30 PM.
 
-Current confirmed schedule total: 126 season races, excluding off-weeks. Standard weekly iRacing series remain removed; special events remain.
+Current active schedule total: 108 season races, excluding off-weeks. UARL D2 future events were removed after the series closed. Standard weekly iRacing series remain removed; special events remain.
 
 Spelling rules: Silverstone Circuit; APPALACHIAN CHALLENGE; L.L. BEAN CLASH.
 
