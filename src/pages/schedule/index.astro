@@ -68,7 +68,7 @@ const displayDate = (event) => {
         </div>
         <article class="aw-chase-banner" data-league="nrrs">
           <div><span>NRRS // POSTSEASON STATUS</span><strong>WISPY IS IN THE CHASE</strong><small>P6 · 2,087 PTS · -58 FROM LEADER · ↓1</small></div>
-          <div><span>CHASE RACE 2 OF 6</span><strong>TYSON HOLLY FARMS 400</strong><small>NORTH WILKESBORO · SEP 22 · 7:30 PM ET</small></div>
+          <div><span>CHASE RACE 2 OF 6</span><strong>VERIZON 400</strong><small>RICHMOND RACEWAY · SEP 22 · 7:30 PM ET</small></div>
         </article>
         <div class="aw-mobile-standings" aria-label="Championship snapshots for mobile">
           <div class="aw-mobile-standings-nav">
@@ -464,7 +464,7 @@ const displayDate = (event) => {
   leagueShareButton?.addEventListener('click', async () => {
     const selected = selectedShareLeague();
     if (!selected) { announceShare('Select a league first'); return; }
-    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=56`;
+    const url = `${location.origin}/schedule/share/${encodeURIComponent(selected.key)}/?v=57`;
     await copyText(url);
     announceShare(`${selected.label} link copied`);
   });

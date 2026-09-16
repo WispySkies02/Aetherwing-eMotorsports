@@ -69,14 +69,25 @@ assert(leadership.some((p) => p.name === 'Callornot' && p.roles.includes('Team P
 const results = json('results.json');
 const latestResult = results.latestResult;
 assert(latestResult?.title === 'Southern 500' && latestResult?.start === 9 && latestResult?.stagePoints === 0 && latestResult?.finish === 5, 'Latest NRRS result is Southern 500: P9 start, 0 stage points, P5 finish');
+assert(text('src/styles/pages/history.css').includes('content:"DARLINGTON"') && !text('src/styles/pages/history.css').includes('content:"DAYTONA"'), 'Latest Result background etching reads DARLINGTON, not DAYTONA');
 
 assert(!schedule.some((event) => event.id === 'uarl-d2') && !competitions.some((event) => event.id === 'uarl-d2') && !scheduleEvents.some((event) => event.league === 'uarl-d2'), 'UARL D2 is closed and removed from active competition/schedule data');
 const pepsi400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Pepsi 400');
 assert(pepsi400?.round === 'ROUND 19' && pepsi400?.specialTag === 'REGULAR SEASON FINALE', 'NRRS Pepsi 400 is Round 19 and the Regular Season Finale');
 const nrrsSouthern500 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Southern 500' && event.round === 'ROUND 20');
-const nrrsFord400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Ford 400' && event.round === 'ROUND 25');
+const nrrsFinale = scheduleEvents.find((event) => event.league === 'nrrs' && event.round === 'ROUND 25');
 assert(nrrsSouthern500?.date === '2026-09-15' && nrrsSouthern500?.status === 'The Chase', 'NRRS Chase begins at Darlington on September 15');
-assert(nrrsFord400?.date === '2026-10-20' && nrrsFord400?.status === 'Championship', 'NRRS Championship finale is Ford 400 on October 20');
+const nrrsRemaining = scheduleEvents.filter((event) => event.league === 'nrrs' && ['ROUND 21','ROUND 22','ROUND 23','ROUND 24','ROUND 25'].includes(event.round));
+const expectedNrrsRemaining = [
+  ['ROUND 21','2026-09-22','Verizon 400','Richmond Raceway'],
+  ['ROUND 22','2026-09-29','GEICO 400','Kansas Speedway'],
+  ['ROUND 23','2026-10-06','Microsoft 200','Indianapolis Motor Speedway Road Course'],
+  ['ROUND 24','2026-10-13','Comcast 301','New Hampshire Motor Speedway'],
+  ['ROUND 25','2026-10-20','NRRS Championship Race at Homestead-Miami presented by American Express','Homestead-Miami Speedway']
+];
+assert(expectedNrrsRemaining.every(([round,date,title,track]) => nrrsRemaining.some((event) => event.round === round && event.date === date && event.title === title && event.track === track)), 'NRRS remaining schedule matches Richmond, Kansas, Indy RC, New Hampshire, and Homestead-Miami update');
+
+assert(nrrsFinale?.date === '2026-10-20' && nrrsFinale?.title === 'NRRS Championship Race at Homestead-Miami presented by American Express' && nrrsFinale?.track === 'Homestead-Miami Speedway' && nrrsFinale?.status === 'Championship', 'NRRS Championship finale is the American Express-presented Homestead-Miami championship race on October 20');
 assert(scheduleEvents.filter((event) => event.league === 'nrrs' && event.status === 'The Chase').length === 5, 'NRRS has five The Chase races before the Championship finale');
 const nrrsStanding = standings.find((series) => series.id === 'nrrs');
 const kmartStanding = standings.find((series) => series.id === 'kmart');
@@ -158,13 +169,13 @@ assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
 assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 125 active schedule events have v47 share-card images');
-assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=56'), 'Schedule can share the currently selected league with v56 cache revision');
+assert(schedulePage.includes('data-league-share') && schedulePage.includes('/schedule/share/${encodeURIComponent(selected.key)}/?v=57'), 'Schedule can share the currently selected league with v57 cache revision');
 assert(!schedulePage.includes('navigator.share') && schedulePage.includes('COPY ${selected.label.toUpperCase()} LINK'), 'League share button always copies the URL instead of opening the native share sheet');
 assert(existsSync(resolve(root, 'src/pages/schedule/share/[league].astro')), 'Static league-share route exists for schedule filters');
 const leagueShareRoute = text('src/pages/schedule/share/[league].astro');
 assert(leagueShareRoute.includes('export function getStaticPaths() {\n  const definitions = {'), 'League-share route keeps static-path definitions inside getStaticPaths isolated scope');
-assert(leagueShareRoute.includes('/images/social/leagues/${league}-v56.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v56 next-race cards with race-type badges');
-for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v56.jpg`)), `League share image exists: ${league}`); }
+assert(leagueShareRoute.includes('/images/social/leagues/${league}-v57.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v57 next-race cards with race-type badges');
+for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v57.jpg`)), `League share image exists: ${league}`); }
 assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
 assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');

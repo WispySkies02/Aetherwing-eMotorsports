@@ -1,3 +1,9 @@
+# v0.4.37 — NRRS Chase Schedule Refresh
+
+- Replaced NRRS Rounds 21–25 with the September 22–October 20 sponsor schedule supplied by the team.
+- Corrected Latest Result background etching from `DAYTONA` to `DARLINGTON`.
+- Refreshed the NRRS event-share cards and next-five league embed; league cards now use cache revision v57.
+
 # Aetherwing eMotorsports — Changelog
 
 ## v0.4.35 — September 15, 2026

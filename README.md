@@ -1,4 +1,4 @@
-**v0.4.36 — UARL D2 Closure / D1 + Kmart Postponement / UARL Charter Expansion**
+**v0.4.37 — UARL D2 Closure / D1 + Kmart Postponement / UARL Charter Expansion**
 - UARL D2 / NFFF Grand National has closed operations and is removed from the active competition structure.
 - Active structure is now 4 Aetherwing programs + 2 StarClutch Racing alliance series = 6 competition relationships.
 - UARL D1 resumes with the postponed Daytona 500 on Sunday, September 20 at 8:30 PM ET; all remaining D1 dates move one week later.
@@ -14,7 +14,7 @@
 - #62 and #82 are two identities for one shared fourth charter slot, never two simultaneous charters.
 - Vacant FT seats remain labeled OPEN; the named Aetherwing Open Charter is visually and semantically separate from an unfilled FT seat.
 
-Current build: v0.4.36
+Current build: v0.4.37
 - UARL D2 recurring race night remains Fridays at 6:45 PM ET; the Daytona 250 opener is a one-race postponement to Saturday, September 12, 2026 at 7:00 PM ET.
 
 ## Paint Booth host

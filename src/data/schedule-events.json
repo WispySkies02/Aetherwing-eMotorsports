@@ -706,8 +706,8 @@
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
-    "title": "Tyson Holly Farms 400",
-    "track": "North Wilkesboro Speedway",
+    "title": "Verizon 400",
+    "track": "Richmond Raceway",
     "time": "7:30 PM ET",
     "round": "ROUND 21"
   },
@@ -768,8 +768,8 @@
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
-    "title": "Pure Michigan 400",
-    "track": "Michigan International Speedway",
+    "title": "GEICO 400",
+    "track": "Kansas Speedway",
     "time": "7:30 PM ET",
     "round": "ROUND 22"
   },
@@ -819,8 +819,8 @@
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
-    "title": "Toyota/Save Mart 350",
-    "track": "Sonoma Raceway",
+    "title": "Microsoft 200",
+    "track": "Indianapolis Motor Speedway Road Course",
     "time": "7:30 PM ET",
     "round": "ROUND 23"
   },
@@ -881,7 +881,7 @@
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "The Chase",
-    "title": "Sylvania 300",
+    "title": "Comcast 301",
     "track": "New Hampshire Motor Speedway",
     "time": "7:30 PM ET",
     "round": "ROUND 24"
@@ -923,7 +923,7 @@
     "league": "nrrs",
     "leagueName": "NRRS",
     "status": "Championship",
-    "title": "Ford 400",
+    "title": "NRRS Championship Race at Homestead-Miami presented by American Express",
     "track": "Homestead-Miami Speedway",
     "time": "7:30 PM ET",
     "round": "ROUND 25"
