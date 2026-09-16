@@ -6,6 +6,7 @@ import trackSource from '../../data/schedule-track-locations.json';
 import standings from '../../data/standings.json';
 import '../../styles/pages/schedule.css';
 import { eventSlug } from '../../lib/schedule-events.mjs';
+import { trackMapAssetForEvent, trackMapLabelForEvent } from '../../lib/track-maps.mjs';
 
 const scheduleEvents = [...scheduleSource].map((event) => ({ ...event, shareSlug: eventSlug(event) })).sort((a,b) => String(a.date ?? '9999').localeCompare(String(b.date ?? '9999')) || String(a.time ?? '').localeCompare(String(b.time ?? '')));
 const totalSeasonRaces = scheduleEvents.filter((event) => event.league !== 'iracing' && !event.offWeek).length;
@@ -234,15 +235,20 @@ const displayDate = (event) => {
                 <article id={`event-${event.shareSlug}`} class:list={['aw-event-card',{'is-alliance':isAlliance(event.league),'is-special':event.league==='iracing','is-off-week':event.offWeek}]} data-event-card data-event-index={index} data-event-slug={event.shareSlug} data-league={leagueClass(event.league)}>
                   <button class="aw-event-summary" type="button" data-event-toggle aria-expanded="false" aria-controls={`event-dock-${index}`}>
                     <div class="aw-event-date"><strong>{displayDate(event)}</strong><span>{event.time}</span></div>
-                    <div class="aw-event-main">
-                      <div class="aw-event-tags">
-                        <span>{event.leagueName}</span>
-                        {event.status && !eventCriteria(event).length && <b>{event.status}</b>}
-                        {eventCriteria(event).map((tag)=><em class={`is-${tag.kind}`}>{tag.label}</em>)}
-                        {isAlliance(event.league) && <i>StarClutch Racing Alliance</i>}
+                    <div class="aw-event-main" style={`--track-map:url('${trackMapAssetForEvent(event)}')`}>
+                      <div class="aw-event-main-copy">
+                        <div class="aw-event-tags">
+                          <span>{event.leagueName}</span>
+                          {event.status && !eventCriteria(event).length && <b>{event.status}</b>}
+                          {eventCriteria(event).map((tag)=><em class={`is-${tag.kind}`}>{tag.label}</em>)}
+                          {isAlliance(event.league) && <i>StarClutch Racing Alliance</i>}
+                        </div>
+                        <h3>{event.title}</h3>
+                        <p>{event.track}</p>
                       </div>
-                      <h3>{event.title}</h3>
-                      <p>{event.track}</p>
+                      <div class="aw-event-trackmap" aria-hidden="true">
+                        <img src={trackMapAssetForEvent(event)} alt={trackMapLabelForEvent(event)} loading="lazy" decoding="async" />
+                      </div>
                     </div>
                     <div class="aw-event-chevron"><span>INFO</span><b>⌄</b></div>
                   </button>
