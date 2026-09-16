@@ -1,9 +1,3 @@
-
-## v0.4.38 — event card track map pass
-- Added subtle track-map artwork to schedule event cards on the website.
-- Added matching track-map artwork to event share/embed social cards to use the open negative space.
-- Added reusable track-map SVG asset set with venue-specific and generic fallbacks for schedule events.
-
 # v0.4.37 — NRRS Chase Schedule Refresh
 
 - Replaced NRRS Rounds 21–25 with the September 22–October 20 sponsor schedule supplied by the team.
