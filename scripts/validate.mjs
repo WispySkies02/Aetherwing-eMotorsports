@@ -43,12 +43,12 @@ const standings = json('standings.json');
 const charters = json('charters.json');
 
 
-assert(news.length === 10, 'News archive matches the current 10-story Team Wire');
+assert(news.length === 11, 'News archive matches the current 11-story Team Wire');
 assert(new Set(news.map((story) => story.slug)).size === news.length, 'All Team Wire story slugs are unique');
-assert(news.filter((story) => story.category === 'Race & Competition').length === 6, 'Team Wire contains six Race & Competition stories');
+assert(news.filter((story) => story.category === 'Race & Competition').length === 7, 'Team Wire contains seven Race & Competition stories');
 assert(news.filter((story) => story.category === 'Milestones').length === 2, 'Team Wire contains two Milestones stories');
 assert(news.filter((story) => story.category === 'Team & Organization').length === 2, 'Team Wire contains two Team & Organization stories');
-assert(news.some((story) => story.featured && story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville'), 'Martinsville Chase clinch remains the Team Wire headline');
+assert(news.some((story) => story.featured && story.slug === 'wispy-southern-500-darlington-top-five'), 'Southern 500 Top Five story is the Team Wire headline');
 assert(news.some((story) => story.slug === 'wispy-100th-roracing-start-talladega'), '100th RoRacing start story is migrated');
 assert(news.some((story) => story.slug === 'aetherwing-ngm-driver-development'), 'NGM Driver Development story is migrated');
 assert(news.every((story) => Array.isArray(story.sections) && story.sections.length >= 3), 'Every Team Wire story has a full article body');
@@ -249,8 +249,14 @@ assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.
 assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
 assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
 assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
-assert(homePage.includes('wispy-clinches-nrrs-s3-chase-martinsville') && homePage.includes('Read the Chase-Clinch Story'), 'Homepage Latest Updates features the Martinsville Chase-clinch story');
+assert(homePage.includes('story.featured') && homePage.includes('Read the Southern 500 Story'), 'Homepage Latest Updates follows the featured Southern 500 story');
 assert(homePage.includes('/Daytona 500/i.test(event.title)') && !homePage.includes('uarl-d2'), 'Homepage initial UARL fallback follows the active D1 Daytona 500 rather than closed D2');
+const darlingtonStory = news.find((story) => story.slug === 'wispy-southern-500-darlington-top-five');
+assert(darlingtonStory?.category === 'Race & Competition' && darlingtonStory?.featured === true, 'Darlington Southern 500 story is featured under Race & Competition');
+assert(darlingtonStory?.metrics?.some((metric) => metric.label === 'Finish' && metric.value === 'P5'), 'Darlington story records the P5 finish');
+assert(darlingtonStory?.metrics?.some((metric) => metric.label === 'Stage Points' && metric.value === '0'), 'Darlington story records zero stage points');
+assert(darlingtonStory?.metrics?.some((metric) => metric.label === 'Standings' && metric.value === 'P6') && darlingtonStory?.metrics?.some((metric) => metric.label === 'Points' && metric.value === '2,087'), 'Darlington story matches the current P6 / 2,087-point Chase snapshot');
+assert(darlingtonStory?.quote?.text?.includes('keep racing'), 'Darlington story preserves Wispy’s frustrated-but-still-fighting perspective');
 const chaseStory = news.find((story) => story.slug === 'wispy-clinches-nrrs-s3-chase-martinsville');
 assert(chaseStory?.category === 'Race & Competition', 'Martinsville Chase-clinch story uses Race & Competition category');
 // v0.4.26 mobile Schedule cockpit guards

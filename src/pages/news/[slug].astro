@@ -16,7 +16,7 @@ const categoryClass = story.category === 'Race & Competition' ? 'is-race' : stor
 <BaseLayout title={story.title} description={story.summary} type="article">
   <article class={`aw-news-article ${categoryClass}`}>
     <header class="aw-news-article-hero">
-      <div class="aw-news-article-ghost" aria-hidden="true">{story.featured ? 'LOCKED' : story.kicker}</div>
+      <div class="aw-news-article-ghost" aria-hidden="true">{story.heroGhost ?? (story.featured ? 'HEADLINE' : story.kicker)}</div>
       <div class="shell shell--standard aw-news-article-hero__inner">
         <a class="aw-news-back" href="/news/">← Team Wire</a>
         <div class="aw-news-article-meta-top">

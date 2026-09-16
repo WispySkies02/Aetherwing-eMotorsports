@@ -1,3 +1,11 @@
+# v0.4.39 — Southern 500 Team Wire Feature
+
+- Added the September 15 Southern 500 Chase-opener feature story centered on Wispy’s P9-to-P5 recovery at Darlington.
+- Preserved the factual race snapshot: zero stage points, P6 in Chase points, 2,087 points, 58 behind the leader.
+- Built the story around Wispy’s own perspective: frustrated by pace/stage-point limitations, realistic about the title fight, grateful for making the Chase, and still committed to fighting for better runs.
+- Promoted the story to the homepage Latest Updates module and Team Wire headline.
+- Retained v0.4.37 as the site baseline; no v0.4.38 track-map experiment is carried forward.
+
 # v0.4.37 — NRRS Chase Schedule Refresh
 
 - Replaced NRRS Rounds 21–25 with the September 22–October 20 sponsor schedule supplied by the team.

@@ -12,7 +12,7 @@ const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
 const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.test(event.title)) ?? events[0];
 const latest=result.latestResult;
-const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase-martinsville') ?? news[0];
+const featuredNews=news.find((story)=>story.featured) ?? news[0];
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
   <section class="aw-home-hero">
@@ -106,7 +106,7 @@ const featuredNews=news.find((story)=>story.slug==='wispy-clinches-nrrs-s3-chase
     <div class="shell">
       <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
       <div class="aw-news-grid">
-        <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">Race &amp; Competition</span><small>{featuredNews.date} · NRRS · Chase Clinched</small><h3>{featuredNews.title}</h3><p>P4 at Martinsville secured Wispy’s third consecutive NRRS Chase berth and fifth confirmed Chase qualification overall.</p><b>Read the Chase-Clinch Story →</b></a>
+        <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">{featuredNews.category}</span><small>{featuredNews.date} · {featuredNews.context} · {featuredNews.kicker}</small><h3>{featuredNews.title}</h3><p>{featuredNews.summary}</p><b>Read the Southern 500 Story →</b></a>
         <article class="aw-result-card aw-result-ticket">
           <div class="aw-result-ticket__head"><span>CHECKERED // LATEST RESULT</span><b>{latest.specialTag}</b></div>
           <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>TOP 5</em></div></div>

@@ -30,7 +30,7 @@ const searchable = (story) => `${story.title} ${story.summary} ${story.context} 
           <p class="eyebrow">Story Feed</p>
           <h2 class="section-title">The Stories That Stayed.</h2>
         </div>
-        <p class="lede">Ten stories currently define the public Team Wire: race wins, personal milestones, team-building decisions, and the transition into the Aetherwing era.</p>
+        <p class="lede">The public Team Wire now spans {stories.length} stories: race results, personal milestones, team-building decisions, and the transition into the Aetherwing era.</p>
       </div>
 
       <div class="aw-story-tools">
@@ -62,7 +62,7 @@ const searchable = (story) => `${story.title} ${story.summary} ${story.context} 
             <div class="aw-story-tags">{featured.tags.map((tag) => <span>{tag}</span>)}</div>
             <b>Open Full Story →</b>
           </div>
-          <div class="aw-headline-mark" aria-hidden="true"><span>LOCKED</span><strong>5X</strong><small>NRRS // S3 // CHASE</small></div>
+          <div class="aw-headline-mark" aria-hidden="true"><span>{featured.headlineMark?.eyebrow ?? featured.kicker}</span><strong>{featured.headlineMark?.value ?? "HEADLINE"}</strong><small>{featured.headlineMark?.detail ?? featured.context}</small></div>
         </a>
       </section>
 
