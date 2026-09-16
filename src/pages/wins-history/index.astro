@@ -11,7 +11,7 @@ const latest=results.latestResult;
 const nrrsStanding=standings.find((item)=>item.id==='nrrs');
 const nrrsRow=nrrsStanding?.rows?.[0];
 const gainedFromStart=latest.start-latest.finish;
-const chaseOpener=scheduleEvents.find((item)=>item.league==='nrrs'&&item.date==='2026-09-15');
+const nextNrrsRace=scheduleEvents.find((item)=>item.league==='nrrs'&&item.date==='2026-09-22');
 const newest=wins.slice(-4).reverse();
 const milestones=[
  ['Aug 26, 2025','First Recorded Modern Start','MRRA D1 Coca-Cola 600 at Charlotte. Wispy qualified 6th and finished 2nd.'],
@@ -39,7 +39,7 @@ const milestones=[
               <span>{latest.round} OF 25</span>
               <span class="is-checkered">CHECKERED</span>
               <b>{latest.specialTag}</b>
-              <b class="is-chase">CHASE QUALIFIED</b>
+              <b class="is-chase">CHASE RACE 1</b>
             </div>
           </header>
 
@@ -47,8 +47,8 @@ const milestones=[
             <div class="aw-tv-result__event">
               <div class="aw-tv-result__meta"><b>{latest.track}</b><em>{latest.date}</em></div>
               <h3>{latest.title}</h3>
-              <p class="aw-tv-result__headline">P4 FINISH SENDS WISPY INTO <strong>THE CHASE</strong></p>
-              <div class="aw-tv-result__driver"><b>#{latest.number}</b><span><strong>{latest.driver}</strong><small>Aetherwing eMotorsports · NRRS Chase Qualifier</small></span></div>
+              <p class="aw-tv-result__headline">P5 AT DARLINGTON KEEPS WISPY <strong>IN THE CHASE</strong></p>
+              <div class="aw-tv-result__driver"><b>#{latest.number}</b><span><strong>{latest.driver}</strong><small>Aetherwing eMotorsports · NRRS Chase Driver</small></span></div>
             </div>
             <aside class="aw-tv-result__finish" aria-label={`Official finish P${latest.finish}`}>
               <span>OFFICIAL FINISH</span>
@@ -59,14 +59,14 @@ const milestones=[
 
           <div class="aw-tv-result__stats" aria-label="Race at a glance">
             <div><span>START</span><strong>P{latest.start}</strong><small>Green flag</small></div>
-            <div><span>STAGE 2</span><strong>P{latest.stage2.finish}</strong><small>Stage finish</small></div>
+            <div><span>STAGE POINTS</span><strong>{latest.stagePoints}</strong><small>No stage points</small></div>
             <div class="is-finish"><span>FINISH</span><strong>P{latest.finish}</strong><small>Checkered flag</small></div>
             <div class="is-chase"><span>CHASE STANDING</span><strong>{nrrsRow?.position || '—'}</strong><small>{nrrsRow ? `${nrrsRow.points.toLocaleString()} pts` : 'Qualified'}<em>{nrrsRow?.delta || ''}</em></small></div>
           </div>
 
           <div class="aw-tv-result__lower">
-            <div class="aw-tv-result__summary"><span>RACE SUMMARY</span><p>Wispy started seventh, climbed to fourth by Stage 2, and finished P4 in the Pepsi 400 regular-season finale.</p></div>
-            <div class="aw-tv-result__next"><span>UP NEXT // THE CHASE</span><strong>{chaseOpener?.title || 'Southern 500'}</strong><small>{chaseOpener?.track || 'Darlington Raceway'} · SEP 15</small></div>
+            <div class="aw-tv-result__summary"><span>RACE SUMMARY</span><p>Wispy qualified ninth, scored no stage points, and finished P5 in the Southern 500 at Darlington.</p></div>
+            <div class="aw-tv-result__next"><span>UP NEXT // CHASE RACE 2</span><strong>{nextNrrsRace?.title || 'Tyson Holly Farms 400'}</strong><small>{nextNrrsRace?.track || 'North Wilkesboro Speedway'} · SEP 22</small></div>
           </div>
         </article>
       </section>

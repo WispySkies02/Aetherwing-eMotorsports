@@ -382,3 +382,10 @@
 - Added the missing UARL Open driver filter.
 - Refreshed Homepage Latest Updates to the August 25 Martinsville Chase-clinch story and classified it under Race & Competition.
 - Left UARL Season 6 standings in awaiting-results state pending official D2 opener results.
+## v0.4.36 — NRRS Southern 500 Result + Chase Standings Update — 2026-09-15
+- Recorded Wispy's Southern 500 at Darlington result: qualified P9, finished P5, zero stage points.
+- Updated NRRS Chase standings to P6 with 2,087 points, 58 points behind the leader, down one position.
+- Updated Homepage Latest Result, Wins & History broadcast recap, and Schedule Championship Tracker.
+- Advanced NRRS next-race context to Chase Race 2: Tyson Holly Farms 400 at North Wilkesboro on Sep. 22.
+- Preserved all v0.4.35 UARL/Kmart postponement and charter changes.
+

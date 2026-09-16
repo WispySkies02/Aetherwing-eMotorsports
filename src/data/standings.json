@@ -2,16 +2,17 @@
   {
     "id": "nrrs",
     "title": "NRRS Chase for the Cup",
-    "subtitle": "After Race 19 of 25 \u00b7 Before Chase Race 1 of 6",
+    "subtitle": "After Race 20 of 25 \u00b7 After Chase Race 1 of 6",
     "league": "nrrs",
     "status": "THE CHASE",
     "rows": [
       {
-        "position": "P5",
+        "position": "P6",
         "number": "32",
         "driver": "Wispy",
-        "points": 2055,
-        "delta": "-45"
+        "points": 2087,
+        "delta": "-58",
+        "positionChange": "-1 spot"
       }
     ]
   },

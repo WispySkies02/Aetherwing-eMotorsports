@@ -25,15 +25,13 @@
     "driver": "Wispy",
     "number": "32",
     "series": "NRRS Town Fair Tire Cup Series",
-    "title": "Pepsi 400",
-    "track": "Daytona International Speedway",
-    "date": "September 8, 2026",
-    "round": "Round 19",
-    "specialTag": "Regular Season Finale",
-    "start": 7,
-    "stage2": {
-      "finish": 4
-    },
-    "finish": 4
+    "title": "Southern 500",
+    "track": "Darlington Raceway",
+    "date": "September 15, 2026",
+    "round": "Round 20",
+    "specialTag": "Chase Race 1",
+    "start": 9,
+    "stagePoints": 0,
+    "finish": 5
   }
 }
