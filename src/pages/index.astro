@@ -7,12 +7,16 @@ import events from '../data/schedule-events.json';
 import partners from '../data/partners.json';
 import result from '../data/results.json';
 import news from '../data/news.json';
+import standings from '../data/standings.json';
 import '../styles/pages/home.css';
 const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
 const initialCompetition=competitions[0];
 const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.test(event.title)) ?? events[0];
 const latest=result.latestResult;
 const featuredNews=news.find((story)=>story.featured) ?? news[0];
+const nrrsChase=(standings as any[]).find((s:any)=>s.id==='nrrs');
+const wispyRow=(nrrsChase?.rows??[])[0];
+const wispyPos=parseInt(String(wispyRow?.position??'P6').replace('P',''),10);
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
   <section class="aw-home-hero">
@@ -46,6 +50,39 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
       <div class="stat"><strong>{site.founded}</strong><span>Founded</span></div>
     </div>
   </div>
+
+  <section class="aw-chase-section">
+    <div class="shell">
+      <div class="aw-chase-head">
+        <div>
+          <p class="eyebrow">NRRS Chase for the Cup</p>
+          <h2 class="aw-chase-title">Chase Standing</h2>
+        </div>
+        <div class="aw-chase-kpis">
+          <div><small>Position</small><strong>{wispyRow?.position ?? 'P6'}</strong></div>
+          <div><small>Points</small><strong>{(wispyRow?.points ?? 2087).toLocaleString('en-US')}</strong></div>
+          <div><small>Gap</small><strong class="is-negative">{wispyRow?.delta ?? '-58'}</strong></div>
+          <div><small>Status</small><strong>{nrrsChase?.status ?? 'CHASE'}</strong></div>
+        </div>
+      </div>
+      <div class="aw-chase-field" aria-label={`Wispy at position ${wispyPos} of 12 in the Chase`}>
+        {Array.from({length:12},(_,i)=>{
+          const pos=i+1;
+          const isWispy=pos===wispyPos;
+          const zone=pos<=4?'safe':pos<=8?'bubble':'out';
+          return <div class:list={['aw-chase-slot',{[`is-${zone}`]:true,'is-wispy':isWispy}]} aria-label={isWispy?`Wispy P${pos}`:`P${pos}`}>
+            <span class="aw-chase-slot-pos">P{pos}</span>
+            {isWispy && <><strong>#32</strong><em>WISPY</em></>}
+          </div>;
+        })}
+      </div>
+      <div class="aw-chase-legend">
+        <span class="is-safe">Locked In (P1–4)</span>
+        <span class="is-bubble">On The Bubble (P5–8)</span>
+        <span class="is-out">Eliminated Zone (P9–12)</span>
+      </div>
+    </div>
+  </section>
 
   <section class="section aw-race-control" data-brush="RACE CONTROL" id="next-event">
     <div class="shell">
