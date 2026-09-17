@@ -261,6 +261,7 @@ const displayDate = (event) => {
                       <div><span>Race Control</span><strong data-event-countdown>Calculating…</strong></div>
                       <p>{event.league==='iracing' ? 'iRacing special event. This entry is represented as a multi-day event window rather than a single weekly start time.' : event.offWeek ? 'Scheduled off-week. Race Control skips this entry when selecting the next actual operation.' : 'Official calendar entry from the current Aetherwing schedule source.'}</p>
                     </div>
+                    {!event.offWeek && !event.tbd && <div class="aw-dock-cal" data-cal-target hidden></div>}
                   </div>
                 </article>
               ))}
@@ -430,6 +431,21 @@ const displayDate = (event) => {
     });
   }
 
+  function buildCalendarLinks(event) {
+    if (event.offWeek || event.tbd) return null;
+    const start = getEventStart(event);
+    const dur = (event.durationMinutes || 90) * 60000;
+    const end = event.league === 'iracing' ? getEventEnd(event) : new Date(start.getTime() + dur);
+    const fmt = (d) => d.toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
+    const title = encodeURIComponent(`${event.leagueName} \u2014 ${event.title}`);
+    const loc = encodeURIComponent(event.track);
+    const body = encodeURIComponent(`Aetherwing eMotorsports \u00b7 ${event.leagueName}\nTrack: ${event.track}\naetherwing.net/schedule/`);
+    return {
+      google: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(start)}/${fmt(end)}&details=${body}&location=${loc}`,
+      outlook: `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${start.toISOString()}&enddt=${end.toISOString()}&body=${body}&location=${loc}&path=/calendar/action/compose`,
+    };
+  }
+
   toolbar?.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
     toolbar.querySelectorAll('[data-filter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeFilter = button.dataset.filter || 'all';
     if (uarlSubfilters instanceof HTMLElement) uarlSubfilters.hidden = activeFilter !== 'uarl-group';
@@ -446,7 +462,23 @@ const displayDate = (event) => {
     const card = button.closest('[data-event-card]'); const dock = card?.querySelector('[data-event-dock]'); if (!(dock instanceof HTMLElement)) return;
     const opening = dock.hidden;
     page.querySelectorAll('[data-event-dock]').forEach(other => { if (other !== dock && other instanceof HTMLElement) { other.hidden=true; other.closest('[data-event-card]')?.querySelector('[data-event-toggle]')?.setAttribute('aria-expanded','false'); } });
-    dock.hidden = !opening; button.setAttribute('aria-expanded',String(opening)); if (opening) card?.classList.add('is-open'); else card?.classList.remove('is-open');
+    dock.hidden = !opening; button.setAttribute('aria-expanded',String(opening));
+    if (opening) {
+      card?.classList.add('is-open');
+      // Populate calendar links on first open
+      const calTarget = dock.querySelector('[data-cal-target]');
+      if (calTarget instanceof HTMLElement && calTarget.hidden) {
+        const eventIndex = parseInt(card?.dataset.eventIndex || '0', 10);
+        const ev = scheduleEvents[eventIndex];
+        const links = buildCalendarLinks(ev);
+        if (links) {
+          calTarget.innerHTML = `<span class="aw-cal-label">+ Add to Calendar</span><div class="aw-cal-btns"><a class="aw-cal-btn" href="${links.google}" target="_blank" rel="noopener noreferrer">Google Calendar</a><a class="aw-cal-btn" href="${links.outlook}" target="_blank" rel="noopener noreferrer">Outlook</a></div>`;
+          calTarget.hidden = false;
+        }
+      }
+    } else {
+      card?.classList.remove('is-open');
+    }
   }));
 
   const scheduleToast = page.querySelector('[data-schedule-toast]');

@@ -210,3 +210,10 @@
   .aw-league-share-row{grid-template-columns:1fr}
   .aw-league-share-row button{width:100%}
 }
+
+/* v0.4.40 — Add to Calendar links in event docks */
+.aw-dock-cal{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;padding:.65rem 1.2rem;border-top:1px solid #1e1e1e;background:#040404}
+.aw-cal-label{color:#666;font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.aw-cal-btns{display:flex;gap:.45rem;flex-wrap:wrap}
+.aw-cal-btn{display:inline-flex;align-items:center;min-height:28px;padding:.3rem .6rem;border:1px solid #3a3a3a;background:#000;color:#aaa;font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;text-decoration:none;transition:border-color .12s,color .12s,background .12s}
+.aw-cal-btn:hover{border-color:#fff;color:#fff;background:#111}

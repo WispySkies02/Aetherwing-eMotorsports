@@ -102,6 +102,11 @@ const categoryClass = story.category === 'Race & Competition' ? 'is-race' : stor
             <a href="/schedule/">Schedule <span>→</span></a>
             <a href="/drivers/">Drivers <span>→</span></a>
           </div>
+          <div class="aw-news-share">
+            <span>Share This Story</span>
+            <a class="aw-share-btn" href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(story.title)}&url=https%3A%2F%2Faetherwing.net%2Fnews%2F${story.slug}%2F&via=Aokikoto`} target="_blank" rel="noopener noreferrer">↗ X / Twitter</a>
+            <button class="aw-share-btn" type="button" data-share-copy>⧉ Copy Link</button>
+          </div>
         </aside>
       </div>
     </main>
@@ -114,3 +119,22 @@ const categoryClass = story.category === 'Race & Competition' ? 'is-race' : stor
     </nav>
   </article>
 </BaseLayout>
+
+<script>
+  const copyBtn = document.querySelector('[data-share-copy]');
+  if (copyBtn instanceof HTMLButtonElement) {
+    copyBtn.addEventListener('click', async () => {
+      const orig = copyBtn.textContent || '';
+      try {
+        await navigator.clipboard.writeText(location.href);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = location.href;
+        ta.style.cssText = 'position:fixed;opacity:0;top:-9999px';
+        document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      copyBtn.textContent = '✓ COPIED';
+      setTimeout(() => { copyBtn.textContent = orig; }, 1800);
+    });
+  }
+</script>

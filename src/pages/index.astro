@@ -154,8 +154,8 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
   const endOf=(event)=>{if(event.league==='iracing'||event.offWeek||event.tbd){const key=event.endDate||event.date;return new Date(`${key}T23:59:59${offsetFor(key)}`);}return new Date(startOf(event).getTime()+((event.durationMinutes||90)*60000));};
   const displayDate=(event)=>{if(event.displayDate)return event.displayDate.toUpperCase();const [y,m,d]=event.date.split('-').map(Number);return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();};
   const selectPrimaryOperation=(items,now=new Date())=>{const candidates=items.filter(event=>!event.offWeek&&endOf(event)>=now);const fixed=candidates.filter(event=>event.league!=='iracing'&&!event.tbd);const live=fixed.filter(event=>now>=startOf(event)&&now<=endOf(event)).sort((a,b)=>startOf(a)-startOf(b));if(live.length)return live[0];const soonLimit=new Date(now.getTime()+36*60*60*1000);const soon=fixed.filter(event=>startOf(event)>now&&startOf(event)<=soonLimit).sort((a,b)=>startOf(a)-startOf(b));if(soon.length)return soon[0];const windows=candidates.filter(event=>event.league==='iracing'&&now>=startOf(event)&&now<=endOf(event)).sort((a,b)=>startOf(a)-startOf(b));if(windows.length)return windows[0];return candidates.filter(event=>startOf(event)>now).sort((a,b)=>startOf(a)-startOf(b))[0]||candidates[0];};
-  const updateHomeEvent=()=>{const now=new Date();const event=selectPrimaryOperation(events,now);if(!event||!(countdown instanceof HTMLElement))return;homeLeague.textContent=`${event.leagueName} · ${event.status||'Scheduled'}`;homeTitle.textContent=event.title;homeMeta.textContent=`${event.track} · ${displayDate(event)} · ${event.time}`;const start=startOf(event),end=endOf(event);if(now>=start&&now<=end){countdown.textContent='LIVE';countdown.classList.add('is-live');if(homeState){homeState.textContent='LIVE';homeState.classList.add('tag--live');}homeLabel.textContent=event.league==='iracing'?'Current iRacing special-event window':'Event currently active';return;}countdown.classList.remove('is-live');if(homeState){homeState.textContent='UPCOMING';homeState.classList.remove('tag--live');}const diff=Math.max(0,start-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);countdown.textContent=d>0?`${d}D ${pad(h)}H`:`${pad(h)}H ${pad(m)}M`;homeLabel.textContent='Until next operation';};
-  updateHomeEvent();setInterval(updateHomeEvent,60000);
+  const updateHomeEvent=()=>{const now=new Date();const event=selectPrimaryOperation(events,now);if(!event||!(countdown instanceof HTMLElement))return;homeLeague.textContent=`${event.leagueName} · ${event.status||'Scheduled'}`;homeTitle.textContent=event.title;homeMeta.textContent=`${event.track} · ${displayDate(event)} · ${event.time}`;const start=startOf(event),end=endOf(event);if(now>=start&&now<=end){countdown.textContent='LIVE';countdown.classList.add('is-live');if(homeState){homeState.textContent='LIVE';homeState.classList.add('tag--live');}homeLabel.textContent=event.league==='iracing'?'Current iRacing special-event window':'Event currently active';return;}countdown.classList.remove('is-live');if(homeState){homeState.textContent='UPCOMING';homeState.classList.remove('tag--live');}const diff=Math.max(0,start-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);countdown.textContent=d>0?`${d}D ${pad(h)}H`:h>0?`${pad(h)}H ${pad(m)}M`:`${pad(m)}M ${pad(s)}S`;homeLabel.textContent=d>0||h>0?'Until next operation':'Green flag approaching';};
+  updateHomeEvent();setInterval(updateHomeEvent,1000);
   const teamBrowser=document.querySelector('[data-team-browser]');
   if(teamBrowser){
     const cards=teamBrowser.querySelector('[data-team-cards]');
@@ -172,5 +172,37 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
     const detail=programBrowser.querySelector('[data-program-detail]');
     const renderProgram=(program)=>{if(!(detail instanceof HTMLElement)||!program)return;detail.dataset.type=program.type;detail.classList.toggle('panel--alliance',program.type==='alliance');detail.innerHTML=`<div class="aw-program-detail__head"><span class="tag ${program.type==='alliance'?'tag--alliance':''}">${program.label}</span><small>${program.schedule}</small></div><h3>${program.name}</h3><p class="aw-program-machine">${program.machine}</p><p class="mono muted">${program.platform}</p><div class="aw-program-roster">${program.roster.map(entry=>`<span>${entry}</span>`).join('')}</div>`;};
     tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(t=>t.setAttribute('aria-selected','false'));tab.setAttribute('aria-selected','true');renderProgram(competitions.find(p=>p.id===tab.dataset.program));if(!reduceMotion&&detail instanceof HTMLElement)detail.animate([{opacity:.35,transform:'translateY(5px)'},{opacity:1,transform:'none'}],{duration:180,easing:'ease-out'});}));
+  }
+
+  // Count-up animation for stat numbers
+  if(!reduceMotion){
+    const animateNum=(el)=>{
+      const raw=el.textContent.trim();
+      const digits=raw.replace(/[^0-9]/g,'');
+      const num=parseInt(digits,10);
+      if(!Number.isFinite(num)||num===0)return;
+      const prefix=raw.match(/^[^0-9]*/)?.[0]||'';
+      const suffix=raw.match(/[^0-9]*$/)?.[0]||'';
+      const zeroPad=raw.startsWith('0')&&digits.length>1;
+      const dur=900,frames=54;
+      let f=0;
+      const tick=()=>{
+        f++;
+        const ease=1-Math.pow(1-(f/frames),3);
+        const cur=Math.round(num*ease);
+        el.textContent=prefix+(zeroPad?String(cur).padStart(digits.length,'0'):cur)+suffix;
+        if(f<frames)requestAnimationFrame(tick);
+        else el.textContent=raw;
+      };
+      requestAnimationFrame(tick);
+    };
+    const statsIO=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(!entry.isIntersecting)return;
+        statsIO.unobserve(entry.target);
+        entry.target.querySelectorAll('strong').forEach(animateNum);
+      });
+    },{threshold:0.5});
+    document.querySelectorAll('.aw-glance__grid,.stat-rail').forEach(el=>statsIO.observe(el));
   }
 </script>

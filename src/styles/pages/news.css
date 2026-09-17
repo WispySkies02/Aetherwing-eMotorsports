@@ -25,3 +25,9 @@
 
 /* v0.4.14 visual pass */
 .aw-news-card,.aw-news-feature{transition:transform .2s,border-color .2s}.aw-news-card:hover{transform:translateY(-6px) rotate(-.25deg);border-color:var(--aw-red)}.aw-news-card h2,.aw-news-card h3{font-size:clamp(1.8rem,3vw,3rem)!important}.aw-news-grid{gap:1.2rem!important}
+
+/* v0.4.40 — Story share bar */
+.aw-news-share{display:flex;flex-direction:column;gap:.5rem;padding:.8rem 0;border-top:1px solid #232323;margin-top:.8rem}
+.aw-news-share>span{color:#666;font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.09em}
+.aw-share-btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:.35rem .7rem;border:1px solid #3a3a3a;background:#080808;color:#aaa;font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;text-decoration:none;cursor:pointer;transition:border-color .12s,color .12s,background .12s;width:100%;text-align:center}
+.aw-share-btn:hover{border-color:#fff;color:#fff;background:#111}
