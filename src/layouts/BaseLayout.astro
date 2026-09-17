@@ -2,9 +2,11 @@
 import SEOHead from '../components/global/SEOHead.astro';
 import SiteHeader from '../components/global/SiteHeader.astro';
 import SiteFooter from '../components/global/SiteFooter.astro';
+import eventsRaw from '../data/schedule-events.json';
 import '../styles/global.css';
 interface Props { title?:string;description?:string;canonical?:string;image?:string;type?:'website'|'article';noindex?:boolean; }
 const props=Astro.props;
+const bannerEvents=(eventsRaw as any[]).filter((e:any)=>!e.offWeek).map((e:any)=>({date:e.date,endDate:e.endDate??null,time:e.time??null,title:e.title,leagueName:e.leagueName,league:e.league,track:e.track,tbd:e.tbd??false,durationMinutes:e.durationMinutes??90}));
 ---
 <!doctype html>
 <html lang="en">
@@ -25,7 +27,85 @@ const props=Astro.props;
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <SiteHeader />
+  <a class="aw-race-banner" href="/schedule/#next-operation" data-race-banner data-state="LOADING" data-league="nrrs" aria-label="Next race countdown — click to view schedule">
+    <div class="aw-banner-badge"><span data-banner-series>RACE CTRL</span></div>
+    <div class="aw-banner-body">
+      <span class="aw-banner-label" data-banner-label>Next Operation</span>
+      <strong class="aw-banner-title" data-banner-title>Syncing…</strong>
+    </div>
+    <div class="aw-banner-track" data-banner-track aria-hidden="true"></div>
+    <div class="aw-banner-clock">
+      <span class="aw-banner-clock-label" data-banner-count-label>Until</span>
+      <strong class="aw-banner-count" data-banner-count>--:--</strong>
+    </div>
+  </a>
   <main id="main-content"><slot /></main>
   <SiteFooter />
 </body>
 </html>
+<script define:vars={{ bannerEvents }}>
+(() => {
+  const banner = document.querySelector('[data-race-banner]');
+  if (!banner) return;
+  const seriesEl = banner.querySelector('[data-banner-series]');
+  const labelEl  = banner.querySelector('[data-banner-label]');
+  const titleEl  = banner.querySelector('[data-banner-title]');
+  const trackEl  = banner.querySelector('[data-banner-track]');
+  const countEl  = banner.querySelector('[data-banner-count]');
+  const clabelEl = banner.querySelector('[data-banner-count-label]');
+  const pad = (n) => String(n).padStart(2,'0');
+  function offset(dateKey){
+    const [y,m,d]=dateKey.split('-').map(Number);
+    const noon=new Date(Date.UTC(y,m-1,d,12));
+    const tz=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset',hour:'2-digit'}).formatToParts(noon).find(p=>p.type==='timeZoneName')?.value||'GMT-4';
+    const mt=tz.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/);
+    return mt?`${mt[1]}${pad(mt[2])}:${pad(mt[3]||'00')}`:'-04:00';
+  }
+  function parseTime(t){
+    if(!t||t==='TBD'||t==='Event Window')return{hour:12,minute:0};
+    const m=t.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);if(!m)return{hour:20,minute:0};
+    let h=Number(m[1]);const min=Number(m[2]);
+    if(m[3].toUpperCase()==='PM'&&h!==12)h+=12;if(m[3].toUpperCase()==='AM'&&h===12)h=0;
+    return{hour:h,minute:min};
+  }
+  function getStart(e){
+    if(e.league==='iracing')return new Date(`${e.date}T00:00:00${offset(e.date)}`);
+    const t=parseTime(e.time);return new Date(`${e.date}T${pad(t.hour)}:${pad(t.minute)}:00${offset(e.date)}`);
+  }
+  function getEnd(e){
+    if(e.league==='iracing'||e.tbd){const k=e.endDate||e.date;return new Date(`${k}T23:59:59${offset(k)}`);}
+    return new Date(getStart(e).getTime()+(e.durationMinutes||90)*60000);
+  }
+  function selectNext(now){
+    const cands=bannerEvents.filter(e=>getEnd(e)>=now);
+    const fixed=cands.filter(e=>e.league!=='iracing'&&!e.tbd);
+    const live=fixed.filter(e=>now>=getStart(e)&&now<=getEnd(e)).sort((a,b)=>getStart(a)-getStart(b));
+    if(live.length)return live[0];
+    const soonLimit=new Date(now.getTime()+36*3600000);
+    const soon=fixed.filter(e=>getStart(e)>now&&getStart(e)<=soonLimit).sort((a,b)=>getStart(a)-getStart(b));
+    if(soon.length)return soon[0];
+    const wins=cands.filter(e=>e.league==='iracing'&&now>=getStart(e)&&now<=getEnd(e));
+    if(wins.length)return wins[0];
+    return cands.filter(e=>getStart(e)>now).sort((a,b)=>getStart(a)-getStart(b))[0]||null;
+  }
+  function tick(){
+    const now=new Date();const event=selectNext(now);
+    if(!event){banner.dataset.state='COMPLETE';if(titleEl)titleEl.textContent='Season Complete';return;}
+    const start=getStart(event);const end=getEnd(event);const isLive=now>=start&&now<=end;
+    banner.dataset.state=isLive?'LIVE':'UPCOMING';
+    banner.dataset.league=event.league;
+    if(seriesEl)seriesEl.textContent=isLive?'● LIVE NOW':event.leagueName;
+    if(labelEl)labelEl.textContent=isLive?'Currently Active':'Next Operation';
+    if(titleEl)titleEl.textContent=event.title;
+    if(trackEl)trackEl.textContent=event.track;
+    if(isLive){if(countEl)countEl.textContent='LIVE';if(clabelEl)clabelEl.textContent='';}
+    else{
+      const diff=Math.max(0,start-now);
+      const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+      if(countEl)countEl.textContent=d>0?`${d}D ${pad(h)}H`:h>0?`${pad(h)}H ${pad(m)}M`:`${pad(m)}M ${pad(s)}S`;
+      if(clabelEl)clabelEl.textContent=d>0||h>0?'Until':'Green flag';
+    }
+  }
+  tick();setInterval(tick,1000);
+})();
+</script>
