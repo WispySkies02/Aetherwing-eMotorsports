@@ -6,22 +6,24 @@ import iracing from '../../data/iracing-garage.json';
 import profiles from '../../data/driver-profiles.json';
 import driverEntries from '../../data/drivers.json';
 import charters from '../../data/charters.json';
+import site from '../../data/site.json';
 import '../../styles/pages/drivers.css';
 const selected=roster[0];
 const wispyStats=profiles[0].stats;
 const numberParts=(value)=>String(value||'').split('/').map((part)=>part.trim().replace(/^#/, '')).filter(Boolean);
 const formatNumbers=(value)=>numberParts(value).map((part)=>`#${part}`).join(' / ');
 const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(driver.numbers)}));
+const activeFactoryEntries=iracing.entries.filter((entry)=>entry.driver!=='Aetherwing Endurance Team');
 ---
 <BaseLayout title="Drivers" description="Current Aetherwing drivers, iRacing Factory entries, and StarClutch Racing alliance participants.">
   <PageHero eyebrow="2026 Season Roster" title="Aetherwing Drivers" description="Current Aetherwing drivers, iRacing Factory entries, and StarClutch Racing alliance participants. Pick a driver and the profile stage updates in place." ghost="ROSTER" />
   <section class="section section--tight aw-driver-hub">
     <div class="shell">
       <div class="aw-roster-stats stat-rail">
-        <div class="stat"><strong>10</strong><span>Active RoRacing Drivers</span></div>
-        <div class="stat"><strong>6</strong><span>Competition Relationships</span></div>
-        <div class="stat"><strong>3</strong><span>iRacing Factory Entries</span></div>
-        <div class="stat"><strong>5 / 5</strong><span>Aetherwing / Alliance-Only</span></div>
+        <div class="stat"><strong data-count={site.activeRoRacingDrivers}>0</strong><span>Active RoRacing Drivers</span></div>
+        <div class="stat"><strong data-count={site.competitionRelationships}>0</strong><span>Competition Relationships</span></div>
+        <div class="stat"><strong data-count={activeFactoryEntries.length}>0</strong><span>iRacing Factory Entries</span></div>
+        <div class="stat"><strong>{site.aetherwingDrivers} / {site.allianceOnlyDrivers}</strong><span>Aetherwing / Alliance-Only</span></div>
       </div>
       <section class="aw-charter-board" aria-labelledby="charter-board-title">
         <div class="aw-charter-board__head">
@@ -102,12 +104,14 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     <div class="shell shell--standard">
       <div class="section-head"><div><p class="eyebrow">iRacing Factory Program</p><h2 class="section-title">03 Factory Entries</h2></div><p class="lede">The garage uses Nicholas Waggoner for iRacing paint/history presentation without creating a duplicate Wispy profile.</p></div>
       <div class="aw-factory-grid">
-        {iracing.entries.filter((entry)=>entry.driver!=='Aetherwing Endurance Team').map((entry)=><article class="panel"><span>#{entry.number}</span><h3>{entry.driver==='Nicholas Waggoner'?'Wispy / Nicholas Waggoner':entry.driver}</h3><p>Aetherwing Factory Program</p></article>)}
+        {activeFactoryEntries.map((entry)=><article class="panel"><span>#{entry.number}</span><h3>{entry.driver==='Nicholas Waggoner'?'Wispy / Nicholas Waggoner':entry.driver}</h3><p>Aetherwing Factory Program</p></article>)}
       </div>
     </div>
   </section>
 </BaseLayout>
 <script define:vars={{ roster, driverEntries }}>
+  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   document.querySelectorAll('[data-open-charter]').forEach((module)=>{
     if(!(module instanceof HTMLElement))return;
     const tabs=Array.from(module.querySelectorAll('[role="tab"]'));
@@ -156,5 +160,29 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     toolbar?.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
       if(!(button instanceof HTMLButtonElement))return;toolbar.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('is-active'));button.classList.add('is-active');const filter=button.dataset.filter||'all';activeRosterFilter=filter;let shown=0;let first=null;options.forEach(option=>{const programs=(option.dataset.programs||'').split('|');const driver=roster.find(d=>d.slug===option.dataset.slug);const show=filter==='all'||option.dataset.affiliation===filter||programs.includes(filter);option.hidden=!show;renderOptionNumber(option,driver);if(show){shown++;if(!first)first=option;}});if(count)count.textContent=`${shown} shown`;if(first instanceof HTMLButtonElement){options.forEach(o=>o.setAttribute('aria-selected','false'));first.setAttribute('aria-selected','true');render(roster.find(d=>d.slug===first.dataset.slug));}if(list instanceof HTMLElement)list.scrollTo({top:0,behavior:'smooth'});
     }));
+  }
+
+  const counters=document.querySelectorAll('[data-count]');
+  const animateCount=(el)=>{
+    const target=parseInt(el.dataset.count,10);
+    if(Number.isNaN(target))return;
+    const duration=900;
+    const start=performance.now();
+    const step=(now)=>{
+      const progress=Math.min((now-start)/duration,1);
+      const eased=1-Math.pow(1-progress,3);
+      el.textContent=Math.floor(eased*target).toString();
+      if(progress<1)requestAnimationFrame(step);
+      else el.textContent=target.toString();
+    };
+    requestAnimationFrame(step);
+  };
+  if(!reduceMotion&&counters.length){
+    const countObserver=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(entry=>{if(entry.isIntersecting){animateCount(entry.target);obs.unobserve(entry.target);}});
+    },{threshold:.5});
+    counters.forEach(el=>countObserver.observe(el));
+  }else{
+    counters.forEach(el=>{el.textContent=el.dataset.count;});
   }
 </script>
