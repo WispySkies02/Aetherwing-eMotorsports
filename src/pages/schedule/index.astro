@@ -212,6 +212,10 @@ const displayDate = (event) => {
           <button type="button" data-filter="uarl-group" aria-pressed="false">UARL</button>
           <button type="button" data-filter="iracing" aria-pressed="false">iRacing Special Events</button>
         </div>
+        <div class="aw-view-toggle" role="group" aria-label="Schedule view">
+          <button type="button" class="is-active" data-view-toggle="list" aria-pressed="true">≡ List</button>
+          <button type="button" data-view-toggle="calendar" aria-pressed="false">▦ Calendar</button>
+        </div>
         <div class="aw-subfilter-row" data-uarl-subfilters hidden>
           <button class="is-active" type="button" data-subfilter="uarl-all" aria-pressed="true">All UARL</button>
           <button type="button" data-subfilter="uarl-d1" aria-pressed="false">UARL D1</button>
@@ -225,6 +229,7 @@ const displayDate = (event) => {
 
       <div class="aw-schedule-readout"><span>Upcoming Operations</span><strong data-visible-count>—</strong><small>Tap any event to open its information dock.</small></div>
 
+      <div class="aw-calendar-mount" data-calendar-mount hidden></div>
       <div class="aw-months" data-schedule-output>
         {groups.map(([key,items]) => (
           <section class="aw-month-block" data-month-key={key}>
@@ -571,5 +576,84 @@ const displayDate = (event) => {
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();}); addEventListener('focus',refresh); addEventListener('pageshow',refresh);
   addEventListener('resize',updateLeagueShareControl,{passive:true});
   window.awScheduleIntervals={timer};
+
+  // ── Calendar view ──────────────────────────────────────────
+  const calMount = page.querySelector('[data-calendar-mount]');
+  const viewBtns = page.querySelectorAll('[data-view-toggle]');
+  const listOut  = page.querySelector('[data-schedule-output]');
+  const toggleWrap = page.querySelector('.aw-schedule-toggle-wrap');
+  const readout    = page.querySelector('.aw-schedule-readout');
+  let calendarActive = false;
+
+  const LEAGUE_COLOR = {
+    nrrs:'var(--aw-red)',kmart:'var(--aw-alliance)',sunoco:'var(--aw-alliance)',
+    'uarl-d1':'var(--aw-blue)',open:'var(--aw-cyan)',iracing:'#555'
+  };
+
+  function buildCalendar() {
+    if (!(calMount instanceof HTMLElement)) return;
+    const all = scheduleEvents.filter(e => !e.offWeek && !e.tbd);
+    // Group by month
+    const months = {};
+    all.forEach(e => {
+      const key = e.date.slice(0,7);
+      if (!months[key]) months[key] = [];
+      months[key].push(e);
+    });
+    const html = Object.entries(months).map(([key, evts]) => {
+      const [y,m] = key.split('-').map(Number);
+      const label = new Date(Date.UTC(y,m-1,1,12)).toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
+      const firstDay = new Date(Date.UTC(y,m-1,1)).getUTCDay();
+      const daysInMonth = new Date(Date.UTC(y,m,0)).getUTCDate();
+      // Build day → events map
+      const dayMap = {};
+      evts.forEach(e => {
+        const d = parseInt(e.date.slice(8),10);
+        if (!dayMap[d]) dayMap[d] = [];
+        dayMap[d].push(e);
+      });
+      // Build cells
+      let cells = '<div class="aw-cal-day aw-cal-day--empty"></div>'.repeat(firstDay);
+      for (let d=1;d<=daysInMonth;d++) {
+        const dayEvts = dayMap[d] || [];
+        const dots = dayEvts.map(e=>`<span class="aw-cal-dot" style="background:${LEAGUE_COLOR[e.league]||'#888'}" title="${e.leagueName}: ${e.title}"></span>`).join('');
+        const hasEvt = dayEvts.length > 0;
+        const details = dayEvts.map(e=>`<div class="aw-cal-evt" data-league="${e.league}"><b>${e.leagueName}</b><strong>${e.title}</strong><span>${e.time||'Window'}</span></div>`).join('');
+        cells += `<div class="aw-cal-day${hasEvt?' has-events':''}" data-cal-day="${key}-${String(d).padStart(2,'0')}">
+          <span class="aw-cal-num">${d}</span>
+          <div class="aw-cal-dots">${dots}</div>
+          ${hasEvt?`<div class="aw-cal-popup">${details}</div>`:''}
+        </div>`;
+      }
+      return `<section class="aw-cal-month"><h3 class="aw-cal-month-label">${label}</h3>
+        <div class="aw-cal-grid">
+          <div class="aw-cal-header"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+          <div class="aw-cal-days">${cells}</div>
+        </div></section>`;
+    }).join('');
+    calMount.innerHTML = html;
+    // Click to expand day events
+    calMount.querySelectorAll('.aw-cal-day.has-events').forEach(day => {
+      day.addEventListener('click', () => {
+        const wasOpen = day.classList.contains('is-open');
+        calMount.querySelectorAll('.aw-cal-day').forEach(d=>d.classList.remove('is-open'));
+        if (!wasOpen) day.classList.add('is-open');
+      });
+    });
+  }
+
+  viewBtns.forEach(btn => btn.addEventListener('click', () => {
+    const view = btn.dataset.viewToggle;
+    viewBtns.forEach(b=>{b.classList.toggle('is-active',b===btn);b.setAttribute('aria-pressed',String(b===btn));});
+    calendarActive = view === 'calendar';
+    if (calMount instanceof HTMLElement) {
+      calMount.hidden = !calendarActive;
+      if (calendarActive && !calMount.innerHTML) buildCalendar();
+    }
+    if (listOut instanceof HTMLElement) listOut.hidden = calendarActive;
+    if (toggleWrap instanceof HTMLElement) toggleWrap.hidden = calendarActive;
+    if (readout instanceof HTMLElement) readout.hidden = calendarActive;
+  }));
+
 })();
 </script>
