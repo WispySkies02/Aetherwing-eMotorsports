@@ -217,3 +217,88 @@
 .aw-cal-btns{display:flex;gap:.45rem;flex-wrap:wrap}
 .aw-cal-btn{display:inline-flex;align-items:center;min-height:28px;padding:.3rem .6rem;border:1px solid #3a3a3a;background:#000;color:#aaa;font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;text-decoration:none;transition:border-color .12s,color .12s,background .12s}
 .aw-cal-btn:hover{border-color:#fff;color:#fff;background:#111}
+
+
+/* ── v0.4.40 — View Toggle & Calendar Grid ───────────────── */
+.aw-view-toggle{
+  display:flex;gap:2px;margin-left:auto;flex-shrink:0;
+}
+.aw-view-toggle button{
+  min-height:36px;padding:.35rem .75rem;
+  border:1px solid #333;background:#070707;color:#666;
+  font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;
+  cursor:pointer;transition:.12s;
+}
+.aw-view-toggle button.is-active{background:var(--aw-paper);color:#000;border-color:var(--aw-paper);}
+.aw-view-toggle button:hover:not(.is-active){border-color:#fff;color:#fff;}
+
+/* Calendar mount */
+.aw-calendar-mount{padding:.5rem 0 2rem;}
+.aw-cal-month{margin-bottom:3rem;}
+.aw-cal-month-label{
+  margin:0 0 1rem;padding-bottom:.6rem;border-bottom:1px solid #222;
+  font:400 clamp(1.8rem,3.5vw,3rem)/.85 var(--font-brush);
+  text-transform:uppercase;font-synthesis:none;
+}
+.aw-cal-header{
+  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:2px;margin-bottom:2px;
+}
+.aw-cal-header span{
+  padding:.4rem;text-align:center;
+  font:900 .65rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;color:#444;
+}
+.aw-cal-days{
+  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:2px;
+}
+.aw-cal-day{
+  position:relative;
+  min-height:68px;padding:.45rem .5rem;
+  border:1px solid #141414;background:#060606;
+  cursor:default;
+  transition:border-color .15s,background .15s;
+}
+.aw-cal-day.has-events{cursor:pointer;border-color:#242424;}
+.aw-cal-day.has-events:hover{border-color:#444;background:#0a0a0a;}
+.aw-cal-day.is-open{border-color:var(--aw-gold)!important;background:#0d0a00!important;z-index:5;}
+.aw-cal-day--empty{background:transparent;border-color:transparent;}
+.aw-cal-num{
+  display:block;
+  font:900 .7rem/1 var(--font-mono);color:#333;
+}
+.aw-cal-day.has-events .aw-cal-num{color:#888;}
+.aw-cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:.35rem;}
+.aw-cal-dot{
+  width:7px;height:7px;border-radius:50%;
+  display:block;flex-shrink:0;
+}
+/* Popup overlay within a day cell */
+.aw-cal-popup{
+  display:none;
+  position:absolute;top:calc(100% + 4px);left:0;
+  min-width:220px;max-width:320px;
+  background:#0f0f0f;border:1px solid var(--aw-gold);
+  box-shadow:8px 8px 0 #000;
+  z-index:20;padding:.7rem;
+}
+.aw-cal-day.is-open .aw-cal-popup{display:block;}
+/* Handle right-edge overflow */
+.aw-cal-days>.aw-cal-day:nth-child(7n) .aw-cal-popup,
+.aw-cal-days>.aw-cal-day:nth-child(7n-1) .aw-cal-popup{left:auto;right:0;}
+.aw-cal-evt{
+  padding:.45rem 0;border-bottom:1px solid #1e1e1e;
+}
+.aw-cal-evt:last-child{border-bottom:0;}
+.aw-cal-evt b{display:block;color:#666;font:900 .64rem/1 var(--font-mono);text-transform:uppercase;}
+.aw-cal-evt strong{display:block;margin-top:.2rem;font:900 .85rem/1.2 var(--font-condensed);text-transform:uppercase;}
+.aw-cal-evt span{display:block;margin-top:.15rem;color:#555;font:700 .64rem/1 var(--font-mono);}
+.aw-cal-evt[data-league="nrrs"] b{color:var(--aw-red);}
+.aw-cal-evt[data-league="kmart"] b,.aw-cal-evt[data-league="sunoco"] b{color:var(--aw-alliance);}
+.aw-cal-evt[data-league="uarl-d1"] b,.aw-cal-evt[data-league="open"] b{color:var(--aw-blue);}
+.aw-cal-evt[data-league="iracing"] b{color:#555;}
+@media(max-width:600px){
+  .aw-cal-day{min-height:48px;padding:.3rem;}
+  .aw-cal-dot{width:6px;height:6px;}
+  .aw-cal-num{font-size:.62rem;}
+}
