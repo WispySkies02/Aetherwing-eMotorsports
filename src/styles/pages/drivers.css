@@ -51,3 +51,107 @@
 @media(max-width:1050px){.aw-charter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.aw-charter-card:last-child{grid-column:1/-1}}
 @media(max-width:760px){.aw-charter-board{padding:.75rem}.aw-charter-board__head{grid-template-columns:1fr;gap:.55rem}.aw-charter-board__head p{font-size:.8rem}.aw-charter-grid{grid-template-columns:1fr}.aw-charter-card:last-child{grid-column:auto}.aw-charter-card__title{align-items:flex-end}.aw-charter-slots{grid-template-columns:repeat(3,minmax(0,1fr))}.aw-charter-slot--ft{min-height:92px;padding:.48rem}.aw-charter-slot--ft>b{font-size:1.35rem}.aw-open-charter{grid-column:1/-1}.aw-open-charter__tabs button{min-height:46px}}
 @media(max-width:430px){.aw-charter-slots{grid-template-columns:repeat(2,minmax(0,1fr))}.aw-open-charter{grid-column:1/-1}.aw-open-charter__head{display:grid;gap:.2rem}.aw-open-charter__head>small{max-width:none;text-align:left}.aw-open-charter__tabs button{grid-template-columns:1fr;gap:.15rem}.aw-open-charter__panel{grid-template-columns:62px minmax(0,1fr)}.aw-open-charter__panel>b{min-height:54px;font-size:1.7rem}}
+
+
+/* ── v0.4.40 — Driver Flip Cards ─────────────────────────── */
+.aw-driver-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:.65rem;
+  max-height:520px;overflow-y:auto;overflow-x:hidden;
+  padding:.2rem .1rem 1rem;
+  scrollbar-width:thin;scrollbar-color:#333 transparent;
+}
+.aw-flip-card{
+  position:relative;
+  height:170px;
+  border:0;background:transparent;padding:0;cursor:pointer;
+  perspective:900px;
+  -webkit-perspective:900px;
+}
+.aw-flip-inner{
+  position:relative;width:100%;height:100%;
+  transition:transform .45s cubic-bezier(.4,0,.2,1);
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+}
+.aw-flip-card.is-flipped .aw-flip-inner{transform:rotateY(180deg);}
+.aw-flip-front,.aw-flip-back{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:.9rem;
+  border:2px solid #252525;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.aw-flip-front{
+  background:linear-gradient(145deg,#0d0d0d,#040404);
+}
+.aw-flip-front::before{
+  content:attr(data-num);
+  position:absolute;right:-.08em;bottom:-.2em;
+  font:400 5.5rem/.75 var(--font-number);color:rgba(255,255,255,.04);
+  pointer-events:none;
+}
+.aw-flip-back{
+  background:linear-gradient(145deg,#0a0d0a,#030503);
+  border-color:#1a2a1a;
+  transform:rotateY(180deg);
+  justify-content:space-between;
+}
+/* Selected card highlight */
+.aw-flip-card.is-selected .aw-flip-front,
+.aw-flip-card.is-selected.is-flipped .aw-flip-back{
+  border-color:var(--aw-gold);
+  box-shadow:6px 6px 0 rgba(255,184,0,.18);
+}
+.aw-flip-card.is-alliance .aw-flip-front{border-color:#1e152e;}
+.aw-flip-card.is-alliance.is-selected .aw-flip-front,
+.aw-flip-card.is-alliance.is-selected.is-flipped .aw-flip-back{border-color:var(--aw-alliance);}
+/* Front content */
+.aw-flip-card .aw-driver-num{
+  display:flex;flex-wrap:wrap;gap:.2rem;
+  font:400 1.6rem/.85 var(--font-number);
+}
+.aw-flip-card .aw-driver-num b{color:#777;}
+.aw-flip-card.is-selected .aw-driver-num b{color:var(--aw-gold);}
+.aw-flip-name{
+  display:block;margin-top:.35rem;
+  font:400 1.35rem/.85 var(--font-brush);text-transform:uppercase;font-synthesis:none;
+}
+.aw-flip-role{
+  display:block;margin-top:.2rem;color:#555;
+  font:900 .62rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.07em;
+}
+/* Back content */
+.aw-flip-bio{
+  margin:0;color:#bbb;
+  font:700 .76rem/1.45 var(--font-mono);
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
+}
+.aw-flip-programs{
+  display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;
+}
+.aw-flip-programs span{
+  padding:.2rem .4rem;border:1px solid #2a3a2a;
+  color:#8aad8a;font:900 .6rem/1 var(--font-mono);text-transform:uppercase;
+}
+.aw-flip-handle{color:#444;font:700 .65rem/1 var(--font-mono);}
+/* Hint label */
+.aw-flip-hint{
+  position:absolute;top:.5rem;right:.5rem;
+  color:#333;font:700 .58rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.05em;
+  pointer-events:none;
+}
+.aw-flip-card.is-selected .aw-flip-hint{color:#555;}
+/* Reduce motion */
+@media(prefers-reduced-motion:reduce){
+  .aw-flip-inner{transition:none;}
+}
+@media(max-width:700px){
+  .aw-driver-cards{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));max-height:400px;}
+  .aw-flip-card{height:150px;}
+  .aw-flip-name{font-size:1.1rem;}
+}
