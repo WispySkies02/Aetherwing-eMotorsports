@@ -61,3 +61,65 @@ p,li{font-size:max(1rem,1em)}
 small{font-size:.8rem}
 .eyebrow,.tag,.kicker-line,.stat span,.aw-paper-label{font-size:.8rem}
 @media(min-width:1100px){.page-hero .lede{font-size:1.05rem}.lede{font-size:1.08rem}}
+
+
+/* ── v0.4.40 — Race Countdown Banner ─────────────────────── */
+.aw-race-banner{
+  position:sticky;top:0;z-index:98;
+  display:flex;align-items:stretch;
+  height:46px;
+  background:#030303;
+  border-bottom:1px solid #1c1c1c;
+  text-decoration:none;color:#fff;
+  overflow:hidden;
+  transition:border-color .3s;
+}
+.aw-race-banner[data-state="LIVE"]{border-bottom-color:var(--aw-positive);}
+.aw-race-banner:hover{border-bottom-color:rgba(255,255,255,.3);}
+.aw-banner-badge{
+  flex-shrink:0;display:flex;align-items:center;
+  padding:0 1rem 0 .9rem;
+  background:var(--aw-red);
+  font:900 .72rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;
+  white-space:nowrap;
+  clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%);
+  padding-right:1.4rem;
+}
+[data-league="kmart"] .aw-banner-badge,
+[data-league="sunoco"] .aw-banner-badge{background:var(--aw-alliance);}
+[data-league="iracing"] .aw-banner-badge{background:#1e1e1e;}
+[data-league="uarl-d1"] .aw-banner-badge,
+[data-league="open"] .aw-banner-badge{background:var(--aw-blue);color:#000;}
+[data-state="LIVE"] .aw-banner-badge{background:var(--aw-positive);color:#000;}
+.aw-banner-body{
+  flex:1;display:flex;align-items:center;gap:.6rem;
+  padding:0 .8rem 0 .5rem;
+  min-width:0;overflow:hidden;
+}
+.aw-banner-label{
+  flex-shrink:0;color:#555;
+  font:900 .68rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;
+}
+.aw-banner-title{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font:900 .82rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.04em;
+}
+.aw-banner-track{
+  flex-shrink:0;padding:0 .8rem;
+  color:#444;
+  font:700 .68rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.05em;
+  border-left:1px solid #1c1c1c;
+  white-space:nowrap;overflow:hidden;max-width:200px;text-overflow:ellipsis;
+}
+.aw-banner-clock{
+  flex-shrink:0;display:flex;align-items:center;gap:.45rem;
+  padding:0 .9rem;
+  border-left:1px solid #1c1c1c;
+  font:900 .72rem/1 var(--font-mono);text-transform:uppercase;
+}
+.aw-banner-clock-label{color:#555;}
+.aw-banner-count{color:var(--aw-positive);}
+[data-state="LIVE"] .aw-banner-clock{background:var(--aw-positive);}
+[data-state="LIVE"] .aw-banner-count,[data-state="LIVE"] .aw-banner-clock-label{color:#000;}
+@media(max-width:760px){.aw-banner-track{display:none}}
+@media(max-width:520px){.aw-banner-label{display:none}.aw-banner-clock-label{display:none}}
