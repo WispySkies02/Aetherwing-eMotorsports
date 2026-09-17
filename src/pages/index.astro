@@ -13,6 +13,7 @@ const initialCompetition=competitions[0];
 const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.test(event.title)) ?? events[0];
 const latest=result.latestResult;
 const featuredNews=news.find((story)=>story.featured) ?? news[0];
+const newsCategories=[...new Set(news.map((n)=>n.category))];
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
   <section class="aw-home-hero">
@@ -28,10 +29,10 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
       <aside class="aw-glance panel">
         <span class="aw-paper-label">Aetherwing at a glance</span>
         <div class="aw-glance__grid">
-          <div><strong>{site.activeRoRacingDrivers}</strong><span>Active RoRacing Drivers</span></div>
-          <div><strong>{String(site.competitionRelationships).padStart(2,'0')}</strong><span>Competition Relationships</span></div>
-          <div><strong>{String(site.featuredPartners).padStart(2,'0')}</strong><span>Featured Partners</span></div>
-          <div><strong>03</strong><span>Competition Worlds</span></div>
+          <div><strong data-count={site.activeRoRacingDrivers}>0</strong><span>Active RoRacing Drivers</span></div>
+          <div><strong data-count={site.competitionRelationships} data-pad="2">00</strong><span>Competition Relationships</span></div>
+          <div><strong data-count={site.featuredPartners} data-pad="2">00</strong><span>Featured Partners</span></div>
+          <div><strong data-count="3" data-pad="2">00</strong><span>Competition Worlds</span></div>
         </div>
         <p>5 Aetherwing drivers and 5 alliance-only drivers across 4 active Aetherwing programs and 2 alliance series.</p>
       </aside>
@@ -40,9 +41,9 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
 
   <div class="aw-home-stats">
     <div class="shell stat-rail">
-      <div class="stat"><strong>{site.verifiedWins}</strong><span>AEM Wins</span></div>
-      <div class="stat"><strong>{site.estimatedStarts}</strong><span>Est. Racing Starts</span></div>
-      <div class="stat"><strong>{site.competitionRelationships}</strong><span>Competition Relationships</span></div>
+      <div class="stat"><strong data-count={site.verifiedWins}>0</strong><span>AEM Wins</span></div>
+      <div class="stat"><strong data-count={site.estimatedStarts}>0</strong><span>Est. Racing Starts</span></div>
+      <div class="stat"><strong data-count={site.competitionRelationships}>0</strong><span>Competition Relationships</span></div>
       <div class="stat"><strong>{site.founded}</strong><span>Founded</span></div>
     </div>
   </div>
@@ -105,12 +106,18 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
   <section class="section aw-news-deck" data-brush="LATEST FROM THE GARAGE">
     <div class="shell">
       <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
+
+      <div class="aw-news-filters" role="tablist" aria-label="News categories" data-news-deck>
+        <button type="button" role="tab" aria-selected="true" data-news-filter="all">All</button>
+        {newsCategories.map((cat)=><button type="button" role="tab" aria-selected="false" data-news-filter={cat}>{cat}</button>)}
+      </div>
+
       <div class="aw-news-grid">
-        <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">{featuredNews.category}</span><small>{featuredNews.date} · {featuredNews.context} · {featuredNews.kicker}</small><h3>{featuredNews.title}</h3><p>{featuredNews.summary}</p><b>Read the Southern 500 Story →</b></a>
+        <a class="aw-feature-story panel" data-news-category={featuredNews.category} href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">{featuredNews.category}</span><small>{featuredNews.date} · {featuredNews.context} · {featuredNews.kicker}</small><h3>{featuredNews.title}</h3><p>{featuredNews.summary}</p><b>Read the Southern 500 Story →</b></a>
         <article class="aw-result-card aw-result-ticket">
           <div class="aw-result-ticket__head"><span>CHECKERED // LATEST RESULT</span><b>{latest.specialTag}</b></div>
           <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>TOP 5</em></div></div>
-          <div class="aw-result-ticket__run"><span>P{latest.start}<small>START</small></span><i>→</i><span>{latest.stagePoints}<small>STAGE PTS</small></span><i>→</i><span class="is-final">P{latest.finish}<small>CHECKERED</small></span></div>
+          <div class="aw-result-ticket__run" data-result-run><span>P{latest.start}<small>START</small></span><i>→</i><span>{latest.stagePoints}<small>STAGE PTS</small></span><i>→</i><span class="is-final">P{latest.finish}<small>CHECKERED</small></span></div>
           <div class="aw-result-ticket__foot"><span>CHASE RACE 1 COMPLETE · NO STAGE POINTS</span><a href="/wins-history/#latest-result">Open Post-Race Graphic →</a></div>
         </article>
         <div class="aw-quick-links">
@@ -125,7 +132,7 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
     <div class="shell">
       <div class="section-head"><div><p class="eyebrow">Aetherwing Partner Network</p><h2 class="section-title">Partner Network</h2></div><p class="lede">Two featured public-facing relationships. Driver livery brands remain a separate portfolio.</p></div>
       <div class="aw-partner-grid">
-        {partners.map((partner)=><a class="aw-partner panel" href={partner.url} target="_blank" rel="noopener noreferrer"><div class="aw-partner-logo"><img loading="lazy" src={partner.logo} alt={partner.name} /></div><div><span class="tag">{partner.role}</span><h3>{partner.name}</h3><p>{partner.description}</p></div></a>)}
+        {partners.map((partner)=><a class="aw-partner panel" href={partner.url} target="_blank" rel="noopener noreferrer"><div class="aw-partner-face"><div class="aw-partner-logo"><img loading="lazy" src={partner.logo} alt={partner.name} /></div><div><span class="tag">{partner.role}</span><h3>{partner.name}</h3></div></div><div class="aw-partner-reveal"><p>{partner.description}</p><b>Visit Partner →</b></div></a>)}
       </div>
     </div>
   </section>
@@ -139,7 +146,7 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
   </section>
 </BaseLayout>
 
-<script define:vars={{ roster, competitions, events }}>
+<script define:vars={{ roster, competitions, events, news }}>
   const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const countdown=document.querySelector('[data-home-countdown]');
   const homeLeague=document.querySelector('[data-home-event-league]');
@@ -156,6 +163,7 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
   const selectPrimaryOperation=(items,now=new Date())=>{const candidates=items.filter(event=>!event.offWeek&&endOf(event)>=now);const fixed=candidates.filter(event=>event.league!=='iracing'&&!event.tbd);const live=fixed.filter(event=>now>=startOf(event)&&now<=endOf(event)).sort((a,b)=>startOf(a)-startOf(b));if(live.length)return live[0];const soonLimit=new Date(now.getTime()+36*60*60*1000);const soon=fixed.filter(event=>startOf(event)>now&&startOf(event)<=soonLimit).sort((a,b)=>startOf(a)-startOf(b));if(soon.length)return soon[0];const windows=candidates.filter(event=>event.league==='iracing'&&now>=startOf(event)&&now<=endOf(event)).sort((a,b)=>startOf(a)-startOf(b));if(windows.length)return windows[0];return candidates.filter(event=>startOf(event)>now).sort((a,b)=>startOf(a)-startOf(b))[0]||candidates[0];};
   const updateHomeEvent=()=>{const now=new Date();const event=selectPrimaryOperation(events,now);if(!event||!(countdown instanceof HTMLElement))return;homeLeague.textContent=`${event.leagueName} · ${event.status||'Scheduled'}`;homeTitle.textContent=event.title;homeMeta.textContent=`${event.track} · ${displayDate(event)} · ${event.time}`;const start=startOf(event),end=endOf(event);if(now>=start&&now<=end){countdown.textContent='LIVE';countdown.classList.add('is-live');if(homeState){homeState.textContent='LIVE';homeState.classList.add('tag--live');}homeLabel.textContent=event.league==='iracing'?'Current iRacing special-event window':'Event currently active';return;}countdown.classList.remove('is-live');if(homeState){homeState.textContent='UPCOMING';homeState.classList.remove('tag--live');}const diff=Math.max(0,start-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);countdown.textContent=d>0?`${d}D ${pad(h)}H`:`${pad(h)}H ${pad(m)}M`;homeLabel.textContent='Until next operation';};
   updateHomeEvent();setInterval(updateHomeEvent,60000);
+
   const teamBrowser=document.querySelector('[data-team-browser]');
   if(teamBrowser){
     const cards=teamBrowser.querySelector('[data-team-cards]');
@@ -166,11 +174,71 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
     const renderDetail=(driver)=>{if(!(detail instanceof HTMLElement)||!driver)return;detail.innerHTML=`<div><span class="tag ${driver.affiliation==='alliance'?'tag--alliance':''}">${driver.role}</span><h3>${driver.name}</h3><p class="mono">${driver.handle||''}${driver.handle?' · ':''}#${driver.numbers}</p><p>${driver.bio}</p><p class="mono muted">${driver.programs.join(' · ')}</p></div><a class="btn" href="/drivers/">Open Driver Hub</a>`;};
     if(cards instanceof HTMLElement){cards.innerHTML=selected.map((driver,i)=>`<button class="aw-team-card ${i===0?'is-selected':''}" type="button" data-driver-slug="${driver.slug}"><small>${driver.role}</small><strong>#${driver.numbers}</strong><h3>${driver.name}</h3><span>${driver.feature}</span></button>`).join('');cards.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{cards.querySelectorAll('button').forEach(b=>b.classList.remove('is-selected'));btn.classList.add('is-selected');renderDetail(roster.find(d=>d.slug===btn.dataset.driverSlug));}));}
   }
+
   const programBrowser=document.querySelector('[data-program-browser]');
   if(programBrowser){
     const tabs=programBrowser.querySelectorAll('[role="tab"]');
     const detail=programBrowser.querySelector('[data-program-detail]');
     const renderProgram=(program)=>{if(!(detail instanceof HTMLElement)||!program)return;detail.dataset.type=program.type;detail.classList.toggle('panel--alliance',program.type==='alliance');detail.innerHTML=`<div class="aw-program-detail__head"><span class="tag ${program.type==='alliance'?'tag--alliance':''}">${program.label}</span><small>${program.schedule}</small></div><h3>${program.name}</h3><p class="aw-program-machine">${program.machine}</p><p class="mono muted">${program.platform}</p><div class="aw-program-roster">${program.roster.map(entry=>`<span>${entry}</span>`).join('')}</div>`;};
     tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(t=>t.setAttribute('aria-selected','false'));tab.setAttribute('aria-selected','true');renderProgram(competitions.find(p=>p.id===tab.dataset.program));if(!reduceMotion&&detail instanceof HTMLElement)detail.animate([{opacity:.35,transform:'translateY(5px)'},{opacity:1,transform:'none'}],{duration:180,easing:'ease-out'});}));
+  }
+
+  const counters=document.querySelectorAll('[data-count]');
+  const animateCount=(el)=>{
+    const target=parseInt(el.dataset.count,10);
+    if(Number.isNaN(target))return;
+    const padLen=el.dataset.pad?Number(el.dataset.pad):0;
+    const duration=900;
+    const start=performance.now();
+    const step=(now)=>{
+      const progress=Math.min((now-start)/duration,1);
+      const eased=1-Math.pow(1-progress,3);
+      const value=Math.floor(eased*target);
+      el.textContent=padLen?String(value).padStart(padLen,'0'):String(value);
+      if(progress<1)requestAnimationFrame(step);
+      else el.textContent=padLen?String(target).padStart(padLen,'0'):String(target);
+    };
+    requestAnimationFrame(step);
+  };
+  if(!reduceMotion&&counters.length){
+    const countObserver=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(entry=>{if(entry.isIntersecting){animateCount(entry.target);obs.unobserve(entry.target);}});
+    },{threshold:.5});
+    counters.forEach(el=>countObserver.observe(el));
+  }else{
+    counters.forEach(el=>{const padLen=el.dataset.pad?Number(el.dataset.pad):0;const target=el.dataset.count;el.textContent=padLen?String(target).padStart(padLen,'0'):target;});
+  }
+
+  const newsFilterBar=document.querySelector('[data-news-deck]');
+  if(newsFilterBar){
+    const filterButtons=newsFilterBar.querySelectorAll('[data-news-filter]');
+    const items=document.querySelectorAll('[data-news-category]');
+    filterButtons.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        filterButtons.forEach(b=>b.setAttribute('aria-selected','false'));
+        btn.setAttribute('aria-selected','true');
+        const filter=btn.dataset.newsFilter;
+        items.forEach(item=>{
+          const show=filter==='all'||item.dataset.newsCategory===filter;
+          item.style.display=show?'':'none';
+          if(show&&!reduceMotion)item.animate([{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'none'}],{duration:200,easing:'ease-out'});
+        });
+      });
+    });
+  }
+
+  const resultRun=document.querySelector('[data-result-run]');
+  if(resultRun&&!reduceMotion){
+    const runObserver=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.querySelectorAll('span').forEach((span,i)=>{
+            span.animate([{opacity:0,transform:'translateX(-8px)'},{opacity:1,transform:'none'}],{duration:300,delay:i*150,fill:'both',easing:'ease-out'});
+          });
+          obs.unobserve(entry.target);
+        }
+      });
+    },{threshold:.6});
+    runObserver.observe(resultRun);
   }
 </script>
