@@ -1,6 +1,7 @@
 ---
-import scheduleSource from '../../data/schedule-events.json';
+import { scheduleEvents as scheduleSource } from "../../lib/site-content.mjs";
 import { eventSlug } from '../../lib/schedule-events.mjs';
+import { existsSync } from 'node:fs';
 
 export function getStaticPaths() {
   return scheduleSource.map((event) => ({
@@ -13,6 +14,7 @@ const { event } = Astro.props;
 const target = `/schedule/?league=${encodeURIComponent(event.league)}#event-${event.shareSlug}`;
 const canonicalUrl = new URL(`/event/${event.shareSlug}/`, Astro.site);
 const imageUrl = new URL(`/images/social/events/${event.shareSlug}-v47.jpg`, Astro.site);
+if (!existsSync(new URL(`../../../public/images/social/events/${event.shareSlug}-v47.jpg`, import.meta.url))) imageUrl.pathname='/images/social/schedule-social.png';
 ---
 <!doctype html>
 <html lang="en">

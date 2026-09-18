@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
-import profiles from '../../data/driver-profiles.json';
-import drivers from '../../data/drivers.json';
+import { driverProfiles as profiles } from "../../lib/site-content.mjs";
+import { drivers as drivers } from "../../lib/site-content.mjs";
 import '../../styles/pages/drivers.css';
 export function getStaticPaths(){return profiles.map((profile)=>({params:{slug:profile.slug},props:{profile}}));}
 const {profile}=Astro.props;

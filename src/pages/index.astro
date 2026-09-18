@@ -2,14 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import site from '../data/site.json';
 import competitions from '../data/competitions.json';
-import roster from '../data/roster-profiles.json';
-import events from '../data/schedule-events.json';
+import { rosterProfiles as roster } from "../lib/site-content.mjs";
+import { scheduleEvents as events } from "../lib/site-content.mjs";
 import partners from '../data/partners.json';
-import result from '../data/results.json';
-import news from '../data/news.json';
-import standings from '../data/standings.json';
+import { results as result } from "../lib/site-content.mjs";
+import { news as news } from "../lib/site-content.mjs";
+import { standings as standings } from "../lib/site-content.mjs";
+import { wins } from '../lib/site-content.mjs';
 import '../styles/pages/home.css';
-const initialTeam=[roster[0],roster[1],roster[2],roster[3]];
+const initialTeam=roster.slice(0,4);
 const initialCompetition=competitions[0];
 const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.test(event.title)) ?? events[0];
 const latest=result.latestResult;
@@ -18,7 +19,7 @@ const nrrsChase=(standings as any[]).find((s:any)=>s.id==='nrrs');
 const wispyRow=(nrrsChase?.rows??[])[0];
 const wispyPos=parseInt(String(wispyRow?.position??'P6').replace('P',''),10);
 const wispyGap=Math.abs(parseInt(String(wispyRow?.delta??'-58'),10));
-const nextNrrsChase=events.find((event)=>event.league==='nrrs' && event.date>'2026-09-15' && !event.offWeek);
+const nextNrrsChase=events.filter((event)=>event.league==='nrrs' && event.date>new Date(latest.date).toISOString().slice(0,10) && !event.offWeek).sort((a,b)=>a.date.localeCompare(b.date))[0];
 const chaseField=Array.from({length:12},(_,i)=>{
   const pos=i+1;
   const row=(nrrsChase?.rows as any[]??[]).find((r:any)=>parseInt(String(r.position).replace('P',''),10)===pos);
@@ -39,7 +40,7 @@ const chaseField=Array.from({length:12},(_,i)=>{
       <aside class="aw-glance panel">
         <span class="aw-paper-label">Aetherwing at a glance</span>
         <div class="aw-glance__story">
-          <strong>{site.activeRoRacingDrivers}</strong>
+          <strong>{roster.length}</strong>
           <p>active RoRacing drivers carry Aetherwing and the StarClutch Racing Alliance across a six-series competition network.</p>
         </div>
         <div class="aw-glance__line"><span>04 Aetherwing programs</span><span>02 alliance series</span><span>03 racing worlds</span></div>
@@ -49,7 +50,7 @@ const chaseField=Array.from({length:12},(_,i)=>{
 
   <div class="aw-home-stats">
     <div class="shell aw-proof-strip">
-      <strong>{site.verifiedWins}</strong>
+      <strong>{wins.length}</strong>
       <p>verified Aetherwing wins anchor a record built across {site.estimatedStarts} estimated starts since {site.founded}.</p>
       <span>{site.competitionRelationships} current competition relationships</span>
     </div>
@@ -60,13 +61,13 @@ const chaseField=Array.from({length:12},(_,i)=>{
       <div class="aw-chase-story">
         <div>
           <p class="eyebrow">NRRS Chase for the Cup · {nrrsChase?.subtitle ?? 'After Chase Race 1 of 6'}</p>
-          <h2>Wispy is sixth in the Chase, {wispyGap} points off the lead heading to {nextNrrsChase?.track?.replace(' Raceway','') ?? 'Richmond'}.</h2>
-          <p>The No. 32 leaves Darlington with {(wispyRow?.points ?? 2087).toLocaleString('en-US')} points and a top-five finish, but stage points remain the pressure point entering {nextNrrsChase?.title ?? 'the Verizon 400'}.</p>
+          <h2>{wispyRow?.driver ?? latest.driver} is {wispyRow?.position ?? 'unranked'} in the Chase, {wispyGap} points off the lead heading to {nextNrrsChase?.track?.replace(' Raceway','') ?? 'Richmond'}.</h2>
+          <p>The No. {wispyRow?.number ?? latest.number} carries {(wispyRow?.points ?? 0).toLocaleString('en-US')} points after {latest.title}, where {latest.driver} finished P{latest.finish} with {latest.stagePoints} stage points.</p>
         </div>
         <div class="aw-chase-position" aria-label={`Wispy is ${wispyRow?.position ?? 'P6'} in the NRRS Chase`}>
           <span>Chase position</span>
           <strong>{wispyRow?.position ?? 'P6'}</strong>
-          <em>{wispyRow?.positionChange ?? '-1 spot'} after Darlington</em>
+          <em>{wispyRow?.positionChange ?? '—'} · {nrrsChase?.subtitle}</em>
         </div>
       </div>
 
@@ -165,12 +166,12 @@ const chaseField=Array.from({length:12},(_,i)=>{
     <div class="shell">
       <div class="section-head"><div><p class="eyebrow">Aetherwing Racing News</p><h2 class="section-title">Latest Updates</h2></div><p class="lede">Race results, team updates, partner notes, and movement from across the garage.</p></div>
       <div class="aw-news-grid">
-        <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">{featuredNews.category}</span><small>{featuredNews.date} · {featuredNews.context} · {featuredNews.kicker}</small><h3>{featuredNews.title}</h3><p>{featuredNews.summary}</p><b>Read the Southern 500 Story →</b></a>
+        <a class="aw-feature-story panel" href={`/news/${featuredNews.slug}/`}><span class="tag tag--gold">{featuredNews.category}</span><small>{featuredNews.date} · {featuredNews.context} · {featuredNews.kicker}</small><h3>{featuredNews.title}</h3><p>{featuredNews.summary}</p><b>Read the Story →</b></a>
         <article class="aw-result-card aw-result-ticket">
           <div class="aw-result-ticket__head"><span>CHECKERED // LATEST RESULT</span><b>{latest.specialTag}</b></div>
-          <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>TOP 5</em></div></div>
+          <div class="aw-result-ticket__body"><div><small>{latest.series}</small><h3>{latest.title}</h3><p>{latest.track} · {latest.date}</p><strong>#{latest.number} {latest.driver}</strong></div><div class="aw-result-ticket__p4"><span>FINISH</span><b>P{latest.finish}</b><em>{latest.finish===1?'WINNER':latest.finish<=5?'TOP 5':latest.finish<=10?'TOP 10':'FINISH'}</em></div></div>
           <div class="aw-result-ticket__run"><span>P{latest.start}<small>START</small></span><i>→</i><span>{latest.stagePoints}<small>STAGE PTS</small></span><i>→</i><span class="is-final">P{latest.finish}<small>CHECKERED</small></span></div>
-          <div class="aw-result-ticket__foot"><span>CHASE RACE 1 COMPLETE · NO STAGE POINTS</span><a href="/wins-history/#latest-result">Open Post-Race Graphic →</a></div>
+          <div class="aw-result-ticket__foot"><span>{latest.specialTag} · {latest.stagePoints} STAGE POINTS</span><a href="/wins-history/#latest-result">Open Post-Race Graphic →</a></div>
         </article>
         <div class="aw-quick-links">
           <a class="panel" href="/drivers/"><small>Roster Updated</small><strong>Driver Hub</strong><span>Current drivers, programs, and Factory entries →</span></a>
@@ -219,9 +220,9 @@ const chaseField=Array.from({length:12},(_,i)=>{
   if(teamBrowser){
     const cards=teamBrowser.querySelector('[data-team-cards]');
     const detail=teamBrowser.querySelector('[data-team-detail]');
-    const wispy=roster.find(d=>d.slug==='wispy');
-    const pool=roster.filter(d=>d.slug!=='wispy').sort(()=>Math.random()-.5).slice(0,3);
-    const selected=[wispy,...pool].filter(Boolean);
+    const anchor=roster.find(d=>d.slug==='wispy') ?? roster[0];
+    const pool=roster.filter(d=>d.slug!==anchor.slug).sort(()=>Math.random()-.5).slice(0,3);
+    const selected=[anchor,...pool].filter(Boolean);
     const renderDetail=(driver)=>{if(!(detail instanceof HTMLElement)||!driver)return;detail.innerHTML=`<div><span class="tag ${driver.affiliation==='alliance'?'tag--alliance':''}">${driver.role}</span><h3>${driver.name}</h3><p class="mono">${driver.handle||''}${driver.handle?' · ':''}#${driver.numbers}</p><p>${driver.bio}</p><p class="mono muted">${driver.programs.join(' · ')}</p></div><a class="btn" href="/drivers/">Open Driver Hub</a>`;};
     if(cards instanceof HTMLElement){cards.innerHTML=selected.map((driver,i)=>`<button class="aw-team-card ${i===0?'is-selected':''}" type="button" data-driver-slug="${driver.slug}"><small>${driver.role}</small><strong>#${driver.numbers}</strong><h3>${driver.name}</h3><span>${driver.feature}</span></button>`).join('');cards.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{cards.querySelectorAll('button').forEach(b=>b.classList.remove('is-selected'));btn.classList.add('is-selected');renderDetail(roster.find(d=>d.slug===btn.dataset.driverSlug));}));}
   }

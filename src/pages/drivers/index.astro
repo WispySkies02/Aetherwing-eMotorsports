@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
-import roster from '../../data/roster-profiles.json';
-import iracing from '../../data/iracing-garage.json';
-import profiles from '../../data/driver-profiles.json';
-import driverEntries from '../../data/drivers.json';
-import charters from '../../data/charters.json';
+import { rosterProfiles as roster } from "../../lib/site-content.mjs";
+import { iracingGarage as iracing } from "../../lib/site-content.mjs";
+import { driverProfiles as profiles } from "../../lib/site-content.mjs";
+import { drivers as driverEntries } from "../../lib/site-content.mjs";
+import { charters as charters } from "../../lib/site-content.mjs";
 import '../../styles/pages/drivers.css';
 const selected=roster[0];
 const wispyStats=profiles[0].stats;
@@ -18,10 +18,10 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
   <section class="section section--tight aw-driver-hub">
     <div class="shell">
       <div class="aw-roster-stats stat-rail">
-        <div class="stat"><strong>10</strong><span>Active RoRacing Drivers</span></div>
+        <div class="stat"><strong>{roster.length}</strong><span>Active RoRacing Drivers</span></div>
         <div class="stat"><strong>6</strong><span>Competition Relationships</span></div>
-        <div class="stat"><strong>3</strong><span>iRacing Factory Entries</span></div>
-        <div class="stat"><strong>5 / 5</strong><span>Aetherwing / Alliance-Only</span></div>
+        <div class="stat"><strong>{iracing.factoryDrivers}</strong><span>iRacing Factory Entries</span></div>
+        <div class="stat"><strong>{roster.filter((d)=>d.affiliation==='aetherwing').length} / {roster.filter((d)=>d.affiliation==='alliance').length}</strong><span>Aetherwing / Alliance-Only</span></div>
       </div>
       <section class="aw-charter-board" aria-labelledby="charter-board-title">
         <div class="aw-charter-board__head">
@@ -61,7 +61,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
         </div>
       </section>
       <div class="aw-driver-toolbar" data-driver-toolbar>
-        <div><span>Roster View</span><strong data-driver-count>10 shown</strong></div>
+        <div><span>Roster View</span><strong data-driver-count>{roster.length} shown</strong></div>
         <div class="aw-driver-filters" role="group" aria-label="Filter drivers">
           <button type="button" class="is-active" data-filter="all">All</button>
           <button type="button" data-filter="aetherwing">Aetherwing</button>
@@ -115,13 +115,13 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     <div class="shell shell--standard">
       <div class="section-head"><div><p class="eyebrow">Wispy / Nicholas Waggoner</p><h2 class="section-title">iRacing Career Snapshot</h2></div><p class="lede">One identity record: Wispy for RoRacing presentation, Nicholas Waggoner for iRacing liveries and historical results.</p></div>
       <div class="aw-iracing-stat-grid">{wispyStats.map((stat)=><div><span>{stat.label}</span><strong>{stat.value}</strong></div>)}</div>
-      <p class="aw-formula-note"><b>14.1% Formula win rate</b> refers specifically to Formula-category iRacing competition.</p>
+      <p class="aw-formula-note"><b>{wispyStats.find((stat)=>stat.label==='Formula Win Rate')?.value ?? '—'} Formula win rate</b> refers specifically to Formula-category iRacing competition.</p>
     </div>
   </section>
 
   <section class="section aw-factory-roster">
     <div class="shell shell--standard">
-      <div class="section-head"><div><p class="eyebrow">iRacing Factory Program</p><h2 class="section-title">03 Factory Entries</h2></div><p class="lede">The garage uses Nicholas Waggoner for iRacing paint/history presentation without creating a duplicate Wispy profile.</p></div>
+      <div class="section-head"><div><p class="eyebrow">iRacing Factory Program</p><h2 class="section-title">{String(iracing.factoryDrivers).padStart(2,'0')} Factory Entries</h2></div><p class="lede">The garage uses Nicholas Waggoner for iRacing paint/history presentation without creating a duplicate Wispy profile.</p></div>
       <div class="aw-factory-grid">
         {iracing.entries.filter((entry)=>entry.driver!=='Aetherwing Endurance Team').map((entry)=><article class="panel"><span>#{entry.number}</span><h3>{entry.driver==='Nicholas Waggoner'?'Wispy / Nicholas Waggoner':entry.driver}</h3><p>Aetherwing Factory Program</p></article>)}
       </div>

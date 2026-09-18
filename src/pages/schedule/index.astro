@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
-import scheduleSource from '../../data/schedule-events.json';
+import { scheduleEvents as scheduleSource } from "../../lib/site-content.mjs";
 import trackSource from '../../data/schedule-track-locations.json';
-import standings from '../../data/standings.json';
+import { standings as standings } from "../../lib/site-content.mjs";
 import '../../styles/pages/schedule.css';
 import { eventSlug } from '../../lib/schedule-events.mjs';
 
@@ -48,7 +48,9 @@ const displayDate = (event) => {
   const [y,m,d] = event.date.split('-').map(Number);
   return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
 };
-const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event.tbd && String(event.date) >= '2026-09-17').slice(0,3);
+const chaseSeries=standings.find((series)=>series.id==='nrrs');
+const chaseLead=chaseSeries?.rows?.[0];
+const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event.tbd && String(event.date) >= new Date().toISOString().slice(0,10)).slice(0,3);
 ---
 <BaseLayout title="Schedule" description={`The complete Aetherwing 2026–27 race calendar: ${totalSeasonRaces} season races across six active competition relationships plus iRacing special-event windows, with reactive Race Control and expandable event information docks.`}>
   <PageHero eyebrow="2026–27 Competition Calendar" title="Aetherwing Events" description="The complete calendar across four active Aetherwing programs, two StarClutch Racing alliance series, and iRacing special events. UARL D2 has closed operations; D1 and Open remain active." ghost="RACE" />
@@ -85,8 +87,8 @@ const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event
           <p>Team-maintained standings snapshots updated as league results are confirmed.</p>
         </div>
         <article class="aw-chase-lead" data-league="nrrs">
-          <div><span>WISPY IS IN THE CHASE</span><h3>Sixth place. Fifty-eight points to the lead. Richmond is next.</h3><p>The No. 32 carries 2,087 points into Chase Race 2 after fighting back to fifth at Darlington without stage points.</p></div>
-          <strong>P6</strong>
+          <div><span>{chaseLead?.driver ?? 'NRRS'} · {chaseSeries?.status ?? 'STANDINGS'}</span><h3>{chaseLead?.position ?? 'Unranked'} in the standings. {chaseLead?.delta ?? '—'} to the lead.</h3><p>The No. {chaseLead?.number ?? '—'} carries {(chaseLead?.points ?? 0).toLocaleString('en-US')} points. {chaseSeries?.subtitle}</p></div>
+          <strong>{chaseLead?.position ?? '—'}</strong>
         </article>
         <details class="aw-standings-disclosure">
           <summary><span>Open complete standings snapshots</span><small>NRRS · Kmart · Sunoco · UARL</small></summary>

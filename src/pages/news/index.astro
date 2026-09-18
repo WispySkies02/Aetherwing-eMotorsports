@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
-import stories from '../../data/news.json';
+import { news as stories } from "../../lib/site-content.mjs";
 import '../../styles/pages/content.css';
 import '../../styles/pages/news.css';
 
 const featured = stories.find((story) => story.featured) ?? stories[0];
-const dispatches = stories.filter((story) => story.dateIso.startsWith('2026') && story.slug !== featured.slug);
+const dispatches = stories.filter((story) => !story.dateIso.startsWith('2025') && story.slug !== featured.slug);
 const archive = stories.filter((story) => story.dateIso.startsWith('2025'));
 const categories = ['Race & Competition', 'Milestones', 'Team & Organization'];
 const searchable = (story) => `${story.title} ${story.summary} ${story.context} ${story.byline ?? ''} ${(story.tags ?? []).join(' ')}`.toLowerCase();

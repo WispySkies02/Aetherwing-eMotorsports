@@ -1,4 +1,8 @@
-**v0.4.39 — Southern 500 Team Wire Feature**
+**Current release: v0.4.41 — Unified Aetherwing Admin**
+
+Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All five editor workspaces are in /admin/; the standalone Paint Booth is public-only. Main-site publishing requires a private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
+
+**v0.4.39 — Southern 500 Team Wire Feature (historical baseline)**
 - UARL D2 / NFFF Grand National has closed operations and is removed from the active competition structure.
 - Active structure is now 4 Aetherwing programs + 2 StarClutch Racing alliance series = 6 competition relationships.
 - UARL D1 resumes with the postponed Daytona 500 on Sunday, September 20 at 8:30 PM ET; all remaining D1 dates move one week later.

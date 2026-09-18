@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.39 FULL — Southern 500 Team Wire feature + Darlington driver perspective
+Aetherwing eMotorsports v0.4.41 FULL — unified admin editors for schedule, results/milestones, paints, roster, and Team Wire

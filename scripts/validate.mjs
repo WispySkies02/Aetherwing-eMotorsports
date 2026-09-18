@@ -69,7 +69,7 @@ assert(leadership.some((p) => p.name === 'Callornot' && p.roles.includes('Team P
 const results = json('results.json');
 const latestResult = results.latestResult;
 assert(latestResult?.title === 'Southern 500' && latestResult?.start === 9 && latestResult?.stagePoints === 0 && latestResult?.finish === 5, 'Latest NRRS result is Southern 500: P9 start, 0 stage points, P5 finish');
-assert(text('src/styles/pages/history.css').includes('content:"DARLINGTON"') && !text('src/styles/pages/history.css').includes('content:"DAYTONA"'), 'Latest Result background etching reads DARLINGTON, not DAYTONA');
+assert(text('src/styles/pages/history.css').includes('content:attr(data-track)') && !text('src/styles/pages/history.css').includes('content:"DAYTONA"'), 'Latest Result background etching reads DARLINGTON, not DAYTONA');
 
 assert(!schedule.some((event) => event.id === 'uarl-d2') && !competitions.some((event) => event.id === 'uarl-d2') && !scheduleEvents.some((event) => event.league === 'uarl-d2'), 'UARL D2 is closed and removed from active competition/schedule data');
 const pepsi400 = scheduleEvents.find((event) => event.league === 'nrrs' && event.title === 'Pepsi 400');
@@ -159,7 +159,7 @@ assert(paints.some((p) => p.slug === 'truck-mopar-starclutch-racing' && String(p
 const schedulePage = text('src/pages/schedule/index.astro');
 const paintPage = text('src/pages/paint-booth/index.astro');
 assert(schedulePage.includes('data-event-dock') && schedulePage.includes('updateNextOperation'), 'Schedule includes expandable event docks and reactive Next Operation logic');
-assert(schedulePage.includes('Championship Tracker') && schedulePage.includes('WISPY IS IN THE CHASE'), 'Schedule surfaces current standings and NRRS Chase status');
+assert(schedulePage.includes('Championship Tracker') && schedulePage.includes('chaseSeries?.status'), 'Schedule surfaces current standings and NRRS Chase status from editable data');
 assert(schedulePage.includes('eventCriteria') && schedulePage.includes('Crown Jewel') && schedulePage.includes('Dash4Cash') && schedulePage.includes('Regular Season Finale') && schedulePage.includes("label:'Clash'"), 'Schedule includes semantic special-criteria tags');
 assert(schedulePage.includes('data-event-share') && schedulePage.includes('revealEventHash'), 'Schedule includes share buttons and exact event deep-link reveal logic');
 assert(existsSync(resolve(root, 'src/pages/event/[slug].astro')), 'Static share route exists for schedule events');
@@ -230,6 +230,19 @@ const requiredAssets = ['public/images/brand/aetherwing-logo.png','public/images
 for (const asset of requiredAssets) assert(existsSync(resolve(root, asset)), `Local Aetherwing asset exists: ${asset.replace('public/','')}`);
 assert(existsSync(resolve(root, 'public/favicon/favicon.png')) || existsSync(resolve(root, 'public/favicon/favicon.svg')), 'At least one local favicon exists (PNG or SVG)');
 
+const adminPage = text('public/admin/index.html');
+const adminScript = text('public/admin/paint-ops-admin.js');
+const adminFunction = text('netlify/lib/_paint-admin.cjs');
+assert(adminPage.includes('Aetherwing Control Center') && adminPage.includes('Paint Operations'), 'Central Aetherwing Admin includes the live Paint Operations module');
+assert(adminPage.includes('https://paint.aetherwing.net/'), 'Central Paint Operations links to the public Paint Booth');
+assert(adminPage.includes('Schedule Manager') && adminPage.includes('Results &amp; Milestones') && adminPage.includes('Roster Manager') && adminPage.includes('Team Wire') && adminPage.includes('/admin/content-admin.js'), 'Central admin includes all site-management editors');
+assert(adminScript.includes("roles.includes('admin') || roles.includes('paint-admin')"), 'Admin interface accepts the admin and paint-admin roles');
+assert(!adminScript.includes('netlifyIdentity.init()'), 'Identity widget is not initialized twice');
+assert(adminFunction.includes('context?.clientContext?.user') && adminFunction.includes("role === 'admin' || role === 'paint-admin'"), 'Paint publishing is protected by verified Netlify user roles');
+assert(existsSync(resolve(root, 'netlify/functions/paint-data.mjs')) && existsSync(resolve(root, 'netlify/lib/_registry.cjs')), 'Main site contains the published paint registry functions');
+assert(existsSync(resolve(root, 'data/paint-seed.json')) && existsSync(resolve(root, 'public/data/paint-seed.json')), 'Main site contains server and browser copies of the Paint Booth seed data');
+assert(text('src/layouts/BaseLayout.astro').includes('location.replace(`/admin/${hash}`)'), 'Identity email tokens route into the central admin');
+
 const redirects = text('public/_redirects');
 assert(/^\/updates\s+\/news\s+301/m.test(redirects), 'Legacy /updates route redirects to /news');
 for (const story of news) {
@@ -249,7 +262,7 @@ assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.
 assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
 assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
 assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
-assert(homePage.includes('story.featured') && homePage.includes('Read the Southern 500 Story'), 'Homepage Latest Updates follows the featured Southern 500 story');
+assert(homePage.includes('story.featured') && homePage.includes('Read the Story'), 'Homepage Latest Updates follows the featured Southern 500 story');
 assert(homePage.includes('/Daytona 500/i.test(event.title)') && !homePage.includes('uarl-d2'), 'Homepage initial UARL fallback follows the active D1 Daytona 500 rather than closed D2');
 const darlingtonStory = news.find((story) => story.slug === 'wispy-southern-500-darlington-top-five');
 assert(darlingtonStory?.category === 'Race & Competition' && darlingtonStory?.featured === true, 'Darlington Southern 500 story is featured under Race & Competition');

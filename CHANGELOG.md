@@ -1,3 +1,13 @@
+# v0.4.41 — Central Aetherwing Admin
+
+- Added the private `/admin/` Aetherwing Control Center to the main site.
+- Moved Paint Operations into the central admin and linked every paint preview to `paint.aetherwing.net`.
+- Added functional Schedule, Results & Milestones, Roster, and Team Wire editors with private section drafts, validation, stale-write protection, backups, and build-hook publication.
+- Moved the published paint registry to the main site so the standalone Paint Booth can remain a public display site.
+- Replaced the old authentication integration with server-verified Identity bearer tokens in modern Netlify functions; retained `admin` / `paint-admin` paint access and required `admin` for main-site editing.
+- Added authenticated draft loading, conditional storage writes, structured server errors, and an email-flow guard that does not dismiss recovery/invite password dialogs.
+- Added automatic invite, confirmation, and recovery-token routing from the main-site root into `/admin/`.
+
 # v0.4.39 — Southern 500 Team Wire Feature
 
 - Added the September 15 Southern 500 Chase-opener feature story centered on Wispy’s P9-to-P5 recovery at Darlington.
@@ -402,4 +412,3 @@
 - Updated Homepage Latest Result, Wins & History broadcast recap, and Schedule Championship Tracker.
 - Advanced NRRS next-race context to Chase Race 2: Tyson Holly Farms 400 at North Wilkesboro on Sep. 22.
 - Preserved all v0.4.35 UARL/Kmart postponement and charter changes.
-

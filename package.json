@@ -1,16 +1,22 @@
 {
   "name": "aetherwing-site",
-  "version": "0.4.39",
+  "version": "0.4.41",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate.mjs",
-    "build": "npm run validate && astro build",
+    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs",
+    "build": "npm run validate && node scripts/prepare-admin.mjs && node scripts/sync-admin-content.mjs && astro build",
     "preview": "astro preview"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.0",
     "astro": "7.3.1"
+  },
+  "devDependencies": {
+    "@netlify/zip-it-and-ship-it": "^16.0.0",
+    "jsdom": "^29.1.1"
   }
 }

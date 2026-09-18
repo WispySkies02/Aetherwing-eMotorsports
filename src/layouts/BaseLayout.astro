@@ -2,7 +2,7 @@
 import SEOHead from '../components/global/SEOHead.astro';
 import SiteHeader from '../components/global/SiteHeader.astro';
 import SiteFooter from '../components/global/SiteFooter.astro';
-import eventsRaw from '../data/schedule-events.json';
+import { scheduleEvents as eventsRaw } from "../lib/site-content.mjs";
 import '../styles/global.css';
 interface Props { title?:string;description?:string;canonical?:string;image?:string;type?:'website'|'article';noindex?:boolean; }
 const props=Astro.props;
@@ -22,6 +22,14 @@ const bannerEvents=(eventsRaw as any[]).filter((e:any)=>!e.offWeek).map((e:any)=
   <link rel="dns-prefetch" href="//i.ibb.co" />
   <link rel="preconnect" href="https://i.ibb.co" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Road+Rage&family=Special+Elite&family=Saira+Condensed:wght@500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <script is:inline>
+    (() => {
+      const hash = location.hash;
+      if (/^#(?:invite_token|confirmation_token|recovery_token|email_change_token)=/.test(hash)) {
+        location.replace(`/admin/${hash}`);
+      }
+    })();
+  </script>
   <SEOHead {...props} />
 </head>
 <body>
