@@ -30,26 +30,47 @@
     </section>
 
     <section class="ops-workspace" data-workspace hidden>
-      <header class="workspace-intro">
-        <div><p class="kicker">Aetherwing Control Center</p><h1>Site control.</h1></div>
-        <p>One login. Five workspaces. Save private drafts, then publish when the changes are ready.</p>
+      <header class="workspace-intro admin-intro">
+        <div><p class="kicker">Aetherwing Control Center · v0.4.50</p><h1>Everything has a lane.</h1></div>
+        <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
-      <section class="control-center" aria-labelledby="control-center-title">
-        <div class="control-center__heading"><span>00</span><div><h2 id="control-center-title">Operations board</h2><p>Choose the part of Aetherwing you want to manage.</p></div></div>
-        <div class="control-center__grid">
-          <article class="control-module is-live"><span>01</span><small>Editor</small><h3>Schedule Manager</h3><p>Add, edit, postpone, or remove races while preserving every series color.</p><button type="button" data-content-module="schedule">Open editor</button></article>
-          <article class="control-module is-live"><span>02</span><small>Editor</small><h3>Results &amp; Milestones</h3><p>Publish finishes, wins, standings snapshots, and career milestones.</p><button type="button" data-content-module="results">Open editor</button></article>
-          <article class="control-module is-live"><span>03</span><small>Live editor</small><h3>Paint Booth</h3><p>Feature the upcoming scheme, add paints, and manage the published collection.</p><div><a href="#paint-operations">Open editor</a><a href="https://paint.aetherwing.net/" target="_blank" rel="noopener">View booth ↗</a></div></article>
-          <article class="control-module is-live"><span>04</span><small>Editor</small><h3>Roster Manager</h3><p>Manage each driver’s league assignments, numbers, entry status, charters, profile details, and league information.</p><button type="button" data-content-module="roster">Open editor</button></article>
-          <article class="control-module is-live"><span>05</span><small>Editor</small><h3>Team Wire</h3><p>Draft race reports, announcements, homepage headlines, and updates.</p><button type="button" data-content-module="news">Open editor</button></article>
+      <nav class="admin-workspace-tabs" aria-label="Aetherwing Admin workspaces" data-admin-tabs>
+        <button class="is-active" type="button" data-admin-tab="overview" aria-selected="true"><small>00</small>Overview</button>
+        <button type="button" data-admin-dataset="schedule-events"><small>01</small>Calendar</button>
+        <button type="button" data-admin-dataset="results"><small>02</small>Latest Result</button>
+        <button type="button" data-admin-dataset="wins"><small>03</small>Wins</button>
+        <button type="button" data-admin-dataset="standings"><small>04</small>Standings</button>
+        <button type="button" data-admin-dataset="milestones"><small>05</small>Milestones</button>
+        <button type="button" data-admin-dataset="drivers"><small>06</small>Assignments</button>
+        <button type="button" data-admin-dataset="roster-profiles"><small>07</small>Driver Directory</button>
+        <button type="button" data-admin-dataset="driver-profiles"><small>08</small>Driver Profiles</button>
+        <button type="button" data-admin-dataset="charters"><small>09</small>Charters</button>
+        <button type="button" data-admin-dataset="iracing-garage"><small>10</small>iRacing Roster</button>
+        <button type="button" data-admin-dataset="competitions"><small>11</small>Leagues</button>
+        <button type="button" data-admin-dataset="leadership"><small>12</small>Leadership</button>
+        <button type="button" data-admin-dataset="partners"><small>13</small>Partners</button>
+        <button type="button" data-admin-dataset="news"><small>14</small>Team Wire</button>
+        <button type="button" data-admin-paint-tab="feature"><small>15</small>Paint Feature</button>
+        <button type="button" data-admin-paint-tab="add"><small>16</small>Paint Editor</button>
+        <button type="button" data-admin-paint-tab="library"><small>17</small>Paint Library</button>
+      </nav>
+
+      <section class="admin-overview" data-admin-overview>
+        <div class="control-center__heading"><span>00</span><div><h2>Admin map</h2><p>Pick a tab above. Each tab owns one job.</p></div></div>
+        <div class="admin-overview-grid">
+          <article><b>Race operation</b><h3>Calendar · Results · Wins · Standings · Milestones</h3><p>Dates, event status, finishes, points snapshots, win history, and major career/team milestones.</p></article>
+          <article><b>People &amp; programs</b><h3>Assignments · Directory · Profiles · Charters · iRacing · Leagues</h3><p>Who races where, what number they use, profile copy/stats, charter structure, and program metadata.</p></article>
+          <article><b>Organization</b><h3>Leadership · Partners · Team Wire</h3><p>Current staff roles, partner presentation, and complete editorial/news publishing.</p></article>
+          <article><b>Paint operation</b><h3>Feature · Editor · Library</h3><p>Feature the next scheme, edit originals or new paints, and manage published/draft/archive states.</p></article>
         </div>
+        <aside class="protected-core-note"><strong>Protected sitewide core</strong><p>Brand identity, global navigation/routes, design tokens, technical track-location aliases, build/deploy configuration, and other structural infrastructure stay outside the content editor on purpose. Those are code-level changes, not routine content edits.</p></aside>
       </section>
 
       <section class="ops-panel content-editor" data-content-editor hidden aria-labelledby="content-title">
-        <div class="panel-heading"><span>EDIT</span><div><h2 id="content-title" data-content-title>Site editor</h2><p>Save a draft first. Publishing rebuilds the static main site; paints update directly.</p></div></div>
+        <div class="panel-heading admin-editor-heading"><span data-content-number>EDIT</span><div><p class="admin-section-kicker" data-content-kicker>CONTENT WORKSPACE</p><h2 id="content-title" data-content-title>Site editor</h2><p data-content-description>Save a draft first. Publishing rebuilds the static main site; paints update directly.</p></div></div>
         <p data-content-status role="status" aria-live="polite"></p>
-        <div class="library-tools"><label>What do you want to edit?<select data-content-dataset></select></label><button type="button" data-content-refresh>Refresh saved data</button><button type="button" data-content-rebuild>Publish site / retry build</button><button type="button" data-content-export>Export backup</button></div>
+        <div class="library-tools admin-editor-tools"><label class="legacy-dataset-select" hidden>Dataset<select data-content-dataset></select></label><button type="button" data-content-refresh>Refresh saved data</button><button type="button" data-content-rebuild>Publish site / retry build</button><button type="button" data-content-export>Export backup</button></div>
         <div class="content-guide" data-content-guide hidden></div>
         <section class="schedule-shift-tool" data-schedule-shift hidden aria-labelledby="schedule-shift-title">
           <div class="schedule-shift-head">
@@ -74,17 +95,17 @@
             </div>
           </div>
         </section>
-        <div class="content-layout"><aside><input type="search" placeholder="Search entries" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save section draft</button><button type="button" class="primary" data-content-publish>Publish saved draft</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
+        <div class="content-layout"><aside><input type="search" placeholder="Search this tab" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add new entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save section draft</button><button type="button" class="primary" data-content-publish>Publish saved draft</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
       </section>
 
-      <div class="paint-operations-head" id="paint-operations"><div><p class="kicker">Module 03 · Live</p><h2>Paint Operations</h2></div><a href="https://paint.aetherwing.net/" target="_blank" rel="noopener">Open public Paint Booth ↗</a></div>
-      <nav class="ops-tabs" aria-label="Paint Operations sections">
+      <div class="paint-operations-head legacy-paint-nav" id="paint-operations" hidden><div><p class="kicker">Module 03 · Live</p><h2>Paint Operations</h2></div><a href="https://paint.aetherwing.net/" target="_blank" rel="noopener">Open public Paint Booth ↗</a></div>
+      <nav class="ops-tabs legacy-paint-nav" aria-label="Paint Operations sections" hidden>
         <button class="is-active" type="button" data-tab="feature" aria-selected="true">Feature a paint</button>
         <button type="button" data-tab="add" aria-selected="false">Add / edit paint</button>
         <button type="button" data-tab="library" aria-selected="false">Paint library</button>
       </nav>
 
-      <section class="ops-panel" data-panel="feature">
+      <section class="ops-panel" data-panel="feature" hidden>
         <div class="panel-heading"><span>01</span><div><h2>Upcoming race feature</h2><p>Give the next scheme a reason to matter before race day.</p></div></div>
         <div class="editor-layout">
           <form data-feature-form>
@@ -138,7 +159,7 @@
       </section>
 
       <section class="ops-panel" data-panel="library" hidden>
-        <div class="panel-heading"><span>03</span><div><h2>Paint library</h2><p>Published additions, drafts, and archived entries. Original v42 paints remain locked and safe.</p></div></div>
+        <div class="panel-heading"><span>03</span><div><h2>Paint library</h2><p>Original paints, Admin additions, drafts, and archived entries. Original share slugs stay protected while their editable metadata can be overridden safely.</p></div></div>
         <div class="library-tools"><input type="search" placeholder="Search added paints" data-library-search><button class="secondary" type="button" data-refresh>Refresh</button></div>
         <div class="library-list" data-library-list></div>
       </section>

@@ -41,7 +41,7 @@ async function call(handler,body,role='admin',method=body?'POST':'GET') {
   const response=await handler(new Request('https://aetherwing.net/.netlify/functions/test',{method,headers:{...(role?{authorization:`Bearer ${role}`} : {}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}));
   return {status:response.status,body:await response.json()};
 }
-const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'Wispy (@Aokikoto)',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[]};
+const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[]};
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},null)).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'fake-role')).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'expired')).status,403);
@@ -103,4 +103,4 @@ assert.equal((await boothData.handler({httpMethod:'GET'})).statusCode,503);conso
 } else console.log('Booth integration test skipped: set AETHERWING_PAINT_PROJECT to the extracted Booth project to include it.');
 globalThis.fetch=nativeFetch;
 for(const filename of ['paint-ops-admin.js','content-admin.js'])new vm.Script(fs.readFileSync(new URL(`public/admin/${filename}`,root),'utf8'));
-console.log('PASS: verified-login/role guards, persisted draft/publish/reload, paint feature/rename/archive, all 11 content sections, private drafts, stale-write protection, safe storage errors, public booth proxy and dynamic shares. Tests used mock Identity/storage, not the live account.');
+console.log('PASS: verified-login/role guards, persisted draft/publish/reload, paint feature/rename/archive, all 14 content sections, private drafts, stale-write protection, safe storage errors, public booth proxy and dynamic shares. Tests used mock Identity/storage, not the live account.');

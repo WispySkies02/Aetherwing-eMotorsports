@@ -5,7 +5,7 @@ async function getBlobsModule() {
   blobsModulePromise ||= import('@netlify/blobs');
   return blobsModulePromise;
 }
-const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'news'];
+const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'news'];
 function seeds() {
   return Object.fromEntries(FILES.map((key) => {
     const filename=[path.resolve(process.cwd(),`src/data/${key}.json`),path.resolve(__dirname,`../../src/data/${key}.json`),path.resolve(__dirname,`src/data/${key}.json`)].find((p)=>fs.existsSync(p));
@@ -34,7 +34,7 @@ function validate(key, data) {
   if (Array.isArray(seed) !== Array.isArray(data) || !data || typeof data !== 'object') return 'Invalid section format.';
   if (JSON.stringify(data).length > 1500000) return 'Section is too large.';
   if (Array.isArray(data) && data.length > 1500) return 'Too many entries.';
-  if (['roster-profiles', 'driver-profiles', 'news'].includes(key) && !data.length) return 'Keep at least one entry in this section.';
+  if (['roster-profiles', 'driver-profiles', 'leadership', 'partners', 'news'].includes(key) && !data.length) return 'Keep at least one entry in this section.';
   const rows = Array.isArray(data) ? data : [];
   function unsafe(value, depth=0) {
     if (depth>20) return true;
@@ -57,7 +57,7 @@ function validate(key, data) {
     'roster-profiles':['slug','name','role','affiliation','numbers'],
     'driver-profiles':['slug','displayName','subtitle','intro'],
     drivers:['id','profile','displayName','competitionId','competition','number','status'], competitions:['id','name','type','label','schedule','machine','platform'],
-    standings:['id','title','league'], charters:['id','label'], news:['slug','title','summary','dateIso','date','category','context','kicker']
+    standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'], news:['slug','title','summary','dateIso','date','category','context','kicker']
   }[key] || [];
   for (const [index, row] of rows.entries()) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) return `Entry ${index + 1} must be an object.`;
@@ -73,6 +73,8 @@ function validate(key, data) {
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !Number.isFinite(r.points)))) return 'Standings rows need numeric points.';
     if (key === 'charters' && (!Array.isArray(row.fullTime) || !row.openCharter?.partTime || !row.openCharter?.development)) return 'Charters need full-time entries and both Open Charter uses.';
+    if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
+    if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^https:\/\//.test(row.logo))) return 'Partners need HTTPS website/logo URLs and a tags list.';
   }
   const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['drivers','standings','charters','competitions'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;

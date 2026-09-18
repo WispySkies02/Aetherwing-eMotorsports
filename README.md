@@ -1,8 +1,8 @@
-> Current package: **v0.4.46** — unifies Paint Operations so original and Admin-added paints are editable from one registry.
+> Current package: **v0.4.50** — full tabbed Aetherwing Admin with dedicated content workspaces, Leadership/Partners publishing, and unified Paint Operations.
 
-**Current release: v0.4.41 — Unified Aetherwing Admin**
+**Current release: v0.4.50 — Full Tabbed Aetherwing Admin**
 
-Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All five editor workspaces are in /admin/; the standalone Paint Booth is public-only. Main-site publishing requires a private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
+Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All routine content editors are direct tabs in /admin/; the standalone Paint Booth is public-only. Main-site publishing requires a private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
 
 **v0.4.39 — Southern 500 Team Wire Feature (historical baseline)**
 - UARL D2 / NFFF Grand National has closed operations and is removed from the active competition structure.

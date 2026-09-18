@@ -245,7 +245,8 @@ assert(contentSyncScript.includes('Continuing with bundled/last-known content so
 const adminFunction = text('netlify/lib/_paint-admin.cjs');
 assert(adminPage.includes('Aetherwing Control Center') && adminPage.includes('Paint Operations'), 'Central Aetherwing Admin includes the live Paint Operations module');
 assert(adminPage.includes('https://paint.aetherwing.net/'), 'Central Paint Operations links to the public Paint Booth');
-assert(adminPage.includes('Schedule Manager') && adminPage.includes('Results &amp; Milestones') && adminPage.includes('Roster Manager') && adminPage.includes('Team Wire') && adminPage.includes('/admin/content-admin.js'), 'Central admin includes all site-management editors');
+assert(text('src/lib/site-content.mjs').includes("choose('leadership', leadershipSeed)") && text('src/lib/site-content.mjs').includes("choose('partners', partnersSeed)"), 'Leadership and partners consume published Admin overlays');
+assert(adminPage.includes('data-admin-dataset="schedule-events"') && adminPage.includes('data-admin-dataset="results"') && adminPage.includes('data-admin-dataset="drivers"') && adminPage.includes('data-admin-dataset="leadership"') && adminPage.includes('data-admin-dataset="partners"') && adminPage.includes('data-admin-dataset="news"') && adminPage.includes('data-admin-paint-tab="add"') && adminPage.includes('/admin/content-admin.js'), 'Central admin exposes dedicated tabs for all routine site-management editors');
 assert(adminScript.includes("roles.includes('admin') || roles.includes('paint-admin')"), 'Admin interface accepts the admin and paint-admin roles');
 assert(!adminScript.includes('netlifyIdentity.init()'), 'Identity widget is not initialized twice');
 assert(adminFunction.includes('context?.clientContext?.user') && adminFunction.includes("role === 'admin' || role === 'paint-admin'"), 'Paint publishing is protected by verified Netlify user roles');

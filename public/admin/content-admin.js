@@ -4,29 +4,82 @@
   const endpoint = '/.netlify/functions/site-admin';
   const modules = {
     schedule: { title:'Schedule Manager', sections:[['schedule-events','Race calendar']] },
-    results: { title:'Results & Milestones', sections:[['results','Latest results'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
-    roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['driver-profiles','Profile stats'],['competitions','League details']] },
+    results: { title:'Results & Milestones', sections:[['results','Latest result'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
+    roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['driver-profiles','Driver profiles'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['competitions','League details']] },
+    organization: { title:'Organization', sections:[['leadership','Leadership'],['partners','Partners']] },
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
-  const rosterGuides = {
-    drivers: ['Driver league assignments','One row = one driver in one league. Add a row to put a driver into another league; remove the row to remove that league assignment. Number, status, and organization are edited here.'],
-    'roster-profiles': ['Driver directory & bios','Edit the person/profile itself here: display name, handle, role, and bio. Active numbers and program badges are generated automatically from Driver league assignments.'],
-    charters: ['Charter boards','Edit the actual Aetherwing charter structure. Shared #62 Part-Time / #82 Development entries stay inside one Open Charter module.'],
-    'iracing-garage': ['iRacing roster','Edit the current iRacing Factory drivers/team entries. Hailey Bell is the current iRacing name. Roblox / RoRacing uses Hailey with @Aokikoto.'],
-    'driver-profiles': ['Profile stats','Edit long-form driver profile copy and career statistics.'],
-    competitions: ['League details','Edit the league/program itself: public name, schedule, machine, platform, relationship type, and roster summary.']
+  const datasetMeta = {
+    'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Edit every race, off-week, special event, event window, status badge, track, date, and start time. The bulk ±7-day tool is available below.',guide:'Each row is one calendar operation. Date + league + event title determine its share route, so review those three before publishing.'},
+    results:{number:'02',kicker:'RACE OPERATION',title:'Latest Result',description:'Control the latest-result feature and its supporting historical result snapshot. Every number and line of result copy is editable.',guide:'Use this for the current result card/feature. Historical snapshots inside this record can be retained even after the current result changes.'},
+    wins:{number:'03',kicker:'RACE OPERATION',title:'Win Archive',description:'Add, correct, or remove individual wins used by Wins & History.',guide:'One row equals one recorded win. Keep historical driver names when that is how the result was originally recorded.'},
+    standings:{number:'04',kicker:'RACE OPERATION',title:'Standings',description:'Edit each published championship snapshot, including rows, points, gaps, position changes, and Chase status.',guide:'Standings are snapshots, not live timing. Publish only official numbers you want shown publicly.'},
+    milestones:{number:'05',kicker:'RACE OPERATION',title:'Milestones',description:'Manage the timeline of major Aetherwing and driver milestones.',guide:'Use this for meaningful historical markers, not routine race results.'},
+    drivers:{number:'06',kicker:'PEOPLE + PROGRAMS',title:'Driver League Assignments',description:'One row per driver per league: number, public display name, status, affiliation, car/body, and identity note.',guide:'This is the source of truth for current league assignments. Changing an assignment also drives the public roster number/program badges.'},
+    'roster-profiles':{number:'07',kicker:'PEOPLE + PROGRAMS',title:'Driver Directory',description:'Edit each person’s current public identity, handle, role, affiliation, feature label, biography, and identity history.',guide:'Numbers and program badges are generated from Driver League Assignments, so those summaries are read-only here.'},
+    'driver-profiles':{number:'08',kicker:'PEOPLE + PROGRAMS',title:'Driver Profiles',description:'Edit long-form profile presentation, platform-specific names, historical names, and every career-stat tile.',guide:'This controls detailed profile copy. Current Roblox/RoRacing and iRacing identities can stay distinct without creating duplicate people.'},
+    charters:{number:'09',kicker:'PEOPLE + PROGRAMS',title:'Charter Boards',description:'Edit full-time charter entries and the shared Part-Time / Development Open Charter structures.',guide:'A shared #62/#82 module represents one actual charter. Keep the two uses nested inside the same Open Charter record.'},
+    'iracing-garage':{number:'10',kicker:'PEOPLE + PROGRAMS',title:'iRacing Roster',description:'Edit Factory Program totals and every driver/team entry shown in the iRacing garage.',guide:'Hailey’s current iRacing presentation is Hailey Bell only. Roblox usernames do not belong on current iRacing entries.'},
+    competitions:{number:'11',kicker:'PEOPLE + PROGRAMS',title:'League Details',description:'Edit the public name, relationship type, schedule cadence, platform, machine, and roster summary for every active competition relationship.',guide:'This edits Aetherwing’s relationship to a league/program; it does not alter technical schedule colors or route IDs.'},
+    leadership:{number:'12',kicker:'ORGANIZATION',title:'Leadership',description:'Edit current leadership names and every public role attached to each person.',guide:'Use one role per line. This feeds current leadership presentation across the handbook, mission, and contact areas.'},
+    partners:{number:'13',kicker:'ORGANIZATION',title:'Partners',description:'Edit partner names, roles, descriptions, links, logo URLs, tags, and featured state.',guide:'This controls current partner presentation. Use full HTTPS URLs for both the partner website and logo.'},
+    news:{number:'14',kicker:'TEAM WIRE',title:'Team Wire',description:'Edit complete stories: metadata, headline treatment, metrics, quotes, sections, paragraphs, tags, callouts, and homepage-feature status.',guide:'Exactly one story must be featured. Story slugs are public URLs; changing a slug can affect existing links unless a redirect is added in code.'}
   };
+  const rosterGuides = Object.fromEntries(Object.entries(datasetMeta).map(([id,meta])=>[id,[meta.title,meta.guide]]));
   const competitionChoices = [
     ['nrrs','NRRS'],['uarl-d1','UARL Division 1'],['uarl-open','UARL Open'],
     ['kmart','Kmart Auto Parts Series'],['sunoco','Sunoco Truck Series'],['iracing-factory','iRacing Factory Program']
   ];
   const statusChoices = ['Full-Time','Part-Time','Development','Active','Shared Part-Time Entry','Factory Driver','Team Entry','OPEN'];
   const fieldLabels = {
+    'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD'},
+    results:{latestKnownMartinsville:'Historical Martinsville snapshot',latestResult:'Current latest result',headline:'Headline line 1',headlineAccent:'Headline accent line',stagePoints:'Total stage points'},
+    wins:{league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
+    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',rows:'Standings rows',position:'Position',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change',chaseEligible:'Chase eligible',chaseStatus:'Chase label'},
+    milestones:{date:'Display date',title:'Milestone title',description:'Milestone description'},
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Competing organization',car:'Car / body',identityNote:'Identity note'},
-    'roster-profiles':{slug:'Profile ID',name:'Display name',handle:'Handle',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name'},
-    competitions:{id:'League ID',name:'League / program name',type:'Relationship type',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'}
+    'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
+    'driver-profiles':{slug:'Profile ID',displayName:'Current RoRacing display name',iracingName:'Current iRacing name',subtitle:'Profile subtitle',intro:'Profile introduction',stats:'Career stat tiles',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
+    charters:{id:'Charter board ID',label:'Public series label',seriesNote:'Board note',fullTime:'Full-time charters',openCharter:'Shared Open Charter',number:'Car number',driver:'Assigned driver',slotLabel:'Slot label',partTime:'Part-Time use',development:'Development use',description:'Public explanation'},
+    'iracing-garage':{factoryDrivers:'Factory driver count',teamEntries:'Team entry count',schemes:'Published scheme count',entries:'Garage entries',driver:'Driver / team name',number:'Car number(s)',placeholder:'Placeholder entry'},
+    competitions:{id:'League ID',name:'League / program name',type:'Relationship type',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'},
+    leadership:{name:'Current public name',roles:'Leadership roles'},
+    partners:{name:'Partner name',role:'Relationship / role',featured:'Featured partner',description:'Public description',url:'Official website URL',logo:'Logo image URL',tags:'Partner tags'},
+    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout'}
+  };
+  const fieldHelp = {
+    slug:'Public identifier used in URLs. Change carefully after publication.',
+    id:'Internal/public content identifier. Keep unique inside this tab.',
+    profile:'Connects this league assignment to one person in the Driver Directory.',
+    competitionId:'Select the active league/program. The public league name is synchronized automatically.',
+    displayName:'The name shown for this specific context; it can differ by platform.',
+    identityNote:'Internal/public clarification for platform or historical identity handling.',
+    number:'Enter the number exactly as it should display. Multiple iRacing numbers may use “28 / 97”.',
+    date:'Use the event/result date expected by this content type.',
+    dateIso:'Machine-readable publication date used for sorting.',
+    endDate:'Optional final day for multi-day event windows.',
+    time:'Include ET when the public schedule should explicitly show Eastern Time.',
+    status:'Controls the public badge/context shown with this entry.',
+    specialTag:'Optional badge such as Crown Jewel, Chase Race, Championship, or Postponed.',
+    featured:'Only use this when the item should receive featured treatment.',
+    url:'Use the official HTTPS destination.',
+    logo:'Use a direct HTTPS image URL.',
+    roles:'One public role per line.',
+    tags:'One tag per line in this editor.',
+    bio:'Long-form public biography.',
+    intro:'Opening paragraph on the detailed driver profile.',
+    stats:'Each nested item is one stat tile with a label and value.',
+    roster:'One roster summary item per line.',
+    rows:'Each nested item is one published standings row.',
+    sections:'Each nested item is a story section. Paragraphs inside it are one paragraph per line.',
+    legacyRoute:'Historical route retained for redirects/reference. Leave blank only when there is no legacy URL.',
+    headlineMark:'Optional structured headline/stat treatment used by featured race stories.',
+    metrics:'Optional structured metric cards for a story.',
+    quote:'Optional pull quote with text and attribution.',
+    openCharter:'The Part-Time and Development identities inside this object are two uses of one shared charter, not two simultaneous slots.'
   };
   const fieldLabel = (name) => fieldLabels[key]?.[name] || label(name);
+  const helpFor = (name) => fieldHelp[name] || '';
 
   let registry = { revision:0, published:{}, drafts:{}, history:[] }, seeds = {}, key='', data=null, index=0, dirty=false, loaded=false, busy=false;
   const $ = (s) => document.querySelector(s);
@@ -99,27 +152,41 @@
     });
   }
   function fields(value,path=[]) {
+    const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
     return Object.entries(value).map(([k,v])=>{
-      const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k);
+      const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
       if (key==='roster-profiles' && (k==='programs' || k==='numbers')) {
         const shown=Array.isArray(v)?v.join(' · '):String(v||'');
-        return `<label>${esc(pretty)}<input type="text" readonly value="${esc(shown)}"><small>Automatically generated from Driver league assignments when the site builds.</small></label>`;
+        return shell(pretty,`<input type="text" readonly value="${esc(shown)}">`,'Automatically generated from Driver League Assignments when the site builds.','is-readonly');
       }
-      if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) return `<fieldset><legend>${esc(pretty)}</legend>${v.map((item,i)=>`<details open><summary>${esc(pretty)} ${i+1}</summary>${fields(item,[...p,i])}<button type="button" data-array-remove="${esc(JSON.stringify([...p,i]))}">Remove ${esc(pretty)} ${i+1}</button></details>`).join('')}<button type="button" data-array-add="${esc(JSON.stringify(p))}">Add ${esc(pretty)}</button></fieldset>`;
-      if (v && typeof v==='object') return `<fieldset><legend>${esc(pretty)}</legend>${fields(v,p)}</fieldset>`;
-      if (typeof v==='boolean') return `<label class="content-check"><input type="checkbox" ${attr} data-field-type="boolean" ${v?'checked':''}>${esc(pretty)}</label>`;
-      if (k==='league' && key==='schedule-events') return `<label>${esc(pretty)}<select ${attr} data-field-type="string">${[['nrrs','NRRS'],['uarl-d1','UARL D1'],['uarl-d2','UARL D2'],['open','UARL Open'],['kmart','Kmart'],['sunoco','Sunoco'],['iracing','iRacing']].map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select></label>`;
+      if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) {
+        return `<fieldset class="admin-fieldset"><legend><span>${esc(pretty)}</span><small>${esc(help||'Edit every nested item in this group.')}</small></legend><div class="admin-array">${v.map((item,i)=>`<details open><summary><span>${esc(pretty)} ${i+1}</span><small>${esc(title(item,i))}</small></summary><div class="admin-nested-fields">${fields(item,[...p,i])}</div><button class="admin-array-remove" type="button" data-array-remove="${esc(JSON.stringify([...p,i]))}">Remove ${esc(pretty)} ${i+1}</button></details>`).join('')}</div><button class="admin-array-add" type="button" data-array-add="${esc(JSON.stringify(p))}">+ Add ${esc(pretty)} item</button></fieldset>`;
+      }
+      if (v && typeof v==='object') return `<fieldset class="admin-fieldset"><legend><span>${esc(pretty)}</span><small>${esc(help||'All fields in this structured block are editable.')}</small></legend><div class="admin-nested-fields">${fields(v,p)}</div></fieldset>`;
+      if (typeof v==='boolean') return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" ${v?'checked':''}><span><b>${esc(pretty)}</b>${help?`<small>${esc(help)}</small>`:''}</span></label>`;
+      if (k==='league' && key==='schedule-events') return shell(pretty,`<select ${attr} data-field-type="string">${[['nrrs','NRRS'],['uarl-d1','UARL D1'],['uarl-d2','UARL D2 — historical/closed'],['open','UARL Open'],['kmart','Kmart'],['sunoco','Sunoco'],['iracing','iRacing']].map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select>`,help);
       if (key==='drivers' && k==='profile') {
-        const profiles=(seeds['roster-profiles']||[]).map((profile)=>[profile.slug,profile.name]);
-        return `<label>${esc(pretty)}<select ${attr} data-field-type="string">${profiles.map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)} · ${esc(id)}</option>`).join('')}</select><small>Links this league entry to one driver profile.</small></label>`;
+        const profiles=(base('roster-profiles')||seeds['roster-profiles']||[]).map((profile)=>[profile.slug,profile.name]);
+        return shell(pretty,`<select ${attr} data-field-type="string">${profiles.map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)} · ${esc(id)}</option>`).join('')}</select>`,help);
       }
-      if (key==='drivers' && k==='competitionId') return `<label>${esc(pretty)}<select ${attr} data-field-type="string" data-competition-choice>${competitionChoices.map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select><small>Changing this also updates the public league name below.</small></label>`;
-      if (key==='drivers' && k==='competition') return `<label>${esc(pretty)}<input ${attr} data-field-type="string" data-competition-name readonly value="${esc(v)}"><small>Filled automatically from the League selector.</small></label>`;
-      if (key==='drivers' && k==='status') return `<label>${esc(pretty)}<select ${attr} data-field-type="string">${[...new Set([...statusChoices,v])].filter(Boolean).map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select></label>`;
-      if (key==='drivers' && k==='affiliation') return `<label>${esc(pretty)}<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing eMotorsports</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select></label>`;
-      if (key==='competitions' && k==='type') return `<label>${esc(pretty)}<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing Program</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select></label>`;
-      if (Array.isArray(v) || String(v||'').length>120 || ['summary','description','intro','bio','text','note','message'].includes(k)) return `<label>${esc(pretty)}${Array.isArray(v)?'<small>One item per line</small>':''}<textarea rows="${Array.isArray(v)?4:5}" ${attr} data-field-type="${Array.isArray(v)?'lines':'string'}">${esc(Array.isArray(v)?v.join('\n'):v)}</textarea></label>`;
-      return `<label>${esc(pretty)}<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?'nullable':'string'}" type="${typeof v==='number'?'number':['dateIso','endDate'].includes(k)||(k==='date'&&key==='schedule-events')?'date':'text'}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}"></label>`;
+      if (key==='drivers' && k==='competitionId') return shell(pretty,`<select ${attr} data-field-type="string" data-competition-choice>${competitionChoices.map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select>`,help);
+      if (key==='drivers' && k==='competition') return shell(pretty,`<input ${attr} data-field-type="string" data-competition-name readonly value="${esc(v)}">`,'Filled automatically from the League selector.','is-readonly');
+      if (key==='drivers' && k==='status') return shell(pretty,`<select ${attr} data-field-type="string">${[...new Set([...statusChoices,v])].filter(Boolean).map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
+      if (key==='drivers' && k==='affiliation') return shell(pretty,`<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing eMotorsports</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select>`,help);
+      if (key==='competitions' && k==='type') return shell(pretty,`<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing Program</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select>`,help);
+      if (key==='news' && k==='category') {
+        const values=[...new Set(['Race & Competition','Team & Organization','Milestones',v])].filter(Boolean);
+        return shell(pretty,`<select ${attr} data-field-type="string">${values.map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
+      }
+      if (key==='schedule-events' && k==='status') {
+        const values=[...new Set(['Regular Season','The Chase','Championship','Crown Jewel','Special Event','All-Star','All-Star Race','Pre-Season','Schedule Break','Postponed',v])].filter(Boolean);
+        return shell(pretty,`<select ${attr} data-field-type="string">${values.map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
+      }
+      if (Array.isArray(v) || String(v||'').length>110 || ['summary','description','intro','bio','text','note','message','callout','identityNote'].includes(k)) {
+        return shell(pretty,`<textarea rows="${Array.isArray(v)?5:6}" ${attr} data-field-type="${Array.isArray(v)?'lines':'string'}">${esc(Array.isArray(v)?v.join('\n'):v)}</textarea>`,Array.isArray(v)?(help||'One item per line.'):help,'is-wide');
+      }
+      const inputType=typeof v==='number'?'number':(['dateIso','endDate'].includes(k)||(k==='date'&&key==='schedule-events'))?'date':['url','logo','image'].includes(k)?'url':'text';
+      return shell(pretty,`<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?'nullable':'string'}" type="${inputType}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}">`,help);
     }).join('');
   }
   function title(row,i) { if(key==='drivers') return `${row.displayName||row.profile||'Driver'} · ${row.competition||'Choose league'}${row.number?` · #${row.number}`:''}`; return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
@@ -220,9 +287,12 @@
     renderList();
     const guide=$('[data-content-guide]');
     if(guide){
-      const copy=rosterGuides[key];
+      const copy=rosterGuides[key], meta=datasetMeta[key];
       guide.hidden=!copy;
-      if(copy) guide.innerHTML=`<strong>${esc(copy[0])}</strong><p>${esc(copy[1])}</p>`;
+      if(copy) {
+        const count=Array.isArray(data)?`${data.length} ${data.length===1?'entry':'entries'}`:'1 structured record';
+        guide.innerHTML=`<div><strong>${esc(copy[0])}</strong><p>${esc(copy[1])}</p></div><span>${esc(count)} · every visible field is editable unless marked automatic</span>`;
+      }
     }
     const row=current();
     $('[data-content-fields]').innerHTML=row?fields(row):'<p>No entries. Choose Add entry to start.</p>';
@@ -230,26 +300,72 @@
       const button=document.createElement('button');button.type='button';button.textContent='Make this the featured homepage story';button.addEventListener('click',featureSelectedStory);$('[data-content-fields]').prepend(button);
     }
   }
+  function setActiveAdminTab(selector,value) {
+    document.querySelectorAll('[data-admin-tabs] button').forEach((button)=>{
+      const active=selector==='dataset'?button.dataset.adminDataset===value:selector==='paint'?button.dataset.adminPaintTab===value:button.dataset.adminTab===value;
+      button.classList.toggle('is-active',active);
+      button.setAttribute('aria-selected',String(active));
+    });
+  }
+  function hidePaintPanels() {
+    document.querySelectorAll('[data-panel]').forEach((panel)=>{panel.hidden=true;});
+  }
+  function showOverview() {
+    if(dirty&&!confirm('Leave unsaved changes in this tab?'))return;
+    $('[data-admin-overview]').hidden=false;
+    $('[data-content-editor]').hidden=true;
+    hidePaintPanels();
+    setActiveAdminTab('overview','overview');
+    key='';data=null;dirty=false;
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }
   function chooseDataset(name) {
     key=name; data=structuredClone(base(key)); index=0; dirty=false;
     if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r}));
+    const meta=datasetMeta[key]||{number:'EDIT',kicker:'CONTENT WORKSPACE',title:label(key),description:'Edit this content section.'};
+    $('[data-content-number]').textContent=meta.number;
+    $('[data-content-kicker]').textContent=meta.kicker;
+    $('[data-content-title]').textContent=meta.title;
+    $('[data-content-description]').textContent=meta.description;
+    const select=$('[data-content-dataset]');
+    if(select)select.value=key;
     render();refreshScheduleShiftTool();
-    status(`${registry.drafts[key]?'Private saved draft':registry.published[key]?'Published content':'Bundled baseline'} · Revision ${registry.revision}. ${key==='drivers'?'League assignments are one row per driver per league.':''}`);
+    status(`${registry.drafts[key]?'PRIVATE SAVED DRAFT':registry.published[key]?'PUBLISHED OVERRIDE':'BUNDLED BASELINE'} · Revision ${registry.revision}. Save Draft never changes the public site; Publish applies this tab and queues the site rebuild.`);
   }
-  async function openModule(name) {
+  async function openDatasetTab(name) {
     if (busy) return;
-    if (dirty && !confirm('Leave unsaved changes in this section?')) return;
-    $('[data-content-editor]').hidden=false;
-    $('[data-content-title]').textContent=modules[name].title;
+    if (dirty && key!==name && !confirm('Leave unsaved changes in this tab?')) return;
     try {
       if (!loaded) await load();
-      $('[data-content-dataset]').innerHTML=modules[name].sections.map(([id,title])=>`<option value="${id}">${esc(title)}</option>`).join('');
-      chooseDataset(modules[name].sections[0][0]);
-      $('[data-content-editor]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+      $('[data-admin-overview]').hidden=true;
+      hidePaintPanels();
+      $('[data-content-editor]').hidden=false;
+      const select=$('[data-content-dataset]');
+      select.innerHTML=Object.entries(datasetMeta).map(([id,meta])=>`<option value="${id}">${esc(meta.title)}</option>`).join('');
+      chooseDataset(name);
+      setActiveAdminTab('dataset',name);
+      $('[data-content-editor]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
     } catch(error) { status(error.message); }
   }
+  async function openModule(name) {
+    const first=modules[name]?.sections?.[0]?.[0];
+    if(first)await openDatasetTab(first);
+  }
+  function openPaintTab(name) {
+    if(dirty&&!confirm('Leave unsaved changes in this content tab?'))return;
+    dirty=false;
+    $('[data-admin-overview]').hidden=true;
+    $('[data-content-editor]').hidden=true;
+    const internal=document.querySelector(`[data-tab="${name}"]`);
+    if(internal)internal.click();
+    setActiveAdminTab('paint',name);
+    document.querySelector(`[data-panel="${name}"]`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }
   document.querySelectorAll('[data-content-module]').forEach((button)=>button.addEventListener('click',()=>openModule(button.dataset.contentModule)));
-  $('[data-content-dataset]').addEventListener('change',(event)=>{ if(dirty&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} chooseDataset(event.target.value); });
+  document.querySelectorAll('[data-admin-dataset]').forEach((button)=>button.addEventListener('click',()=>openDatasetTab(button.dataset.adminDataset)));
+  document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',()=>openPaintTab(button.dataset.adminPaintTab)));
+  document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',showOverview);
+  $('[data-content-dataset]').addEventListener('change',(event)=>{ if(dirty&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
   $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   document.querySelectorAll('[data-shift-preview]').forEach((button)=>button.addEventListener('click',()=>previewScheduleShift(Number(button.dataset.shiftPreview))));

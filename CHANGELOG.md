@@ -1,3 +1,14 @@
+# v0.4.50 — Full Tabbed Admin Overhaul
+
+- Rebuilt Aetherwing Admin around 18 direct workspace tabs: Overview plus 14 main-site content tabs and 3 Paint Operations tabs.
+- Removed the confusing “module + dataset dropdown” workflow from normal use.
+- Added dedicated tabs for Calendar, Latest Result, Wins, Standings, Milestones, Driver Assignments, Driver Directory, Driver Profiles, Charters, iRacing Roster, League Details, Leadership, Partners, Team Wire, Paint Feature, Paint Editor, and Paint Library.
+- Added Leadership and Partners to the persisted draft/publish content backend; those edits now feed their public pages through the same published-content overlay as schedules, rosters, results, and news.
+- Added detailed per-tab descriptions, editing guidance, field labels, contextual help, safer selects, URL/date/number inputs, nested-object cards, nested-array controls, and read-only indicators for automatically derived roster summaries.
+- Kept protected sitewide infrastructure out of routine content editing: brand/design system, global navigation/routes, technical track-location aliases, and build/deploy configuration remain code-level.
+- Preserved the schedule bulk ±7-day tool, draft/publish workflow, stale-write protection, Admin backup export, and Paint Operations.
+- Current identity handling remains Roblox/RoRacing Hailey / @Aokikoto and iRacing Hailey Bell.
+
 # v0.4.49 — Roblox / RoRacing Identity Update
 
 - Current Roblox / RoRacing display name is Hailey with username @Aokikoto.

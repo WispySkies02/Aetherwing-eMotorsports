@@ -2,7 +2,9 @@
 
 The canonical control center is **https://aetherwing.net/admin/**. The convenience URL **https://aetherwing.net/admin/login** redirects there and automatically opens the sign-in dialog.
 
-One login at **https://aetherwing.net/admin/** now contains functional editors for Schedule, Results & Milestones, Paint Booth, Roster, and Team Wire. The separate Paint Booth is public-only.
+One login at **https://aetherwing.net/admin/** now opens a direct-tab control center. Routine content is split into dedicated tabs for Calendar, Latest Result, Wins, Standings, Milestones, Driver Assignments, Driver Directory, Driver Profiles, Charters, iRacing Roster, League Details, Leadership, Partners, Team Wire, Paint Feature, Paint Editor, and Paint Library. The separate Paint Booth is public-only.
+
+Protected sitewide infrastructure is intentionally not exposed as routine form fields: global navigation/routes, brand/design-system tokens, technical track-location aliases, and build/deploy configuration remain code-level changes.
 
 ## v0.4.43 runtime requirement
 
@@ -12,7 +14,7 @@ The admin backend now pins **Node 24** and **esbuild** for Netlify Functions and
 
 1. Deploy this full main-site SOURCE package to the existing `aetherwing.net` Netlify project using its Git-connected build or Netlify CLI with Functions. Build command: `npm run build`; publish directory: `dist`. Do not upload just the static `dist` folder by drag-and-drop: that omits the server functions.
 2. Enable Netlify Identity for the main-site project and set registration to **Invite only**.
-3. Add or invite the administrator account and assign the **admin** role. This enables all five workspaces. The optional `paint-admin` role grants Paint Operations only. Identity accounts belong to a Netlify project: an account created on the old Paint Booth project does not automatically exist on the main project. Invite it on the main project if needed; no password is included in these ZIPs.
+3. Add or invite the administrator account and assign the **admin** role. This enables all main-site content tabs and Paint Operations. The optional `paint-admin` role grants Paint Operations only. Identity accounts belong to a Netlify project: an account created on the old Paint Booth project does not automatically exist on the main project. Invite it on the main project if needed; no password is included in these ZIPs.
 4. Sign out and back in after changing roles so the refreshed session contains the role.
 5. Create a Build hook for the main project's production branch. Store its full HTTPS URL as the private Netlify environment variable **AETHERWING_BUILD_HOOK**, available to Functions. Never paste it into frontend code or a public repository.
 6. Redeploy the main project so its functions receive that environment variable. On Netlify builds the site automatically loads published content from `https://aetherwing.net/api/site-content`. Optionally set **AETHERWING_CONTENT_URL** to that same URL in the Builds scope. The very first deployment uses bundled content when that endpoint is not yet present (404).
