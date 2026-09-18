@@ -48,28 +48,48 @@ const displayDate = (event) => {
   const [y,m,d] = event.date.split('-').map(Number);
   return new Date(Date.UTC(y,m-1,d,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
 };
+const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event.tbd && String(event.date) >= '2026-09-17').slice(0,3);
 ---
 <BaseLayout title="Schedule" description={`The complete Aetherwing 2026–27 race calendar: ${totalSeasonRaces} season races across six active competition relationships plus iRacing special-event windows, with reactive Race Control and expandable event information docks.`}>
   <PageHero eyebrow="2026–27 Competition Calendar" title="Aetherwing Events" description="The complete calendar across four active Aetherwing programs, two StarClutch Racing alliance series, and iRacing special events. UARL D2 has closed operations; D1 and Open remain active." ghost="RACE" />
 
   <section class="section section--tight aw-schedule-page" data-schedule-page>
     <div class="shell">
-      <div class="aw-schedule-stats">
-        <div><span>Competition Relationships</span><strong>06</strong><small>4 Aetherwing · 2 Alliance</small></div>
-        <div><span>Total Season Races</span><strong>{totalSeasonRaces}</strong><small>Off-weeks excluded</small></div>
-        <div><span>Calendar Window</span><strong>26–27</strong><small>2026 through 2027</small></div>
-        <div><span>Calendar Review</span><strong>SEP 15</strong><small>September 15, 2026</small></div>
+      <div class="aw-schedule-overview">
+        <div>
+          <span>Race-week briefing</span>
+          <h2>The next three green flags lead the page. The whole season waits underneath.</h2>
+          <p>Six competition relationships move through one 2026–27 calendar, with every league retaining its own color and identity.</p>
+        </div>
+        <div class="aw-schedule-total"><strong>{totalSeasonRaces}</strong><span>season races</span><small>Off-weeks excluded · reviewed SEP 15 · September 15, 2026</small></div>
       </div>
+
+      <section class="aw-race-week-focus" aria-labelledby="aw-race-week-title" data-race-week>
+        <header><div><span>Race Week Focus</span><h2 id="aw-race-week-title">Next on the board</h2></div><p>Three upcoming operations, ordered by green flag.</p></header>
+        <div class="aw-race-week-grid">
+          {featuredEvents.map((event,index)=>(
+            <a class:list={['aw-race-week-card',{'is-primary':index===0}]} data-race-week-card data-league={leagueClass(event.league)} href={`/schedule/#event-${event.shareSlug}`}>
+              <div><span data-rw-league>{event.leagueName}</span><b data-rw-date>{displayDate(event)}</b></div>
+              <strong class="aw-race-week-number">0{index+1}</strong>
+              <h3 data-rw-title>{event.title}</h3>
+              <p data-rw-meta>{event.track} · {event.time}</p>
+              <small data-rw-status>{event.status || 'Scheduled'} →</small>
+            </a>
+          ))}
+        </div>
+      </section>
 
       <section class="aw-championship-tracker" id="standings" aria-labelledby="aw-standings-title">
         <div class="aw-standings-head">
           <div><span>Current Competition Snapshot</span><h2 id="aw-standings-title">Championship Tracker</h2></div>
           <p>Team-maintained standings snapshots updated as league results are confirmed.</p>
         </div>
-        <article class="aw-chase-banner" data-league="nrrs">
-          <div><span>NRRS // POSTSEASON STATUS</span><strong>WISPY IS IN THE CHASE</strong><small>P6 · 2,087 PTS · -58 FROM LEADER · ↓1</small></div>
-          <div><span>CHASE RACE 2 OF 6</span><strong>VERIZON 400</strong><small>RICHMOND RACEWAY · SEP 22 · 7:30 PM ET</small></div>
+        <article class="aw-chase-lead" data-league="nrrs">
+          <div><span>WISPY IS IN THE CHASE</span><h3>Sixth place. Fifty-eight points to the lead. Richmond is next.</h3><p>The No. 32 carries 2,087 points into Chase Race 2 after fighting back to fifth at Darlington without stage points.</p></div>
+          <strong>P6</strong>
         </article>
+        <details class="aw-standings-disclosure">
+          <summary><span>Open complete standings snapshots</span><small>NRRS · Kmart · Sunoco · UARL</small></summary>
         <div class="aw-mobile-standings" aria-label="Championship snapshots for mobile">
           <div class="aw-mobile-standings-nav">
             <span>Swipe series cards</span>
@@ -170,6 +190,7 @@ const displayDate = (event) => {
             </article>
           ))}
         </div>
+        </details>
       </section>
 
       <section class="aw-race-control" aria-labelledby="aw-next-title">
@@ -213,8 +234,9 @@ const displayDate = (event) => {
           <button type="button" data-filter="iracing" aria-pressed="false">iRacing Special Events</button>
         </div>
         <div class="aw-view-toggle" role="group" aria-label="Schedule view">
-          <button type="button" class="is-active" data-view-toggle="list" aria-pressed="true">≡ List</button>
-          <button type="button" data-view-toggle="calendar" aria-pressed="false">▦ Calendar</button>
+          <button type="button" class="is-active" data-view-toggle="calendar" aria-pressed="true">▦ Calendar</button>
+          <button type="button" data-view-toggle="lanes" aria-pressed="false">⇥ Series Lanes</button>
+          <button type="button" data-view-toggle="list" aria-pressed="false">≡ List</button>
         </div>
         <div class="aw-subfilter-row" data-uarl-subfilters hidden>
           <button class="is-active" type="button" data-subfilter="uarl-all" aria-pressed="true">All UARL</button>
@@ -227,10 +249,11 @@ const displayDate = (event) => {
         </div>
       </div>
 
-      <div class="aw-schedule-readout"><span>Upcoming Operations</span><strong data-visible-count>—</strong><small>Tap any event to open its information dock.</small></div>
+      <div class="aw-schedule-readout"><span>Season Navigator</span><strong data-visible-count>—</strong><small>Calendar is the default. Series lanes and the full list remain one tap away.</small></div>
 
-      <div class="aw-calendar-mount" data-calendar-mount hidden></div>
-      <div class="aw-months" data-schedule-output>
+      <div class="aw-calendar-mount" data-calendar-mount></div>
+      <div class="aw-series-lanes" data-series-lanes hidden></div>
+      <div class="aw-months" data-schedule-output hidden>
         {groups.map(([key,items]) => (
           <section class="aw-month-block" data-month-key={key}>
             <div class="aw-month-heading"><h2>{monthLabel(key)}</h2><span data-month-count></span></div>
@@ -307,7 +330,14 @@ const displayDate = (event) => {
   const weatherLoading = page.querySelector('[data-weather-loading]');
   const weatherTarget = page.querySelector('[data-weather-target]');
   const weatherScreens = Array.from(page.querySelectorAll('[data-weather-screen]'));
+  const calMount = page.querySelector('[data-calendar-mount]');
+  const laneMount = page.querySelector('[data-series-lanes]');
+  const viewBtns = page.querySelectorAll('[data-view-toggle]');
+  const listOut = page.querySelector('[data-schedule-output]');
+  const toggleWrap = page.querySelector('.aw-schedule-toggle-wrap');
+  const readout = page.querySelector('.aw-schedule-readout');
   let activeFilter = 'all'; let activeSubfilter = 'uarl-all'; let showFullSchedule = false; let currentWeatherTrack = null; let weatherCycle = null; let forcedEventSlug = ''; let toastTimer = null;
+  let activeView = 'calendar';
   const leagueShareMap = {
     nrrs:{key:'nrrs',label:'NRRS'},
     kmart:{key:'kmart',label:'Kmart'},
@@ -455,11 +485,11 @@ const displayDate = (event) => {
     toolbar.querySelectorAll('[data-filter]').forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-pressed','false');}); button.classList.add('is-active'); button.setAttribute('aria-pressed','true'); activeFilter = button.dataset.filter || 'all';
     if (uarlSubfilters instanceof HTMLElement) uarlSubfilters.hidden = activeFilter !== 'uarl-group';
     if (activeFilter === 'uarl-group') { activeSubfilter='uarl-all'; toolbar.querySelectorAll('[data-subfilter]').forEach(item=>{item.classList.toggle('is-active',item.dataset.subfilter==='uarl-all');item.setAttribute('aria-pressed',String(item.dataset.subfilter==='uarl-all'));}); }
-    forcedEventSlug=''; showFullSchedule=false; renderSchedule(); updateNextOperation();
+    forcedEventSlug=''; showFullSchedule=false; renderSchedule(); updateNextOperation(); updateRaceWeek(); refreshScheduleViews();
   }));
   toolbar?.querySelectorAll('[data-subfilter]').forEach(button => button.addEventListener('click', () => {
     const requested = button.dataset.subfilter || 'uarl-all';
-    forcedEventSlug=''; showFullSchedule=false; applyLeagueSelection(requested); renderSchedule(); updateNextOperation();
+    forcedEventSlug=''; showFullSchedule=false; applyLeagueSelection(requested); renderSchedule(); updateNextOperation(); updateRaceWeek(); refreshScheduleViews();
   }));
   toggleFull?.addEventListener('click',()=>{showFullSchedule=!showFullSchedule;renderSchedule();});
 
@@ -538,7 +568,7 @@ const displayDate = (event) => {
     if (!location.hash.startsWith('#event-')) return false;
     const slug=decodeURIComponent(location.hash.slice(7));
     const target=scheduleEvents.find(event=>event.shareSlug===slug); if(!target) return false;
-    forcedEventSlug=slug; showFullSchedule=true; applyLeagueSelection(target.league);
+    forcedEventSlug=slug; showFullSchedule=true; applyLeagueSelection(target.league); setActiveView('list');
     renderSchedule(); updateNextOperation(); updateDockCountdowns();
     const card=document.getElementById(`event-${slug}`); const toggle=card?.querySelector('[data-event-toggle]'); const dock=card?.querySelector('[data-event-dock]');
     if(dock instanceof HTMLElement){page.querySelectorAll('[data-event-dock]').forEach(other=>{if(other!==dock && other instanceof HTMLElement)other.hidden=true;});dock.hidden=false;toggle?.setAttribute('aria-expanded','true');card?.classList.add('is-open','is-share-target');setTimeout(()=>card?.classList.remove('is-share-target'),2400);card?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});}
@@ -566,94 +596,108 @@ const displayDate = (event) => {
     try { await openMeteo(loc); if(weatherLoading instanceof HTMLElement)weatherLoading.classList.remove('is-active'); cycleWeather(); } catch { if(weatherTarget)weatherTarget.textContent='COMMUNICATION ERROR'; }
   }
 
+  // ── Race-week focus, calendar, and series lanes ────────────
+  const LEAGUE_COLOR = {
+    kmart:'#e61a24',sunoco:'#ffb800',nrrs:'#2962ff',
+    'uarl-d1':'#00a859',open:'#8e5bff',iracing:'#d9d9d9'
+  };
+  const SERIES_LANES = [
+    {key:'nrrs',name:'NRRS',rhythm:'Tuesdays · 7:30 PM ET'},
+    {key:'kmart',name:'Kmart Auto Parts Series',rhythm:'Mondays · 8:30 PM ET'},
+    {key:'sunoco',name:'Sunoco Truck Series',rhythm:'Saturdays · 8:00 PM ET'},
+    {key:'uarl-d1',name:'UARL Division 1',rhythm:'Sundays · 8:30 PM ET'},
+    {key:'open',name:'UARL Open',rhythm:'Sundays · 11:30 AM ET'},
+    {key:'iracing',name:'iRacing Special Events',rhythm:'Multi-day event windows'}
+  ];
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+
+  function updateRaceWeek() {
+    const featureCards = Array.from(page.querySelectorAll('[data-race-week-card]'));
+    const events = filteredEvents().filter(event=>!event.offWeek).slice(0,featureCards.length);
+    featureCards.forEach((card,index)=>{
+      const event=events[index];
+      if (!(card instanceof HTMLAnchorElement)) return;
+      card.hidden=!event;
+      if (!event) return;
+      card.dataset.league=event.league;
+      card.href=`/schedule/#event-${event.shareSlug}`;
+      const league=card.querySelector('[data-rw-league]'); const date=card.querySelector('[data-rw-date]'); const title=card.querySelector('[data-rw-title]'); const meta=card.querySelector('[data-rw-meta]'); const status=card.querySelector('[data-rw-status]');
+      if(league)league.textContent=event.leagueName; if(date)date.textContent=displayDate(event); if(title)title.textContent=event.title; if(meta)meta.textContent=`${event.track} · ${event.time}`; if(status)status.textContent=`${event.status||'Scheduled'} →`;
+    });
+  }
+
+  function buildCalendar() {
+    if (!(calMount instanceof HTMLElement)) return;
+    const all = scheduleEvents.filter(event=>!event.offWeek&&!event.tbd&&isUpcoming(event)&&matchesFilter(event));
+    const months = {};
+    all.forEach(event=>{const key=event.date.slice(0,7);if(!months[key])months[key]=[];months[key].push(event);});
+    const html = Object.entries(months).map(([key,evts])=>{
+      const [year,month]=key.split('-').map(Number);
+      const label=new Date(Date.UTC(year,month-1,1,12)).toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
+      const firstDay=new Date(Date.UTC(year,month-1,1)).getUTCDay();
+      const daysInMonth=new Date(Date.UTC(year,month,0)).getUTCDate();
+      const dayMap={};
+      evts.forEach(event=>{const day=parseInt(event.date.slice(8),10);if(!dayMap[day])dayMap[day]=[];dayMap[day].push(event);});
+      let cells='<div class="aw-cal-day aw-cal-day--empty"></div>'.repeat(firstDay);
+      for(let day=1;day<=daysInMonth;day++){
+        const dayEvents=dayMap[day]||[];
+        if(!dayEvents.length){cells+=`<div class="aw-cal-day"><span class="aw-cal-num">${day}</span></div>`;continue;}
+        const entries=dayEvents.map(event=>`<span class="aw-cal-entry" style="--event-color:${LEAGUE_COLOR[event.league]||'#888'}"><b>${escapeHtml(event.leagueName)}</b><span>${escapeHtml(event.title)}</span></span>`).join('');
+        const details=dayEvents.map(event=>`<div class="aw-cal-evt" data-league="${escapeHtml(event.league)}" style="--event-color:${LEAGUE_COLOR[event.league]||'#888'}"><b>${escapeHtml(event.leagueName)}</b><strong>${escapeHtml(event.title)}</strong><span>${escapeHtml(event.track)} · ${escapeHtml(event.time||'Window')}</span></div>`).join('');
+        cells+=`<button type="button" class="aw-cal-day has-events" data-cal-day="${key}-${String(day).padStart(2,'0')}" aria-expanded="false"><span class="aw-cal-num">${day}</span><span class="aw-cal-entries">${entries}</span><span class="aw-cal-popup">${details}</span></button>`;
+      }
+      return `<section class="aw-cal-month"><h3 class="aw-cal-month-label">${escapeHtml(label)}</h3><div class="aw-cal-grid"><div class="aw-cal-header"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="aw-cal-days">${cells}</div></div></section>`;
+    }).join('');
+    calMount.innerHTML=html||'<div class="empty-state"><strong>No upcoming calendar entries</strong><p>Choose another league to continue browsing.</p></div>';
+    calMount.querySelectorAll('.aw-cal-day.has-events').forEach(day=>day.addEventListener('click',()=>{
+      const wasOpen=day.classList.contains('is-open');
+      calMount.querySelectorAll('.aw-cal-day').forEach(other=>{other.classList.remove('is-open');other.setAttribute('aria-expanded','false');});
+      if(!wasOpen){day.classList.add('is-open');day.setAttribute('aria-expanded','true');}
+    }));
+  }
+
+  function buildSeriesLanes() {
+    if (!(laneMount instanceof HTMLElement)) return;
+    const all=scheduleEvents.filter(event=>!event.offWeek&&!event.tbd&&isUpcoming(event)&&matchesFilter(event));
+    const html=SERIES_LANES.map(lane=>{
+      const events=all.filter(event=>event.league===lane.key);
+      if(!events.length)return'';
+      const cards=events.map(event=>`<a class="aw-lane-event" href="/schedule/#event-${escapeHtml(event.shareSlug)}"><span>${escapeHtml(displayDate(event))}</span><h4>${escapeHtml(event.title)}</h4><p>${escapeHtml(event.track)}</p><small>${escapeHtml(event.time||'Event Window')}</small></a>`).join('');
+      return `<section class="aw-series-lane" data-league="${lane.key}" style="--lane-color:${LEAGUE_COLOR[lane.key]||'#888'}"><header><div><span>Series lane</span><h3>${escapeHtml(lane.name)}</h3></div><p>${escapeHtml(lane.rhythm)}</p></header><div class="aw-series-lane-rail" tabindex="0">${cards}</div></section>`;
+    }).join('');
+    laneMount.innerHTML=html||'<div class="empty-state"><strong>No upcoming series lanes</strong><p>Choose another league to continue browsing.</p></div>';
+  }
+
+  function refreshScheduleViews(){
+    if(activeView==='calendar')buildCalendar();
+    if(activeView==='lanes')buildSeriesLanes();
+  }
+
+  function setActiveView(view){
+    activeView=['calendar','lanes','list'].includes(view)?view:'calendar';
+    viewBtns.forEach(button=>{const selected=button.dataset.viewToggle===activeView;button.classList.toggle('is-active',selected);button.setAttribute('aria-pressed',String(selected));});
+    if(calMount instanceof HTMLElement)calMount.hidden=activeView!=='calendar';
+    if(laneMount instanceof HTMLElement)laneMount.hidden=activeView!=='lanes';
+    if(listOut instanceof HTMLElement)listOut.hidden=activeView!=='list';
+    if(toggleWrap instanceof HTMLElement)toggleWrap.hidden=activeView!=='list';
+    if(readout instanceof HTMLElement)readout.dataset.view=activeView;
+    refreshScheduleViews();
+  }
+
+  viewBtns.forEach(button=>button.addEventListener('click',()=>setActiveView(button.dataset.viewToggle||'calendar')));
+
   const hashRevealed = revealEventHash();
   const queryApplied = !hashRevealed && applyLeagueQuery();
   if (!hashRevealed && !queryApplied) { renderSchedule(); updateNextOperation(); }
   updateDockCountdowns();
+  updateRaceWeek();
+  setActiveView(activeView);
   addEventListener('hashchange', revealEventHash);
   const timer=setInterval(()=>{updateNextOperation();updateDockCountdowns();},1000);
-  const refresh=()=>{renderSchedule();updateNextOperation();updateDockCountdowns();};
+  const refresh=()=>{renderSchedule();updateNextOperation();updateDockCountdowns();updateRaceWeek();refreshScheduleViews();};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();}); addEventListener('focus',refresh); addEventListener('pageshow',refresh);
   addEventListener('resize',updateLeagueShareControl,{passive:true});
   window.awScheduleIntervals={timer};
-
-  // ── Calendar view ──────────────────────────────────────────
-  const calMount = page.querySelector('[data-calendar-mount]');
-  const viewBtns = page.querySelectorAll('[data-view-toggle]');
-  const listOut  = page.querySelector('[data-schedule-output]');
-  const toggleWrap = page.querySelector('.aw-schedule-toggle-wrap');
-  const readout    = page.querySelector('.aw-schedule-readout');
-  let calendarActive = false;
-
-  const LEAGUE_COLOR = {
-    nrrs:'var(--aw-red)',kmart:'var(--aw-alliance)',sunoco:'var(--aw-alliance)',
-    'uarl-d1':'var(--aw-blue)',open:'var(--aw-cyan)',iracing:'#555'
-  };
-
-  function buildCalendar() {
-    if (!(calMount instanceof HTMLElement)) return;
-    const all = scheduleEvents.filter(e => !e.offWeek && !e.tbd);
-    // Group by month
-    const months = {};
-    all.forEach(e => {
-      const key = e.date.slice(0,7);
-      if (!months[key]) months[key] = [];
-      months[key].push(e);
-    });
-    const html = Object.entries(months).map(([key, evts]) => {
-      const [y,m] = key.split('-').map(Number);
-      const label = new Date(Date.UTC(y,m-1,1,12)).toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
-      const firstDay = new Date(Date.UTC(y,m-1,1)).getUTCDay();
-      const daysInMonth = new Date(Date.UTC(y,m,0)).getUTCDate();
-      // Build day → events map
-      const dayMap = {};
-      evts.forEach(e => {
-        const d = parseInt(e.date.slice(8),10);
-        if (!dayMap[d]) dayMap[d] = [];
-        dayMap[d].push(e);
-      });
-      // Build cells
-      let cells = '<div class="aw-cal-day aw-cal-day--empty"></div>'.repeat(firstDay);
-      for (let d=1;d<=daysInMonth;d++) {
-        const dayEvts = dayMap[d] || [];
-        const dots = dayEvts.map(e=>`<span class="aw-cal-dot" style="background:${LEAGUE_COLOR[e.league]||'#888'}" title="${e.leagueName}: ${e.title}"></span>`).join('');
-        const hasEvt = dayEvts.length > 0;
-        const details = dayEvts.map(e=>`<div class="aw-cal-evt" data-league="${e.league}"><b>${e.leagueName}</b><strong>${e.title}</strong><span>${e.time||'Window'}</span></div>`).join('');
-        cells += `<div class="aw-cal-day${hasEvt?' has-events':''}" data-cal-day="${key}-${String(d).padStart(2,'0')}">
-          <span class="aw-cal-num">${d}</span>
-          <div class="aw-cal-dots">${dots}</div>
-          ${hasEvt?`<div class="aw-cal-popup">${details}</div>`:''}
-        </div>`;
-      }
-      return `<section class="aw-cal-month"><h3 class="aw-cal-month-label">${label}</h3>
-        <div class="aw-cal-grid">
-          <div class="aw-cal-header"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
-          <div class="aw-cal-days">${cells}</div>
-        </div></section>`;
-    }).join('');
-    calMount.innerHTML = html;
-    // Click to expand day events
-    calMount.querySelectorAll('.aw-cal-day.has-events').forEach(day => {
-      day.addEventListener('click', () => {
-        const wasOpen = day.classList.contains('is-open');
-        calMount.querySelectorAll('.aw-cal-day').forEach(d=>d.classList.remove('is-open'));
-        if (!wasOpen) day.classList.add('is-open');
-      });
-    });
-  }
-
-  viewBtns.forEach(btn => btn.addEventListener('click', () => {
-    const view = btn.dataset.viewToggle;
-    viewBtns.forEach(b=>{b.classList.toggle('is-active',b===btn);b.setAttribute('aria-pressed',String(b===btn));});
-    calendarActive = view === 'calendar';
-    if (calMount instanceof HTMLElement) {
-      calMount.hidden = !calendarActive;
-      if (calendarActive && !calMount.innerHTML) buildCalendar();
-    }
-    if (listOut instanceof HTMLElement) listOut.hidden = calendarActive;
-    if (toggleWrap instanceof HTMLElement) toggleWrap.hidden = calendarActive;
-    if (readout instanceof HTMLElement) readout.hidden = calendarActive;
-  }));
 
 })();
 </script>

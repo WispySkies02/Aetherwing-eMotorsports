@@ -17,6 +17,13 @@ const featuredNews=news.find((story)=>story.featured) ?? news[0];
 const nrrsChase=(standings as any[]).find((s:any)=>s.id==='nrrs');
 const wispyRow=(nrrsChase?.rows??[])[0];
 const wispyPos=parseInt(String(wispyRow?.position??'P6').replace('P',''),10);
+const wispyGap=Math.abs(parseInt(String(wispyRow?.delta??'-58'),10));
+const nextNrrsChase=events.find((event)=>event.league==='nrrs' && event.date>'2026-09-15' && !event.offWeek);
+const chaseField=Array.from({length:12},(_,i)=>{
+  const pos=i+1;
+  const row=(nrrsChase?.rows as any[]??[]).find((r:any)=>parseInt(String(r.position).replace('P',''),10)===pos);
+  return{pos,driver:row?.driver??null,number:row?.number??null,isWispy:pos===wispyPos,eligible:row?.chaseEligible!==false&&row!=null};
+});
 ---
 <BaseLayout title="Aetherwing eMotorsports" description="Aetherwing eMotorsports — competition, drivers, schedule, Paint Booth, news, partners, and team history.">
   <section class="aw-home-hero">
@@ -31,56 +38,71 @@ const wispyPos=parseInt(String(wispyRow?.position??'P6').replace('P',''),10);
       </div>
       <aside class="aw-glance panel">
         <span class="aw-paper-label">Aetherwing at a glance</span>
-        <div class="aw-glance__grid">
-          <div><strong>{site.activeRoRacingDrivers}</strong><span>Active RoRacing Drivers</span></div>
-          <div><strong>{String(site.competitionRelationships).padStart(2,'0')}</strong><span>Competition Relationships</span></div>
-          <div><strong>{String(site.featuredPartners).padStart(2,'0')}</strong><span>Featured Partners</span></div>
-          <div><strong>03</strong><span>Competition Worlds</span></div>
+        <div class="aw-glance__story">
+          <strong>{site.activeRoRacingDrivers}</strong>
+          <p>active RoRacing drivers carry Aetherwing and the StarClutch Racing Alliance across a six-series competition network.</p>
         </div>
-        <p>5 Aetherwing drivers and 5 alliance-only drivers across 4 active Aetherwing programs and 2 alliance series.</p>
+        <div class="aw-glance__line"><span>04 Aetherwing programs</span><span>02 alliance series</span><span>03 racing worlds</span></div>
       </aside>
     </div>
   </section>
 
   <div class="aw-home-stats">
-    <div class="shell stat-rail">
-      <div class="stat"><strong>{site.verifiedWins}</strong><span>AEM Wins</span></div>
-      <div class="stat"><strong>{site.estimatedStarts}</strong><span>Est. Racing Starts</span></div>
-      <div class="stat"><strong>{site.competitionRelationships}</strong><span>Competition Relationships</span></div>
-      <div class="stat"><strong>{site.founded}</strong><span>Founded</span></div>
+    <div class="shell aw-proof-strip">
+      <strong>{site.verifiedWins}</strong>
+      <p>verified Aetherwing wins anchor a record built across {site.estimatedStarts} estimated starts since {site.founded}.</p>
+      <span>{site.competitionRelationships} current competition relationships</span>
     </div>
   </div>
 
   <section class="aw-chase-section">
     <div class="shell">
-      <div class="aw-chase-head">
+      <div class="aw-chase-story">
         <div>
-          <p class="eyebrow">NRRS Chase for the Cup</p>
-          <h2 class="aw-chase-title">Chase Standing</h2>
+          <p class="eyebrow">NRRS Chase for the Cup · {nrrsChase?.subtitle ?? 'After Chase Race 1 of 6'}</p>
+          <h2>Wispy is sixth in the Chase, {wispyGap} points off the lead heading to {nextNrrsChase?.track?.replace(' Raceway','') ?? 'Richmond'}.</h2>
+          <p>The No. 32 leaves Darlington with {(wispyRow?.points ?? 2087).toLocaleString('en-US')} points and a top-five finish, but stage points remain the pressure point entering {nextNrrsChase?.title ?? 'the Verizon 400'}.</p>
         </div>
-        <div class="aw-chase-kpis">
-          <div><small>Position</small><strong>{wispyRow?.position ?? 'P6'}</strong></div>
-          <div><small>Points</small><strong>{(wispyRow?.points ?? 2087).toLocaleString('en-US')}</strong></div>
-          <div><small>Gap</small><strong class="is-negative">{wispyRow?.delta ?? '-58'}</strong></div>
-          <div><small>Status</small><strong>{nrrsChase?.status ?? 'CHASE'}</strong></div>
+        <div class="aw-chase-position" aria-label={`Wispy is ${wispyRow?.position ?? 'P6'} in the NRRS Chase`}>
+          <span>Chase position</span>
+          <strong>{wispyRow?.position ?? 'P6'}</strong>
+          <em>{wispyRow?.positionChange ?? '-1 spot'} after Darlington</em>
         </div>
       </div>
-      <div class="aw-chase-field" aria-label={`Wispy at position ${wispyPos} of 12 in the Chase`}>
-        {Array.from({length:12},(_,i)=>{
-          const pos=i+1;
-          const isWispy=pos===wispyPos;
-          const zone=pos<=4?'safe':pos<=8?'bubble':'out';
-          return <div class:list={['aw-chase-slot',{[`is-${zone}`]:true,'is-wispy':isWispy}]} aria-label={isWispy?`Wispy P${pos}`:`P${pos}`}>
-            <span class="aw-chase-slot-pos">P{pos}</span>
-            {isWispy && <><strong>#32</strong><em>WISPY</em></>}
-          </div>;
-        })}
-      </div>
-      <div class="aw-chase-legend">
-        <span class="is-safe">Locked In (P1–4)</span>
-        <span class="is-bubble">On The Bubble (P5–8)</span>
-        <span class="is-out">Eliminated Zone (P9–12)</span>
-      </div>
+
+      <details class="aw-chase-details">
+        <summary><span>Open the complete Chase field</span><small>Positions, drivers and cut-line context</small></summary>
+        <div class="aw-chase-detail-body">
+          <div class="aw-chase-zone-label">The Chase — 6 Eligible Drivers</div>
+          <div class="aw-chase-field aw-chase-field--chase">
+            {chaseField.filter(s=>s.eligible||s.pos<=6).map(({pos,driver,number,isWispy})=>{
+              const zone=pos<=4?'safe':'bubble';
+              return <div class:list={['aw-chase-slot',`is-${zone}`,{'is-wispy':isWispy}]} aria-label={driver?`P${pos} ${driver}`:`P${pos}`}>
+                <span class="aw-chase-slot-pos">P{pos}</span>
+                {driver && <strong>#{number}</strong>}
+                {driver && <em>{driver}</em>}
+              </div>;
+            })}
+          </div>
+
+          <div class="aw-chase-zone-label aw-chase-zone-label--dim">Non-Chase Runners</div>
+          <div class="aw-chase-field aw-chase-field--non-chase">
+            {chaseField.filter(s=>!s.eligible&&s.pos>6).map(({pos,driver,number})=>(
+              <div class="aw-chase-slot is-non-chase" aria-label={driver?`P${pos} ${driver}`:`P${pos}`}>
+                <span class="aw-chase-slot-pos">P{pos}</span>
+                {driver && <strong>#{number}</strong>}
+                {driver && <em>{driver}</em>}
+              </div>
+            ))}
+          </div>
+
+          <div class="aw-chase-legend">
+            <span class="is-safe">Locked In (P1–4)</span>
+            <span class="is-bubble">On The Bubble (P5–6)</span>
+            <span class="is-non-chase">Non-Chase (P7–12)</span>
+          </div>
+        </div>
+      </details>
     </div>
   </section>
 

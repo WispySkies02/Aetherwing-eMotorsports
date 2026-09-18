@@ -80,7 +80,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
               class:list={['aw-flip-card',{'is-alliance':driver.affiliation==='alliance','is-selected':index===0}]}
               data-slug={driver.slug} data-affiliation={driver.affiliation} data-programs={driver.programs.join('|')}>
               <div class="aw-flip-inner">
-                <div class="aw-flip-front">
+                <div class="aw-flip-front" data-ghost-num={driver.numberParts[0]??''}>
                   <div class:list={['aw-driver-num',{'is-multi':driver.numberParts.length>1}]}>
                     {driver.numberParts.map(num=><b>#{num}</b>)}
                   </div>

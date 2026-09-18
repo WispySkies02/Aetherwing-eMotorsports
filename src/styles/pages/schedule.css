@@ -302,3 +302,87 @@
   .aw-cal-dot{width:6px;height:6px;}
   .aw-cal-num{font-size:.62rem;}
 }
+
+/* Story-first schedule redesign */
+.aw-schedule-overview{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:clamp(2rem,6vw,6rem);margin-bottom:clamp(2.5rem,5vw,4.5rem);padding:0 0 1.5rem;border-bottom:1px solid #333}
+.aw-schedule-overview>div:first-child>span,.aw-race-week-focus>header span{color:var(--aw-gold);font:900 .72rem/1 var(--font-mono);letter-spacing:.11em;text-transform:uppercase}
+.aw-schedule-overview h2{max-width:1100px;margin:.5rem 0 .75rem;font:900 clamp(2.5rem,5.5vw,5.8rem)/.85 var(--font-condensed);letter-spacing:-.035em;text-transform:uppercase}
+.aw-schedule-overview>div:first-child>p{max-width:780px;margin:0;color:#8d8d8d;font:700 .8rem/1.5 var(--font-mono);text-transform:uppercase}
+.aw-schedule-total{display:flex;min-width:220px;flex-direction:column;align-items:flex-end;text-align:right}
+.aw-schedule-total strong{color:var(--aw-gold);font:900 clamp(6rem,10vw,10rem)/.68 var(--font-condensed);letter-spacing:-.08em;text-shadow:7px 7px 0 #000}
+.aw-schedule-total span{color:#fff;font:900 1rem/1 var(--font-condensed);text-transform:uppercase}
+.aw-schedule-total small{margin-top:.35rem;color:#555;font:900 .66rem/1.35 var(--font-mono);text-transform:uppercase}
+
+.aw-race-week-focus{margin-bottom:2.5rem}
+.aw-race-week-focus>header{display:flex;align-items:end;justify-content:space-between;gap:1.5rem;margin-bottom:1rem}
+.aw-race-week-focus>header h2{margin:.38rem 0 0;font:400 clamp(2.5rem,5vw,4.5rem)/.75 var(--font-brush);font-synthesis:none;text-transform:uppercase}
+.aw-race-week-focus>header p{max-width:360px;margin:0;color:#777;font:800 .72rem/1.4 var(--font-mono);text-align:right;text-transform:uppercase}
+.aw-race-week-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:.8rem}
+.aw-race-week-card{--league:#fff;position:relative;display:flex;min-width:0;min-height:310px;flex-direction:column;justify-content:flex-end;padding:1.25rem;border:1px solid #292929;border-top:7px solid var(--league);background:radial-gradient(circle at 82% 12%,color-mix(in srgb,var(--league) 17%,transparent),transparent 34%),linear-gradient(155deg,#0e0e0e,#030303 72%);color:#fff;text-decoration:none;overflow:hidden;transition:transform .16s,border-color .16s,box-shadow .16s}
+.aw-race-week-card[data-league=kmart]{--league:#e61a24}.aw-race-week-card[data-league=sunoco]{--league:#ffb800}.aw-race-week-card[data-league=nrrs]{--league:#2962ff}.aw-race-week-card[data-league=uarl-d1]{--league:#00a859}.aw-race-week-card[data-league=open]{--league:#8e5bff}.aw-race-week-card[data-league=iracing]{--league:#d9d9d9}
+.aw-race-week-card:hover,.aw-race-week-card:focus-visible{transform:translateY(-4px);border-color:var(--league);box-shadow:0 8px 0 color-mix(in srgb,var(--league) 45%,#000);outline:none}
+.aw-race-week-card>div:first-child{position:absolute;inset:1rem 1rem auto;display:flex;align-items:center;justify-content:space-between;gap:.8rem}
+.aw-race-week-card>div:first-child span,.aw-race-week-card>div:first-child b{font:900 .65rem/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase}.aw-race-week-card>div:first-child span{color:var(--league)}.aw-race-week-card>div:first-child b{color:#777}
+.aw-race-week-number{position:absolute;right:-.05em;top:.34em;color:color-mix(in srgb,var(--league) 8%,transparent);font:900 8rem/.68 var(--font-condensed);letter-spacing:-.08em;pointer-events:none}
+.aw-race-week-card h3{position:relative;margin:0 0 .65rem;font:900 clamp(1.8rem,3vw,3.1rem)/.85 var(--font-condensed);letter-spacing:-.02em;text-transform:uppercase}
+.aw-race-week-card p{position:relative;margin:0;color:#888;font:800 .72rem/1.35 var(--font-mono);text-transform:uppercase}
+.aw-race-week-card>small{position:relative;margin-top:1rem;color:var(--league);font:900 .68rem/1 var(--font-mono);text-transform:uppercase}
+
+.aw-championship-tracker{margin:2.5rem 0!important;padding:clamp(1rem,2vw,1.5rem)!important}
+.aw-chase-lead{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:2rem;padding:clamp(1.1rem,3vw,2.1rem);border-left:8px solid #2962ff;background:radial-gradient(circle at 92% 40%,rgba(41,98,255,.2),transparent 30%),linear-gradient(100deg,#0b1329,#070707 60%);overflow:hidden}
+.aw-chase-lead span{color:#7da0ff;font:900 .72rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
+.aw-chase-lead h3{max-width:980px;margin:.55rem 0 .7rem;font:900 clamp(2rem,4.4vw,4.6rem)/.85 var(--font-condensed);letter-spacing:-.03em;text-transform:uppercase}
+.aw-chase-lead p{max-width:770px;margin:0;color:#929292;font:700 .76rem/1.5 var(--font-mono);text-transform:uppercase}
+.aw-chase-lead>strong{color:#2962ff;font:900 clamp(6rem,11vw,10rem)/.68 var(--font-condensed);letter-spacing:-.08em;text-shadow:7px 7px 0 #000}
+.aw-standings-disclosure{position:relative;z-index:2;border-bottom:1px solid #292929}
+.aw-standings-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;cursor:pointer;list-style:none}
+.aw-standings-disclosure>summary::-webkit-details-marker{display:none}
+.aw-standings-disclosure>summary span{color:#fff;font:900 .75rem/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}.aw-standings-disclosure>summary span::after{content:" +";color:var(--aw-gold)}.aw-standings-disclosure[open]>summary span::after{content:" −"}
+.aw-standings-disclosure>summary small{color:#555;font:800 .66rem/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
+.aw-standings-disclosure>summary:hover span,.aw-standings-disclosure>summary:focus-visible span{color:var(--aw-gold)}
+.aw-standings-disclosure>.aw-standings-grid,.aw-standings-disclosure>.aw-mobile-standings{margin-bottom:1rem}
+
+.aw-schedule-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem}
+.aw-filter-row{flex:1 1 680px}.aw-view-toggle{order:2}.aw-subfilter-row,.aw-league-share-row{flex:1 0 100%;width:100%}
+.aw-view-toggle button.is-active[data-view-toggle=calendar]{background:var(--aw-gold);border-color:var(--aw-gold)}
+.aw-schedule-readout[data-view=calendar] span::after{content:" // CALENDAR";color:var(--aw-gold)}.aw-schedule-readout[data-view=lanes] span::after{content:" // SERIES LANES";color:var(--aw-gold)}.aw-schedule-readout[data-view=list] span::after{content:" // LIST";color:var(--aw-gold)}
+
+.aw-calendar-mount[hidden],.aw-series-lanes[hidden],.aw-months[hidden]{display:none!important}
+.aw-calendar-mount{padding-top:1rem}
+.aw-cal-month{margin-bottom:3.5rem}
+.aw-cal-month-label{padding:.75rem 0;border-top:6px solid var(--aw-gold);border-bottom:1px solid #292929}
+.aw-cal-day{min-height:112px;border-color:#1c1c1c;background:#050505;color:#fff;text-align:left;font:inherit}
+.aw-cal-day.has-events{border-color:#333;background:#090909}
+.aw-cal-day.has-events:hover,.aw-cal-day.has-events:focus-visible{border-color:#666;background:#0d0d0d;outline:none}
+.aw-cal-num{font-size:.72rem}
+.aw-cal-entries{display:grid;gap:3px;margin-top:.55rem}
+.aw-cal-entry{display:grid;min-width:0;gap:.14rem;padding:.3rem .38rem;border-left:4px solid var(--event-color);background:color-mix(in srgb,var(--event-color) 9%,#080808)}
+.aw-cal-entry b{overflow:hidden;color:var(--event-color);font:900 .58rem/1 var(--font-mono);letter-spacing:.04em;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.aw-cal-entry span{overflow:hidden;color:#a0a0a0;font:900 .7rem/1.05 var(--font-condensed);text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.aw-cal-popup{color:#fff;text-align:left}
+.aw-cal-evt{border-left:3px solid var(--event-color);padding:.5rem .55rem}
+.aw-cal-evt b{color:var(--event-color)!important}
+
+.aw-series-lanes{display:grid;gap:1.25rem;padding:1rem 0 2rem}
+.aw-series-lane{border-top:5px solid var(--lane-color);background:linear-gradient(90deg,color-mix(in srgb,var(--lane-color) 7%,#050505),#030303 32%)}
+.aw-series-lane>header{display:flex;align-items:end;justify-content:space-between;gap:1rem;padding:.9rem 1rem;border-bottom:1px solid #262626}
+.aw-series-lane>header span{color:var(--lane-color);font:900 .62rem/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.aw-series-lane>header h3{margin:.28rem 0 0;font:900 clamp(1.45rem,2.5vw,2.25rem)/.9 var(--font-condensed);text-transform:uppercase}
+.aw-series-lane>header p{margin:0;color:#666;font:800 .68rem/1 var(--font-mono);text-align:right;text-transform:uppercase}
+.aw-series-lane-rail{display:flex;gap:.6rem;overflow-x:auto;overscroll-behavior-inline:contain;padding:.8rem 1rem 1rem;scroll-snap-type:x proximity;scrollbar-color:var(--lane-color) #111}
+.aw-lane-event{flex:0 0 min(290px,72vw);min-height:175px;padding:.85rem;border:1px solid #292929;border-left:5px solid var(--lane-color);background:#080808;color:#fff;text-decoration:none;scroll-snap-align:start;transition:background .15s,border-color .15s}
+.aw-lane-event:hover,.aw-lane-event:focus-visible{border-color:var(--lane-color);background:color-mix(in srgb,var(--lane-color) 9%,#080808);outline:none}
+.aw-lane-event>span,.aw-lane-event>small{color:var(--lane-color);font:900 .65rem/1 var(--font-mono);text-transform:uppercase}.aw-lane-event h4{margin:1.2rem 0 .45rem;font:900 1.35rem/.92 var(--font-condensed);text-transform:uppercase}.aw-lane-event p{margin:0 0 1rem;color:#777;font:800 .68rem/1.3 var(--font-mono);text-transform:uppercase}.aw-lane-event>small{color:#555}
+
+@media(max-width:900px){
+  .aw-schedule-overview{grid-template-columns:1fr;align-items:start}.aw-schedule-total{min-width:0;align-items:flex-start;text-align:left}.aw-schedule-total strong{font-size:7rem}
+  .aw-race-week-grid{grid-template-columns:1fr 1fr}.aw-race-week-card.is-primary{grid-column:1/-1}.aw-race-week-card{min-height:255px}
+  .aw-chase-lead{grid-template-columns:1fr}.aw-chase-lead>strong{font-size:7rem}
+  .aw-schedule-toolbar{top:72px}.aw-view-toggle{order:0;margin-left:0;flex:1 0 100%;overflow-x:auto}.aw-view-toggle button{flex:1 0 auto}
+}
+@media(max-width:620px){
+  .aw-race-week-focus>header{align-items:flex-start;flex-direction:column}.aw-race-week-focus>header p{text-align:left}.aw-race-week-grid{grid-template-columns:1fr}.aw-race-week-card.is-primary{grid-column:auto}.aw-race-week-card{min-height:235px}
+  .aw-chase-lead{padding:1rem}.aw-chase-lead>strong{font-size:5.8rem}.aw-standings-disclosure>summary{align-items:flex-start;flex-direction:column;gap:.35rem}
+  .aw-cal-month{overflow-x:auto}.aw-cal-grid{min-width:720px}.aw-cal-day{min-height:96px}.aw-cal-popup{position:fixed;left:1rem!important;right:1rem!important;top:auto;bottom:1rem;max-width:none;min-width:0}
+  .aw-series-lane>header{align-items:flex-start;flex-direction:column}.aw-series-lane>header p{text-align:left}
+}

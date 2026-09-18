@@ -53,105 +53,131 @@
 @media(max-width:430px){.aw-charter-slots{grid-template-columns:repeat(2,minmax(0,1fr))}.aw-open-charter{grid-column:1/-1}.aw-open-charter__head{display:grid;gap:.2rem}.aw-open-charter__head>small{max-width:none;text-align:left}.aw-open-charter__tabs button{grid-template-columns:1fr;gap:.15rem}.aw-open-charter__panel{grid-template-columns:62px minmax(0,1fr)}.aw-open-charter__panel>b{min-height:54px;font-size:1.7rem}}
 
 
-/* ── v0.4.40 — Driver Flip Cards ─────────────────────────── */
+/* ── Flip Card Grid ──────────────────────────────────────── */
 .aw-driver-cards{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:.65rem;
-  max-height:520px;overflow-y:auto;overflow-x:hidden;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:.5rem;
+  max-height:560px;overflow-y:auto;overflow-x:hidden;
   padding:.2rem .1rem 1rem;
-  scrollbar-width:thin;scrollbar-color:#333 transparent;
+  scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;
 }
 .aw-flip-card{
   position:relative;
-  height:170px;
+  height:185px;
   border:0;background:transparent;padding:0;cursor:pointer;
-  perspective:900px;
-  -webkit-perspective:900px;
+  perspective:1000px;-webkit-perspective:1000px;
 }
 .aw-flip-inner{
   position:relative;width:100%;height:100%;
-  transition:transform .45s cubic-bezier(.4,0,.2,1);
-  transform-style:preserve-3d;
-  -webkit-transform-style:preserve-3d;
+  transition:transform .42s cubic-bezier(.4,0,.2,1);
+  transform-style:preserve-3d;-webkit-transform-style:preserve-3d;
 }
 .aw-flip-card.is-flipped .aw-flip-inner{transform:rotateY(180deg);}
 .aw-flip-front,.aw-flip-back{
   position:absolute;inset:0;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:.9rem;
-  border:2px solid #252525;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;
+  padding:.85rem;
+  border:1px solid #1e1e1e;border-top:3px solid #2a2a2a;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
   overflow:hidden;
-  transition:border-color .2s,box-shadow .2s;
+  transition:border-color .18s,box-shadow .18s,border-top-color .18s;
 }
+/* Front — bottom-anchored layout */
 .aw-flip-front{
-  background:linear-gradient(145deg,#0d0d0d,#040404);
+  background:linear-gradient(160deg,#0d0d0d 0%,#060606 100%);
+  justify-content:flex-end;
 }
+/* Ghost car number watermark */
 .aw-flip-front::before{
-  content:attr(data-num);
-  position:absolute;right:-.08em;bottom:-.2em;
-  font:400 5.5rem/.75 var(--font-number);color:rgba(255,255,255,.04);
-  pointer-events:none;
+  content:attr(data-ghost-num);
+  position:absolute;right:-.1em;top:-.15em;
+  font:900 5.5rem/.75 var(--font-condensed);
+  color:rgba(255,255,255,.04);letter-spacing:-.06em;
+  pointer-events:none;line-height:1;
 }
+/* Colored top accent bar */
+.aw-flip-card .aw-flip-front{border-top-color:#252525;}
+.aw-flip-card.is-selected .aw-flip-front{border-top-color:var(--aw-gold);border-color:rgba(255,184,0,.35);}
+.aw-flip-card.is-alliance .aw-flip-front{border-top-color:#2e1e48;}
+.aw-flip-card.is-alliance.is-selected .aw-flip-front{border-top-color:var(--aw-alliance);border-color:rgba(165,108,255,.3);}
+
+/* Back — green tint, top-to-bottom */
 .aw-flip-back{
-  background:linear-gradient(145deg,#0a0d0a,#030503);
-  border-color:#1a2a1a;
+  background:linear-gradient(160deg,#080d08,#030603);
+  border-color:#152015;border-top-color:#2a3a2a;
   transform:rotateY(180deg);
   justify-content:space-between;
 }
-/* Selected card highlight */
-.aw-flip-card.is-selected .aw-flip-front,
 .aw-flip-card.is-selected.is-flipped .aw-flip-back{
-  border-color:var(--aw-gold);
-  box-shadow:6px 6px 0 rgba(255,184,0,.18);
+  border-color:rgba(255,184,0,.3);border-top-color:var(--aw-gold);
 }
-.aw-flip-card.is-alliance .aw-flip-front{border-color:#1e152e;}
-.aw-flip-card.is-alliance.is-selected .aw-flip-front,
-.aw-flip-card.is-alliance.is-selected.is-flipped .aw-flip-back{border-color:var(--aw-alliance);}
-/* Front content */
+
+/* Selected glow */
+.aw-flip-card.is-selected .aw-flip-front{
+  box-shadow:inset 0 0 28px rgba(255,184,0,.06);
+}
+
+/* ── Front content ─────────────────────────────────────── */
 .aw-flip-card .aw-driver-num{
-  display:flex;flex-wrap:wrap;gap:.2rem;
-  font:400 1.6rem/.85 var(--font-number);
+  display:flex;flex-wrap:wrap;gap:.15rem;margin-bottom:.3rem;
 }
-.aw-flip-card .aw-driver-num b{color:#777;}
+.aw-flip-card .aw-driver-num b{
+  font:900 1.2rem/1 var(--font-condensed);
+  color:#555;letter-spacing:-.01em;
+}
 .aw-flip-card.is-selected .aw-driver-num b{color:var(--aw-gold);}
+
 .aw-flip-name{
-  display:block;margin-top:.35rem;
-  font:400 1.35rem/.85 var(--font-brush);text-transform:uppercase;font-synthesis:none;
+  display:block;
+  font:900 1.1rem/1.1 var(--font-condensed);
+  text-transform:uppercase;letter-spacing:-.01em;color:#ddd;
+  word-break:break-word;hyphens:auto;
 }
+/* Scale down font for long names */
+.aw-flip-name:where([data-long]){font-size:.92rem;}
 .aw-flip-role{
-  display:block;margin-top:.2rem;color:#555;
-  font:900 .62rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.07em;
+  display:block;margin-top:.3rem;color:#444;
+  font:900 .58rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;
 }
-/* Back content */
+.aw-flip-card.is-selected .aw-flip-name{color:#fff;}
+.aw-flip-card.is-selected .aw-flip-role{color:#666;}
+
+/* ── Back content ──────────────────────────────────────── */
 .aw-flip-bio{
-  margin:0;color:#bbb;
-  font:700 .76rem/1.45 var(--font-mono);
+  margin:0;color:#aaa;
+  font:700 .72rem/1.45 var(--font-mono);
   display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
 }
 .aw-flip-programs{
-  display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;
+  display:flex;flex-wrap:wrap;gap:.28rem;margin-top:.4rem;
 }
 .aw-flip-programs span{
-  padding:.2rem .4rem;border:1px solid #2a3a2a;
-  color:#8aad8a;font:900 .6rem/1 var(--font-mono);text-transform:uppercase;
+  padding:.18rem .35rem;border:1px solid #1e2e1e;
+  color:#5a8a5a;font:900 .58rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.04em;
 }
-.aw-flip-handle{color:#444;font:700 .65rem/1 var(--font-mono);}
-/* Hint label */
+.aw-flip-handle{
+  display:block;margin-top:.3rem;
+  color:#333;font:700 .62rem/1 var(--font-mono);
+}
+
+/* Tap-to-flip hint */
 .aw-flip-hint{
-  position:absolute;top:.5rem;right:.5rem;
-  color:#333;font:700 .58rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.05em;
-  pointer-events:none;
+  position:absolute;top:.45rem;right:.5rem;
+  color:#2a2a2a;font:700 .55rem/1 var(--font-mono);
+  text-transform:uppercase;letter-spacing:.04em;pointer-events:none;
 }
-.aw-flip-card.is-selected .aw-flip-hint{color:#555;}
+.aw-flip-card.is-selected .aw-flip-hint{color:#444;}
+
 /* Reduce motion */
-@media(prefers-reduced-motion:reduce){
-  .aw-flip-inner{transition:none;}
+@media(prefers-reduced-motion:reduce){.aw-flip-inner{transition:none;}}
+
+@media(max-width:800px){
+  .aw-driver-cards{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));max-height:440px;}
+  .aw-flip-card{height:165px;}
 }
-@media(max-width:700px){
-  .aw-driver-cards{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));max-height:400px;}
-  .aw-flip-card{height:150px;}
-  .aw-flip-name{font-size:1.1rem;}
+@media(max-width:500px){
+  .aw-driver-cards{grid-template-columns:repeat(3,minmax(0,1fr));max-height:380px;}
+  .aw-flip-card{height:145px;}
+  .aw-flip-name{font-size:.95rem;}
 }
