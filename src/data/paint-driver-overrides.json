@@ -8,15 +8,6 @@
   "uarl-d1::Rocky": [
     "92"
   ],
-  "uarl-d2::BurgerTown2Good": [
-    "11"
-  ],
-  "uarl-d2::Gk3r": [
-    "19"
-  ],
-  "uarl-d2::Wispy": [
-    "15"
-  ],
   "uarl-open::Wispy": [
     "28"
   ],
@@ -53,11 +44,35 @@
   "iracing::Levi Ramsey": [
     "6"
   ],
-  "iracing::Nicholas Waggoner": [
-    "28",
-    "97"
-  ],
   "iracing::Joshua Douglas": [
     "35"
+  ],
+  "nrrs::Wispy": [
+    "32"
+  ],
+  "nrrs::OPEN": [
+    "54"
+  ],
+  "nrrs::Aetherwing Open Charter": [
+    "62 PT / 82 DEV"
+  ],
+  "uarl-d1::BurgerTown2Good": [
+    "32"
+  ],
+  "uarl-d1::Gk3r": [
+    "52"
+  ],
+  "uarl-d1::OPEN": [
+    "54"
+  ],
+  "uarl-d1::Aetherwing Open Charter": [
+    "62 PT / 82 DEV"
+  ],
+  "uarl-d2::Wispy": [
+    "62 · HISTORICAL"
+  ],
+  "iracing::Hailey Bell": [
+    "28",
+    "97"
   ]
 }

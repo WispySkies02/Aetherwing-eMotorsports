@@ -30,6 +30,7 @@ const leadership = json('leadership.json');
 const competitions = json('competitions.json');
 const drivers = json('drivers.json');
 const roster = json('roster-profiles.json');
+const driverProfiles = json('driver-profiles.json');
 const partners = json('partners.json');
 const schedule = json('schedule.json');
 const scheduleEvents = json('schedule-events.json');
@@ -137,17 +138,17 @@ const unresolvedWeatherTracks = [...new Set(scheduleEvents.filter((event) => !ev
 assert(unresolvedWeatherTracks.length === 0, `All scheduled track names resolve to weather locations${unresolvedWeatherTracks.length ? ': ' + unresolvedWeatherTracks.join(', ') : ''}`);
 
 const wispyIRacing = drivers.find((d) => d.id === 'nicholas-iracing');
-assert(wispyIRacing?.displayName === 'Nicholas Waggoner' && wispyIRacing?.profile === 'wispy', 'Nicholas Waggoner resolves to Wispy profile for iRacing');
+assert(wispyIRacing?.displayName === 'Hailey Bell' && wispyIRacing?.profile === 'wispy', 'Hailey Bell resolves to the Wispy profile for current iRacing presentation');
 assert(iracing.factoryDrivers === 3 && iracing.teamEntries === 1 && iracing.schemes === 13, 'iRacing garage totals are 03 drivers / 01 team entry / 13 schemes');
-assert(paintLeagues.length === 7, 'Paint Booth source contains all seven garages');
+assert(paintLeagues.length === 7 && paintLeagues.filter((league) => league.relationship !== 'archive').length === 6, 'Paint Booth contains six active garages plus one historical archive');
 assert(paints.length === 35, 'Paint Booth source contains all 35 uploaded schemes');
 assert(paints.filter((paint) => paint.leagues?.includes('iracing')).length === 13, 'Paint Booth contains 13 iRacing liveries');
 assert(paints.filter((paint) => paint.driver === 'Wispy').length === 21, 'Paint Booth contains all 21 direct Wispy paints from V23');
-assert(paints.filter((paint) => paint.driver === 'Nicholas Waggoner').length === 12, 'Paint Booth contains all 12 Nicholas Waggoner iRacing paints tied to the Wispy identity');
-assert(paints.filter((paint) => ['Wispy','Nicholas Waggoner'].includes(paint.driver)).length === 33, 'Wispy identity exposes 33 paints across RoRacing and iRacing');
-assert(paints.filter((paint) => paint.leagues?.includes('nrrs')).length === 9, 'NRRS garage contains 9 source paints');
+assert(paints.filter((paint) => paint.driver === 'Hailey Bell').length === 12, 'Paint Booth contains all 12 Hailey Bell iRacing paints tied to the Wispy identity');
+assert(paints.filter((paint) => ['Wispy','Hailey Bell'].includes(paint.driver)).length === 33, 'Unified Wispy / Hailey Bell identity exposes 33 seed paints across RoRacing and iRacing');
+assert(paints.filter((paint) => paint.leagues?.includes('nrrs')).length === 10, 'NRRS garage contains 10 source paints');
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-d1')).length === 1, 'UARL D1 garage contains the source-tagged Mobil 1 paint');
-assert(paints.filter((paint) => paint.leagues?.includes('uarl-d2')).length === 2, 'UARL D2 garage contains both source-tagged paints');
+assert(paints.filter((paint) => paint.leagues?.includes('uarl-d2')).length === 1 && paints.find((paint) => paint.slug === 'd2-mobil1-toyota-supra')?.historical === true, 'UARL D2 retains only the #62 Mobil 1 Supra as historical archive paint');
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-open')).length === 1, 'UARL Open garage contains its source-tagged late model paint');
 assert(paints.filter((paint) => paint.leagues?.includes('kmart')).length === 5, 'Kmart garage contains all 5 uploaded paints');
 assert(paints.filter((paint) => paint.leagues?.includes('sunoco-truck')).length === 4, 'Sunoco garage contains all 4 source paints');
@@ -304,4 +305,9 @@ assert(schedulePage.includes("compact ? '⧉ COPY LINK'"), 'Mobile league-share 
 // v0.4.27 UARL D2 Daytona postponement guard
 assert(schedulePage.includes("kind:'postponed',label:'Postponed'"), 'Schedule renders a Postponed criteria badge when an event is rescheduled');
 
+assert(driverProfiles.find((profile) => profile.slug === 'wispy')?.iracingName === 'Hailey Bell', 'Current iRacing name is Hailey Bell');
+assert(wins.filter((win) => win.league === 'iRacing' && win.driver === 'Nicholas Waggoner').length === 3, 'Historical iRacing wins recorded under Nicholas Waggoner retain that attribution');
+assert(paintLeagues.find((league) => league.id === 'uarl-d2')?.relationship === 'archive', 'UARL D2 Paint Booth data is historical/archive only');
+assert(paintLeagues.find((league) => league.id === 'nrrs')?.drivers.length === 4, 'NRRS Paint Booth charter board has four actual slots');
+assert(paintLeagues.find((league) => league.id === 'uarl-d1')?.drivers.length === 6, 'UARL D1 Paint Booth charter board has six actual slots');
 console.log('\nAetherwing locked-fact validation passed.');

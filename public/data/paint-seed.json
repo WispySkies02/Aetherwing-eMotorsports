@@ -283,7 +283,9 @@
       "schemeId": "112002575307440",
       "image": "/images/paints/mobil1-62-d2-toyota-supra.png",
       "special": [],
-      "note": "Aetherwing #62 PT / Development charter livery for UARL Division 2."
+      "note": "Historical UARL D2 #62 Mobil 1 Toyota Supra. UARL D2 closed September 15, 2026; this livery is preserved in the historical archive.",
+      "historical": true,
+      "programStatus": "closed-archive"
     },
     {
       "slug": "open-ghost-strawberry-watermelon",
@@ -374,7 +376,7 @@
     },
     {
       "slug": "iracing-ghost-sour-patch-red-berry",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -389,7 +391,7 @@
     },
     {
       "slug": "iracing-petsmart",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -404,7 +406,7 @@
     },
     {
       "slug": "iracing-petsmart-charities",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -419,7 +421,7 @@
     },
     {
       "slug": "iracing-microsoft",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -434,7 +436,7 @@
     },
     {
       "slug": "iracing-logitech",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -449,7 +451,7 @@
     },
     {
       "slug": "iracing-gamestop-splatoon-3",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -464,7 +466,7 @@
     },
     {
       "slug": "iracing-price-is-right",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -480,7 +482,7 @@
     },
     {
       "slug": "iracing-comcast",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -495,7 +497,7 @@
     },
     {
       "slug": "iracing-ghost-cherry-limeade-cubs",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -511,7 +513,7 @@
     },
     {
       "slug": "iracing-ghost-orange-cream-vgk",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -527,7 +529,7 @@
     },
     {
       "slug": "iracing-petsmart-patriotic",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -545,7 +547,7 @@
     },
     {
       "slug": "iracing-monster-lando-supra",
-      "driver": "Nicholas Waggoner",
+      "driver": "Hailey Bell",
       "username": "",
       "leagues": [
         "iracing"
@@ -583,7 +585,7 @@
       "subtitle": "Aetherwing Program · Stock Car Competition",
       "bodyTag": "D1 Toyota",
       "color": "#18c2ff",
-      "description": "Current NRRS roster. Wispy's Toyota BBR Cup liveries live in this garage.",
+      "description": "Current NRRS charter board. Aetherwing fields three full-time charters plus one shared Part-Time / Development charter.",
       "drivers": [
         {
           "name": "Wispy",
@@ -591,9 +593,19 @@
           "role": "Founder / Driver"
         },
         {
-          "name": "Parker",
+          "name": "Plarker",
           "username": "@Leg0man1o",
           "role": "Driver"
+        },
+        {
+          "name": "OPEN",
+          "username": "",
+          "role": "Vacant Full-Time Charter"
+        },
+        {
+          "name": "Aetherwing Open Charter",
+          "username": "",
+          "role": "Shared Part-Time / Development Charter"
         }
       ],
       "relationship": "aetherwing"
@@ -604,7 +616,7 @@
       "subtitle": "Aetherwing Program · LL Bean Cup Series",
       "bodyTag": "D1 Cadillac",
       "color": "#ff5eb8",
-      "description": "Current UARL Division 1 roster. Historical uploaded schemes stay with the season and number they originally ran.",
+      "description": "Current UARL Division 1 charter board: five full-time charters plus one shared Aetherwing Open Charter. Historical uploaded schemes stay with the season and number they originally ran.",
       "drivers": [
         {
           "name": "Wispy",
@@ -612,38 +624,48 @@
           "role": "Founder / Driver"
         },
         {
-          "name": "Rocky",
-          "username": "@IIKyle5Larson",
-          "role": "Driver"
-        }
-      ],
-      "relationship": "aetherwing"
-    },
-    {
-      "id": "uarl-d2",
-      "name": "UARL D2",
-      "subtitle": "Aetherwing Program · NFFF Grand National Series",
-      "bodyTag": "D2 Toyota Supra",
-      "color": "#9f6bff",
-      "description": "Current UARL Division 2 roster. The #62 Mobil 1 Toyota Supra is the current uploaded Aetherwing PT / Development charter livery.",
-      "drivers": [
-        {
           "name": "BurgerTown2Good",
           "username": "@uhhbzb",
           "role": "Driver"
         },
         {
           "name": "Gk3r",
-          "username": "@seals",
+          "username": "@sealsntags",
           "role": "Driver"
         },
         {
-          "name": "Wispy",
-          "username": "@Aokikoto",
-          "role": "PT / Development Driver"
+          "name": "OPEN",
+          "username": "",
+          "role": "Vacant Full-Time Charter"
+        },
+        {
+          "name": "Rocky",
+          "username": "@IIKyle5Larson",
+          "role": "Driver"
+        },
+        {
+          "name": "Aetherwing Open Charter",
+          "username": "",
+          "role": "Shared Part-Time / Development Charter"
         }
       ],
       "relationship": "aetherwing"
+    },
+    {
+      "id": "uarl-d2",
+      "name": "UARL D2 — Closed / Historical Archive",
+      "subtitle": "Closed September 15, 2026 · Historical Archive",
+      "bodyTag": "NXS20 Toyota Supra",
+      "color": "#9f6bff",
+      "description": "Historical archive for Aetherwing’s former UARL Division 2 program. The #62 Mobil 1 Toyota Supra and its Daytona-era context are preserved here without counting D2 as an active program.",
+      "drivers": [
+        {
+          "name": "Wispy",
+          "username": "@Aokikoto",
+          "role": "Historical D2 Driver"
+        }
+      ],
+      "relationship": "archive"
     },
     {
       "id": "uarl-open",
@@ -739,7 +761,7 @@
       "subtitle": "Aetherwing Program · Sim Racing Collection",
       "bodyTag": "Mixed Fleet",
       "color": "#00D0FF",
-      "description": "Aetherwing iRacing Factory Program drivers and team endurance liveries.",
+      "description": "Aetherwing iRacing Factory Program drivers and team endurance liveries. Hailey Bell is the current iRacing name for the same competition identity presented as Wispy / @Aokikoto in RoRacing.",
       "drivers": [
         {
           "name": "Levi Ramsey",
@@ -747,7 +769,7 @@
           "role": "Factory Driver"
         },
         {
-          "name": "Nicholas Waggoner",
+          "name": "Hailey Bell",
           "username": "",
           "role": "Factory Driver"
         },
@@ -766,23 +788,11 @@
     }
   ],
   "driverOverrides": {
-    "nrrs::Parker": [
-      "43"
-    ],
     "uarl-d1::Wispy": [
       "28"
     ],
     "uarl-d1::Rocky": [
       "92"
-    ],
-    "uarl-d2::BurgerTown2Good": [
-      "11"
-    ],
-    "uarl-d2::Gk3r": [
-      "19"
-    ],
-    "uarl-d2::Wispy": [
-      "62 PT"
     ],
     "uarl-open::Wispy": [
       "28"
@@ -820,12 +830,39 @@
     "iracing::Levi Ramsey": [
       "6"
     ],
-    "iracing::Nicholas Waggoner": [
-      "28",
-      "97"
-    ],
     "iracing::Joshua Douglas": [
       "35"
+    ],
+    "nrrs::Wispy": [
+      "32"
+    ],
+    "nrrs::Plarker": [
+      "43"
+    ],
+    "nrrs::OPEN": [
+      "54"
+    ],
+    "nrrs::Aetherwing Open Charter": [
+      "62 PT / 82 DEV"
+    ],
+    "uarl-d1::BurgerTown2Good": [
+      "32"
+    ],
+    "uarl-d1::Gk3r": [
+      "52"
+    ],
+    "uarl-d1::OPEN": [
+      "54"
+    ],
+    "uarl-d1::Aetherwing Open Charter": [
+      "62 PT / 82 DEV"
+    ],
+    "uarl-d2::Wispy": [
+      "62 · HISTORICAL"
+    ],
+    "iracing::Hailey Bell": [
+      "28",
+      "97"
     ]
   }
 }

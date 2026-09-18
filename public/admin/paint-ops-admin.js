@@ -8,7 +8,7 @@
   const ADMIN_ENDPOINT = '/.netlify/functions/paint-admin';
   const emptyRegistry = () => ({ version: 1, paints: [], drafts: [], feature: null, revisions: [] });
   const leagues = [
-    ['nrrs', 'NRRS'], ['uarl-d1', 'UARL D1'], ['uarl-d2', 'UARL D2'],
+    ['nrrs', 'NRRS'], ['uarl-d1', 'UARL D1'], ['uarl-d2', 'UARL D2 — Closed / Historical Archive'],
     ['uarl-open', 'UARL Open'], ['kmart', 'Kmart'], ['sunoco-truck', 'Sunoco Truck Series'], ['iracing', 'iRacing']
   ];
   let seed = { paints: [] };

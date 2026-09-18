@@ -4,14 +4,14 @@
     "name": "NRRS",
     "type": "aetherwing",
     "label": "Aetherwing Program",
-    "schedule": "Tuesdays \u00b7 7:30 PM ET",
+    "schedule": "Tuesdays · 7:30 PM ET",
     "machine": "BBR Next-Gen Toyota",
     "platform": "Roblox / BBR Next-Gen platform",
     "roster": [
       "#32 Wispy",
       "#43 Plarker",
       "#54 OPEN",
-      "4TH \u00b7 AETHERWING OPEN CHARTER \u00b7 #62 PT / #82 DEVELOPMENT"
+      "4TH · AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"
     ]
   },
   {
@@ -20,7 +20,7 @@
     "series": "L.L. Bean Cup Series",
     "type": "aetherwing",
     "label": "Aetherwing Program",
-    "schedule": "Sundays \u00b7 8:30 PM ET",
+    "schedule": "Sundays · 8:30 PM ET",
     "machine": "BBR Next-Gen Cadillac (Toyota Body)",
     "platform": "Roblox / BBR Next-Gen platform",
     "roster": [
@@ -29,7 +29,7 @@
       "#52 Gk3r",
       "#54 OPEN",
       "#92 Rocky",
-      "AETHERWING OPEN CHARTER \u00b7 #62 PT / #82 DEVELOPMENT"
+      "AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"
     ]
   },
   {
@@ -37,7 +37,7 @@
     "name": "UARL Open",
     "type": "aetherwing",
     "label": "Aetherwing Program",
-    "schedule": "Sundays \u00b7 11:30 AM ET",
+    "schedule": "Sundays · 11:30 AM ET",
     "machine": "Super Late Model Open Series",
     "platform": "Roblox / UARL Late Model platform",
     "roster": [
@@ -50,27 +50,28 @@
     "type": "aetherwing",
     "label": "Aetherwing Program",
     "schedule": "Special-event windows",
-    "machine": "Multiple Cars \u00b7 Multiple Disciplines",
+    "machine": "Multiple Cars · Multiple Disciplines",
     "platform": "iRacing / Aetherwing Factory Program",
     "roster": [
       "#6 Levi Ramsey",
-      "#28 Nicholas Waggoner",
+      "#28 Hailey Bell",
       "#35 Joshua Douglas"
-    ]
+    ],
+    "drivers": []
   },
   {
     "id": "kmart",
     "name": "Kmart Auto Parts Series",
     "type": "alliance",
     "label": "StarClutch Racing Alliance",
-    "schedule": "Mondays \u00b7 8:30 PM ET",
-    "machine": "Dodge \u00b7 BBR D2 Chevy Body",
+    "schedule": "Mondays · 8:30 PM ET",
+    "machine": "Dodge · BBR D2 Chevy Body",
     "platform": "Roblox / StarClutch Racing",
     "roster": [
       "#15 Wispy",
       "#24 Will",
       "#34 Jaxon",
-      "#29 PT \u00b7 Clutch / Eazy / Matty"
+      "#29 PT · Clutch / Eazy / Matty"
     ]
   },
   {
@@ -78,8 +79,8 @@
     "name": "Sunoco Truck Series",
     "type": "alliance",
     "label": "StarClutch Racing Alliance",
-    "schedule": "Saturdays \u00b7 8:00 PM ET",
-    "machine": "Dodge RAM \u00b7 CWS15 Ford Body",
+    "schedule": "Saturdays · 8:00 PM ET",
+    "machine": "Dodge RAM · CWS15 Ford Body",
     "platform": "Roblox / StarClutch Racing",
     "roster": [
       "#27 Eazy",

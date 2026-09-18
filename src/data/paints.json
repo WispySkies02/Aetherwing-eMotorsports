@@ -34,6 +34,24 @@
     "note": "Special #20 Home Depot scheme for the NRRS Season 3 Pepsi 400."
   },
   {
+    "slug": "nrrs-ridgid-home-depot-1999",
+    "driver": "Wispy",
+    "username": "@Aokikoto",
+    "leagues": [
+      "nrrs"
+    ],
+    "number": "32",
+    "sponsor": "RIDGID/Home Depot (1999)",
+    "manufacturer": "Toyota",
+    "body": "BBR D1 Toyota",
+    "schemeId": "88053933729419",
+    "image": "https://i.ibb.co/qL6dcnTf/Stewart-Ridgid-1999-Throwback-v3.png",
+    "special": [
+      "throwback"
+    ],
+    "note": "Throwback to Tony Stewart’s primary Pontiac for Joe Gibbs Racing from 1999–2001."
+  },
+  {
     "slug": "d1-ghost-merica",
     "driver": "Wispy",
     "username": "@Aokikoto",
@@ -251,34 +269,22 @@
     ]
   },
   {
-    "slug": "d2-bundle-of-joy",
+    "slug": "d2-mobil1-toyota-supra",
     "driver": "Wispy",
     "username": "@Aokikoto",
     "leagues": [
       "uarl-d2"
     ],
-    "number": "15",
-    "sponsor": "The Samantha & Kyle Busch Bundle of Joy Fund",
-    "manufacturer": "Cadillac",
-    "body": "NXS20 Ford",
-    "schemeId": "88501605793574",
-    "image": "https://i.ibb.co/cXvVG4TL/uarl-d2-15-the-samantha-amp-kyle-busch-bundle-of-joy-fund-88501605793574.webp",
-    "special": []
-  },
-  {
-    "slug": "d2-viva-tequila",
-    "driver": "Wispy",
-    "username": "@Aokikoto",
-    "leagues": [
-      "uarl-d2"
-    ],
-    "number": "15",
-    "sponsor": "Viva Tequila",
-    "manufacturer": "Cadillac",
-    "body": "NXS20 Ford",
-    "schemeId": "100533789116613",
-    "image": "https://i.ibb.co/Hv5rc30/uarl-d2-15-viva-tequila-100533789116613.webp",
-    "special": []
+    "number": "62",
+    "sponsor": "Mobil 1 Toyota Supra",
+    "manufacturer": "Toyota",
+    "body": "NXS20 Toyota Supra",
+    "schemeId": "112002575307440",
+    "image": "/images/paints/mobil1-62-d2-toyota-supra.png",
+    "special": [],
+    "note": "Historical UARL D2 #62 Mobil 1 Toyota Supra. UARL D2 closed September 15, 2026; this livery is preserved in the historical archive.",
+    "historical": true,
+    "programStatus": "closed-archive"
   },
   {
     "slug": "open-ghost-strawberry-watermelon",
@@ -369,7 +375,7 @@
   },
   {
     "slug": "iracing-ghost-sour-patch-red-berry",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -384,7 +390,7 @@
   },
   {
     "slug": "iracing-petsmart",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -399,7 +405,7 @@
   },
   {
     "slug": "iracing-petsmart-charities",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -414,7 +420,7 @@
   },
   {
     "slug": "iracing-microsoft",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -429,7 +435,7 @@
   },
   {
     "slug": "iracing-logitech",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -444,7 +450,7 @@
   },
   {
     "slug": "iracing-gamestop-splatoon-3",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -459,7 +465,7 @@
   },
   {
     "slug": "iracing-price-is-right",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -475,7 +481,7 @@
   },
   {
     "slug": "iracing-comcast",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -490,7 +496,7 @@
   },
   {
     "slug": "iracing-ghost-cherry-limeade-cubs",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -506,7 +512,7 @@
   },
   {
     "slug": "iracing-ghost-orange-cream-vgk",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -522,7 +528,7 @@
   },
   {
     "slug": "iracing-petsmart-patriotic",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"
@@ -540,7 +546,7 @@
   },
   {
     "slug": "iracing-monster-lando-supra",
-    "driver": "Nicholas Waggoner",
+    "driver": "Hailey Bell",
     "username": "",
     "leagues": [
       "iracing"

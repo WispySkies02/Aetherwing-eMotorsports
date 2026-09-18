@@ -1,3 +1,10 @@
+# v0.4.47 — Hailey Bell identity + Paint Booth roster/archive cleanup
+
+- Current iRacing presentation now uses Hailey Bell.
+- Historical results originally recorded under Nicholas Waggoner retain that attribution.
+- Paint registry data marks UARL D2 closed/historical and updates NRRS/UARL D1 charter boards.
+- Paint Operations labels UARL D2 as a closed historical archive while preserving editability.
+
 # Changelog
 
 ## 0.4.46 — Unified editable Paint Registry — 2026-09-18
