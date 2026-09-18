@@ -3,6 +3,7 @@
 
   const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
   const EMAIL_FLOW = /^#(?:invite_token|confirmation_token|recovery_token|email_change_token)=/.test(location.hash);
+  const AUTO_LOGIN = new URLSearchParams(location.search).get('login') === '1';
   const STORAGE_KEY = 'aetherwing-paint-ops';
   const ADMIN_ENDPOINT = '/.netlify/functions/paint-admin';
   const emptyRegistry = () => ({ version: 1, paints: [], drafts: [], feature: null, revisions: [] });
@@ -376,11 +377,22 @@
       $('[data-logout]').addEventListener('click', showAuth);
     } else if (!window.netlifyIdentity) {
       $('[data-login]').disabled = true;
-      $('[data-auth-note]').textContent = 'Secure sign-in is unavailable. Confirm Netlify Identity is enabled for this site.';
+      $('[data-auth-note]').textContent = window.__aetherwingIdentityLoadFailed
+        ? 'The secure sign-in library could not load. Check your connection or content blocker, then reload this page.'
+        : 'Secure sign-in is unavailable. Netlify Identity must be enabled on the aetherwing.net Netlify project before administrator accounts can sign in.';
     } else {
+      let autoLoginOpened = false;
+      const openLoginIfRequested = () => {
+        if (!AUTO_LOGIN || EMAIL_FLOW || autoLoginOpened || window.netlifyIdentity.currentUser()) return;
+        autoLoginOpened = true;
+        window.netlifyIdentity.open('login');
+      };
       window.netlifyIdentity.on('init', (account) => {
         if (account && isAuthorized(account)) showWorkspace(account);
-        else showAuth();
+        else {
+          showAuth();
+          openLoginIfRequested();
+        }
       });
       window.netlifyIdentity.on('login', (account) => {
         if (!isAuthorized(account)) {

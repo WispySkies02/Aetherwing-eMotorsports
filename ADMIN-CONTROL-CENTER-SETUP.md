@@ -1,5 +1,7 @@
 # Aetherwing Admin Control Center
 
+The canonical control center is **https://aetherwing.net/admin/**. The convenience URL **https://aetherwing.net/admin/login** redirects there and automatically opens the sign-in dialog.
+
 One login at **https://aetherwing.net/admin/** now contains functional editors for Schedule, Results & Milestones, Paint Booth, Roster, and Team Wire. The separate Paint Booth is public-only.
 
 ## First deployment

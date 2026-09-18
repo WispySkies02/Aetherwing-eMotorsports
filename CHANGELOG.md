@@ -1,3 +1,10 @@
+# v0.4.42 — Admin Login Entrance Hardening
+
+- Added explicit `/admin` → `/admin/` canonical routing.
+- Added `/admin/login` and `/admin/login/` convenience routes that open the Netlify Identity sign-in dialog automatically.
+- Added a clearer failure state when the Netlify Identity widget cannot load or Identity has not been enabled on the main-site project.
+- Preserved the v0.4.41 unified admin editors, functions, authorization roles, and published-content architecture.
+
 # v0.4.41 — Central Aetherwing Admin
 
 - Added the private `/admin/` Aetherwing Control Center to the main site.

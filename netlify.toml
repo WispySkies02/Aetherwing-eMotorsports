@@ -8,6 +8,23 @@
 [functions]
   included_files = ["data/paint-seed.json", "src/data/*.json"]
 
+
+# Admin entrance aliases. Keep the canonical control center at /admin/.
+[[redirects]]
+  from = "/admin"
+  to = "/admin/"
+  status = 301
+
+[[redirects]]
+  from = "/admin/login"
+  to = "/admin/?login=1"
+  status = 302
+
+[[redirects]]
+  from = "/admin/login/"
+  to = "/admin/?login=1"
+  status = 302
+
 [[redirects]]
   from = "/api/site-content"
   to = "/.netlify/functions/site-data"

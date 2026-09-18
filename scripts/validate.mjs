@@ -242,8 +242,11 @@ assert(adminFunction.includes('context?.clientContext?.user') && adminFunction.i
 assert(existsSync(resolve(root, 'netlify/functions/paint-data.mjs')) && existsSync(resolve(root, 'netlify/lib/_registry.cjs')), 'Main site contains the published paint registry functions');
 assert(existsSync(resolve(root, 'data/paint-seed.json')) && existsSync(resolve(root, 'public/data/paint-seed.json')), 'Main site contains server and browser copies of the Paint Booth seed data');
 assert(text('src/layouts/BaseLayout.astro').includes('location.replace(`/admin/${hash}`)'), 'Identity email tokens route into the central admin');
+assert(adminScript.includes('AUTO_LOGIN') && adminScript.includes("window.netlifyIdentity.open('login')"), 'Admin login convenience route can auto-open the secure sign-in dialog');
 
 const redirects = text('public/_redirects');
+assert(/^\/admin\s+\/admin\/\s+301/m.test(redirects), 'Bare /admin canonicalizes to /admin/');
+assert(/^\/admin\/login\/?\s+\/admin\/\?login=1\s+302/m.test(redirects), 'Admin login convenience route opens the canonical control center');
 assert(/^\/updates\s+\/news\s+301/m.test(redirects), 'Legacy /updates route redirects to /news');
 for (const story of news) {
   const escaped = story.legacyRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

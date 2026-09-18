@@ -1,3 +1,8 @@
+# Canonical Aetherwing Admin entrance
+/admin /admin/ 301
+/admin/login /admin/?login=1 302
+/admin/login/ /admin/?login=1 302
+
 /wispy-southern-500-darlington-top-five /news/wispy-southern-500-darlington-top-five 301
 /updates /news 301
 
