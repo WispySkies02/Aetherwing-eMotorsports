@@ -1,3 +1,9 @@
+## v0.4.44 — Admin repair deploy deadlock fix
+- Fixed production builds aborting before Astro when the currently deployed `/api/site-content` endpoint returns 502/503.
+- Automatic live-content sync now preserves bundled/last-known content and continues the deploy, allowing repaired Netlify Functions to reach production.
+- Explicit `AETHERWING_CONTENT_URL` syncs remain fail-hard for publication/integration tests.
+- Preserves the v0.4.43 lazy Netlify Blobs initialization, Node 24 runtime, and esbuild function bundling.
+
 # v0.4.43 — Admin Backend 502 Runtime Fix
 - Fixed the shared admin backend startup path used by Schedule Manager, Roster Manager, Results, Team Wire, and Paint Operations.
 - Forced Netlify Functions to bundle with esbuild, matching the function-package test configuration.
