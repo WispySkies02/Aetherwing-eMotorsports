@@ -1,6 +1,6 @@
 {
   "name": "aetherwing-site",
-  "version": "0.4.42",
+  "version": "0.4.43",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,5 +18,8 @@
   "devDependencies": {
     "@netlify/zip-it-and-ship-it": "^16.0.0",
     "jsdom": "^29.1.1"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

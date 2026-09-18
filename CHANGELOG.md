@@ -1,3 +1,11 @@
+# v0.4.43 — Admin Backend 502 Runtime Fix
+- Fixed the shared admin backend startup path used by Schedule Manager, Roster Manager, Results, Team Wire, and Paint Operations.
+- Forced Netlify Functions to bundle with esbuild, matching the function-package test configuration.
+- Pinned builds/functions to Node 24 so @netlify/blobs 11.x always runs on a supported runtime.
+- Changed Netlify Blobs loading to a lazy request-time dynamic import so a storage package startup problem cannot crash the entire function before it can return JSON.
+- Added a one-time retry for transient 502/503 responses in the admin editors.
+- Added locked validation for Node 24, esbuild function bundling, and lazy Blobs initialization.
+
 # v0.4.42 — Admin Login Entrance Hardening
 
 - Added explicit `/admin` → `/admin/` canonical routing.

@@ -232,6 +232,13 @@ assert(existsSync(resolve(root, 'public/favicon/favicon.png')) || existsSync(res
 
 const adminPage = text('public/admin/index.html');
 const adminScript = text('public/admin/paint-ops-admin.js');
+
+const netlifyConfig = text('netlify.toml');
+const contentStoreLib = text('netlify/lib/_content.cjs');
+const paintStoreLib = text('netlify/lib/_registry.cjs');
+assert(netlifyConfig.includes('NODE_VERSION = "24"'), 'Admin backend deploy pins Node 24 for Functions/Blobs compatibility');
+assert(netlifyConfig.includes('node_bundler = "esbuild"'), 'Admin backend functions use the esbuild bundler');
+assert(contentStoreLib.includes("import('@netlify/blobs')") && paintStoreLib.includes("import('@netlify/blobs')"), 'Netlify Blobs loads lazily inside requests instead of crashing function startup');
 const adminFunction = text('netlify/lib/_paint-admin.cjs');
 assert(adminPage.includes('Aetherwing Control Center') && adminPage.includes('Paint Operations'), 'Central Aetherwing Admin includes the live Paint Operations module');
 assert(adminPage.includes('https://paint.aetherwing.net/'), 'Central Paint Operations links to the public Paint Booth');

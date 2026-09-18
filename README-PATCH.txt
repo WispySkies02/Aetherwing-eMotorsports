@@ -1,3 +1,5 @@
+v0.4.43 FULL — admin backend 502 runtime fix. Node 24 + esbuild function bundling + request-time Netlify Blobs initialization + one retry for transient 502/503.
+
 v0.4.39 FULL
 - Added a new featured Team Wire story: Wispy Fights Back to Top Five in Southern 500 Chase Opener.
 - Story records P9 start, P5 finish, 0 stage points, P6 / 2,087 Chase standing, and -58 leader gap.

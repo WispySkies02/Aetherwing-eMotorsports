@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.42 FULL — unified admin editors for schedule, results/milestones, paints, roster, and Team Wire
+Aetherwing eMotorsports v0.4.43 FULL — admin backend 502 runtime fix

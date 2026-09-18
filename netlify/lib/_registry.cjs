@@ -1,6 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { getStore } = require('@netlify/blobs');
+let blobsModulePromise;
+async function getBlobsModule() {
+  blobsModulePromise ||= import('@netlify/blobs');
+  return blobsModulePromise;
+}
 
 const STORE_NAME = 'aetherwing-paint-ops';
 const REGISTRY_KEY = 'registry.json';
@@ -17,13 +21,15 @@ function cleanRegistry(value) {
   };
 }
 
-function store() {
+async function store() {
+  const { getStore } = await getBlobsModule();
   return getStore({ name: STORE_NAME, consistency: 'strong' });
 }
 
 async function readRegistry() {
   try {
-    const entry = await store().getWithMetadata(REGISTRY_KEY, { type: 'json' });
+    const paintStore = await store();
+    const entry = await paintStore.getWithMetadata(REGISTRY_KEY, { type: 'json' });
     const registry = cleanRegistry(entry?.data);
     Object.defineProperty(registry, '_etag', { value:entry?.etag });
     return registry;
@@ -35,7 +41,8 @@ async function readRegistry() {
 
 async function writeRegistry(registry) {
   const value = cleanRegistry(registry);
-  const result = await store().setJSON(REGISTRY_KEY, value, registry._etag ? { onlyIfMatch:registry._etag } : { onlyIfNew:true });
+  const paintStore = await store();
+  const result = await paintStore.setJSON(REGISTRY_KEY, value, registry._etag ? { onlyIfMatch:registry._etag } : { onlyIfNew:true });
   if (result?.modified === false) throw new Error('CONFLICT');
   return value;
 }

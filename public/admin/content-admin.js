@@ -16,6 +16,15 @@
   const account = () => window.netlifyIdentity?.currentUser();
   const authorized = () => local || (account()?.app_metadata?.roles || account()?.app_metadata?.authorization?.roles || []).includes('admin');
   const base = (name) => registry.drafts[name] ?? registry.published[name] ?? seeds[name];
+  async function adminFetch(options) {
+    let response;
+    for (let attempt=0; attempt<2; attempt++) {
+      response=await fetch(endpoint,options);
+      if (![502,503].includes(response.status) || attempt===1) return response;
+      await new Promise((resolve)=>setTimeout(resolve,550));
+    }
+    return response;
+  }
   async function api(action, payload={}) {
     if (local) {
       if (!action) return {registry,seeds};
@@ -28,7 +37,7 @@
     }
     const jwt=await account()?.jwt();
     if (!jwt) throw new Error('Sign in with an invited administrator account.');
-    const response=await fetch(endpoint,{method:action?'POST':'GET',headers:{authorization:`Bearer ${jwt}`,'content-type':'application/json'},...(action?{body:JSON.stringify({action,revision:registry.revision,...payload})}:{})});
+    const response=await adminFetch({method:action?'POST':'GET',headers:{authorization:`Bearer ${jwt}`,'content-type':'application/json'},...(action?{body:JSON.stringify({action,revision:registry.revision,...payload})}:{})});
     const body=await response.json().catch(()=>({}));
     if (!response.ok) throw new Error(body.error || `Site editor returned ${response.status}.`);
     return body;

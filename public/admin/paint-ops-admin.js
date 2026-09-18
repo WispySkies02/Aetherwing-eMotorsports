@@ -61,10 +61,20 @@
     return current ? current.jwt() : '';
   }
 
+  async function adminFetch(options = {}) {
+    let response;
+    for (let attempt=0; attempt<2; attempt++) {
+      response=await fetch(ADMIN_ENDPOINT, options);
+      if (![502,503].includes(response.status) || attempt===1) return response;
+      await new Promise((resolve)=>setTimeout(resolve,550));
+    }
+    return response;
+  }
+
   async function request(action, payload = {}) {
     if (LOCAL) return localAction(action, payload);
     const jwt = await token();
-    const response = await fetch(ADMIN_ENDPOINT, {
+    const response = await adminFetch({
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: `Bearer ${jwt}` },
       body: JSON.stringify({ action, ...payload })
@@ -118,7 +128,7 @@
       return;
     }
     const jwt = await token();
-    const response = await fetch(ADMIN_ENDPOINT, { headers: { accept: 'application/json', authorization: `Bearer ${jwt}` }, cache: 'no-store' });
+    const response = await adminFetch({ headers: { accept: 'application/json', authorization: `Bearer ${jwt}` }, cache: 'no-store' });
     if (!response.ok) throw new Error(`Could not load the paint registry (${response.status}).`);
     registry = { ...emptyRegistry(), ...(await response.json()).registry };
   }

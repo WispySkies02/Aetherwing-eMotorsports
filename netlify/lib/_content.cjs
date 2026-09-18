@@ -1,6 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { getStore } = require('@netlify/blobs');
+let blobsModulePromise;
+async function getBlobsModule() {
+  blobsModulePromise ||= import('@netlify/blobs');
+  return blobsModulePromise;
+}
 const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'news'];
 function seeds() {
   return Object.fromEntries(FILES.map((key) => {
@@ -10,13 +14,18 @@ function seeds() {
   }));
 }
 const empty = () => ({ version: 1, revision: 0, published: {}, drafts: {}, history: [] });
-const store = () => getStore({ name: 'aetherwing-site-content', consistency: 'strong' });
+async function store() {
+  const { getStore } = await getBlobsModule();
+  return getStore({ name: 'aetherwing-site-content', consistency: 'strong' });
+}
 async function read() {
-  const entry = await store().getWithMetadata('content.json', { type: 'json' });
+  const contentStore = await store();
+  const entry = await contentStore.getWithMetadata('content.json', { type: 'json' });
   return { registry: entry?.data || empty(), etag: entry?.etag };
 }
 async function write(registry, etag) {
-  const result = await store().setJSON('content.json', registry, etag ? { onlyIfMatch: etag } : { onlyIfNew: true });
+  const contentStore = await store();
+  const result = await contentStore.setJSON('content.json', registry, etag ? { onlyIfMatch: etag } : { onlyIfNew: true });
   if (result?.modified === false) throw new Error('CONFLICT');
 }
 function validate(key, data) {

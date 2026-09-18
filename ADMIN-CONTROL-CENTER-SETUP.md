@@ -4,6 +4,10 @@ The canonical control center is **https://aetherwing.net/admin/**. The convenien
 
 One login at **https://aetherwing.net/admin/** now contains functional editors for Schedule, Results & Milestones, Paint Booth, Roster, and Team Wire. The separate Paint Booth is public-only.
 
+## v0.4.43 runtime requirement
+
+The admin backend now pins **Node 24** and **esbuild** for Netlify Functions and initializes Netlify Blobs inside each request. This specifically addresses the shared 502 startup failure that affected Schedule, Roster, and Paint Operations together. If the deployed project has an old `AWS_LAMBDA_JS_RUNTIME` override in Netlify, remove it or set it to `nodejs24.x`, then redeploy; UI-level function-runtime overrides take precedence over the repository Node setting.
+
 ## First deployment
 
 1. Deploy this full main-site SOURCE package to the existing `aetherwing.net` Netlify project using its Git-connected build or Netlify CLI with Functions. Build command: `npm run build`; publish directory: `dist`. Do not upload just the static `dist` folder by drag-and-drop: that omits the server functions.

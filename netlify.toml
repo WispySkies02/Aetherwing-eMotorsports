@@ -3,9 +3,11 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
 
 [functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
   included_files = ["data/paint-seed.json", "src/data/*.json"]
 
 
