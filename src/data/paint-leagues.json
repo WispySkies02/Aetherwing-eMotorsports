@@ -2,13 +2,13 @@
   {
     "id": "nrrs",
     "name": "NRRS",
-    "subtitle": "Aetherwing Program · Stock Car Competition",
+    "subtitle": "Aetherwing Program \u00b7 Stock Car Competition",
     "bodyTag": "D1 Toyota",
     "color": "#18c2ff",
     "description": "Current NRRS charter board. Aetherwing fields three full-time charters plus one shared Part-Time / Development charter.",
     "drivers": [
       {
-        "name": "Wispy",
+        "name": "Hailey",
         "username": "@Aokikoto",
         "role": "Founder / Driver"
       },
@@ -33,13 +33,13 @@
   {
     "id": "uarl-d1",
     "name": "UARL D1",
-    "subtitle": "Aetherwing Program · LL Bean Cup Series",
+    "subtitle": "Aetherwing Program \u00b7 LL Bean Cup Series",
     "bodyTag": "D1 Cadillac",
     "color": "#ff5eb8",
     "description": "Current UARL Division 1 charter board: five full-time charters plus one shared Aetherwing Open Charter. Historical uploaded schemes stay with the season and number they originally ran.",
     "drivers": [
       {
-        "name": "Wispy",
+        "name": "Hailey",
         "username": "@Aokikoto",
         "role": "Founder / Driver"
       },
@@ -73,16 +73,16 @@
   },
   {
     "id": "uarl-d2",
-    "name": "UARL D2 — Closed / Historical Archive",
-    "subtitle": "Closed September 15, 2026 · Historical Archive",
+    "name": "UARL D2 \u2014 Closed / Historical Archive",
+    "subtitle": "Closed September 15, 2026 \u00b7 Historical Archive",
     "bodyTag": "NXS20 Toyota Supra",
     "color": "#9f6bff",
-    "description": "Historical archive for Aetherwing’s former UARL Division 2 program. The #62 Mobil 1 Toyota Supra and its Daytona-era context are preserved here without counting D2 as an active program.",
+    "description": "Historical archive for Aetherwing\u2019s former UARL Division 2 program. The #62 Mobil 1 Toyota Supra and its Daytona-era context are preserved here without counting D2 as an active program.",
     "drivers": [
       {
         "name": "Wispy",
         "username": "@Aokikoto",
-        "role": "Historical D2 Driver"
+        "role": "Historical D2 Driver \u00b7 current Roblox display name Hailey"
       }
     ],
     "relationship": "archive"
@@ -90,13 +90,13 @@
   {
     "id": "uarl-open",
     "name": "UARL Open",
-    "subtitle": "Aetherwing Program · Open Series",
+    "subtitle": "Aetherwing Program \u00b7 Open Series",
     "bodyTag": "Late Model Toyota",
     "color": "#d8ff3e",
     "description": "Current UARL Open Series roster. Late model entries and uploaded open-series schemes live in this garage.",
     "drivers": [
       {
-        "name": "Wispy",
+        "name": "Hailey",
         "username": "@Aokikoto",
         "role": "Founder / Driver"
       }
@@ -106,13 +106,13 @@
   {
     "id": "kmart",
     "name": "Kmart",
-    "subtitle": "StarClutch Racing Alliance · Kmart Auto Parts Series",
+    "subtitle": "StarClutch Racing Alliance \u00b7 Kmart Auto Parts Series",
     "bodyTag": "D2 Dodge",
     "color": "#ff6a00",
     "description": "Alliance competition under the StarClutch Racing banner. Dodge schemes use the BBR D2 Chevrolet body.",
     "drivers": [
       {
-        "name": "Wispy",
+        "name": "Hailey",
         "username": "@Aokikoto",
         "role": "StarClutch Racing Alliance Driver"
       },
@@ -147,7 +147,7 @@
   {
     "id": "sunoco-truck",
     "name": "Sunoco Truck Series",
-    "subtitle": "StarClutch Racing Alliance · Truck Series",
+    "subtitle": "StarClutch Racing Alliance \u00b7 Truck Series",
     "bodyTag": "D3 RAM",
     "color": "#ffd236",
     "description": "Alliance competition under the StarClutch Racing banner. Current Sunoco entries use RAM.",
@@ -168,7 +168,7 @@
         "role": "StarClutch Racing Alliance Driver"
       },
       {
-        "name": "Wispy",
+        "name": "Hailey",
         "username": "@Aokikoto",
         "role": "StarClutch Racing Alliance Driver"
       }
@@ -178,10 +178,10 @@
   {
     "id": "iracing",
     "name": "iRacing",
-    "subtitle": "Aetherwing Program · Sim Racing Collection",
+    "subtitle": "Aetherwing Program \u00b7 Sim Racing Collection",
     "bodyTag": "Mixed Fleet",
     "color": "#00D0FF",
-    "description": "Aetherwing iRacing Factory Program drivers and team endurance liveries. Hailey Bell is the current iRacing name for the same competition identity presented as Wispy / @Aokikoto in RoRacing.",
+    "description": "Aetherwing iRacing Factory Program drivers and team endurance liveries. Current iRacing driver presentation uses Hailey Bell.",
     "drivers": [
       {
         "name": "Levi Ramsey",

@@ -1,7 +1,7 @@
 ---
+import { competitions as competitions } from "../lib/site-content.mjs";
 import BaseLayout from '../layouts/BaseLayout.astro';
 import site from '../data/site.json';
-import competitions from '../data/competitions.json';
 import { rosterProfiles as roster } from "../lib/site-content.mjs";
 import { scheduleEvents as events } from "../lib/site-content.mjs";
 import partners from '../data/partners.json';
@@ -64,7 +64,7 @@ const chaseField=Array.from({length:12},(_,i)=>{
           <h2>{wispyRow?.driver ?? latest.driver} is {wispyRow?.position ?? 'unranked'} in the Chase, {wispyGap} points off the lead heading to {nextNrrsChase?.track?.replace(' Raceway','') ?? 'Richmond'}.</h2>
           <p>The No. {wispyRow?.number ?? latest.number} carries {(wispyRow?.points ?? 0).toLocaleString('en-US')} points after {latest.title}, where {latest.driver} finished P{latest.finish} with {latest.stagePoints} stage points.</p>
         </div>
-        <div class="aw-chase-position" aria-label={`Wispy is ${wispyRow?.position ?? 'P6'} in the NRRS Chase`}>
+        <div class="aw-chase-position" aria-label={`Hailey is ${wispyRow?.position ?? 'P6'} in the NRRS Chase`}>
           <span>Chase position</span>
           <strong>{wispyRow?.position ?? 'P6'}</strong>
           <em>{wispyRow?.positionChange ?? '—'} · {nrrsChase?.subtitle}</em>
@@ -131,13 +131,13 @@ const chaseField=Array.from({length:12},(_,i)=>{
 
   <section class="section aw-team-section" data-brush="THE ROSTER">
     <div class="shell">
-      <div class="section-head"><div><p class="eyebrow">Aetherwing Racing Team</p><h2 class="section-title">Meet the Team</h2></div><p class="lede">Wispy stays anchored. Three other current RoRacing drivers rotate on each visit so the homepage does not become the same static wall every time.</p></div>
+      <div class="section-head"><div><p class="eyebrow">Aetherwing Racing Team</p><h2 class="section-title">Meet the Team</h2></div><p class="lede">Hailey stays anchored. Three other current RoRacing drivers rotate on each visit so the homepage does not become the same static wall every time.</p></div>
       <div class="aw-team-browser" data-team-browser>
         <div class="aw-team-cards" data-team-cards>
           {initialTeam.map((driver,index)=><button class:list={['aw-team-card',{'is-selected':index===0}]} type="button" data-driver-slug={driver.slug}><small>{driver.role}</small><strong>#{driver.numbers}</strong><h3>{driver.name}</h3><span>{driver.feature}</span></button>)}
         </div>
         <article class="aw-team-detail panel" data-team-detail>
-          <div><span class="tag">Founder / Driver</span><h3>Wispy</h3><p class="mono">@Aokikoto · #15 / #28 / #32 / #54</p><p>Aetherwing founder and multi-program driver across RoRacing and iRacing.</p></div>
+          <div><span class="tag">Founder / Driver</span><h3>Hailey</h3><p class="mono">@Aokikoto · #15 / #28 / #32 / #54</p><p>Aetherwing founder and multi-program driver across RoRacing and iRacing.</p></div>
           <a class="btn" href="/drivers/">Open Driver Hub</a>
         </article>
       </div>

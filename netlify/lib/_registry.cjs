@@ -66,11 +66,14 @@ function mergedPublishedPaints(registry) {
   }
   return paints.filter((paint) => !paint.archived && paint.status !== 'draft').map((paint) => {
     const league = Array.isArray(paint.leagues) ? paint.leagues[0] : '';
-    if (league === 'iracing' && ['Nicholas Waggoner','Hailey','Wispy'].includes(paint.driver)) {
+    if (league === 'iracing' && ['Nicholas Waggoner','Hailey','Wispy','Hailey Bell'].includes(paint.driver)) {
       return { ...paint, driver: 'Hailey Bell', username: '' };
     }
     if (paint.slug === 'd2-mobil1-toyota-supra') {
       return { ...paint, historical: true, programStatus: 'closed-archive' };
+    }
+    if (['Wispy','Hailey'].includes(paint.driver)) {
+      return { ...paint, driver: 'Hailey', username: '@Aokikoto' };
     }
     return paint;
   });

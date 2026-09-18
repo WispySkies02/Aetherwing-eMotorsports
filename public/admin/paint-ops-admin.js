@@ -195,7 +195,7 @@
     if (name === 'add') {
       const form = $('[data-paint-form]');
       const subline = form?.querySelector('[name="username"]');
-      if (!form?.dataset.editingSlug && subline instanceof HTMLInputElement && !subline.value) subline.value = 'Wispy (@Aokikoto)';
+      if (!form?.dataset.editingSlug && subline instanceof HTMLInputElement && !subline.value) subline.value = '@Aokikoto';
     }
     $('[data-panel]:not([hidden])')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
@@ -236,8 +236,12 @@
   }
 
   function paintPreview(paint) {
-    const identity = ['hailey','wispy','nicholas waggoner','hailey bell'].includes(paint.driver.toLowerCase())
-      ? ['Hailey', 'Wispy (@Aokikoto)'] : [paint.driver, paint.username];
+    const identityName = paint.driver.toLowerCase();
+    const sameIdentity = ['hailey','wispy','nicholas waggoner','hailey bell'].includes(identityName);
+    const isIRacing = paint.leagues?.includes('iracing');
+    const identity = sameIdentity
+      ? (isIRacing ? ['Hailey Bell', ''] : ['Hailey', paint.username || '@Aokikoto'])
+      : [paint.driver, paint.username];
     $('[data-paint-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">${esc(paint.leagueName)} ${paint.number ? '· #' + esc(paint.number) : ''}</p><h3>${esc(paint.sponsor)}</h3><p>${esc(identity[0])}${identity[1] ? '<br>' + esc(identity[1]) : ''}</p>${paint.note ? `<p>${esc(paint.note)}</p>` : ''}<div class="preview-race"><strong>/${esc(paint.slug)}/</strong><span>${paint.schemeId ? 'Scheme ID ' + esc(paint.schemeId) : 'iRacing custom livery'}</span></div></div>`;
   }
 
@@ -260,7 +264,7 @@
       $('[data-feature-preview-card]').innerHTML = '<div class="preview-empty">Choose a published paint to build the race feature.</div>';
       return;
     }
-    $('[data-feature-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">Next race paint</p><h3>${esc(paint.sponsor)}</h3><p>Hailey<br>Wispy (@Aokikoto)</p>${feature.message ? `<p>${esc(feature.message)}</p>` : ''}<div class="preview-race"><strong>${esc([feature.race, feature.track].filter(Boolean).join(' · ') || 'Upcoming race')}</strong><span>${esc([feature.series, feature.date].filter(Boolean).join(' · ') || 'Add race details')}</span></div></div>`;
+    $('[data-feature-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">Next race paint</p><h3>${esc(paint.sponsor)}</h3><p>Hailey<br>@Aokikoto</p>${feature.message ? `<p>${esc(feature.message)}</p>` : ''}<div class="preview-race"><strong>${esc([feature.race, feature.track].filter(Boolean).join(' · ') || 'Upcoming race')}</strong><span>${esc([feature.series, feature.date].filter(Boolean).join(' · ') || 'Add race details')}</span></div></div>`;
   }
 
   function populatePaintSelect() {
@@ -327,7 +331,7 @@
     const slug = form.elements.namedItem('slug');
     if (slug instanceof HTMLInputElement) slug.readOnly = false;
     const username = form.elements.namedItem('username');
-    if (username instanceof HTMLInputElement) username.value = 'Wispy (@Aokikoto)';
+    if (username instanceof HTMLInputElement) username.value = '@Aokikoto';
     slugTouched = false;
     const preview = $('[data-paint-preview-card]');
     if (preview) preview.innerHTML = '<div class="preview-empty">Complete the paint details, then preview or publish it.</div>';
@@ -363,13 +367,23 @@
     return paint;
   }
 
+  function applyLeagueIdentityDefaults() {
+    const form=$('[data-paint-form]'); if(!form)return;
+    const league=form.elements.namedItem('league'), driver=form.elements.namedItem('driver'), username=form.elements.namedItem('username');
+    if(!(league instanceof HTMLSelectElement)||!(driver instanceof HTMLInputElement)||!(username instanceof HTMLInputElement))return;
+    const identityNames=new Set(['','Hailey','Hailey Bell','Wispy','Nicholas Waggoner']);
+    if(!identityNames.has(driver.value.trim()))return;
+    if(league.value==='iracing'){driver.value='Hailey Bell';username.value='';}
+    else {driver.value='Hailey';username.value='@Aokikoto';}
+  }
+
   function bindForms() {
     const paintForm = $('[data-paint-form]');
     const sponsor = paintForm.elements.namedItem('sponsor');
     const slug = paintForm.elements.namedItem('slug');
     const league = paintForm.elements.namedItem('league');
     sponsor.addEventListener('input', () => { if (!slugTouched) slug.value = slugify(`${league.value}-${sponsor.value}`); });
-    league.addEventListener('change', () => { if (!slugTouched) slug.value = slugify(`${league.value}-${sponsor.value}`); });
+    league.addEventListener('change', () => { if (!slugTouched) slug.value = slugify(`${league.value}-${sponsor.value}`); applyLeagueIdentityDefaults(); });
     slug.addEventListener('input', () => { slugTouched = Boolean(slug.value); });
     $('[data-paint-preview]').addEventListener('click', () => {
       const paint = paintFromForm();
@@ -442,7 +456,7 @@
   function init() {
     $('[data-league-select]').innerHTML = leagues.map(([id, name]) => `<option value="${id}">${name}</option>`).join('');
     const identitySubline = $('[data-paint-form] [name="username"]');
-    if (identitySubline instanceof HTMLInputElement && !identitySubline.value) identitySubline.value = 'Wispy (@Aokikoto)';
+    if (identitySubline instanceof HTMLInputElement && !identitySubline.value) identitySubline.value = '@Aokikoto';
     $$('[data-tab]').forEach((button) => button.addEventListener('click', () => {
       if (button.dataset.tab === 'add') resetPaintFormForNew();
       chooseTab(button.dataset.tab);

@@ -1,7 +1,7 @@
 [
   {
     "slug": "wispy",
-    "name": "Wispy",
+    "name": "Hailey",
     "handle": "@Aokikoto",
     "role": "Founder / Driver",
     "affiliation": "aetherwing",
@@ -14,9 +14,12 @@
       "Sunoco"
     ],
     "feature": "Multi-program",
-    "bio": "Aetherwing founder and multi-program driver across RoRacing and iRacing.",
+    "bio": "Aetherwing founder and multi-program RoRacing driver. Current Roblox display name: Hailey; username: @Aokikoto. Current iRacing name: Hailey Bell.",
     "iracingName": "Hailey Bell",
-    "historicalIRacingName": "Nicholas Waggoner"
+    "historicalIRacingName": "Nicholas Waggoner",
+    "robloxDisplayName": "Hailey",
+    "robloxUsername": "@Aokikoto",
+    "historicalRobloxDisplayName": "Wispy"
   },
   {
     "slug": "parker",

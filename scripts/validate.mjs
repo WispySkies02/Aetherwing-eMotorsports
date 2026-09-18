@@ -94,10 +94,10 @@ const nrrsStanding = standings.find((series) => series.id === 'nrrs');
 const kmartStanding = standings.find((series) => series.id === 'kmart');
 const sunocoStanding = standings.find((series) => series.id === 'sunoco');
 const uarlStanding = standings.find((series) => series.id === 'uarl');
-assert(nrrsStanding?.rows?.[0]?.driver === 'Wispy' && nrrsStanding.rows[0].position === 'P6' && nrrsStanding.rows[0].points === 2087 && nrrsStanding.rows[0].delta === '-58' && nrrsStanding.rows[0].positionChange === '-1 spot', 'NRRS Chase standings snapshot: Wispy P6, 2,087 points, -58 from leader, down 1 spot');
-assert(kmartStanding?.rows?.length === 3 && kmartStanding.rows[0].driver === 'Jaxon' && kmartStanding.rows[0].position === 'P1' && kmartStanding.rows[1].driver === 'Will' && kmartStanding.rows[1].position === 'P2' && kmartStanding.rows[2].driver === 'Wispy' && kmartStanding.rows[2].position === 'P4', 'Kmart standings positions: Jaxon P1, Will P2, Wispy P4');
+assert(nrrsStanding?.rows?.[0]?.driver === 'Hailey' && nrrsStanding.rows[0].position === 'P6' && nrrsStanding.rows[0].points === 2087 && nrrsStanding.rows[0].delta === '-58' && nrrsStanding.rows[0].positionChange === '-1 spot', 'NRRS Chase standings snapshot: Hailey P6, 2,087 points, -58 from leader, down 1 spot');
+assert(kmartStanding?.rows?.length === 3 && kmartStanding.rows[0].driver === 'Jaxon' && kmartStanding.rows[0].position === 'P1' && kmartStanding.rows[1].driver === 'Will' && kmartStanding.rows[1].position === 'P2' && kmartStanding.rows[2].driver === 'Hailey' && kmartStanding.rows[2].position === 'P4', 'Kmart standings positions: Jaxon P1, Will P2, Hailey P4');
 assert(kmartStanding?.ptEntry?.number === '29' && kmartStanding.ptEntry.status === 'NOT CHASE ELIGIBLE' && kmartStanding.ptEntry.drivers?.[0]?.driver === 'Clutch' && kmartStanding.ptEntry.drivers[0].points === 135 && kmartStanding.ptEntry.drivers[1].driver === 'Eazy' && kmartStanding.ptEntry.drivers[1].points === 59 && kmartStanding.ptEntry.drivers[2].driver === 'Matty' && kmartStanding.ptEntry.drivers[2].points === 58, 'Kmart #29 SCR PT car points and Chase ineligibility');
-assert(sunocoStanding?.rows?.length === 4 && sunocoStanding.rows[0].driver === 'Will' && sunocoStanding.rows[0].position === 'P1' && sunocoStanding.rows[0].chaseStatus === 'CHASE' && sunocoStanding.rows[1].driver === 'Clutch' && sunocoStanding.rows[1].position === 'P2' && sunocoStanding.rows[1].chaseStatus === 'CHASE' && sunocoStanding.rows[2].driver === 'Eazy' && sunocoStanding.rows[2].position === 'P4' && sunocoStanding.rows[2].chaseStatus === 'CHASE' && sunocoStanding.rows[3].driver === 'Wispy' && sunocoStanding.rows[3].position === 'P10' && sunocoStanding.rows[3].chaseStatus === 'NOT IN CHASE', 'Sunoco positions and Chase status: Will P1, Clutch P2, Eazy P4, Wispy P10');
+assert(sunocoStanding?.rows?.length === 4 && sunocoStanding.rows[0].driver === 'Will' && sunocoStanding.rows[0].position === 'P1' && sunocoStanding.rows[0].chaseStatus === 'CHASE' && sunocoStanding.rows[1].driver === 'Clutch' && sunocoStanding.rows[1].position === 'P2' && sunocoStanding.rows[1].chaseStatus === 'CHASE' && sunocoStanding.rows[2].driver === 'Eazy' && sunocoStanding.rows[2].position === 'P4' && sunocoStanding.rows[2].chaseStatus === 'CHASE' && sunocoStanding.rows[3].driver === 'Hailey' && sunocoStanding.rows[3].position === 'P10' && sunocoStanding.rows[3].chaseStatus === 'NOT IN CHASE', 'Sunoco positions and Chase status: Will P1, Clutch P2, Eazy P4, Hailey P10');
 assert(uarlStanding?.rows?.length === 0 && /No official UARL standings snapshot published yet/i.test(uarlStanding?.emptyMessage || '') && uarlStanding?.status === 'D1 POSTPONED', 'UARL standings remain empty while D1 is postponed and D2 is closed');
 
 const nrrsClash = scheduleEvents.find((event) => event.league === 'nrrs' && /Clash at the Coliseum/i.test(event.title));
@@ -143,9 +143,9 @@ assert(iracing.factoryDrivers === 3 && iracing.teamEntries === 1 && iracing.sche
 assert(paintLeagues.length === 7 && paintLeagues.filter((league) => league.relationship !== 'archive').length === 6, 'Paint Booth contains six active garages plus one historical archive');
 assert(paints.length === 35, 'Paint Booth source contains all 35 uploaded schemes');
 assert(paints.filter((paint) => paint.leagues?.includes('iracing')).length === 13, 'Paint Booth contains 13 iRacing liveries');
-assert(paints.filter((paint) => paint.driver === 'Wispy').length === 21, 'Paint Booth contains all 21 direct Wispy paints from V23');
+assert(paints.filter((paint) => paint.driver === 'Hailey').length === 20 && paints.filter((paint) => paint.driver === 'Wispy' && paint.leagues?.includes('uarl-d2')).length === 1, 'Paint Booth uses Hailey on 20 active RoRacing paints and retains one historical D2 Wispy paint');
 assert(paints.filter((paint) => paint.driver === 'Hailey Bell').length === 12, 'Paint Booth contains all 12 Hailey Bell iRacing paints tied to the Wispy identity');
-assert(paints.filter((paint) => ['Wispy','Hailey Bell'].includes(paint.driver)).length === 33, 'Unified Wispy / Hailey Bell identity exposes 33 seed paints across RoRacing and iRacing');
+assert(paints.filter((paint) => ['Hailey','Wispy','Hailey Bell'].includes(paint.driver)).length === 33, 'Unified Hailey / historical Wispy / Hailey Bell identity exposes 33 seed paints across RoRacing and iRacing');
 assert(paints.filter((paint) => paint.leagues?.includes('nrrs')).length === 10, 'NRRS garage contains 10 source paints');
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-d1')).length === 1, 'UARL D1 garage contains the source-tagged Mobil 1 paint');
 assert(paints.filter((paint) => paint.leagues?.includes('uarl-d2')).length === 1 && paints.find((paint) => paint.slug === 'd2-mobil1-toyota-supra')?.historical === true, 'UARL D2 retains only the #62 Mobil 1 Supra as historical archive paint');
@@ -194,8 +194,8 @@ assert(driversPage.includes('Aetherwing Charter Board') && driversPage.includes(
 const nrrsCharters = charters.find((group) => group.id === 'nrrs');
 const d1Charters = charters.find((group) => group.id === 'uarl-d1');
 const hasSharedOpenCharter=(group)=>group?.openCharter?.label==='Aetherwing Open Charter'&&group.openCharter.partTime?.number==='62'&&group.openCharter.partTime?.label==='Part-Time'&&group.openCharter.development?.number==='82'&&group.openCharter.development?.label==='Development';
-assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Wispy'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && hasSharedOpenCharter(nrrsCharters), 'NRRS has FT #32 Wispy / #43 Plarker / #54 Open plus shared 4th #62 PT / #82 Development');
-assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Wispy'},{number:'32',driver:'BurgerTown2Good'},{number:'52',driver:'Gk3r'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && hasSharedOpenCharter(d1Charters), 'UARL D1 has FT #28 Wispy / #32 BurgerTown2Good / #52 Gk3r / #54 Open / #92 Rocky plus one shared #62 PT / #82 Development Open Charter');
+assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Hailey'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && hasSharedOpenCharter(nrrsCharters), 'NRRS has FT #32 Hailey / #43 Plarker / #54 Open plus shared 4th #62 PT / #82 Development');
+assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Hailey'},{number:'32',driver:'BurgerTown2Good'},{number:'52',driver:'Gk3r'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && hasSharedOpenCharter(d1Charters), 'UARL D1 has FT #28 Hailey / #32 BurgerTown2Good / #52 Gk3r / #54 Open / #92 Rocky plus one shared #62 PT / #82 Development Open Charter');
 assert(nrrsCharters?.fullTime?.length === 3 && d1Charters?.fullTime?.length === 5 && charters.length === 2, 'NRRS has three FT charters; UARL D1 has five FT charters; D2 charter board is removed');
 assert([nrrsCharters,d1Charters].every((group) => group?.openCharter?.partTime?.number === '62' && group?.openCharter?.development?.number === '82'), 'Active Aetherwing Open Charters use #62 for Part-Time and #82 for Development');
 assert([nrrsCharters,d1Charters].every((group) => !('driver' in group.openCharter.partTime) && !('driver' in group.openCharter.development)), 'Shared Aetherwing Open Charters remain driver-neutral');
@@ -286,7 +286,7 @@ assert(schedulePage.includes('SEP 15') && schedulePage.includes('September 15, 2
 assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.includes("event.league === 'iracing'"), 'Schedule Next Operation uses fixed-race priority over active iRacing windows');
 assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
 assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
-assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Wispy #28 for UARL Open');
+assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Hailey #28 for UARL Open');
 assert(homePage.includes('story.featured') && homePage.includes('Read the Story'), 'Homepage Latest Updates follows the featured Southern 500 story');
 assert(homePage.includes('/Daytona 500/i.test(event.title)') && !homePage.includes('uarl-d2'), 'Homepage initial UARL fallback follows the active D1 Daytona 500 rather than closed D2');
 const darlingtonStory = news.find((story) => story.slug === 'wispy-southern-500-darlington-top-five');
@@ -310,4 +310,12 @@ assert(wins.filter((win) => win.league === 'iRacing' && win.driver === 'Nicholas
 assert(paintLeagues.find((league) => league.id === 'uarl-d2')?.relationship === 'archive', 'UARL D2 Paint Booth data is historical/archive only');
 assert(paintLeagues.find((league) => league.id === 'nrrs')?.drivers.length === 4, 'NRRS Paint Booth charter board has four actual slots');
 assert(paintLeagues.find((league) => league.id === 'uarl-d1')?.drivers.length === 6, 'UARL D1 Paint Booth charter board has six actual slots');
+assert(!driversPage.includes('Wispy / Hailey Bell') && !driversPage.includes('Hailey Bell / Wispy'), 'Current iRacing presentation does not pair Wispy with Hailey Bell');
+assert(contentAdminScript.includes('Driver league assignments') && contentAdminScript.includes('data-competition-choice') && contentAdminScript.includes("['competitions','League details']"), 'Roster Manager exposes clear driver league assignments and editable league details');
+assert(text('netlify/lib/_content.cjs').includes("'competitions'"), 'League details are included in the Admin content registry');
+assert(roster.find((profile) => profile.slug === 'wispy')?.name === 'Hailey', 'Current Roblox / RoRacing display name is Hailey');
+assert(roster.find((profile) => profile.slug === 'wispy')?.handle === '@Aokikoto', 'Current Roblox username remains @Aokikoto');
+assert(drivers.filter((entry) => entry.profile === 'wispy' && entry.competitionId !== 'iracing-factory').every((entry) => entry.displayName === 'Hailey'), 'All current RoRacing assignments display Hailey');
+assert(drivers.find((entry) => entry.competitionId === 'iracing-factory' && entry.profile === 'wispy')?.displayName === 'Hailey Bell', 'iRacing assignment displays Hailey Bell only');
+assert(wins.some((win) => win.driver === 'Wispy'), 'Historical RoRacing wins recorded under Wispy remain historical');
 console.log('\nAetherwing locked-fact validation passed.');

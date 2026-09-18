@@ -1,18 +1,30 @@
 [
   {
-    "name": "Wispy",
-    "roles": ["Founder", "Team Owner", "RoRacing Coordinator", "Sim Racing Coordinator"]
+    "name": "Hailey",
+    "roles": [
+      "Founder",
+      "Team Owner",
+      "RoRacing Coordinator",
+      "Sim Racing Coordinator"
+    ]
   },
   {
     "name": "Callornot",
-    "roles": ["Team Principal", "Sim Racing Coordinator"]
+    "roles": [
+      "Team Principal",
+      "Sim Racing Coordinator"
+    ]
   },
   {
     "name": "Will",
-    "roles": ["Creative Director"]
+    "roles": [
+      "Creative Director"
+    ]
   },
   {
     "name": "Jaxon",
-    "roles": ["Media Specialist"]
+    "roles": [
+      "Media Specialist"
+    ]
   }
 ]

@@ -1,10 +1,10 @@
 [
   {
     "slug": "wispy",
-    "displayName": "Wispy",
+    "displayName": "Hailey",
     "iracingName": "Hailey Bell",
-    "subtitle": "Founder · Team Owner · Driver",
-    "intro": "Aetherwing founder and multi-program driver competing across RoRacing and iRacing.",
+    "subtitle": "Founder \u00b7 Team Owner \u00b7 Driver",
+    "intro": "Aetherwing founder and multi-program driver. On Roblox / RoRacing the current display name is Hailey with username @Aokikoto; on iRacing the current name is Hailey Bell.",
     "stats": [
       {
         "label": "iRacing Starts",
@@ -27,6 +27,9 @@
         "value": "14.1%"
       }
     ],
-    "historicalIRacingName": "Nicholas Waggoner"
+    "historicalIRacingName": "Nicholas Waggoner",
+    "robloxDisplayName": "Hailey",
+    "robloxUsername": "@Aokikoto",
+    "historicalRobloxDisplayName": "Wispy"
   }
 ]

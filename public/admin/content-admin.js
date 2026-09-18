@@ -5,9 +5,29 @@
   const modules = {
     schedule: { title:'Schedule Manager', sections:[['schedule-events','Race calendar']] },
     results: { title:'Results & Milestones', sections:[['results','Latest results'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
-    roster: { title:'Roster Manager', sections:[['roster-profiles','Roster cards'],['drivers','Program entries'],['driver-profiles','Driver profile pages & stats'],['charters','Charter allocations'],['iracing-garage','iRacing factory entries']] },
+    roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['driver-profiles','Profile stats'],['competitions','League details']] },
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
+  const rosterGuides = {
+    drivers: ['Driver league assignments','One row = one driver in one league. Add a row to put a driver into another league; remove the row to remove that league assignment. Number, status, and organization are edited here.'],
+    'roster-profiles': ['Driver directory & bios','Edit the person/profile itself here: display name, handle, role, and bio. Active numbers and program badges are generated automatically from Driver league assignments.'],
+    charters: ['Charter boards','Edit the actual Aetherwing charter structure. Shared #62 Part-Time / #82 Development entries stay inside one Open Charter module.'],
+    'iracing-garage': ['iRacing roster','Edit the current iRacing Factory drivers/team entries. Hailey Bell is the current iRacing name. Roblox / RoRacing uses Hailey with @Aokikoto.'],
+    'driver-profiles': ['Profile stats','Edit long-form driver profile copy and career statistics.'],
+    competitions: ['League details','Edit the league/program itself: public name, schedule, machine, platform, relationship type, and roster summary.']
+  };
+  const competitionChoices = [
+    ['nrrs','NRRS'],['uarl-d1','UARL Division 1'],['uarl-open','UARL Open'],
+    ['kmart','Kmart Auto Parts Series'],['sunoco','Sunoco Truck Series'],['iracing-factory','iRacing Factory Program']
+  ];
+  const statusChoices = ['Full-Time','Part-Time','Development','Active','Shared Part-Time Entry','Factory Driver','Team Entry','OPEN'];
+  const fieldLabels = {
+    drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Competing organization',car:'Car / body',identityNote:'Identity note'},
+    'roster-profiles':{slug:'Profile ID',name:'Display name',handle:'Handle',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name'},
+    competitions:{id:'League ID',name:'League / program name',type:'Relationship type',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'}
+  };
+  const fieldLabel = (name) => fieldLabels[key]?.[name] || label(name);
+
   let registry = { revision:0, published:{}, drafts:{}, history:[] }, seeds = {}, key='', data=null, index=0, dirty=false, loaded=false, busy=false;
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -80,16 +100,29 @@
   }
   function fields(value,path=[]) {
     return Object.entries(value).map(([k,v])=>{
-      const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`;
-      if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) return `<fieldset><legend>${esc(label(k))}</legend>${v.map((item,i)=>`<details open><summary>${esc(label(k))} ${i+1}</summary>${fields(item,[...p,i])}<button type="button" data-array-remove="${esc(JSON.stringify([...p,i]))}">Remove ${esc(label(k))} ${i+1}</button></details>`).join('')}<button type="button" data-array-add="${esc(JSON.stringify(p))}">Add ${esc(label(k))}</button></fieldset>`;
-      if (v && typeof v==='object') return `<fieldset><legend>${esc(label(k))}</legend>${fields(v,p)}</fieldset>`;
-      if (typeof v==='boolean') return `<label class="content-check"><input type="checkbox" ${attr} data-field-type="boolean" ${v?'checked':''}>${esc(label(k))}</label>`;
-      if (k==='league' && key==='schedule-events') return `<label>${esc(label(k))}<select ${attr} data-field-type="string">${[['nrrs','NRRS'],['uarl-d1','UARL D1'],['uarl-d2','UARL D2'],['open','UARL Open'],['kmart','Kmart'],['sunoco','Sunoco'],['iracing','iRacing']].map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select></label>`;
-      if (Array.isArray(v) || String(v||'').length>120 || ['summary','description','intro','bio','text','note','message'].includes(k)) return `<label>${esc(label(k))}${Array.isArray(v)?'<small>One item per line</small>':''}<textarea rows="${Array.isArray(v)?4:5}" ${attr} data-field-type="${Array.isArray(v)?'lines':'string'}">${esc(Array.isArray(v)?v.join('\n'):v)}</textarea></label>`;
-      return `<label>${esc(label(k))}<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?'nullable':'string'}" type="${typeof v==='number'?'number':['dateIso','endDate'].includes(k)||(k==='date'&&key==='schedule-events')?'date':'text'}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}"></label>`;
+      const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k);
+      if (key==='roster-profiles' && (k==='programs' || k==='numbers')) {
+        const shown=Array.isArray(v)?v.join(' · '):String(v||'');
+        return `<label>${esc(pretty)}<input type="text" readonly value="${esc(shown)}"><small>Automatically generated from Driver league assignments when the site builds.</small></label>`;
+      }
+      if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) return `<fieldset><legend>${esc(pretty)}</legend>${v.map((item,i)=>`<details open><summary>${esc(pretty)} ${i+1}</summary>${fields(item,[...p,i])}<button type="button" data-array-remove="${esc(JSON.stringify([...p,i]))}">Remove ${esc(pretty)} ${i+1}</button></details>`).join('')}<button type="button" data-array-add="${esc(JSON.stringify(p))}">Add ${esc(pretty)}</button></fieldset>`;
+      if (v && typeof v==='object') return `<fieldset><legend>${esc(pretty)}</legend>${fields(v,p)}</fieldset>`;
+      if (typeof v==='boolean') return `<label class="content-check"><input type="checkbox" ${attr} data-field-type="boolean" ${v?'checked':''}>${esc(pretty)}</label>`;
+      if (k==='league' && key==='schedule-events') return `<label>${esc(pretty)}<select ${attr} data-field-type="string">${[['nrrs','NRRS'],['uarl-d1','UARL D1'],['uarl-d2','UARL D2'],['open','UARL Open'],['kmart','Kmart'],['sunoco','Sunoco'],['iracing','iRacing']].map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select></label>`;
+      if (key==='drivers' && k==='profile') {
+        const profiles=(seeds['roster-profiles']||[]).map((profile)=>[profile.slug,profile.name]);
+        return `<label>${esc(pretty)}<select ${attr} data-field-type="string">${profiles.map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)} · ${esc(id)}</option>`).join('')}</select><small>Links this league entry to one driver profile.</small></label>`;
+      }
+      if (key==='drivers' && k==='competitionId') return `<label>${esc(pretty)}<select ${attr} data-field-type="string" data-competition-choice>${competitionChoices.map(([id,name])=>`<option value="${id}" ${id===v?'selected':''}>${name}</option>`).join('')}</select><small>Changing this also updates the public league name below.</small></label>`;
+      if (key==='drivers' && k==='competition') return `<label>${esc(pretty)}<input ${attr} data-field-type="string" data-competition-name readonly value="${esc(v)}"><small>Filled automatically from the League selector.</small></label>`;
+      if (key==='drivers' && k==='status') return `<label>${esc(pretty)}<select ${attr} data-field-type="string">${[...new Set([...statusChoices,v])].filter(Boolean).map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select></label>`;
+      if (key==='drivers' && k==='affiliation') return `<label>${esc(pretty)}<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing eMotorsports</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select></label>`;
+      if (key==='competitions' && k==='type') return `<label>${esc(pretty)}<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing Program</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select></label>`;
+      if (Array.isArray(v) || String(v||'').length>120 || ['summary','description','intro','bio','text','note','message'].includes(k)) return `<label>${esc(pretty)}${Array.isArray(v)?'<small>One item per line</small>':''}<textarea rows="${Array.isArray(v)?4:5}" ${attr} data-field-type="${Array.isArray(v)?'lines':'string'}">${esc(Array.isArray(v)?v.join('\n'):v)}</textarea></label>`;
+      return `<label>${esc(pretty)}<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?'nullable':'string'}" type="${typeof v==='number'?'number':['dateIso','endDate'].includes(k)||(k==='date'&&key==='schedule-events')?'date':'text'}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}"></label>`;
     }).join('');
   }
-  function title(row,i) { return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
+  function title(row,i) { if(key==='drivers') return `${row.displayName||row.profile||'Driver'} · ${row.competition||'Choose league'}${row.number?` · #${row.number}`:''}`; return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
   const shiftState={days:0,indexes:[],snapshot:null};
   const shiftLeagueNames={nrrs:'NRRS','uarl-d1':'UARL D1',open:'UARL Open',kmart:'Kmart',sunoco:'Sunoco',iracing:'iRacing','uarl-d2':'UARL D2'};
   function shiftIsoDate(value,days) {
@@ -185,6 +218,12 @@
   }
   function render() {
     renderList();
+    const guide=$('[data-content-guide]');
+    if(guide){
+      const copy=rosterGuides[key];
+      guide.hidden=!copy;
+      if(copy) guide.innerHTML=`<strong>${esc(copy[0])}</strong><p>${esc(copy[1])}</p>`;
+    }
     const row=current();
     $('[data-content-fields]').innerHTML=row?fields(row):'<p>No entries. Choose Add entry to start.</p>';
     if (key==='news' && row) {
@@ -195,7 +234,7 @@
     key=name; data=structuredClone(base(key)); index=0; dirty=false;
     if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r}));
     render();refreshScheduleShiftTool();
-    status(`${registry.drafts[key]?'Private saved draft':registry.published[key]?'Published content':'Bundled baseline'} · Revision ${registry.revision}. ${key==='roster-profiles'?'Keep slugs consistent across roster cards, program entries, and profile pages.':''}`);
+    status(`${registry.drafts[key]?'Private saved draft':registry.published[key]?'Published content':'Bundled baseline'} · Revision ${registry.revision}. ${key==='drivers'?'League assignments are one row per driver per league.':''}`);
   }
   async function openModule(name) {
     if (busy) return;
@@ -220,6 +259,14 @@
   $('[data-content-search]').addEventListener('input',renderList);
   $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();index=Number(button.dataset.entry);render();}});
   $('[data-content-form]').addEventListener('input',()=>{dirty=true;});
+  $('[data-content-fields]').addEventListener('change',(event)=>{
+    const league=event.target.closest?.('[data-competition-choice]');
+    if(!league)return;
+    const name=competitionChoices.find(([id])=>id===league.value)?.[1]||league.value;
+    const field=$('[data-content-fields] [data-competition-name]');
+    if(field instanceof HTMLInputElement)field.value=name;
+    dirty=true;
+  });
   $('[data-content-fields]').addEventListener('click',(event)=>{
     const button=event.target.closest('[data-array-add],[data-array-remove]');if(!button)return;
     commit();

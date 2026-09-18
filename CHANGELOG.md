@@ -1,3 +1,21 @@
+# v0.4.49 — Roblox / RoRacing Identity Update
+
+- Current Roblox / RoRacing display name is Hailey with username @Aokikoto.
+- Current iRacing presentation remains Hailey Bell with no Roblox handle appended.
+- Current roster cards, charter boards, standings snapshots, competition rosters, leadership, and active Paint Booth labels now use Hailey.
+- Historical RoRacing records already published under Wispy remain historical Wispy records.
+- Historical iRacing results recorded under Nicholas Waggoner remain Nicholas Waggoner.
+- Live Paint Registry normalizes older Wispy admin records to Hailey / @Aokikoto for active public presentation.
+- Roster and Paint Operations editors use the new identity defaults.
+
+# v0.4.48 — Roster Editor + iRacing Identity Cleanup
+
+- Reworked Roster Manager labels and guidance around driver/league assignments.
+- Driver League Assignments now uses league, status, profile, and organization selectors.
+- Added editable League Details to the Roster Manager.
+- Current iRacing presentation displays Hailey Bell without pairing Wispy with her name.
+- Paint Operations defaults to Hailey Bell with no subline for iRacing, and Wispy / @Aokikoto for RoRacing.
+
 # v0.4.47 — Hailey Bell identity + Paint Booth roster/archive cleanup
 
 - Current iRacing presentation now uses Hailey Bell.

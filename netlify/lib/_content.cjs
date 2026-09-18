@@ -5,7 +5,7 @@ async function getBlobsModule() {
   blobsModulePromise ||= import('@netlify/blobs');
   return blobsModulePromise;
 }
-const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'news'];
+const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'news'];
 function seeds() {
   return Object.fromEntries(FILES.map((key) => {
     const filename=[path.resolve(process.cwd(),`src/data/${key}.json`),path.resolve(__dirname,`../../src/data/${key}.json`),path.resolve(__dirname,`src/data/${key}.json`)].find((p)=>fs.existsSync(p));
@@ -56,7 +56,7 @@ function validate(key, data) {
     wins:['league','track','driver','date'], milestones:['date','title','description'],
     'roster-profiles':['slug','name','role','affiliation','numbers'],
     'driver-profiles':['slug','displayName','subtitle','intro'],
-    drivers:['id','profile','displayName','competitionId','competition','number','status'],
+    drivers:['id','profile','displayName','competitionId','competition','number','status'], competitions:['id','name','type','label','schedule','machine','platform'],
     standings:['id','title','league'], charters:['id','label'], news:['slug','title','summary','dateIso','date','category','context','kicker']
   }[key] || [];
   for (const [index, row] of rows.entries()) {
@@ -74,7 +74,7 @@ function validate(key, data) {
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !Number.isFinite(r.points)))) return 'Standings rows need numeric points.';
     if (key === 'charters' && (!Array.isArray(row.fullTime) || !row.openCharter?.partTime || !row.openCharter?.development)) return 'Charters need full-time entries and both Open Charter uses.';
   }
-  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['drivers','standings','charters'].includes(key) ? 'id' : null;
+  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['drivers','standings','charters','competitions'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;
   if (key==='schedule-events') {
     const eventKey=(r)=>`${r.date}-${r.league}-${r.title.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;

@@ -2,12 +2,13 @@
   {
     "id": "wispy-nrrs",
     "profile": "wispy",
-    "displayName": "Wispy",
+    "displayName": "Hailey",
     "number": "32",
     "competition": "NRRS",
     "competitionId": "nrrs",
     "status": "Full-Time",
-    "affiliation": "aetherwing"
+    "affiliation": "aetherwing",
+    "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
   },
   {
     "id": "parker-nrrs",
@@ -22,12 +23,13 @@
   {
     "id": "wispy-uarl-d1",
     "profile": "wispy",
-    "displayName": "Wispy",
+    "displayName": "Hailey",
     "number": "28",
     "competition": "UARL Division 1",
     "competitionId": "uarl-d1",
     "status": "Full-Time",
-    "affiliation": "aetherwing"
+    "affiliation": "aetherwing",
+    "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
   },
   {
     "id": "rocky-uarl-d1",
@@ -42,23 +44,25 @@
   {
     "id": "wispy-uarl-open",
     "profile": "wispy",
-    "displayName": "Wispy",
+    "displayName": "Hailey",
     "number": "28",
     "competition": "UARL Open",
     "competitionId": "uarl-open",
     "status": "Active",
     "affiliation": "aetherwing",
-    "car": "BBR Late Model Toyota"
+    "car": "BBR Late Model Toyota",
+    "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
   },
   {
     "id": "wispy-kmart",
     "profile": "wispy",
-    "displayName": "Wispy",
+    "displayName": "Hailey",
     "number": "15",
     "competition": "Kmart Auto Parts Series",
     "competitionId": "kmart",
     "status": "Active",
-    "affiliation": "alliance"
+    "affiliation": "alliance",
+    "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
   },
   {
     "id": "will-kmart",
@@ -126,13 +130,14 @@
   {
     "id": "wispy-sunoco",
     "profile": "wispy",
-    "displayName": "Wispy",
+    "displayName": "Hailey",
     "number": "54",
     "competition": "Sunoco Truck Series",
     "competitionId": "sunoco",
     "status": "Active",
     "affiliation": "alliance",
-    "car": "RAM"
+    "car": "RAM",
+    "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
   },
   {
     "id": "levi-iracing",
@@ -153,7 +158,7 @@
     "competitionId": "iracing-factory",
     "status": "Factory Driver",
     "affiliation": "aetherwing",
-    "identityNote": "Same competition identity as Wispy / @Aokikoto. Current iRacing name: Hailey Bell. Historical results originally recorded under Nicholas Waggoner retain that historical attribution."
+    "identityNote": "Current iRacing name: Hailey Bell. Roblox / RoRacing display name: Hailey, username @Aokikoto. Historical iRacing results originally recorded under Nicholas Waggoner retain that attribution."
   },
   {
     "id": "joshua-iracing",

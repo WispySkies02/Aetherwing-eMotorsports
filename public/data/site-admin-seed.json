@@ -1512,7 +1512,7 @@
         {
           "position": "P6",
           "number": "32",
-          "driver": "Wispy",
+          "driver": "Hailey",
           "points": 2087,
           "delta": "-58",
           "positionChange": "-1 spot",
@@ -1643,7 +1643,7 @@
         {
           "position": "P4",
           "number": "15",
-          "driver": "Wispy",
+          "driver": "Hailey",
           "points": 156,
           "delta": "+36"
         }
@@ -1702,7 +1702,7 @@
         {
           "position": "P10",
           "number": "54",
-          "driver": "Wispy",
+          "driver": "Hailey",
           "points": 261,
           "delta": "-126",
           "chaseStatus": "NOT IN CHASE"
@@ -1754,7 +1754,7 @@
   "roster-profiles": [
     {
       "slug": "wispy",
-      "name": "Wispy",
+      "name": "Hailey",
       "handle": "@Aokikoto",
       "role": "Founder / Driver",
       "affiliation": "aetherwing",
@@ -1767,9 +1767,12 @@
         "Sunoco"
       ],
       "feature": "Multi-program",
-      "bio": "Aetherwing founder and multi-program driver across RoRacing and iRacing.",
+      "bio": "Aetherwing founder and multi-program RoRacing driver. Current Roblox display name: Hailey; username: @Aokikoto. Current iRacing name: Hailey Bell.",
       "iracingName": "Hailey Bell",
-      "historicalIRacingName": "Nicholas Waggoner"
+      "historicalIRacingName": "Nicholas Waggoner",
+      "robloxDisplayName": "Hailey",
+      "robloxUsername": "@Aokikoto",
+      "historicalRobloxDisplayName": "Wispy"
     },
     {
       "slug": "parker",
@@ -1895,10 +1898,10 @@
   "driver-profiles": [
     {
       "slug": "wispy",
-      "displayName": "Wispy",
+      "displayName": "Hailey",
       "iracingName": "Hailey Bell",
       "subtitle": "Founder · Team Owner · Driver",
-      "intro": "Aetherwing founder and multi-program driver competing across RoRacing and iRacing.",
+      "intro": "Aetherwing founder and multi-program driver. On Roblox / RoRacing the current display name is Hailey with username @Aokikoto; on iRacing the current name is Hailey Bell.",
       "stats": [
         {
           "label": "iRacing Starts",
@@ -1921,19 +1924,23 @@
           "value": "14.1%"
         }
       ],
-      "historicalIRacingName": "Nicholas Waggoner"
+      "historicalIRacingName": "Nicholas Waggoner",
+      "robloxDisplayName": "Hailey",
+      "robloxUsername": "@Aokikoto",
+      "historicalRobloxDisplayName": "Wispy"
     }
   ],
   "drivers": [
     {
       "id": "wispy-nrrs",
       "profile": "wispy",
-      "displayName": "Wispy",
+      "displayName": "Hailey",
       "number": "32",
       "competition": "NRRS",
       "competitionId": "nrrs",
       "status": "Full-Time",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
     },
     {
       "id": "parker-nrrs",
@@ -1948,12 +1955,13 @@
     {
       "id": "wispy-uarl-d1",
       "profile": "wispy",
-      "displayName": "Wispy",
+      "displayName": "Hailey",
       "number": "28",
       "competition": "UARL Division 1",
       "competitionId": "uarl-d1",
       "status": "Full-Time",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
     },
     {
       "id": "rocky-uarl-d1",
@@ -1968,23 +1976,25 @@
     {
       "id": "wispy-uarl-open",
       "profile": "wispy",
-      "displayName": "Wispy",
+      "displayName": "Hailey",
       "number": "28",
       "competition": "UARL Open",
       "competitionId": "uarl-open",
       "status": "Active",
       "affiliation": "aetherwing",
-      "car": "BBR Late Model Toyota"
+      "car": "BBR Late Model Toyota",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
     },
     {
       "id": "wispy-kmart",
       "profile": "wispy",
-      "displayName": "Wispy",
+      "displayName": "Hailey",
       "number": "15",
       "competition": "Kmart Auto Parts Series",
       "competitionId": "kmart",
       "status": "Active",
-      "affiliation": "alliance"
+      "affiliation": "alliance",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
     },
     {
       "id": "will-kmart",
@@ -2052,13 +2062,14 @@
     {
       "id": "wispy-sunoco",
       "profile": "wispy",
-      "displayName": "Wispy",
+      "displayName": "Hailey",
       "number": "54",
       "competition": "Sunoco Truck Series",
       "competitionId": "sunoco",
       "status": "Active",
       "affiliation": "alliance",
-      "car": "RAM"
+      "car": "RAM",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
     },
     {
       "id": "levi-iracing",
@@ -2079,7 +2090,7 @@
       "competitionId": "iracing-factory",
       "status": "Factory Driver",
       "affiliation": "aetherwing",
-      "identityNote": "Same competition identity as Wispy / @Aokikoto. Current iRacing name: Hailey Bell. Historical results originally recorded under Nicholas Waggoner retain that historical attribution."
+      "identityNote": "Current iRacing name: Hailey Bell. Roblox / RoRacing display name: Hailey, username @Aokikoto. Historical iRacing results originally recorded under Nicholas Waggoner retain that attribution."
     },
     {
       "id": "joshua-iracing",
@@ -2122,7 +2133,7 @@
       "fullTime": [
         {
           "number": "32",
-          "driver": "Wispy"
+          "driver": "Hailey"
         },
         {
           "number": "43",
@@ -2155,7 +2166,7 @@
       "fullTime": [
         {
           "number": "28",
-          "driver": "Wispy"
+          "driver": "Hailey"
         },
         {
           "number": "32",
@@ -2221,6 +2232,98 @@
       }
     ]
   },
+  "competitions": [
+    {
+      "id": "nrrs",
+      "name": "NRRS",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Tuesdays · 7:30 PM ET",
+      "machine": "BBR Next-Gen Toyota",
+      "platform": "Roblox / BBR Next-Gen platform",
+      "roster": [
+        "#32 Hailey",
+        "#43 Plarker",
+        "#54 OPEN",
+        "4TH · AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"
+      ]
+    },
+    {
+      "id": "uarl-d1",
+      "name": "UARL Division 1",
+      "series": "L.L. Bean Cup Series",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Sundays · 8:30 PM ET",
+      "machine": "BBR Next-Gen Cadillac (Toyota Body)",
+      "platform": "Roblox / BBR Next-Gen platform",
+      "roster": [
+        "#28 Hailey",
+        "#32 BurgerTown2Good",
+        "#52 Gk3r",
+        "#54 OPEN",
+        "#92 Rocky",
+        "AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"
+      ]
+    },
+    {
+      "id": "uarl-open",
+      "name": "UARL Open",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Sundays · 11:30 AM ET",
+      "machine": "Super Late Model Open Series",
+      "platform": "Roblox / UARL Late Model platform",
+      "roster": [
+        "#28 Hailey"
+      ]
+    },
+    {
+      "id": "iracing-factory",
+      "name": "iRacing Factory Program",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Special-event windows",
+      "machine": "Multiple Cars · Multiple Disciplines",
+      "platform": "iRacing / Aetherwing Factory Program",
+      "roster": [
+        "#6 Levi Ramsey",
+        "#28 Hailey Bell",
+        "#35 Joshua Douglas"
+      ],
+      "drivers": []
+    },
+    {
+      "id": "kmart",
+      "name": "Kmart Auto Parts Series",
+      "type": "alliance",
+      "label": "StarClutch Racing Alliance",
+      "schedule": "Mondays · 8:30 PM ET",
+      "machine": "Dodge · BBR D2 Chevy Body",
+      "platform": "Roblox / StarClutch Racing",
+      "roster": [
+        "#15 Hailey",
+        "#24 Will",
+        "#34 Jaxon",
+        "#29 PT · Clutch / Eazy / Matty"
+      ]
+    },
+    {
+      "id": "sunoco",
+      "name": "Sunoco Truck Series",
+      "type": "alliance",
+      "label": "StarClutch Racing Alliance",
+      "schedule": "Saturdays · 8:00 PM ET",
+      "machine": "Dodge RAM · CWS15 Ford Body",
+      "platform": "Roblox / StarClutch Racing",
+      "roster": [
+        "#27 Eazy",
+        "#42 Will",
+        "#46 Clutch",
+        "#54 Hailey"
+      ]
+    }
+  ],
   "news": [
     {
       "slug": "wispy-southern-500-darlington-top-five",

@@ -1,7 +1,7 @@
 [
   {
     "slug": "d1-ironmouse",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -15,11 +15,11 @@
     "special": [
       "prized"
     ],
-    "note": "Wispy's prized NRRS / UARL D1 car."
+    "note": "Hailey's prized NRRS / UARL D1 car."
   },
   {
     "slug": "d1-home-depot",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -35,7 +35,7 @@
   },
   {
     "slug": "nrrs-ridgid-home-depot-1999",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -49,11 +49,11 @@
     "special": [
       "throwback"
     ],
-    "note": "Throwback to Tony Stewart’s primary Pontiac for Joe Gibbs Racing from 1999–2001."
+    "note": "Throwback to Tony Stewart\u2019s primary Pontiac for Joe Gibbs Racing from 1999\u20132001."
   },
   {
     "slug": "d1-ghost-merica",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -70,7 +70,7 @@
   },
   {
     "slug": "d1-columbia",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -84,11 +84,11 @@
     "special": [
       "concept"
     ],
-    "note": "IRL Concept — imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing’s livery style with a real-world NASCAR presentation."
+    "note": "IRL Concept \u2014 imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing\u2019s livery style with a real-world NASCAR presentation."
   },
   {
     "slug": "d1-friskies",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -103,7 +103,7 @@
   },
   {
     "slug": "d1-xfinity-mobile",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -118,7 +118,7 @@
   },
   {
     "slug": "d1-hardees",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -133,7 +133,7 @@
   },
   {
     "slug": "d1-chumba",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -148,7 +148,7 @@
   },
   {
     "slug": "d1-pokemon-30th-anniversary-tcg",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "nrrs"
@@ -164,7 +164,7 @@
   },
   {
     "slug": "d1-mobil1",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "uarl-d1"
@@ -182,7 +182,7 @@
   },
   {
     "slug": "kmart-petsmart",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "kmart"
@@ -199,7 +199,7 @@
   },
   {
     "slug": "kmart-petsmart-patriotic",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "kmart"
@@ -217,7 +217,7 @@
   },
   {
     "slug": "kmart-ghost-peaches",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "kmart"
@@ -234,7 +234,7 @@
   },
   {
     "slug": "kmart-2005-home-depot",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "kmart"
@@ -249,7 +249,7 @@
       "throwback",
       "starclutch"
     ],
-    "note": "Throwback to Tony Stewart’s 2005 Cup Series scheme."
+    "note": "Throwback to Tony Stewart\u2019s 2005 Cup Series scheme."
   },
   {
     "slug": "kmart-clutch-sinder",
@@ -288,7 +288,7 @@
   },
   {
     "slug": "open-ghost-strawberry-watermelon",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "uarl-open"
@@ -303,7 +303,7 @@
   },
   {
     "slug": "truck-ghost-warped",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "sunoco-truck"
@@ -320,7 +320,7 @@
   },
   {
     "slug": "truck-petsmart-patriotic",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "sunoco-truck"
@@ -339,7 +339,7 @@
   },
   {
     "slug": "truck-heatwave",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "sunoco-truck"
@@ -354,11 +354,11 @@
       "starclutch",
       "racewinner"
     ],
-    "note": "Race Winner — won at Rockingham on May 2, 2026."
+    "note": "Race Winner \u2014 won at Rockingham on May 2, 2026."
   },
   {
     "slug": "truck-mopar-starclutch-racing",
-    "driver": "Wispy",
+    "driver": "Hailey",
     "username": "@Aokikoto",
     "leagues": [
       "sunoco-truck"
@@ -554,11 +554,11 @@
     "number": "97",
     "sponsor": "Monster Energy (Lando Norris)",
     "manufacturer": "Toyota",
-    "body": "NASCAR O’Reilly Auto Parts Series Toyota Supra",
+    "body": "NASCAR O\u2019Reilly Auto Parts Series Toyota Supra",
     "schemeId": "",
     "image": "https://i.ibb.co/xqc32PDT/i-Racing-com-Simulator-10-10-2025-5-02-57-PM.png",
     "special": [],
-    "note": "Inspired by Lando Norris’ special-edition Monster Energy can design."
+    "note": "Inspired by Lando Norris\u2019 special-edition Monster Energy can design."
   },
   {
     "slug": "iracing-monster-lando-mclaren",
@@ -574,6 +574,6 @@
     "schemeId": "",
     "image": "https://i.ibb.co/Jw6Tqmcf/i-Racing-com-Simulator-10-12-2025-11-42-56-PM.png",
     "special": [],
-    "note": "Team endurance livery inspired by Lando Norris’ special-edition Monster Energy can design."
+    "note": "Team endurance livery inspired by Lando Norris\u2019 special-edition Monster Energy can design."
   }
 ]

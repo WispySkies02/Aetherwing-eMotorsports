@@ -113,7 +113,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
 
   <section class="section aw-wispy-stats" data-brush="FACTORY DATA">
     <div class="shell shell--standard">
-      <div class="section-head"><div><p class="eyebrow">Wispy / Hailey Bell</p><h2 class="section-title">iRacing Career Snapshot</h2></div><p class="lede">One identity record: Wispy / @Aokikoto for RoRacing, Hailey Bell for current iRacing presentation, and Nicholas Waggoner retained only where historical results were originally recorded under that name.</p></div>
+      <div class="section-head"><div><p class="eyebrow">Hailey Bell</p><h2 class="section-title">iRacing Career Snapshot</h2></div><p class="lede">Current iRacing identity: Hailey Bell. Historical results originally recorded under Nicholas Waggoner retain that historical attribution.</p></div>
       <div class="aw-iracing-stat-grid">{wispyStats.map((stat)=><div><span>{stat.label}</span><strong>{stat.value}</strong></div>)}</div>
       <p class="aw-formula-note"><b>{wispyStats.find((stat)=>stat.label==='Formula Win Rate')?.value ?? '—'} Formula win rate</b> refers specifically to Formula-category iRacing competition.</p>
     </div>
@@ -121,9 +121,9 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
 
   <section class="section aw-factory-roster">
     <div class="shell shell--standard">
-      <div class="section-head"><div><p class="eyebrow">iRacing Factory Program</p><h2 class="section-title">{String(iracing.factoryDrivers).padStart(2,'0')} Factory Entries</h2></div><p class="lede">The garage uses Hailey Bell for current iRacing presentation without creating a duplicate Wispy profile. Historical results recorded under Nicholas Waggoner remain attributed to that historical name.</p></div>
+      <div class="section-head"><div><p class="eyebrow">iRacing Factory Program</p><h2 class="section-title">{String(iracing.factoryDrivers).padStart(2,'0')} Factory Entries</h2></div><p class="lede">The garage uses Hailey Bell for current iRacing presentation. Historical results recorded under Nicholas Waggoner remain attributed to that historical name.</p></div>
       <div class="aw-factory-grid">
-        {iracing.entries.filter((entry)=>entry.driver!=='Aetherwing Endurance Team').map((entry)=><article class="panel"><span>#{entry.number}</span><h3>{entry.driver==='Hailey Bell'?'Wispy / Hailey Bell':entry.driver}</h3><p>Aetherwing Factory Program</p></article>)}
+        {iracing.entries.filter((entry)=>entry.driver!=='Aetherwing Endurance Team').map((entry)=><article class="panel"><span>#{entry.number}</span><h3>{entry.driver}</h3><p>Aetherwing Factory Program</p></article>)}
       </div>
     </div>
   </section>
