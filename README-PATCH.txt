@@ -1,1 +1,1 @@
-Aetherwing v0.4.44 FULL — admin backend repair-deploy deadlock fix. Production live-content sync failures no longer prevent the repaired admin Functions from deploying.
+Aetherwing v0.4.45 FULL — Schedule Manager bulk one-week shift controls with series/start-event selection, preview, confirmation, and undo.

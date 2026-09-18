@@ -1,3 +1,11 @@
+## v0.4.45 — Schedule Manager bulk week shift
+- Added a safe bulk schedule tool to the Unified Admin Schedule Manager.
+- Choose a series and starting event, then preview moving that event and every later event in the same series exactly 7 days earlier or later.
+- Preview shows affected event count and date changes before applying anything.
+- Applying the shift changes only the unsaved schedule draft; the normal Save Draft and Publish workflow is still required.
+- Multi-day event windows move both start/end dates and refresh their display range.
+- Added an in-session Undo Last Shift control and mobile-friendly layout.
+
 ## v0.4.44 — Admin repair deploy deadlock fix
 - Fixed production builds aborting before Astro when the currently deployed `/api/site-content` endpoint returns 502/503.
 - Automatic live-content sync now preserves bundled/last-known content and continues the deploy, allowing repaired Netlify Functions to reach production.

@@ -126,3 +126,29 @@
     flex-direction: column;
   }
 }
+
+/* v0.4.45 — Schedule Manager bulk week-shift controls */
+.schedule-shift-tool{margin:1rem 0 1.35rem;border:1px solid #2b6477;border-left:4px solid var(--blue);background:linear-gradient(120deg,rgba(24,194,255,.09),#080808 62%);box-shadow:6px 6px 0 rgba(0,0,0,.35)}
+.schedule-shift-tool[hidden]{display:none}
+.schedule-shift-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1rem;border-bottom:1px solid #24414b}
+.schedule-shift-head span{display:block;color:var(--blue);font:900 .56rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.schedule-shift-head h3{margin:.4rem 0 .3rem;font:900 clamp(1.35rem,3vw,2.1rem)/.92 var(--condensed);text-transform:uppercase}
+.schedule-shift-head p{max-width:760px;margin:0;color:#8d8d8d;font-size:.76rem;line-height:1.55}
+.schedule-shift-head>strong{flex:0 0 auto;padding:.65rem .72rem;border:1px solid var(--blue);color:var(--blue);font:900 .8rem/1 var(--mono);letter-spacing:.08em;white-space:nowrap}
+.schedule-shift-controls{display:grid;grid-template-columns:minmax(150px,.65fr) minmax(240px,1.35fr) minmax(340px,1.2fr);gap:.75rem;padding:1rem}
+.schedule-shift-controls label{display:grid;gap:.35rem;color:#9a9a9a;font:900 .54rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.schedule-shift-controls select{min-height:46px;border:1px solid #444;background:#090909;color:#fff;padding:.6rem .7rem;font:700 .78rem/1.25 var(--mono)}
+.schedule-shift-buttons{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;align-self:end}
+.schedule-shift-buttons button,.schedule-shift-actions button{min-height:46px;border:1px solid #3f3f3f;background:#0b0b0b;color:#ddd;padding:.62rem .7rem;cursor:pointer;font:900 .56rem/1.25 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.schedule-shift-buttons button:hover,.schedule-shift-buttons button:focus-visible,.schedule-shift-actions button:hover,.schedule-shift-actions button:focus-visible{border-color:var(--blue);color:#fff;outline:2px solid rgba(24,194,255,.22);outline-offset:2px}
+.schedule-shift-buttons button:first-child{border-color:#8e6f27;color:#f2cf74}.schedule-shift-buttons button:last-child{border-color:#247a96;color:#69d9ff}
+.schedule-shift-preview{margin:0 1rem 1rem;border:1px solid #3b3b3b;background:#050505}
+.schedule-shift-preview>div:first-child{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:.8rem .9rem;border-bottom:1px solid #292929}
+.schedule-shift-preview>div:first-child span{color:var(--blue);font:900 .54rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.schedule-shift-preview>div:first-child strong{max-width:720px;text-align:right;color:#ddd;font:800 .7rem/1.45 var(--mono)}
+.schedule-shift-preview ol{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.schedule-shift-preview li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;padding:.62rem .9rem;border-bottom:1px solid #202020}
+.schedule-shift-preview li strong{font:900 .8rem/1.15 var(--condensed);text-transform:uppercase}.schedule-shift-preview li span{color:#999;font:800 .62rem/1.25 var(--mono);white-space:nowrap}.schedule-shift-preview li.is-more{background:#0b0b0b}.schedule-shift-preview li.is-more strong{color:#888}
+.schedule-shift-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.55rem;padding:.8rem .9rem}.schedule-shift-actions .primary{border-color:var(--blue);background:var(--blue);color:#00131b}.schedule-shift-actions .primary:hover,.schedule-shift-actions .primary:focus-visible{color:#000}
+@media(max-width:920px){.schedule-shift-controls{grid-template-columns:1fr 1fr}.schedule-shift-buttons{grid-column:1/-1}.schedule-shift-preview>div:first-child{display:grid}.schedule-shift-preview>div:first-child strong{text-align:left}}
+@media(max-width:640px){.schedule-shift-head{display:grid}.schedule-shift-head>strong{justify-self:start}.schedule-shift-controls{grid-template-columns:1fr}.schedule-shift-buttons{grid-column:auto;grid-template-columns:1fr}.schedule-shift-preview{margin-inline:.65rem}.schedule-shift-preview li{grid-template-columns:1fr;gap:.25rem}.schedule-shift-preview li span{white-space:normal}.schedule-shift-actions{display:grid;grid-template-columns:1fr}.schedule-shift-actions button{width:100%}}

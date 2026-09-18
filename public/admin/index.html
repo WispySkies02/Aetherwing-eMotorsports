@@ -50,6 +50,29 @@
         <div class="panel-heading"><span>EDIT</span><div><h2 id="content-title" data-content-title>Site editor</h2><p>Save a draft first. Publishing rebuilds the static main site; paints update directly.</p></div></div>
         <p data-content-status role="status" aria-live="polite"></p>
         <div class="library-tools"><label>Section<select data-content-dataset></select></label><button type="button" data-content-refresh>Refresh saved data</button><button type="button" data-content-rebuild>Publish site / retry build</button><button type="button" data-content-export>Export backup</button></div>
+        <section class="schedule-shift-tool" data-schedule-shift hidden aria-labelledby="schedule-shift-title">
+          <div class="schedule-shift-head">
+            <div><span>Bulk Schedule Tool</span><h3 id="schedule-shift-title">Move a remaining schedule by one week</h3><p>Choose a series and the first affected event. Every event in that series from that point forward moves together, preserving the schedule cadence.</p></div>
+            <strong>± 7 DAYS</strong>
+          </div>
+          <div class="schedule-shift-controls">
+            <label>Series<select data-shift-league></select></label>
+            <label>Start with<select data-shift-start></select></label>
+            <div class="schedule-shift-buttons" role="group" aria-label="Preview a one-week schedule shift">
+              <button type="button" data-shift-preview="-7">← Preview 1 Week Earlier</button>
+              <button type="button" data-shift-preview="7">Preview 1 Week Later →</button>
+            </div>
+          </div>
+          <div class="schedule-shift-preview" data-shift-preview-panel hidden aria-live="polite">
+            <div><span data-shift-preview-heading>Shift preview</span><strong data-shift-preview-summary></strong></div>
+            <ol data-shift-preview-list></ol>
+            <div class="schedule-shift-actions">
+              <button type="button" data-shift-cancel>Cancel Preview</button>
+              <button type="button" class="primary" data-shift-apply>Apply Shift to Draft</button>
+              <button type="button" data-shift-undo hidden>Undo Last Shift</button>
+            </div>
+          </div>
+        </section>
         <div class="content-layout"><aside><input type="search" placeholder="Search entries" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save section draft</button><button type="button" class="primary" data-content-publish>Publish saved draft</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
       </section>
 

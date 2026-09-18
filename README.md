@@ -1,3 +1,5 @@
+> Current package: **v0.4.45** — adds Schedule Manager bulk one-week shift controls.
+
 **Current release: v0.4.41 — Unified Aetherwing Admin**
 
 Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All five editor workspaces are in /admin/; the standalone Paint Booth is public-only. Main-site publishing requires a private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.

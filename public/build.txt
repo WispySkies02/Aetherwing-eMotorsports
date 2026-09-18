@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.44 — admin deploy deadlock fix
+Aetherwing eMotorsports v0.4.45 — schedule bulk week-shift admin controls

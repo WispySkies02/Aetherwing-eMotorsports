@@ -252,6 +252,13 @@ assert(existsSync(resolve(root, 'netlify/functions/paint-data.mjs')) && existsSy
 assert(existsSync(resolve(root, 'data/paint-seed.json')) && existsSync(resolve(root, 'public/data/paint-seed.json')), 'Main site contains server and browser copies of the Paint Booth seed data');
 assert(text('src/layouts/BaseLayout.astro').includes('location.replace(`/admin/${hash}`)'), 'Identity email tokens route into the central admin');
 assert(adminScript.includes('AUTO_LOGIN') && adminScript.includes("window.netlifyIdentity.open('login')"), 'Admin login convenience route can auto-open the secure sign-in dialog');
+const contentAdminScript = text('public/admin/content-admin.js');
+const controlCenterCss = text('public/admin/control-center.css');
+assert(adminPage.includes('data-schedule-shift') && adminPage.includes('data-shift-preview="-7"') && adminPage.includes('data-shift-preview="7"'), 'Schedule Manager includes one-week earlier/later bulk shift controls');
+assert(contentAdminScript.includes('function previewScheduleShift(days)') && contentAdminScript.includes('function applyScheduleShift()') && contentAdminScript.includes('function undoScheduleShift()'), 'Schedule Manager bulk shift supports preview, apply, and undo');
+assert(contentAdminScript.includes("event.league===league&&event.date&&String(event.date)>=String(start.date)") && contentAdminScript.includes('event.endDate=shiftIsoDate(event.endDate,days)'), 'Bulk week shift affects only the selected series from the chosen event forward and preserves multi-day windows');
+assert(contentAdminScript.includes('Save the section draft, review it, then publish when ready.'), 'Bulk week shift remains inside the normal draft/publish workflow');
+assert(controlCenterCss.includes('v0.4.45 — Schedule Manager bulk week-shift controls') && controlCenterCss.includes('@media(max-width:640px)'), 'Bulk schedule controls include mobile layout treatment');
 
 const redirects = text('public/_redirects');
 assert(/^\/admin\s+\/admin\/\s+301/m.test(redirects), 'Bare /admin canonicalizes to /admin/');

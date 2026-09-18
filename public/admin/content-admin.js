@@ -90,6 +90,89 @@
     }).join('');
   }
   function title(row,i) { return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
+  const shiftState={days:0,indexes:[],snapshot:null};
+  const shiftLeagueNames={nrrs:'NRRS','uarl-d1':'UARL D1',open:'UARL Open',kmart:'Kmart',sunoco:'Sunoco',iracing:'iRacing','uarl-d2':'UARL D2'};
+  function shiftIsoDate(value,days) {
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(String(value||'')))return value;
+    const date=new Date(`${value}T12:00:00Z`);if(Number.isNaN(date.getTime()))return value;
+    date.setUTCDate(date.getUTCDate()+days);return date.toISOString().slice(0,10);
+  }
+  function shortDate(value) {
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(String(value||'')))return value||'TBD';
+    return new Date(`${value}T12:00:00Z`).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+  }
+  function eventWindow(start,end) {
+    if(!start||!end)return '';
+    const a=new Date(`${start}T12:00:00Z`),b=new Date(`${end}T12:00:00Z`);
+    if(Number.isNaN(a)||Number.isNaN(b))return '';
+    const ma=a.toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),mb=b.toLocaleDateString('en-US',{month:'short',timeZone:'UTC'});
+    if(a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth())return `${ma} ${a.getUTCDate()}–${b.getUTCDate()}`;
+    if(a.getUTCFullYear()===b.getUTCFullYear())return `${ma} ${a.getUTCDate()}–${mb} ${b.getUTCDate()}`;
+    return `${ma} ${a.getUTCDate()}, ${a.getUTCFullYear()}–${mb} ${b.getUTCDate()}, ${b.getUTCFullYear()}`;
+  }
+  function scheduleShiftTool(){return $('[data-schedule-shift]');}
+  function populateShiftStarts(preferredIndex=null){
+    const leagueSelect=$('[data-shift-league]'),startSelect=$('[data-shift-start]');if(!leagueSelect||!startSelect||!Array.isArray(data))return;
+    const league=leagueSelect.value;
+    const matches=data.map((event,i)=>({event,i})).filter(({event})=>event.league===league&&/^\d{4}-\d{2}-\d{2}$/.test(String(event.date||''))).sort((a,b)=>String(a.event.date).localeCompare(String(b.event.date))||a.i-b.i);
+    startSelect.innerHTML=matches.map(({event,i})=>`<option value="${i}">${esc(shortDate(event.date))} · ${esc(event.title||event.track||`Entry ${i+1}`)}</option>`).join('');
+    if(preferredIndex!==null&&matches.some(({i})=>i===preferredIndex))startSelect.value=String(preferredIndex);
+    else {
+      const today=new Date().toISOString().slice(0,10),next=matches.find(({event})=>String(event.date)>=today)||matches[0];
+      if(next)startSelect.value=String(next.i);
+    }
+  }
+  function refreshScheduleShiftTool(){
+    const tool=scheduleShiftTool();if(!tool)return;
+    tool.hidden=key!=='schedule-events';
+    $('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];
+    if(key!=='schedule-events'||!Array.isArray(data))return;
+    const currentLeague=current()?.league;
+    const leagues=[...new Set(data.map((event)=>event.league).filter(Boolean))];
+    const leagueSelect=$('[data-shift-league]');
+    leagueSelect.innerHTML=leagues.map((league)=>`<option value="${esc(league)}">${esc(shiftLeagueNames[league]||data.find((event)=>event.league===league)?.leagueName||league)}</option>`).join('');
+    if(currentLeague&&leagues.includes(currentLeague))leagueSelect.value=currentLeague;
+    populateShiftStarts(index);
+  }
+  function previewScheduleShift(days){
+    if(key!=='schedule-events'||!Array.isArray(data))return;
+    commit();
+    const league=$('[data-shift-league]').value,startIndex=Number($('[data-shift-start]').value),start=data[startIndex];
+    if(!start||start.league!==league||!start.date)return status('Choose a valid series and starting event.');
+    const indexes=data.map((event,i)=>({event,i})).filter(({event})=>event.league===league&&event.date&&String(event.date)>=String(start.date)).sort((a,b)=>String(a.event.date).localeCompare(String(b.event.date))||a.i-b.i).map(({i})=>i);
+    if(!indexes.length)return status('No dated events are available to shift from that point.');
+    shiftState.days=days;shiftState.indexes=indexes;
+    const direction=days>0?'later':'earlier',panel=$('[data-shift-preview-panel]');
+    $('[data-shift-preview-heading]').textContent=`${shiftLeagueNames[league]||start.leagueName||league} · ${days>0?'+1 week':'−1 week'}`;
+    $('[data-shift-preview-summary]').textContent=`${indexes.length} event${indexes.length===1?'':'s'} will move 7 days ${direction}, starting with ${start.title||start.track}.`;
+    const rows=indexes.slice(0,10).map((i)=>{const event=data[i],next=shiftIsoDate(event.date,days);return `<li><strong>${esc(event.title||event.track)}</strong><span>${esc(shortDate(event.date))} → ${esc(shortDate(next))}</span></li>`;});
+    if(indexes.length>10)rows.push(`<li class="is-more"><strong>+ ${indexes.length-10} more event${indexes.length-10===1?'':'s'}</strong><span>All move by the same 7 days.</span></li>`);
+    $('[data-shift-preview-list]').innerHTML=rows.join('');
+    $('[data-shift-apply]').textContent=`Apply ${days>0?'+1':'−1'} Week Shift`;
+    panel.hidden=false;panel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
+    status(`Preview ready. Nothing has changed yet. Review ${indexes.length} affected event${indexes.length===1?'':'s'}, then apply the shift.`);
+  }
+  function applyScheduleShift(){
+    if(!shiftState.days||!shiftState.indexes.length)return status('Preview a schedule shift first.');
+    const first=data[shiftState.indexes[0]],days=shiftState.days,direction=days>0?'later':'earlier';
+    if(!confirm(`Move ${shiftState.indexes.length} ${shiftLeagueNames[first.league]||first.leagueName||first.league} event${shiftState.indexes.length===1?'':'s'} 7 days ${direction}, starting with ${first.title||first.track}?\n\nThis changes only the unsaved Schedule Manager draft. You must still Save section draft and Publish saved draft.`))return;
+    const shiftedCount=shiftState.indexes.length;
+    shiftState.snapshot=structuredClone(data);
+    shiftState.indexes.forEach((i)=>{
+      const event=data[i];event.date=shiftIsoDate(event.date,days);
+      if(event.endDate)event.endDate=shiftIsoDate(event.endDate,days);
+      if(event.endDate&&event.displayDate)event.displayDate=eventWindow(event.date,event.endDate);
+    });
+    dirty=true;render();
+    const selected=index;refreshScheduleShiftTool();
+    const leagueSelect=$('[data-shift-league]');if(first?.league&&[...leagueSelect.options].some((option)=>option.value===first.league)){leagueSelect.value=first.league;populateShiftStarts(selected);}
+    $('[data-shift-undo]').hidden=false;
+    status(`${shiftedCount} event${shiftedCount===1?'':'s'} moved 7 days ${direction} in the unsaved draft. Save the section draft, review it, then publish when ready.`);
+  }
+  function undoScheduleShift(){
+    if(!shiftState.snapshot)return status('There is no bulk shift to undo in this session.');
+    data=structuredClone(shiftState.snapshot);shiftState.snapshot=null;dirty=true;render();refreshScheduleShiftTool();$('[data-shift-undo]').hidden=true;status('Last bulk week shift undone. The Schedule Manager still has unsaved changes.');
+  }
   function renderList() {
     const search=$('[data-content-search]').value.toLowerCase();
     $('[data-content-list]').innerHTML=Array.isArray(data)?data.map((r,i)=>({r,i})).filter(({r})=>JSON.stringify(r).toLowerCase().includes(search)).map(({r,i})=>`<button type="button" data-entry="${i}" aria-pressed="${i===index}"><strong>${esc(title(r,i))}</strong><small>${esc([r.leagueName||r.competition||r.category||'',r.date||r.numbers||r.slug||''].filter(Boolean).join(' · '))}</small></button>`).join(''):'<p>This section is one complete record. Edit its fields on the right.</p>';
@@ -111,7 +194,7 @@
   function chooseDataset(name) {
     key=name; data=structuredClone(base(key)); index=0; dirty=false;
     if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r}));
-    render();
+    render();refreshScheduleShiftTool();
     status(`${registry.drafts[key]?'Private saved draft':registry.published[key]?'Published content':'Bundled baseline'} · Revision ${registry.revision}. ${key==='roster-profiles'?'Keep slugs consistent across roster cards, program entries, and profile pages.':''}`);
   }
   async function openModule(name) {
@@ -128,6 +211,12 @@
   }
   document.querySelectorAll('[data-content-module]').forEach((button)=>button.addEventListener('click',()=>openModule(button.dataset.contentModule)));
   $('[data-content-dataset]').addEventListener('change',(event)=>{ if(dirty&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} chooseDataset(event.target.value); });
+  $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
+  $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
+  document.querySelectorAll('[data-shift-preview]').forEach((button)=>button.addEventListener('click',()=>previewScheduleShift(Number(button.dataset.shiftPreview))));
+  $('[data-shift-cancel]').addEventListener('click',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];status('Bulk schedule preview cancelled. No dates were changed.');});
+  $('[data-shift-apply]').addEventListener('click',applyScheduleShift);
+  $('[data-shift-undo]').addEventListener('click',undoScheduleShift);
   $('[data-content-search]').addEventListener('input',renderList);
   $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();index=Number(button.dataset.entry);render();}});
   $('[data-content-form]').addEventListener('input',()=>{dirty=true;});
