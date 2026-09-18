@@ -44,3 +44,8 @@ Before disabling the old Booth login, export `registry.json` from the old Paint 
 The source build, baseline fact guards, all 11 editable content sections, mock Identity/storage authorization and persistence, DOM form interactions, recovery-dialog guard, public Booth reads/shares, and an actual rebuild with fixture edits were tested locally. Fixtures were removed and the baseline rebuilt. Live Identity account setup and a production Blobs save still require the deployed smoke test above; the original 502 cannot be declared resolved in production without that test. A local native function-packager check encountered Windows sandbox access restrictions, so function packaging must also be confirmed in the Netlify deployment log.
 
 Official references: [Build hooks](https://docs.netlify.com/build/configure-builds/build-hooks/), [Environment variable scopes](https://docs.netlify.com/build/environment-variables/overview/), [Netlify Blobs](https://docs.netlify.com/build/data-and-storage/netlify-blobs/).
+
+
+## v0.4.46 — original Paint Booth paints
+
+Paint Operations now lists the bundled original paints as editable records. Saving an original paint creates a published/draft override in Netlify Blobs; the bundled seed remains intact. Original share slugs are locked so existing URLs keep working. `/api/paints` publishes the merged original + override + Admin-added registry.

@@ -53,11 +53,25 @@ function seedPaints() {
   return JSON.parse(fs.readFileSync(filename, 'utf8')).paints || [];
 }
 
+function mergedPublishedPaints(registry) {
+  const base = seedPaints();
+  const overrides = new Map((registry.paints || []).map((paint) => [paint.slug, paint]));
+  const baseSlugs = new Set(base.map((paint) => paint.slug));
+  const paints = base.map((paint) => {
+    const override = overrides.get(paint.slug);
+    return override ? { ...paint, ...override, source: 'seed-override' } : { ...paint, source: 'seed' };
+  });
+  for (const paint of registry.paints || []) {
+    if (!baseSlugs.has(paint.slug)) paints.push({ ...paint, source: paint.source || 'admin' });
+  }
+  return paints.filter((paint) => !paint.archived && paint.status !== 'draft');
+}
+
 function publicRegistry(registry) {
   const now = Date.now();
   const feature = registry.feature && (!registry.feature.expiresAt || Date.parse(registry.feature.expiresAt) > now)
     ? registry.feature : null;
-  return { version: 1, paints: registry.paints.filter((paint) => !paint.archived && paint.status !== 'draft'), feature };
+  return { version: 1, paints: mergedPublishedPaints(registry), feature };
 }
 
 function json(statusCode, body, headers = {}) {
@@ -142,6 +156,6 @@ function addRevision(registry, action, detail, user) {
 }
 
 module.exports = {
-  addRevision, json, publicRegistry, readRegistry, sanitizeFeature, sanitizePaint,
+  addRevision, json, mergedPublishedPaints, publicRegistry, readRegistry, sanitizeFeature, sanitizePaint,
   seedPaints, validatePaint, writeRegistry
 };

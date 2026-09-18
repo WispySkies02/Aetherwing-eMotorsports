@@ -79,7 +79,7 @@
       <div class="paint-operations-head" id="paint-operations"><div><p class="kicker">Module 03 · Live</p><h2>Paint Operations</h2></div><a href="https://paint.aetherwing.net/" target="_blank" rel="noopener">Open public Paint Booth ↗</a></div>
       <nav class="ops-tabs" aria-label="Paint Operations sections">
         <button class="is-active" type="button" data-tab="feature" aria-selected="true">Feature a paint</button>
-        <button type="button" data-tab="add" aria-selected="false">Add a paint</button>
+        <button type="button" data-tab="add" aria-selected="false">Add / edit paint</button>
         <button type="button" data-tab="library" aria-selected="false">Paint library</button>
       </nav>
 
@@ -109,7 +109,7 @@
           <form data-paint-form>
             <div class="field-row">
               <label><span>Paint name / sponsor</span><input name="sponsor" required placeholder="PetSmart Night Race"></label>
-              <label><span>Share slug</span><input name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="nrrs-petsmart-night"></label>
+              <label><span>Share slug</span><input name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="nrrs-petsmart-night"><small>Existing paint slugs stay locked so old share links never break.</small></label>
             </div>
             <div class="field-row thirds">
               <label><span>League</span><select name="league" required data-league-select></select></label>

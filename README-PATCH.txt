@@ -1,1 +1,1 @@
-Aetherwing v0.4.45 FULL — Schedule Manager bulk one-week shift controls with series/start-event selection, preview, confirmation, and undo.
+Aetherwing v0.4.46 FULL — Unified Paint Operations: edit original paints through non-destructive overrides, publish one merged registry, preserve original slugs, and keep v0.4.45 Schedule Manager bulk week-shift controls.

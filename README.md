@@ -1,4 +1,4 @@
-> Current package: **v0.4.45** — adds Schedule Manager bulk one-week shift controls.
+> Current package: **v0.4.46** — unifies Paint Operations so original and Admin-added paints are editable from one registry.
 
 **Current release: v0.4.41 — Unified Aetherwing Admin**
 
@@ -185,3 +185,7 @@ Latest patch: v0.4.1 adds page-specific metadata images so major site links no l
 
 ### v0.4.2 schedule sharing
 Each Schedule event has a dedicated `/event/<slug>/` share URL and generated image card. Discord receives the image-focused metadata page; users who click through are sent to `/schedule/` with the matching league/division filter active and the shared event opened.
+
+## v0.4.46 Paint Operations
+
+Paint Operations now exposes the original Paint Booth collection and Admin-added paints as one editable library. Original records keep their permanent slugs; publishing an edit stores an override rather than destructively rewriting the bundled seed. `/api/paints` publishes the merged collection for the public Paint Booth and its rich share cards.

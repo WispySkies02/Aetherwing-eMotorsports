@@ -1,3 +1,13 @@
+# Changelog
+
+## 0.4.46 — Unified editable Paint Registry — 2026-09-18
+
+- Paint Operations now lists and edits all original Paint Booth paints alongside Admin-added paints.
+- Original paints are non-destructive base records: edits publish as overrides while preserving the original share slug and asset history.
+- The public `/api/paints` registry now returns one merged collection (originals + published overrides + Admin additions), so the Paint Booth and rich embeds consume the same source of truth.
+- Original paints cannot be accidentally archived or renamed from Admin; their existing share links remain stable.
+- Draft/publish behavior now works for original-paint edits as well as newly added paints.
+
 ## v0.4.45 — Schedule Manager bulk week shift
 - Added a safe bulk schedule tool to the Unified Admin Schedule Manager.
 - Choose a series and starting event, then preview moving that event and every later event in the same series exactly 7 days earlier or later.

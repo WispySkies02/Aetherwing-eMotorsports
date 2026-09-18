@@ -20,8 +20,40 @@
   const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const slugify = (value) => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
-  const allPaints = () => [...(seed.paints || []), ...(registry.paints || []), ...(registry.drafts || [])];
-  const publicPaints = () => [...(seed.paints || []), ...(registry.paints || []).filter((paint) => !paint.archived)];
+  const seedSlugs = () => new Set((seed.paints || []).map((paint) => paint.slug));
+  function mergedPublishedPaints() {
+    const overrides = new Map((registry.paints || []).map((paint) => [paint.slug, paint]));
+    const baseSlugs = seedSlugs();
+    const merged = (seed.paints || []).map((paint) => overrides.has(paint.slug)
+      ? { ...paint, ...overrides.get(paint.slug), _origin: 'seed', _overridden: true }
+      : { ...paint, _origin: 'seed', _overridden: false });
+    for (const paint of registry.paints || []) {
+      if (!baseSlugs.has(paint.slug)) merged.push({ ...paint, _origin: 'admin' });
+    }
+    return merged.filter((paint) => !paint.archived && paint.status !== 'draft');
+  }
+  function libraryPaints() {
+    const drafts = new Map((registry.drafts || []).map((paint) => [paint.slug, paint]));
+    const published = new Map((registry.paints || []).map((paint) => [paint.slug, paint]));
+    const baseSlugs = seedSlugs();
+    const items = (seed.paints || []).map((base) => {
+      if (drafts.has(base.slug)) return { ...base, ...drafts.get(base.slug), _origin: 'seed', _overridden: true, status: 'draft' };
+      if (published.has(base.slug)) {
+        const value = published.get(base.slug);
+        return { ...base, ...value, _origin: 'seed', _overridden: true, status: value.archived ? 'archived' : 'published' };
+      }
+      return { ...base, _origin: 'seed', _overridden: false, status: 'published' };
+    });
+    for (const paint of registry.paints || []) if (!baseSlugs.has(paint.slug)) items.push({ ...paint, _origin: 'admin', status: paint.archived ? 'archived' : 'published' });
+    for (const paint of registry.drafts || []) if (!baseSlugs.has(paint.slug)) items.push({ ...paint, _origin: 'admin', status: 'draft' });
+    return items;
+  }
+  const publicPaints = () => mergedPublishedPaints();
+  const allPaints = () => {
+    const map = new Map(publicPaints().map((paint) => [paint.slug, paint]));
+    for (const paint of registry.drafts || []) map.set(paint.slug, paint);
+    return [...map.values()];
+  };
 
   function toast(message, isError = false) {
     const node = $('[data-toast]');
@@ -98,12 +130,14 @@
       const paint = payload.paint;
       const status = payload.status === 'draft' ? 'draft' : 'published';
       const priorSlug = payload.priorSlug || '';
+      const editingSeed = Boolean(priorSlug && seedSlugs().has(priorSlug));
+      if (editingSeed && paint.slug !== priorSlug) throw new Error('The share slug is locked for pre-existing paints so their existing links keep working.');
       const error = duplicateError(paint, priorSlug);
       if (error) throw new Error(error);
       next.paints = (next.paints || []).filter((item) => item.slug !== priorSlug && item.slug !== paint.slug);
       next.drafts = (next.drafts || []).filter((item) => item.slug !== priorSlug && item.slug !== paint.slug);
       const target = status === 'draft' ? next.drafts : next.paints;
-      target.push({ ...paint, status, archived: false, updatedAt: new Date().toISOString() });
+      target.push({ ...paint, status, archived: false, source: editingSeed ? 'seed-override' : 'admin', updatedAt: new Date().toISOString() });
       return { registry: localWrite(next, status === 'draft' ? 'draft.saved' : 'paint.published', paint.slug) };
     }
     if (action === 'setFeature') {
@@ -115,6 +149,7 @@
       return { registry: localWrite(next, 'feature.cleared') };
     }
     if (action === 'archivePaint') {
+      if (seedSlugs().has(payload.slug)) throw new Error('Pre-existing paints stay in the permanent archive. Edit their details instead of archiving them.');
       next.paints = (next.paints || []).map((paint) => paint.slug === payload.slug ? { ...paint, archived: payload.archived !== false } : paint);
       if (next.feature?.slug === payload.slug && payload.archived !== false) next.feature = null;
       return { registry: localWrite(next, payload.archived === false ? 'paint.restored' : 'paint.archived', payload.slug) };
@@ -252,22 +287,50 @@
 
   function renderLibrary() {
     const query = String($('[data-library-search]')?.value || '').toLowerCase().trim();
-    const items = [
-      ...(registry.paints || []).map((paint) => ({ ...paint, status: paint.archived ? 'archived' : 'published' })),
-      ...(registry.drafts || []).map((paint) => ({ ...paint, status: 'draft' }))
-    ].filter((paint) => !query || [paint.sponsor, paint.slug, paint.driver, paint.leagueName].join(' ').toLowerCase().includes(query));
+    const items = libraryPaints().filter((paint) => !query || [paint.sponsor, paint.slug, paint.driver, paint.leagueName, paint.leagues?.[0]].join(' ').toLowerCase().includes(query));
     const list = $('[data-library-list]');
     if (!items.length) {
-      list.innerHTML = '<div class="preview-empty">No Paint Operations entries yet. The original v42 collection remains live and unchanged.</div>';
+      list.innerHTML = '<div class="preview-empty">No paints match this search.</div>';
       return;
     }
-    list.innerHTML = items.sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || ''))).map((paint) => `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span></h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${paint.status === 'draft' ? `<button type="button" data-publish-draft="${esc(paint.slug)}">Publish</button>` : `<button type="button" data-archive-paint="${esc(paint.slug)}" data-archived="${paint.archived ? 'true' : 'false'}">${paint.archived ? 'Restore' : 'Archive'}</button>`}</div></article>`).join('');
+    list.innerHTML = items.sort((a, b) => {
+      const aDate = String(a.updatedAt || '');
+      const bDate = String(b.updatedAt || '');
+      if (aDate || bDate) return bDate.localeCompare(aDate);
+      return String(a.sponsor || '').localeCompare(String(b.sponsor || ''));
+    }).map((paint) => {
+      const sourceLabel = paint._origin === 'seed' ? (paint._overridden ? 'EDITED ORIGINAL' : 'ORIGINAL') : 'ADMIN';
+      const archiveAction = paint._origin === 'admin' && paint.status !== 'draft'
+        ? `<button type="button" data-archive-paint="${esc(paint.slug)}" data-archived="${paint.archived ? 'true' : 'false'}">${paint.archived ? 'Restore' : 'Archive'}</button>`
+        : '';
+      const publishAction = paint.status === 'draft' ? `<button type="button" data-publish-draft="${esc(paint.slug)}">Publish</button>` : '';
+      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span></h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
+    }).join('');
+  }
+
+  function libraryPaintBySlug(slug) {
+    return libraryPaints().find((paint) => paint.slug === slug) || null;
   }
 
   function refreshAll() {
     populatePaintSelect();
     hydrateFeature();
     renderLibrary();
+  }
+
+  function resetPaintFormForNew() {
+    const form = $('[data-paint-form]');
+    if (!form) return;
+    form.reset();
+    delete form.dataset.editingSlug;
+    delete form.dataset.editingSeed;
+    const slug = form.elements.namedItem('slug');
+    if (slug instanceof HTMLInputElement) slug.readOnly = false;
+    const username = form.elements.namedItem('username');
+    if (username instanceof HTMLInputElement) username.value = 'Wispy (@Aokikoto)';
+    slugTouched = false;
+    const preview = $('[data-paint-preview-card]');
+    if (preview) preview.innerHTML = '<div class="preview-empty">Complete the paint details, then preview or publish it.</div>';
   }
 
   function fillPaintForm(paint) {
@@ -278,6 +341,10 @@
       if (field) field.value = value || '';
     }
     form.dataset.editingSlug = paint.slug;
+    const editingSeed = seedSlugs().has(paint.slug);
+    form.dataset.editingSeed = editingSeed ? 'true' : 'false';
+    const slugField = form.elements.namedItem('slug');
+    if (slugField instanceof HTMLInputElement) slugField.readOnly = editingSeed;
     slugTouched = true;
     paintPreview(paint);
     chooseTab('add');
@@ -352,7 +419,7 @@
       const button = event.target instanceof Element ? event.target.closest('button') : null;
       if (!(button instanceof HTMLButtonElement)) return;
       const slug = button.dataset.editPaint || button.dataset.publishDraft || button.dataset.archivePaint;
-      const paint = [...(registry.paints || []), ...(registry.drafts || [])].find((item) => item.slug === slug);
+      const paint = libraryPaintBySlug(slug);
       if (!paint) return;
       if (button.dataset.editPaint) return fillPaintForm(paint);
       try {
@@ -376,7 +443,10 @@
     $('[data-league-select]').innerHTML = leagues.map(([id, name]) => `<option value="${id}">${name}</option>`).join('');
     const identitySubline = $('[data-paint-form] [name="username"]');
     if (identitySubline instanceof HTMLInputElement && !identitySubline.value) identitySubline.value = 'Wispy (@Aokikoto)';
-    $$('[data-tab]').forEach((button) => button.addEventListener('click', () => chooseTab(button.dataset.tab)));
+    $$('[data-tab]').forEach((button) => button.addEventListener('click', () => {
+      if (button.dataset.tab === 'add') resetPaintFormForNew();
+      chooseTab(button.dataset.tab);
+    }));
     bindForms();
     bindLibrary();
 

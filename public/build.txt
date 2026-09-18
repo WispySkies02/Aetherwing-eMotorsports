@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.45 — schedule bulk week-shift admin controls
+Aetherwing eMotorsports v0.4.46 — unified editable Paint Operations registry

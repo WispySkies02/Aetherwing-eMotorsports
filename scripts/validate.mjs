@@ -250,6 +250,11 @@ assert(!adminScript.includes('netlifyIdentity.init()'), 'Identity widget is not 
 assert(adminFunction.includes('context?.clientContext?.user') && adminFunction.includes("role === 'admin' || role === 'paint-admin'"), 'Paint publishing is protected by verified Netlify user roles');
 assert(existsSync(resolve(root, 'netlify/functions/paint-data.mjs')) && existsSync(resolve(root, 'netlify/lib/_registry.cjs')), 'Main site contains the published paint registry functions');
 assert(existsSync(resolve(root, 'data/paint-seed.json')) && existsSync(resolve(root, 'public/data/paint-seed.json')), 'Main site contains server and browser copies of the Paint Booth seed data');
+
+assert(paintStoreLib.includes('function mergedPublishedPaints') && paintStoreLib.includes("source: 'seed-override'"), 'Published paint registry merges original paints with Admin overrides');
+assert(adminScript.includes('function libraryPaints()') && adminScript.includes("_origin: 'seed'"), 'Paint Operations library exposes original paints for editing');
+assert(adminScript.includes('slugField.readOnly = editingSeed') && adminFunction.includes('share slug is locked for pre-existing paints'), 'Original paint edits preserve their existing share slugs');
+assert(adminFunction.includes("source: editingSeed ? 'seed-override' : 'admin'"), 'Original-paint edits save as non-destructive overrides');
 assert(text('src/layouts/BaseLayout.astro').includes('location.replace(`/admin/${hash}`)'), 'Identity email tokens route into the central admin');
 assert(adminScript.includes('AUTO_LOGIN') && adminScript.includes("window.netlifyIdentity.open('login')"), 'Admin login convenience route can auto-open the secure sign-in dialog');
 const contentAdminScript = text('public/admin/content-admin.js');

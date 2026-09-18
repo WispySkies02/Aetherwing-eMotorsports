@@ -53,11 +53,16 @@ exports.handler = async (event, context) => {
       if (validation) return respond(400, { error: validation });
       const status = input.status === 'draft' ? 'draft' : 'published';
       const priorSlug = String(input.priorSlug || '');
+      const seedSlugs = new Set(seedPaints().map((item) => item.slug));
+      const editingSeed = Boolean(priorSlug && seedSlugs.has(priorSlug));
+      if (editingSeed && paint.slug !== priorSlug) {
+        return respond(400, { error: 'The share slug is locked for pre-existing paints so their existing links keep working.' });
+      }
       const duplicate = duplicateMessage(registry, paint, priorSlug);
       if (duplicate) return respond(409, { error: duplicate });
       registry.paints = registry.paints.filter((item) => item.slug !== priorSlug && item.slug !== paint.slug);
       registry.drafts = registry.drafts.filter((item) => item.slug !== priorSlug && item.slug !== paint.slug);
-      const savedPaint = { ...paint, status, archived: false, updatedAt: new Date().toISOString() };
+      const savedPaint = { ...paint, status, archived: false, source: editingSeed ? 'seed-override' : 'admin', updatedAt: new Date().toISOString() };
       (status === 'draft' ? registry.drafts : registry.paints).push(savedPaint);
       if (registry.feature?.slug === priorSlug) {
         if (status === 'draft') registry.feature=null;
@@ -78,6 +83,9 @@ exports.handler = async (event, context) => {
       addRevision(registry, 'feature.cleared', '', user);
     } else if (action === 'archivePaint') {
       const slug = String(input.slug || '');
+      if (seedPaints().some((item) => item.slug === slug)) {
+        return respond(400, { error: 'Pre-existing paints stay in the permanent archive. Edit their details instead of archiving them.' });
+      }
       const paint = registry.paints.find((item) => item.slug === slug);
       if (!paint) return respond(404, { error: 'Only paints added through Aetherwing Admin can be archived here.' });
       paint.archived = input.archived !== false;
