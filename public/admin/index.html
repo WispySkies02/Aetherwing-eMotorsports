@@ -31,7 +31,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v0.4.53</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v0.4.54</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -165,6 +165,10 @@
               <label><span>Tags</span><input name="tags" placeholder="throwback, patriotic, racewinner"></label>
               <label><span>Debut race</span><input name="debutRace" placeholder="NRRS Richmond — Sep. 20, 2026"></label>
             </div>
+            <label class="paint-flag-toggle">
+              <input type="checkbox" name="scrAffiliate">
+              <span><b>SCR Affiliate paint</b><small>Marks this scheme as part of the StarClutch Racing affiliate collection in the public Paint Booth.</small></span>
+            </label>
             <div class="actions"><button class="secondary" type="button" data-paint-preview>Preview</button><button class="secondary" type="button" data-save-draft>Save draft</button><button class="primary" type="submit">Publish paint</button><button class="accent" type="button" data-publish-feature>Publish + feature</button></div>
           </form>
           <aside class="preview-card paint-preview" data-paint-preview-card aria-live="polite"><div class="preview-empty">Fill in the paint details, then preview the collection card.</div></aside>

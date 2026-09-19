@@ -204,6 +204,9 @@
     const form = $('[data-paint-form]');
     const data = new FormData(form);
     const tags = String(data.get('tags') || '').split(',').map((tag) => slugify(tag)).filter(Boolean);
+    const scrAffiliate = data.get('scrAffiliate') === 'on';
+    const special = tags.filter((tag) => ['throwback','patriotic','racewinner','concept','tribute','prized','legacy'].includes(tag));
+    if (scrAffiliate && !special.includes('starclutch')) special.push('starclutch');
     return {
       slug: slugify(data.get('slug')),
       sponsor: String(data.get('sponsor') || '').trim(),
@@ -218,7 +221,8 @@
       image: String(data.get('image') || '').trim(),
       note: String(data.get('note') || '').trim(),
       tags,
-      special: tags.filter((tag) => ['throwback','patriotic','racewinner','concept','tribute','prized','starclutch','legacy'].includes(tag)),
+      special,
+      scrAffiliate,
       debutRace: String(data.get('debutRace') || '').trim()
     };
   }
@@ -242,7 +246,8 @@
     const identity = sameIdentity
       ? (isIRacing ? ['Hailey Bell', ''] : ['Hailey', paint.username || '@Aokikoto'])
       : [paint.driver, paint.username];
-    $('[data-paint-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">${esc(paint.leagueName)} ${paint.number ? '· #' + esc(paint.number) : ''}</p><h3>${esc(paint.sponsor)}</h3><p>${esc(identity[0])}${identity[1] ? '<br>' + esc(identity[1]) : ''}</p>${paint.note ? `<p>${esc(paint.note)}</p>` : ''}<div class="preview-race"><strong>/${esc(paint.slug)}/</strong><span>${paint.schemeId ? 'Scheme ID ' + esc(paint.schemeId) : 'iRacing custom livery'}</span></div></div>`;
+    const affiliate = paint.scrAffiliate || paint.special?.includes('starclutch');
+    $('[data-paint-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">${esc(paint.leagueName)} ${paint.number ? '· #' + esc(paint.number) : ''}</p>${affiliate ? '<span class="scr-affiliate-badge">SCR Affiliate</span>' : ''}<h3>${esc(paint.sponsor)}</h3><p>${esc(identity[0])}${identity[1] ? '<br>' + esc(identity[1]) : ''}</p>${paint.note ? `<p>${esc(paint.note)}</p>` : ''}<div class="preview-race"><strong>/${esc(paint.slug)}/</strong><span>${paint.schemeId ? 'Scheme ID ' + esc(paint.schemeId) : 'iRacing custom livery'}</span></div></div>`;
   }
 
   function featureFromForm() {
@@ -308,7 +313,8 @@
         ? `<button type="button" data-archive-paint="${esc(paint.slug)}" data-archived="${paint.archived ? 'true' : 'false'}">${paint.archived ? 'Restore' : 'Archive'}</button>`
         : '';
       const publishAction = paint.status === 'draft' ? `<button type="button" data-publish-draft="${esc(paint.slug)}">Publish</button>` : '';
-      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span></h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
+      const affiliate = paint.scrAffiliate || paint.special?.includes('starclutch');
+      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
     }).join('');
   }
 
@@ -339,10 +345,11 @@
 
   function fillPaintForm(paint) {
     const form = $('[data-paint-form]');
-    const values = { ...paint, league: paint.leagues?.[0] || '', tags: (paint.tags || paint.special || []).join(', ') };
+    const values = { ...paint, league: paint.leagues?.[0] || '', tags: (paint.tags || paint.special || []).filter((tag) => tag !== 'starclutch').join(', '), scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch') };
     for (const [key, value] of Object.entries(values)) {
       const field = form.elements.namedItem(key);
-      if (field) field.value = value || '';
+      if (field instanceof HTMLInputElement && field.type === 'checkbox') field.checked = Boolean(value);
+      else if (field) field.value = value || '';
     }
     form.dataset.editingSlug = paint.slug;
     const editingSeed = seedSlugs().has(paint.slug);

@@ -41,18 +41,20 @@ async function call(handler,body,role='admin',method=body?'POST':'GET') {
   const response=await handler(new Request('https://aetherwing.net/.netlify/functions/test',{method,headers:{...(role?{authorization:`Bearer ${role}`} : {}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}));
   return {status:response.status,body:await response.json()};
 }
-const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[]};
+const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[],scrAffiliate:true};
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},null)).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'fake-role')).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'expired')).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...paint,image:'javascript:alert(1)'}})).status,400);
 let response=await call(paintAdmin,{action:'savePaint',paint,status:'draft'});
 assert.equal(response.status,200);assert.equal(response.body.registry.drafts.length,1);
+assert.equal(response.body.registry.drafts[0].scrAffiliate,true);assert.ok(response.body.registry.drafts[0].special.includes('starclutch'));
 assert.equal((await call(paintAdmin)).body.registry.drafts.length,1);
 assert.equal((await call(paintData,undefined,null)).body.paints.length,35);
 response=await call(paintAdmin,{action:'savePaint',paint,priorSlug:paint.slug,status:'published'},'paint-admin');
 assert.equal(response.status,200);
 assert.equal((await call(paintData,undefined,null)).body.paints.length,36);
+assert.equal((await call(paintData,undefined,null)).body.paints.find((item)=>item.slug===paint.slug).scrAffiliate,true);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint})).status,409);
 assert.equal((await call(paintAdmin,{action:'setFeature',feature:{slug:paint.slug,series:'NRRS',race:'Fixture 400',track:'Fixture Raceway',date:'2099-01-01'}})).status,200);
 assert.equal((await call(paintData,undefined,null)).body.feature.slug,paint.slug);

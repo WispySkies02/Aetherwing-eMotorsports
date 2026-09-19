@@ -65,3 +65,7 @@ The Calendar and every other main-site tab can publish unsaved form changes dire
 ## v0.4.53 live Schedule delivery
 
 The public Schedule requests the published Calendar dataset directly from `/api/site-content` when the page opens. A successful **Publish current changes** therefore updates the visible Schedule after a refresh even when the Netlify build hook is missing, delayed, or failing. The schedule bundled during the last deployment remains available as an automatic fallback when the content endpoint cannot be reached. Static event social-card pages and other build-time pages still require a successful site rebuild.
+
+## v0.4.54 SCR Affiliate paints
+
+The Paint Editor includes an **SCR Affiliate paint** checkbox. Check it when a livery belongs to the StarClutch Racing affiliate collection. The option is saved with drafts and published paints, appears in Admin previews and Library rows, and is delivered to the public Paint Booth as `scrAffiliate: true`. Existing paints with the legacy `starclutch` classification automatically load with the checkbox selected; clearing the checkbox and saving removes that classification.

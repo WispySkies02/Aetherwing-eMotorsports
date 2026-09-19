@@ -43,7 +43,13 @@ const addOpen=Array.from(window.document.querySelectorAll('[data-array-add]')).f
 const addUse=Array.from(window.document.querySelectorAll('[data-array-add]')).find((b)=>b.dataset.arrayAdd.includes('"uses"'));assert.ok(addUse,'Missing Add number identity / use control');
 const form=$('[data-paint-form]');
 for(const [name,value] of Object.entries({slug:'dom-paint',sponsor:'DOM TEST Paint',driver:'Hailey',manufacturer:'Toyota',body:'Camry',image:'https://example.test/test.png'}))form.elements.namedItem(name).value=value;
-submit('[data-paint-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-paint-ops')).paints[0].slug,'dom-paint');
+form.elements.namedItem('scrAffiliate').checked=true;
+submit('[data-paint-form]');await tick();
+const savedPaint=JSON.parse(window.localStorage.getItem('aetherwing-paint-ops')).paints[0];
+assert.equal(savedPaint.slug,'dom-paint');assert.equal(savedPaint.scrAffiliate,true);assert.ok(savedPaint.special.includes('starclutch'));
+click('[data-tab="library"]');
+const existingScrEdit=$('[data-edit-paint="kmart-petsmart"]');assert.ok(existingScrEdit,'Existing SCR paint should be available to edit');existingScrEdit.click();
+assert.equal(form.elements.namedItem('scrAffiliate').checked,true,'Existing StarClutch classification should hydrate the SCR Affiliate checkbox');
 // Recovery/invite login event must never dismiss the password dialog automatically.
 const recovery=new JSDOM(fs.readFileSync(new URL('public/admin/index.html',root),'utf8'),{url:'https://aetherwing.net/admin/#recovery_token=fixture',runScripts:'outside-only'});
 const w=recovery.window,callbacks={};let closeCount=0;

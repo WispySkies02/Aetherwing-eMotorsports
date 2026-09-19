@@ -1,3 +1,12 @@
+# v0.4.54 — SCR Affiliate Paint Controls
+
+- Added an **SCR Affiliate paint** checkbox to Paint Operations for both new and existing paint records.
+- The setting persists as an explicit `scrAffiliate` boolean and automatically maintains the Paint Booth’s existing `starclutch` classification.
+- Existing paints already classified as StarClutch open in Edit mode with the checkbox selected.
+- Unchecking the option removes the SCR classification when the paint is saved.
+- Added SCR Affiliate badges to Admin paint previews and Paint Library rows.
+- The public paint API now exposes a normalized `scrAffiliate` value for both original and Admin-added paints.
+
 # v0.4.53 — Live Admin Schedule Delivery
 
 - Fixed the remaining publication gap where Calendar changes were stored successfully but the public Schedule continued displaying the stale schedule bundled into the last static build.

@@ -6,3 +6,6 @@
 .status.source{border-color:#5f6870;color:#c8d0d5;background:#101619}
 [data-paint-form] input[readonly]{opacity:.72;cursor:not-allowed;border-style:dashed}
 [data-paint-form] label small{display:block;margin-top:.35rem;color:#8f989e;font:600 .72rem/1.35 var(--mono,monospace);letter-spacing:.04em}
+
+/* v0.4.54 — explicit StarClutch Racing affiliate paint control */
+.paint-flag-toggle{grid-template-columns:auto minmax(0,1fr);align-items:center;padding:1rem;border:1px solid #584614;background:linear-gradient(90deg,rgba(255,184,0,.1),rgba(255,184,0,.025));cursor:pointer}.paint-flag-toggle input{width:1.25rem;height:1.25rem;margin:0;accent-color:var(--gold)}.paint-flag-toggle>span{color:#fff}.paint-flag-toggle b{display:block;color:var(--gold);font:900 .72rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}.paint-flag-toggle small{color:#a99d7e!important}.scr-affiliate-badge{display:inline-flex;margin:0 0 .7rem;padding:.35rem .5rem;border:1px solid var(--gold);background:#231a00;color:var(--gold);font:900 .5rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}.status.scr-affiliate{border-color:#806000;color:var(--gold);background:#211900}
