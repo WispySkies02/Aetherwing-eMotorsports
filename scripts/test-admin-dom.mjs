@@ -18,9 +18,10 @@ const input=(path,value)=>{const el=Array.from(window.document.querySelectorAll(
 await tick();click('[data-login]');assert.equal($('[data-workspace]').hidden,false);
 click('[data-admin-dataset="schedule-events"]');await tick();
 assert.ok($('[data-content-fields] select[data-field-path]'));
-input(['title'],'DOM TEST calendar edit');submit('[data-content-form]');await tick();
-let saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));assert.equal(saved.drafts['schedule-events'][0].title,'DOM TEST calendar edit');
-click('[data-content-publish]');await tick();saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));assert.equal(saved.published['schedule-events'][0].title,'DOM TEST calendar edit');
+input(['title'],'DOM TEST calendar edit');click('[data-content-publish]');await tick();
+let saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));
+assert.equal(saved.published['schedule-events'][0].title,'DOM TEST calendar edit','Publish must include unsaved Calendar changes without a separate Save Draft click');
+assert.equal(saved.drafts['schedule-events'],undefined);
 click('[data-admin-dataset="results"]');await tick();
 input(['latestResult','finish'],3);submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.results.latestResult.finish,3);
 click('[data-admin-dataset="milestones"]');await tick();click('[data-content-add]');
@@ -28,9 +29,18 @@ input(['title'],'DOM TEST milestone');input(['date'],'Sep 18, 2026');input(['des
 saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));assert.equal(saved.drafts.milestones.at(-1).title,'DOM TEST milestone');
 click('[data-admin-dataset="roster-profiles"]');await tick();input(['name'],'DOM TEST driver');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts['roster-profiles'][0].name,'DOM TEST driver');
 click('[data-admin-dataset="news"]');await tick();input(['sections',0,'heading'],'DOM TEST story section');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.news[0].sections[0].heading,'DOM TEST story section');
+// Standings rows support drag/reorder controls and explicit Aetherwing highlighting.
+click('[data-admin-dataset="standings"]');await tick();
+assert.ok($('[data-standing-drag]'),'Standings rows should be draggable');
+const firstHighlight=$('[data-standing-highlight]');assert.ok(firstHighlight);firstHighlight.click();await tick();
+assert.ok($('[data-standing-highlight]'),'Highlight control should survive rerender');
 // Empty standings rows must support adding a proper row rather than a raw-text list.
-click('[data-admin-dataset="standings"]');await tick();click('[data-entry="3"]');
+click('[data-entry="3"]');
 const addRows=Array.from(window.document.querySelectorAll('[data-array-add]')).find((b)=>b.dataset.arrayAdd==='["rows"]');assert.ok(addRows);addRows.click();input(['rows',0,'points'],12);
+// Charter editor supports multiple Open Charters and nested number identities/usages.
+click('[data-admin-dataset="charters"]');await tick();
+const addOpen=Array.from(window.document.querySelectorAll('[data-array-add]')).find((b)=>b.dataset.arrayAdd==='["openCharters"]');assert.ok(addOpen,'Missing Add Open Charter control');
+const addUse=Array.from(window.document.querySelectorAll('[data-array-add]')).find((b)=>b.dataset.arrayAdd.includes('"uses"'));assert.ok(addUse,'Missing Add number identity / use control');
 const form=$('[data-paint-form]');
 for(const [name,value] of Object.entries({slug:'dom-paint',sponsor:'DOM TEST Paint',driver:'Hailey',manufacturer:'Toyota',body:'Camry',image:'https://example.test/test.png'}))form.elements.namedItem(name).value=value;
 submit('[data-paint-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-paint-ops')).paints[0].slug,'dom-paint');

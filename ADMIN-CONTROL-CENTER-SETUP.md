@@ -33,7 +33,7 @@ The main site must deploy before the Paint Booth package so `/api/paints` is ava
 
 ## Saving versus publishing
 
-Main-site editors save an entire section draft, not just the selected row. You can edit several entries before saving. Add/remove nested rows with their buttons; simple text lists use one item per line. Save the draft, then Publish saved draft. Publication stores the approved section and queues a rebuild; the public site changes only when deployment completes. A failed build leaves the last successful site online. If the build-hook request fails, use Publish site / retry build. Paint publications are read directly and do not need a rebuild.
+Main-site editors work on an entire section, not just the selected row. You can edit several entries before publishing. Add/remove nested rows with their buttons; simple text lists use one item per line. **Publish current changes** validates, saves, and publishes the open section in one action, so a schedule shift no longer needs a separate Save Draft click first. **Save private draft** remains available when work should stay private. The Overview can publish every saved draft in one revision and queue one rebuild. Publication reports public-data storage and rebuild queuing as separate states. A failed/missing build hook leaves the newly published data safe and the last successful static pages online; use **Publish site / retry build** after fixing the hook. Paint publications are read directly and do not need a rebuild.
 
 Main-site content uses the `aetherwing-site-content` Blobs store/key `content.json`. Paints use `aetherwing-paint-ops`/`registry.json`. Drafts and history are private; public APIs return published content only. Conditional writes reject stale concurrent saves. Export backup downloads the private main-site content registry.
 
@@ -51,3 +51,13 @@ Official references: [Build hooks](https://docs.netlify.com/build/configure-buil
 ## v0.4.46 — original Paint Booth paints
 
 Paint Operations now lists the bundled original paints as editable records. Saving an original paint creates a published/draft override in Netlify Blobs; the bundled seed remains intact. Original share slugs are locked so existing URLs keep working. `/api/paints` publishes the merged original + override + Admin-added registry.
+
+## v0.4.51 Charter and Standings editing
+
+The **Charters** tab is intentionally flexible. Each Charter Board belongs to a league/program and contains full-time seats plus zero or more Open Charters. Each Open Charter is one actual charter slot. Its **Number identities / uses** list may contain one number or several alternate uses; those alternate identities do not count as additional simultaneous charter slots.
+
+The **Standings** tab supports drag-and-drop row ordering on desktop plus Move Up / Move Down buttons for touch/mobile use. Reordering does not rewrite the official Position field. Use **Highlight Driver** to give an Aetherwing driver the public highlighted treatment.
+
+## v0.4.52 publication control
+
+The Calendar and every other main-site tab can publish unsaved form changes directly. Admin first stores the authoritative public-data revision, then queues a cache-cleared site rebuild. The three-step status strip shows draft, public data, and rebuild states separately so a missing hook cannot masquerade as a completed deployment. League selectors are generated from the editable **Leagues** tab plus existing calendar IDs, allowing a future league to be added without changing Admin code.

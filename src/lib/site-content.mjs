@@ -35,7 +35,16 @@ export const rosterProfiles = rosterBase.map((profile) => {
   };
 });
 export const driverProfiles = choose('driver-profiles', profilesSeed);
-export const charters = choose('charters', chartersSeed);
+const normalizeCharters = (boards) => (boards ?? []).map((board) => {
+  if (Array.isArray(board.openCharters)) return board;
+  const old = board.openCharter;
+  if (!old) return { ...board, openCharters: [] };
+  const uses = [old.partTime, old.development].filter(Boolean).map((use) => ({ ...use, active:true }));
+  const next = { ...board, openCharters:[{ id:`${board.id || 'league'}-open-1`, label:old.label || 'Aetherwing Open Charter', slotLabel:old.slotLabel || '', active:true, uses }] };
+  delete next.openCharter;
+  return next;
+});
+export const charters = normalizeCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 export const news = choose('news', newsSeed);
 export const competitions = choose('competitions', competitionsSeed);

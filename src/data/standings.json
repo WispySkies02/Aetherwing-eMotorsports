@@ -7,22 +7,14 @@
     "status": "THE CHASE",
     "rows": [
       {
-        "position": "P6",
-        "number": "32",
-        "driver": "Hailey",
-        "points": 2087,
-        "delta": "-58",
-        "positionChange": "-1 spot",
-        "chaseEligible": true
-      },
-      {
         "position": "P1",
         "number": "94",
         "driver": "Will",
         "points": 2145,
         "delta": "--",
         "positionChange": "0",
-        "chaseEligible": true
+        "chaseEligible": true,
+        "highlight": false
       },
       {
         "position": "P2",
@@ -31,7 +23,8 @@
         "points": 2124,
         "delta": "-21",
         "positionChange": "+1 spot",
-        "chaseEligible": true
+        "chaseEligible": true,
+        "highlight": false
       },
       {
         "position": "P3",
@@ -40,7 +33,8 @@
         "points": 2124,
         "delta": "-21",
         "positionChange": "-1 spot",
-        "chaseEligible": true
+        "chaseEligible": true,
+        "highlight": false
       },
       {
         "position": "P4",
@@ -49,7 +43,8 @@
         "points": 2089,
         "delta": "-56",
         "positionChange": "+2 spots",
-        "chaseEligible": true
+        "chaseEligible": true,
+        "highlight": false
       },
       {
         "position": "P5",
@@ -58,7 +53,18 @@
         "points": 2088,
         "delta": "-57",
         "positionChange": "-1 spot",
-        "chaseEligible": true
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "P6",
+        "number": "32",
+        "driver": "Hailey",
+        "points": 2087,
+        "delta": "-58",
+        "positionChange": "-1 spot",
+        "chaseEligible": true,
+        "highlight": true
       },
       {
         "position": "P7",
@@ -67,7 +73,8 @@
         "points": 403,
         "delta": null,
         "positionChange": null,
-        "chaseEligible": false
+        "chaseEligible": false,
+        "highlight": false
       },
       {
         "position": "P8",
@@ -76,7 +83,8 @@
         "points": 369,
         "delta": null,
         "positionChange": null,
-        "chaseEligible": false
+        "chaseEligible": false,
+        "highlight": false
       },
       {
         "position": "P9",
@@ -85,7 +93,8 @@
         "points": 318,
         "delta": null,
         "positionChange": null,
-        "chaseEligible": false
+        "chaseEligible": false,
+        "highlight": false
       },
       {
         "position": "P10",
@@ -94,7 +103,8 @@
         "points": 285,
         "delta": null,
         "positionChange": null,
-        "chaseEligible": false
+        "chaseEligible": false,
+        "highlight": false
       },
       {
         "position": "P11",
@@ -103,7 +113,8 @@
         "points": 227,
         "delta": null,
         "positionChange": null,
-        "chaseEligible": false
+        "chaseEligible": false,
+        "highlight": false
       },
       {
         "position": "P12",
@@ -112,7 +123,8 @@
         "points": 201,
         "delta": null,
         "positionChange": "+1 spot",
-        "chaseEligible": false
+        "chaseEligible": false,
+        "highlight": false
       }
     ]
   },
@@ -128,21 +140,24 @@
         "number": "34",
         "driver": "Jaxon",
         "points": 231,
-        "delta": "+111"
+        "delta": "+111",
+        "highlight": false
       },
       {
         "position": "P2",
         "number": "24",
         "driver": "Will",
         "points": 180,
-        "delta": "+60"
+        "delta": "+60",
+        "highlight": false
       },
       {
         "position": "P4",
         "number": "15",
         "driver": "Hailey",
         "points": 156,
-        "delta": "+36"
+        "delta": "+36",
+        "highlight": true
       }
     ],
     "ptEntry": {
@@ -178,7 +193,8 @@
         "driver": "Will",
         "points": 881,
         "delta": "+391",
-        "chaseStatus": "CHASE"
+        "chaseStatus": "CHASE",
+        "highlight": false
       },
       {
         "position": "P2",
@@ -186,7 +202,8 @@
         "driver": "Clutch",
         "points": 725,
         "delta": "+219",
-        "chaseStatus": "CHASE"
+        "chaseStatus": "CHASE",
+        "highlight": false
       },
       {
         "position": "P4",
@@ -194,7 +211,8 @@
         "driver": "Eazy",
         "points": 606,
         "delta": "+156",
-        "chaseStatus": "CHASE"
+        "chaseStatus": "CHASE",
+        "highlight": false
       },
       {
         "position": "P10",
@@ -202,7 +220,8 @@
         "driver": "Hailey",
         "points": 261,
         "delta": "-126",
-        "chaseStatus": "NOT IN CHASE"
+        "chaseStatus": "NOT IN CHASE",
+        "highlight": true
       }
     ]
   },

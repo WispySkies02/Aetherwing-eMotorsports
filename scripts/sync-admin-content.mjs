@@ -3,6 +3,28 @@ const target = new URL('../src/data/admin-content.json', import.meta.url);
 const configured = process.env.AETHERWING_CONTENT_URL;
 const endpoint = configured || (process.env.NETLIFY ? 'https://aetherwing.net/api/site-content' : '');
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function fetchPublishedContent(value) {
+  let lastError;
+  for (let attempt=0; attempt<4; attempt++) {
+    const url = new URL(value);
+    url.searchParams.set('admin_sync', `${Date.now()}-${attempt}`);
+    try {
+      const response = await fetch(url, {
+        headers:{ accept:'application/json', 'cache-control':'no-cache' },
+        signal:AbortSignal.timeout(15000)
+      });
+      if (response.status === 404 && !configured) return { firstDeployment:true };
+      if (!response.ok) throw new Error(`Content sync returned ${response.status}.`);
+      return { content:await response.json() };
+    } catch (error) {
+      lastError=error;
+      if (attempt<3) await wait(750 * (attempt + 1));
+    }
+  }
+  throw lastError;
+}
+
 function readBundledOverlay() {
   try {
     const parsed = JSON.parse(fs.readFileSync(target, 'utf8'));
@@ -16,15 +38,11 @@ if (endpoint) {
   const url = new URL(endpoint);
   if (url.protocol !== 'https:' && !['localhost','127.0.0.1'].includes(url.hostname)) throw new Error('Content endpoint must use HTTPS.');
   try {
-    const response = await fetch(url, { headers:{ accept:'application/json' }, signal:AbortSignal.timeout(15000) });
-    if (response.status === 404 && !configured) {
+    const result = await fetchPublishedContent(url);
+    if (result.firstDeployment) {
       console.log('First deployment: using bundled site content.');
-    } else if (!response.ok) {
-      const message = `Content sync returned ${response.status}.`;
-      if (configured) throw new Error(message);
-      console.warn(`WARNING: ${message} Continuing with bundled/last-known content so the deployment can repair the live admin backend.`);
     } else {
-      const next = await response.json();
+      const next = result.content;
       if (!next.datasets || typeof next.datasets !== 'object') throw new Error('Invalid published content feed.');
       const { createRequire } = await import('node:module');
       const { validate } = createRequire(import.meta.url)('../netlify/lib/_content.cjs');

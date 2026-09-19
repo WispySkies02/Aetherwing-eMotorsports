@@ -31,7 +31,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v0.4.50</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v0.4.52</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -58,6 +58,14 @@
 
       <section class="admin-overview" data-admin-overview>
         <div class="control-center__heading"><span>00</span><div><h2>Admin map</h2><p>Pick a tab above. Each tab owns one job.</p></div></div>
+        <section class="admin-publish-console" aria-label="Publication control">
+          <div><small>Content revision</small><strong data-admin-revision>—</strong></div>
+          <div><small>Saved drafts</small><strong data-admin-draft-count>—</strong></div>
+          <div><small>Published sections</small><strong data-admin-published-count>—</strong></div>
+          <div><small>Last publication</small><strong data-admin-last-published>Not loaded</strong></div>
+          <button type="button" class="primary" data-content-publish-all>Publish all saved drafts</button>
+          <p data-admin-publish-status role="status" aria-live="polite">Open any content tab to load the current publishing state.</p>
+        </section>
         <div class="admin-overview-grid">
           <article><b>Race operation</b><h3>Calendar · Results · Wins · Standings · Milestones</h3><p>Dates, event status, finishes, points snapshots, win history, and major career/team milestones.</p></article>
           <article><b>People &amp; programs</b><h3>Assignments · Directory · Profiles · Charters · iRacing · Leagues</h3><p>Who races where, what number they use, profile copy/stats, charter structure, and program metadata.</p></article>
@@ -68,8 +76,13 @@
       </section>
 
       <section class="ops-panel content-editor" data-content-editor hidden aria-labelledby="content-title">
-        <div class="panel-heading admin-editor-heading"><span data-content-number>EDIT</span><div><p class="admin-section-kicker" data-content-kicker>CONTENT WORKSPACE</p><h2 id="content-title" data-content-title>Site editor</h2><p data-content-description>Save a draft first. Publishing rebuilds the static main site; paints update directly.</p></div></div>
+        <div class="panel-heading admin-editor-heading"><span data-content-number>EDIT</span><div><p class="admin-section-kicker" data-content-kicker>CONTENT WORKSPACE</p><h2 id="content-title" data-content-title>Site editor</h2><p data-content-description>Publish current changes in one step; private drafts remain optional. Paints update directly.</p></div></div>
         <p data-content-status role="status" aria-live="polite"></p>
+        <div class="publication-pipeline" aria-label="Publication pipeline">
+          <span data-publication-stage="draft"><b>1</b> Draft ready</span>
+          <span data-publication-stage="data"><b>2</b> Public data</span>
+          <span data-publication-stage="build"><b>3</b> Site rebuild</span>
+        </div>
         <div class="library-tools admin-editor-tools"><label class="legacy-dataset-select" hidden>Dataset<select data-content-dataset></select></label><button type="button" data-content-refresh>Refresh saved data</button><button type="button" data-content-rebuild>Publish site / retry build</button><button type="button" data-content-export>Export backup</button></div>
         <div class="content-guide" data-content-guide hidden></div>
         <section class="schedule-shift-tool" data-schedule-shift hidden aria-labelledby="schedule-shift-title">
@@ -95,7 +108,7 @@
             </div>
           </div>
         </section>
-        <div class="content-layout"><aside><input type="search" placeholder="Search this tab" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add new entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save section draft</button><button type="button" class="primary" data-content-publish>Publish saved draft</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
+        <div class="content-layout"><aside><input type="search" placeholder="Search this tab" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add new entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save private draft</button><button type="button" class="primary" data-content-publish>Publish current changes</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
       </section>
 
       <div class="paint-operations-head legacy-paint-nav" id="paint-operations" hidden><div><p class="kicker">Module 03 · Live</p><h2>Paint Operations</h2></div><a href="https://paint.aetherwing.net/" target="_blank" rel="noopener">Open public Paint Booth ↗</a></div>

@@ -94,7 +94,8 @@ const nrrsStanding = standings.find((series) => series.id === 'nrrs');
 const kmartStanding = standings.find((series) => series.id === 'kmart');
 const sunocoStanding = standings.find((series) => series.id === 'sunoco');
 const uarlStanding = standings.find((series) => series.id === 'uarl');
-assert(nrrsStanding?.rows?.[0]?.driver === 'Hailey' && nrrsStanding.rows[0].position === 'P6' && nrrsStanding.rows[0].points === 2087 && nrrsStanding.rows[0].delta === '-58' && nrrsStanding.rows[0].positionChange === '-1 spot', 'NRRS Chase standings snapshot: Hailey P6, 2,087 points, -58 from leader, down 1 spot');
+const nrrsHailey=nrrsStanding?.rows?.find((row)=>row.driver==='Hailey');
+assert(nrrsStanding?.rows?.[0]?.position === 'P1' && nrrsHailey?.position === 'P6' && nrrsHailey?.points === 2087 && nrrsHailey?.delta === '-58' && nrrsHailey?.positionChange === '-1 spot' && nrrsHailey?.highlight === true, 'NRRS Chase standings are in position order with Hailey highlighted at P6, 2,087 points, -58 from leader, down 1 spot');
 assert(kmartStanding?.rows?.length === 3 && kmartStanding.rows[0].driver === 'Jaxon' && kmartStanding.rows[0].position === 'P1' && kmartStanding.rows[1].driver === 'Will' && kmartStanding.rows[1].position === 'P2' && kmartStanding.rows[2].driver === 'Hailey' && kmartStanding.rows[2].position === 'P4', 'Kmart standings positions: Jaxon P1, Will P2, Hailey P4');
 assert(kmartStanding?.ptEntry?.number === '29' && kmartStanding.ptEntry.status === 'NOT CHASE ELIGIBLE' && kmartStanding.ptEntry.drivers?.[0]?.driver === 'Clutch' && kmartStanding.ptEntry.drivers[0].points === 135 && kmartStanding.ptEntry.drivers[1].driver === 'Eazy' && kmartStanding.ptEntry.drivers[1].points === 59 && kmartStanding.ptEntry.drivers[2].driver === 'Matty' && kmartStanding.ptEntry.drivers[2].points === 58, 'Kmart #29 SCR PT car points and Chase ineligibility');
 assert(sunocoStanding?.rows?.length === 4 && sunocoStanding.rows[0].driver === 'Will' && sunocoStanding.rows[0].position === 'P1' && sunocoStanding.rows[0].chaseStatus === 'CHASE' && sunocoStanding.rows[1].driver === 'Clutch' && sunocoStanding.rows[1].position === 'P2' && sunocoStanding.rows[1].chaseStatus === 'CHASE' && sunocoStanding.rows[2].driver === 'Eazy' && sunocoStanding.rows[2].position === 'P4' && sunocoStanding.rows[2].chaseStatus === 'CHASE' && sunocoStanding.rows[3].driver === 'Hailey' && sunocoStanding.rows[3].position === 'P10' && sunocoStanding.rows[3].chaseStatus === 'NOT IN CHASE', 'Sunoco positions and Chase status: Will P1, Clutch P2, Eazy P4, Hailey P10');
@@ -193,17 +194,22 @@ assert(driversPage.includes('aw-driver-num') && driversPage.includes('numberPart
 assert(driversPage.includes('Aetherwing Charter Board') && driversPage.includes('data-charter-group'), 'Drivers page includes the Aetherwing Charter Board');
 const nrrsCharters = charters.find((group) => group.id === 'nrrs');
 const d1Charters = charters.find((group) => group.id === 'uarl-d1');
-const hasSharedOpenCharter=(group)=>group?.openCharter?.label==='Aetherwing Open Charter'&&group.openCharter.partTime?.number==='62'&&group.openCharter.partTime?.label==='Part-Time'&&group.openCharter.development?.number==='82'&&group.openCharter.development?.label==='Development';
-assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Hailey'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && hasSharedOpenCharter(nrrsCharters), 'NRRS has FT #32 Hailey / #43 Plarker / #54 Open plus shared 4th #62 PT / #82 Development');
-assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Hailey'},{number:'32',driver:'BurgerTown2Good'},{number:'52',driver:'Gk3r'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && hasSharedOpenCharter(d1Charters), 'UARL D1 has FT #28 Hailey / #32 BurgerTown2Good / #52 Gk3r / #54 Open / #92 Rocky plus one shared #62 PT / #82 Development Open Charter');
+const hasCurrentOpenCharter=(group)=>{
+  const charter=group?.openCharters?.[0];
+  return charter?.label==='Aetherwing Open Charter' && charter?.active===true &&
+    charter.uses?.some((use)=>use.number==='62'&&use.label==='Part-Time') &&
+    charter.uses?.some((use)=>use.number==='82'&&use.label==='Development');
+};
+assert(JSON.stringify(nrrsCharters?.fullTime) === JSON.stringify([{number:'32',driver:'Hailey'},{number:'43',driver:'Plarker'},{number:'54',driver:'Open'}]) && hasCurrentOpenCharter(nrrsCharters), 'NRRS baseline keeps FT #32 Hailey / #43 Plarker / #54 Open plus one configurable Open Charter');
+assert(JSON.stringify(d1Charters?.fullTime) === JSON.stringify([{number:'28',driver:'Hailey'},{number:'32',driver:'BurgerTown2Good'},{number:'52',driver:'Gk3r'},{number:'54',driver:'Open'},{number:'92',driver:'Rocky'}]) && hasCurrentOpenCharter(d1Charters), 'UARL D1 baseline keeps five FT charters plus one configurable Open Charter');
 assert(nrrsCharters?.fullTime?.length === 3 && d1Charters?.fullTime?.length === 5 && charters.length === 2, 'NRRS has three FT charters; UARL D1 has five FT charters; D2 charter board is removed');
-assert([nrrsCharters,d1Charters].every((group) => group?.openCharter?.partTime?.number === '62' && group?.openCharter?.development?.number === '82'), 'Active Aetherwing Open Charters use #62 for Part-Time and #82 for Development');
-assert([nrrsCharters,d1Charters].every((group) => !('driver' in group.openCharter.partTime) && !('driver' in group.openCharter.development)), 'Shared Aetherwing Open Charters remain driver-neutral');
-assert(!JSON.stringify(charters).includes('\"64\"'), 'No Aetherwing #64 charter may exist');
-assert(driversPage.includes('Aetherwing Open Charter') && driversPage.includes('One shared slot · two uses'), 'Drivers charter board explains the shared 4th charter model');
-assert(driversPage.includes('role="tablist"') && driversPage.includes('role="tab"') && driversPage.includes('data-charter-panel'), 'Shared fourth-charter module uses accessible tab semantics');
-assert(driversPage.includes("event.key==='ArrowRight'") && driversPage.includes("event.key==='Home'") && driversPage.includes("tab.addEventListener('click'"), 'Shared fourth-charter switch supports keyboard and touch/click interaction');
-assert(driversPage.includes('data-charter-slot') && driversPage.includes('aw-open-charter__switch-line'), 'Drivers board renders one shared visual slot with an Aether Blue switch line');
+assert([nrrsCharters,d1Charters].every((group) => Array.isArray(group.openCharters) && group.openCharters.length===1 && group.openCharters[0].uses.length===2), 'Current baseline has one Open Charter per active charter board with two possible uses');
+assert([nrrsCharters,d1Charters].every((group) => group.openCharters.every((charter)=>charter.uses.every((use)=>!('driver' in use)))), 'Open Charter number identities remain driver-neutral');
+assert(!JSON.stringify(charters).includes('\"64\"'), 'No Aetherwing #64 charter exists in the current baseline');
+assert(driversPage.includes('(group.openCharters ?? [])') && driversPage.includes('One charter slot ·'), 'Drivers charter board renders arbitrary configurable Open Charters and usage counts');
+assert(driversPage.includes('role="tablist"') && driversPage.includes('role="tab"') && driversPage.includes('data-charter-panel'), 'Configurable Open Charter module uses accessible tab semantics');
+assert(driversPage.includes("event.key==='ArrowRight'") && driversPage.includes("event.key==='Home'") && driversPage.includes("tab.addEventListener('click'"), 'Open Charter usage switch supports keyboard and touch/click interaction');
+assert(driversPage.includes('data-charter-slot') && driversPage.includes('aw-open-charter__switch-line'), 'Drivers board renders configurable Open Charter visual slots with an Aether Blue switch line');
 assert(!drivers.some((entry) => entry.competitionId === 'uarl-d2'), 'Driver program data contains no active UARL D2 assignments');
 const burgerD1Entry = drivers.find((entry) => entry.id === 'burgertown-uarl-d1');
 const gk3rD1Entry = drivers.find((entry) => entry.id === 'gk3r-uarl-d1');
@@ -241,7 +247,7 @@ assert(netlifyConfig.includes('NODE_VERSION = "24"'), 'Admin backend deploy pins
 assert(netlifyConfig.includes('node_bundler = "esbuild"'), 'Admin backend functions use the esbuild bundler');
 assert(contentStoreLib.includes("import('@netlify/blobs')") && paintStoreLib.includes("import('@netlify/blobs')"), 'Netlify Blobs loads lazily inside requests instead of crashing function startup');
 const contentSyncScript = text('scripts/sync-admin-content.mjs');
-assert(contentSyncScript.includes('Continuing with bundled/last-known content so the deployment can repair the live admin backend') && contentSyncScript.includes('if (configured) throw'), 'Automatic live-content sync failures cannot deadlock a repair deploy while explicit sync tests still fail hard');
+assert(contentSyncScript.includes("url.searchParams.set('admin_sync'") && contentSyncScript.includes('if (configured) throw') && contentSyncScript.includes('Continuing with bundled/last-known content'), 'Automatic live-content sync cache-busts/retries without deadlocking repair deploys, while explicit sync tests still fail hard');
 const adminFunction = text('netlify/lib/_paint-admin.cjs');
 assert(adminPage.includes('Aetherwing Control Center') && adminPage.includes('Paint Operations'), 'Central Aetherwing Admin includes the live Paint Operations module');
 assert(adminPage.includes('https://paint.aetherwing.net/'), 'Central Paint Operations links to the public Paint Booth');
@@ -264,7 +270,7 @@ const controlCenterCss = text('public/admin/control-center.css');
 assert(adminPage.includes('data-schedule-shift') && adminPage.includes('data-shift-preview="-7"') && adminPage.includes('data-shift-preview="7"'), 'Schedule Manager includes one-week earlier/later bulk shift controls');
 assert(contentAdminScript.includes('function previewScheduleShift(days)') && contentAdminScript.includes('function applyScheduleShift()') && contentAdminScript.includes('function undoScheduleShift()'), 'Schedule Manager bulk shift supports preview, apply, and undo');
 assert(contentAdminScript.includes("event.league===league&&event.date&&String(event.date)>=String(start.date)") && contentAdminScript.includes('event.endDate=shiftIsoDate(event.endDate,days)'), 'Bulk week shift affects only the selected series from the chosen event forward and preserves multi-day windows');
-assert(contentAdminScript.includes('Save the section draft, review it, then publish when ready.'), 'Bulk week shift remains inside the normal draft/publish workflow');
+assert(contentAdminScript.includes('Use Publish current changes when the dates look right.') && contentAdminScript.includes("['saveDraft','publish'].includes(name)?{data}"), 'Bulk week shift can publish current unsaved Calendar changes without a separate draft save');
 assert(controlCenterCss.includes('v0.4.45 — Schedule Manager bulk week-shift controls') && controlCenterCss.includes('@media(max-width:640px)'), 'Bulk schedule controls include mobile layout treatment');
 
 const redirects = text('public/_redirects');
@@ -314,6 +320,11 @@ assert(paintLeagues.find((league) => league.id === 'uarl-d1')?.drivers.length ==
 assert(!driversPage.includes('Wispy / Hailey Bell') && !driversPage.includes('Hailey Bell / Wispy'), 'Current iRacing presentation does not pair Wispy with Hailey Bell');
 assert(contentAdminScript.includes('Driver league assignments') && contentAdminScript.includes('data-competition-choice') && contentAdminScript.includes("['competitions','League details']"), 'Roster Manager exposes clear driver league assignments and editable league details');
 assert(text('netlify/lib/_content.cjs').includes("'competitions'"), 'League details are included in the Admin content registry');
+assert(contentAdminScript.includes('data-standing-drag') && contentAdminScript.includes('data-standing-highlight') && contentAdminScript.includes('data-standing-move'), 'Standings Admin supports drag reorder, move controls, and driver highlight toggles');
+assert(contentAdminScript.includes('openCharters') && contentAdminScript.includes('Number identities / uses') && contentAdminScript.includes('migrateCharters'), 'Charter Admin supports configurable Open Charters, arbitrary number identities, and migration from the previous schema');
+assert(text('netlify/lib/_content.cjs').includes('Every active Open Charter needs at least one active number identity'), 'Server validates flexible Open Charter structures');
+assert(schedulePage.includes('is-highlighted') && scheduleCss.includes('.aw-standings-row.is-highlighted'), 'Public standings render Admin-controlled Aetherwing driver highlighting');
+
 assert(roster.find((profile) => profile.slug === 'wispy')?.name === 'Hailey', 'Current Roblox / RoRacing display name is Hailey');
 assert(roster.find((profile) => profile.slug === 'wispy')?.handle === '@Aokikoto', 'Current Roblox username remains @Aokikoto');
 assert(drivers.filter((entry) => entry.profile === 'wispy' && entry.competitionId !== 'iracing-factory').every((entry) => entry.displayName === 'Hailey'), 'All current RoRacing assignments display Hailey');

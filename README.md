@@ -1,8 +1,8 @@
-> Current package: **v0.4.50** — full tabbed Aetherwing Admin with dedicated content workspaces, Leadership/Partners publishing, and unified Paint Operations.
+> Current package: **v0.4.52** — Aetherwing Admin Control Center with verified one-step publishing, dynamic league choices, flexible charters, and sortable standings.
 
-**Current release: v0.4.50 — Full Tabbed Aetherwing Admin**
+**Current release: v0.4.52 — Verified Admin Publishing**
 
-Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All routine content editors are direct tabs in /admin/; the standalone Paint Booth is public-only. Main-site publishing requires a private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
+Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All routine content editors are direct tabs in /admin/; the standalone Paint Booth is public-only. **Publish current changes** now saves and publishes the open section in one action, then reports public-data and rebuild status separately. Main-site page rebuilding requires a private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
 
 **v0.4.39 — Southern 500 Team Wire Feature (historical baseline)**
 - UARL D2 / NFFF Grand National has closed operations and is removed from the active competition structure.

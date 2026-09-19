@@ -26,7 +26,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
       <section class="aw-charter-board" aria-labelledby="charter-board-title">
         <div class="aw-charter-board__head">
           <div><span class="eyebrow">2026 Charter Allocation</span><h2 id="charter-board-title">Aetherwing Charter Board</h2></div>
-          <p>Current allocations are shown by program. NRRS carries three full-time charters plus one shared Aetherwing Open Charter; UARL D1 carries five full-time charters plus one shared Aetherwing Open Charter. Vacant full-time seats are marked OPEN. In every shared Open Charter module, #62 Part-Time and #82 Development are two uses of one charter, never simultaneous roster slots.</p>
+          <p>Current allocations are shown by program. Full-time seats and flexible Open Charters are maintained from Aetherwing Admin. An Open Charter is one actual charter slot even when it has multiple possible number identities or uses.</p>
         </div>
         <div class="aw-charter-grid">
           {charters.map((group)=><article class="aw-charter-card" data-charter-group={group.id}>
@@ -37,26 +37,27 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
                 <b>#{entry.number}</b>
                 <small>{entry.driver}</small>
               </div>)}
-              <div class="aw-open-charter" data-open-charter data-charter-slot data-active-mode="part-time">
-                <div class="aw-open-charter__head">
-                  <div><span class="aw-charter-slot__index">{group.openCharter.slotLabel ?? `${group.fullTime.length + 1}TH CHARTER`}</span><strong>{group.openCharter.label}</strong></div>
-                  <small>One shared slot · two uses</small>
-                </div>
-                <div class="aw-open-charter__tabs" role="tablist" aria-label={`${group.label} Aetherwing Open Charter use`}>
-                  <button type="button" role="tab" aria-selected="true" tabindex="0" data-charter-mode="part-time" data-number={group.openCharter.partTime.number} data-role={group.openCharter.partTime.label} data-description={group.openCharter.partTime.description}>
-                    <span>#{group.openCharter.partTime.number}</span><small>{group.openCharter.partTime.label}</small>
-                  </button>
-                  <button type="button" role="tab" aria-selected="false" tabindex="-1" data-charter-mode="development" data-number={group.openCharter.development.number} data-role={group.openCharter.development.label} data-description={group.openCharter.development.description}>
-                    <span>#{group.openCharter.development.number}</span><small>{group.openCharter.development.label}</small>
-                  </button>
-                  <i class="aw-open-charter__switch-line" aria-hidden="true"></i>
-                </div>
-                <div class="aw-open-charter__panel" role="tabpanel" tabindex="0" data-charter-panel>
-                  <b data-charter-number>#{group.openCharter.partTime.number}</b>
-                  <div><strong data-charter-role>{group.openCharter.partTime.label}</strong><p data-charter-description>{group.openCharter.partTime.description}</p></div>
-                </div>
-              </div>
-            </div>
+              {(group.openCharters ?? []).filter((charter)=>charter.active !== false).map((charter,charterIndex)=>{
+                const uses=(charter.uses ?? []).filter((use)=>use.active !== false);
+                const first=uses[0];
+                if(!first)return null;
+                return <div class="aw-open-charter" data-open-charter data-charter-slot data-active-mode="0">
+                  <div class="aw-open-charter__head">
+                    <div><span class="aw-charter-slot__index">{charter.slotLabel || `OPEN ${String(charterIndex+1).padStart(2,'0')}`}</span><strong>{charter.label || 'Open Charter'}</strong></div>
+                    <small>One charter slot · {uses.length} {uses.length===1?'use':'uses'}</small>
+                  </div>
+                  <div class="aw-open-charter__tabs" role="tablist" aria-label={`${group.label} ${charter.label || 'Open Charter'} use`} style={`--use-count:${uses.length};--active-index:0`}>
+                    {uses.map((use,useIndex)=><button type="button" role="tab" aria-selected={useIndex===0?'true':'false'} tabindex={useIndex===0?'0':'-1'} data-charter-mode={String(useIndex)} data-number={use.number} data-role={use.label} data-description={use.description}>
+                      <span>#{use.number}</span><small>{use.label}</small>
+                    </button>)}
+                    <i class="aw-open-charter__switch-line" aria-hidden="true"></i>
+                  </div>
+                  <div class="aw-open-charter__panel" role="tabpanel" tabindex="0" data-charter-panel>
+                    <b data-charter-number>#{first.number}</b>
+                    <div><strong data-charter-role>{first.label}</strong><p data-charter-description>{first.description}</p></div>
+                  </div>
+                </div>;
+              })}            </div>
           </article>)}
         </div>
       </section>
@@ -138,7 +139,9 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     const select=(tab,focus=false)=>{
       if(!(tab instanceof HTMLButtonElement))return;
       tabs.forEach((item)=>{if(item instanceof HTMLButtonElement){const active=item===tab;item.setAttribute('aria-selected',String(active));item.tabIndex=active?0:-1;}});
-      module.dataset.activeMode=tab.dataset.charterMode||'part-time';
+      module.dataset.activeMode=tab.dataset.charterMode||'0';
+      const tabsNode=module.querySelector('.aw-open-charter__tabs');
+      if(tabsNode instanceof HTMLElement)tabsNode.style.setProperty('--active-index',String(Math.max(0,tabs.indexOf(tab))));
       if(number)number.textContent=`#${tab.dataset.number||''}`;
       if(role)role.textContent=tab.dataset.role||'';
       if(description)description.textContent=tab.dataset.description||'';

@@ -65,14 +65,21 @@ function validate(key, data) {
     if (row.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.slug)) return `Entry ${index + 1}: invalid slug.`;
     if (key === 'schedule-events') {
       if (typeof row.offWeek!=='undefined' && typeof row.offWeek!=='boolean') return 'Off-week must be checked or unchecked.';
-      if (!['nrrs','uarl-d1','uarl-d2','open','kmart','sunoco','iracing'].includes(row.league)) return 'Select an existing schedule league to preserve its color.';
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.league)) return 'Use a lowercase League ID containing letters, numbers, and hyphens.';
       if (!row.tbd && (!/^\d{4}-\d{2}-\d{2}$/.test(row.date) || Number.isNaN(Date.parse(row.date)))) return 'Use a valid YYYY-MM-DD event date.';
     }
     if (key === 'news' && (!/^\d{4}-\d{2}-\d{2}$/.test(row.dateIso) || !Array.isArray(row.sections) || !Array.isArray(row.tags) || row.sections.some((s) => !s.heading || !Array.isArray(s.paragraphs)))) return 'Stories need an ISO date, tags, and sections with headings and paragraphs.';
     if (key === 'roster-profiles' && !Array.isArray(row.programs)) return 'Driver programs must be a list.';
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !Number.isFinite(r.points)))) return 'Standings rows need numeric points.';
-    if (key === 'charters' && (!Array.isArray(row.fullTime) || !row.openCharter?.partTime || !row.openCharter?.development)) return 'Charters need full-time entries and both Open Charter uses.';
+    if (key === 'charters') {
+      if (!Array.isArray(row.fullTime) || !Array.isArray(row.openCharters)) return 'Charter boards need full-time entries and an Open Charters list.';
+      for (const charter of row.openCharters) {
+        if (!charter || typeof charter !== 'object' || !Array.isArray(charter.uses)) return 'Every Open Charter needs a Number identities / uses list.';
+        if (charter.active !== false && !charter.uses.some((use) => use?.active !== false && String(use?.number || '').trim() && String(use?.label || '').trim())) return 'Every active Open Charter needs at least one active number identity with a number and usage label.';
+        if (charter.uses.some((use) => use && ('driver' in use))) return 'Open Charter number identities must stay driver-neutral. Assign permanent drivers through full-time charters instead.';
+      }
+    }
     if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
     if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^https:\/\//.test(row.logo))) return 'Partners need HTTPS website/logo URLs and a tags list.';
   }

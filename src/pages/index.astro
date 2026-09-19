@@ -15,7 +15,7 @@ const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.
 const latest=result.latestResult;
 const featuredNews=news.find((story)=>story.featured) ?? news[0];
 const nrrsChase=(standings as any[]).find((s:any)=>s.id==='nrrs');
-const wispyRow=(nrrsChase?.rows??[])[0];
+const wispyRow=(nrrsChase?.rows??[]).find((row:any)=>row.highlight) ?? (nrrsChase?.rows??[]).find((row:any)=>row.driver==='Hailey') ?? (nrrsChase?.rows??[])[0];
 const wispyPos=parseInt(String(wispyRow?.position??'P6').replace('P',''),10);
 const wispyGap=Math.abs(parseInt(String(wispyRow?.delta??'-58'),10));
 const nextNrrsChase=events.filter((event)=>event.league==='nrrs' && event.date>new Date(latest.date).toISOString().slice(0,10) && !event.offWeek).sort((a,b)=>a.date.localeCompare(b.date))[0];

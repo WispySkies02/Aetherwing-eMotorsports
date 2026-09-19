@@ -1,3 +1,30 @@
+# v0.4.52 — Admin Control Center Publishing Fix
+
+- Fixed the Calendar failure where applying a schedule shift and pressing Publish did nothing because the editor silently required a separate Save Draft action first.
+- **Publish current changes** now validates, saves, and publishes the open section in one action.
+- Added a three-stage publication status strip for Draft, Public Data, and Site Rebuild so partial publication failures are visible.
+- Publishing no longer discards valid public data when the Netlify build hook is missing or temporarily fails; the rebuild can be retried separately.
+- Build-hook requests now clear the build cache and identify the exact content revision being deployed.
+- Live-content build synchronization now uses cache-busting plus bounded retries to avoid rebuilding against a stale public feed.
+- Added Overview publication controls with current revision, draft count, published-section count, last-publication time, and one-click publishing for all saved drafts.
+- Calendar and driver league selectors now derive from the editable Leagues records plus existing calendar IDs instead of a fixed code-only list.
+- Schedule validation accepts future lowercase/hyphenated league IDs, allowing new leagues to be configured through Admin.
+
+# v0.4.51 — Flexible Open Charters + Sortable / Highlightable Standings
+
+- Rebuilt Charter Boards around configurable `openCharters[]` records instead of one hardcoded #62/#82 object.
+- One Open Charter record always equals one actual charter slot; its `uses[]` can contain one or many possible number identities without increasing the slot count.
+- Admin can add/remove Open Charters, add/remove number identities/usages, deactivate a charter/use without deleting it, and create a Charter Board for another league.
+- Existing v0.4.50 published charter data migrates automatically in both Admin and public build paths.
+- Public Drivers charter modules now render arbitrary Open Charter counts and arbitrary usage counts instead of assuming Part-Time + Development.
+- Standings Admin rows are draggable and also include Move Up / Move Down controls for touch/mobile editing.
+- Standings positions remain independently editable during reordering so partial/team-only standings can preserve official gaps such as P1, P2, P4.
+- Added a dedicated Highlight Driver button to every standings row.
+- Public desktop/mobile standings use the highlight flag for Aetherwing emphasis.
+- NRRS complete Chase standings are now stored in actual P1–P12 display order; Hailey remains the featured Chase driver through the highlight flag rather than being forced to row 1.
+- Homepage and Schedule Chase lead presentation now finds the highlighted/Hailey row instead of assuming the first standings row.
+- Added validation for one-number Open Charters, multiple Open Charters, and future-league Charter Boards.
+
 # v0.4.50 — Full Tabbed Admin Overhaul
 
 - Rebuilt Aetherwing Admin around 18 direct workspace tabs: Overview plus 14 main-site content tabs and 3 Paint Operations tabs.

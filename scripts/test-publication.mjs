@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 const {seeds}=createRequire(import.meta.url)('../netlify/lib/_content.cjs');
+const overlayFile=new URL('../src/data/admin-content.json',import.meta.url);
+const baselineOverlay=fs.readFileSync(overlayFile,'utf8');
 const data=seeds();
 data['schedule-events'].push({...data['schedule-events'][0],date:'2027-02-01',title:'Publication Fixture Race'});
 data.results.latestResult={...data.results.latestResult,title:'Publication Fixture Result',finish:2,headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.'};
@@ -17,7 +19,7 @@ await new Promise((resolve)=>server.listen(0,'127.0.0.1',resolve));
 const cwd=new URL('../',import.meta.url);
 async function build(extra={}) {
   return new Promise((resolve,reject)=>{
-    const child=spawn('npm.cmd',['run','build'],{cwd,shell:true,env:{...process.env,ASTRO_TELEMETRY_DISABLED:'1',AETHERWING_CONTENT_URL:'',...extra}});
+    const child=spawn(process.platform==='win32'?'npm.cmd':'npm',['run','build'],{cwd,shell:false,env:{...process.env,ASTRO_TELEMETRY_DISABLED:'1',AETHERWING_CONTENT_URL:'',...extra}});
     let output='';child.stdout.on('data',(d)=>output+=d);child.stderr.on('data',(d)=>output+=d);child.on('error',reject);child.on('exit',(code)=>code===0?resolve():reject(new Error(output.slice(-5000))));
   });
 }
@@ -36,7 +38,8 @@ try {
   console.log('PASS: actual rebuild rendered schedule addition and share route, result, win total/archive, milestone, roster edit, featured story and its new article route.');
 } finally {
   server.close();
+  fs.writeFileSync(overlayFile,baselineOverlay);
   await build();
-  assert.equal(JSON.parse(fs.readFileSync(new URL('src/data/admin-content.json',cwd))).revision,0);
+  assert.equal(fs.readFileSync(overlayFile,'utf8'),baselineOverlay);
   console.log('Baseline restored and rebuilt; no fixture edits remain in deliverables.');
 }

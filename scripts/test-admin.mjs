@@ -75,13 +75,28 @@ const seeds=response.body.seeds;
 const content=require('../netlify/lib/_content.cjs');
 for(const [key,data] of Object.entries(seeds))assert.equal(content.validate(key,data),'',key);
 let revision=response.body.registry.revision;
+// Regression: current unsaved form data can publish directly without a separate saveDraft request.
+const directSchedule=structuredClone(seeds['schedule-events']);
+directSchedule[0].title='Direct Publication Fixture';
+let direct=await call(siteAdmin,{action:'publish',dataset:'schedule-events',data:directSchedule,revision});
+assert.equal(direct.status,200);revision=direct.body.registry.revision;
+assert.equal(direct.body.publication.dataPublished,true);
+assert.equal((await call(siteData,undefined,null)).body.datasets['schedule-events'][0].title,'Direct Publication Fixture');
 for(const [key,data] of Object.entries(seeds)) {
+  const beforeDraft=(await call(siteData,undefined,null)).body.datasets[key];
   const draft=await call(siteAdmin,{action:'saveDraft',dataset:key,data,revision});assert.equal(draft.status,200,`${key} draft`);revision=draft.body.registry.revision;
-  assert.equal((await call(siteData,undefined,null)).body.datasets[key],undefined,'Draft must remain private');
+  assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],beforeDraft,'Draft must remain private');
   const published=await call(siteAdmin,{action:'publish',dataset:key,revision});assert.equal(published.status,200,`${key} publish`);revision=published.body.registry.revision;
   assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],data);
 }
-assert.equal(buildCount,Object.keys(seeds).length);
+// Multiple saved drafts publish atomically and queue only one rebuild.
+for(const key of ['wins','milestones']) {
+  const draft=await call(siteAdmin,{action:'saveDraft',dataset:key,data:seeds[key],revision});assert.equal(draft.status,200);revision=draft.body.registry.revision;
+}
+const all=await call(siteAdmin,{action:'publishAll',revision});assert.equal(all.status,200);revision=all.body.registry.revision;
+assert.deepEqual(all.body.publication.datasets,['wins','milestones']);
+assert.equal(Object.keys(all.body.registry.drafts).length,0);
+assert.equal(buildCount,Object.keys(seeds).length+2);
 assert.equal((await call(siteAdmin,{action:'saveDraft',dataset:'wins',data:seeds.wins,revision:0})).status,409);
 assert.notEqual(content.validate('news',seeds.news.map((s)=>({...s,featured:false}))), '');
 assert.notEqual(content.validate('roster-profiles', [{...seeds['roster-profiles'][0],name:'<script>alert(1)</script>'}]),'');

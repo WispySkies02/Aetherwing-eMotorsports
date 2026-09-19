@@ -386,3 +386,9 @@
   .aw-cal-month{overflow-x:auto}.aw-cal-grid{min-width:720px}.aw-cal-day{min-height:96px}.aw-cal-popup{position:fixed;left:1rem!important;right:1rem!important;top:auto;bottom:1rem;max-width:none;min-width:0}
   .aw-series-lane>header{align-items:flex-start;flex-direction:column}.aw-series-lane>header p{text-align:left}
 }
+
+/* v0.4.51 — Admin-controlled team-driver standings emphasis */
+.aw-standings-row.is-highlighted{position:relative;background:linear-gradient(90deg,color-mix(in srgb,var(--league) 18%,#0b0b0b),#0b0b0b 62%)!important;box-shadow:inset 4px 0 0 var(--league)}
+.aw-standings-row.is-highlighted::after{content:"AETHERWING";position:absolute;right:.7rem;top:.35rem;color:color-mix(in srgb,var(--league) 75%,#fff);font:900 .55rem/1 var(--font-mono);letter-spacing:.08em;opacity:.68}
+.aw-mobile-standing-row.is-highlighted{position:relative;background:linear-gradient(90deg,color-mix(in srgb,var(--league) 18%,#0b0b0b),#0b0b0b 70%)!important;box-shadow:inset 3px 0 0 var(--league)}
+.aw-mobile-standing-row.is-highlighted::after{content:"AETHERWING";position:absolute;right:.45rem;top:.28rem;color:color-mix(in srgb,var(--league) 75%,#fff);font:900 .48rem/1 var(--font-mono);letter-spacing:.07em;opacity:.6}
