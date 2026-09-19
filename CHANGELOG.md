@@ -1,3 +1,11 @@
+# v0.4.53 — Live Admin Schedule Delivery
+
+- Fixed the remaining publication gap where Calendar changes were stored successfully but the public Schedule continued displaying the stale schedule bundled into the last static build.
+- The Schedule now loads the authoritative published `schedule-events` dataset from `/api/site-content` on every page load with cache bypassing.
+- The bundled build-time schedule remains as a safe fallback if the live data endpoint is temporarily unavailable.
+- Calendar, list, series-lane, next-operation, countdown, weather, and filtering views all initialize from the live published records.
+- Newly dated live events use stable Schedule hash links until their static social-card route is included in a later rebuild.
+
 # v0.4.52 — Admin Control Center Publishing Fix
 
 - Fixed the Calendar failure where applying a schedule shift and pressing Publish did nothing because the editor silently required a separate Save Draft action first.

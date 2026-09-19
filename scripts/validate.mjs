@@ -324,6 +324,8 @@ assert(contentAdminScript.includes('data-standing-drag') && contentAdminScript.i
 assert(contentAdminScript.includes('openCharters') && contentAdminScript.includes('Number identities / uses') && contentAdminScript.includes('migrateCharters'), 'Charter Admin supports configurable Open Charters, arbitrary number identities, and migration from the previous schema');
 assert(text('netlify/lib/_content.cjs').includes('Every active Open Charter needs at least one active number identity'), 'Server validates flexible Open Charter structures');
 assert(schedulePage.includes('is-highlighted') && scheduleCss.includes('.aw-standings-row.is-highlighted'), 'Public standings render Admin-controlled Aetherwing driver highlighting');
+assert(schedulePage.includes("fetch(`/api/site-content?runtime=${Date.now()}`") && schedulePage.includes("published?.datasets?.['schedule-events']") && schedulePage.includes('renderPublishedList(scheduleEvents)'), 'Public Schedule loads and renders the authoritative published Admin calendar at page view time');
+assert(schedulePage.includes('bundledSlugs.has(slug)') && schedulePage.includes('/schedule/#event-${encodeURIComponent(slug)}'), 'Live-only schedule dates receive working hash share links before a static social-card rebuild');
 
 assert(roster.find((profile) => profile.slug === 'wispy')?.name === 'Hailey', 'Current Roblox / RoRacing display name is Hailey');
 assert(roster.find((profile) => profile.slug === 'wispy')?.handle === '@Aokikoto', 'Current Roblox username remains @Aokikoto');

@@ -311,14 +311,64 @@ const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event
 </BaseLayout>
 
 <script is:inline>
-(() => {
+(async () => {
   const page = document.querySelector('[data-schedule-page]');
   const dataNode = document.getElementById('aw-schedule-data');
   const trackNode = document.getElementById('aw-track-data');
   if (!page || !dataNode || !trackNode) return;
-  const scheduleEvents = JSON.parse(dataNode.textContent || '[]');
+  let scheduleEvents = JSON.parse(dataNode.textContent || '[]');
+  const bundledSlugs = new Set(scheduleEvents.map((event)=>event.shareSlug));
   const trackData = JSON.parse(trackNode.textContent || '{}');
   const locations = trackData.locations || {}; const aliases = trackData.aliases || {};
+  const listOut = page.querySelector('[data-schedule-output]');
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+  const runtimeSlugify = (value='') => String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+  const runtimeEventSlug = (event) => `${event.date||'tbd'}-${event.league||'event'}-${runtimeSlugify(event.title||event.track||'scheduled-event')}`;
+  const runtimeDisplayDate = (event) => {
+    if(event.tbd)return'TBD';if(event.displayDate)return String(event.displayDate).toUpperCase();
+    const [year,month,day]=String(event.date||'').split('-').map(Number);
+    return new Date(Date.UTC(year,month-1,day,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
+  };
+  const runtimeCriteria = (event) => {
+    const tags=[],status=String(event.status||'').toLowerCase(),special=String(event.specialTag||''),title=String(event.title||'');
+    if(/dash4cash/i.test(special))tags.push({kind:/qualifier/i.test(special)?'d4cqual':'d4c',label:/qualifier/i.test(special)?'D4C Qualifier':'Dash4Cash'});
+    if(/regular season finale/i.test(special))tags.push({kind:'finale',label:'Regular Season Finale'});
+    if(/postponed/i.test(special))tags.push({kind:'postponed',label:'Postponed'});
+    if(status.includes('the chase')||status==='chase')tags.push({kind:'chase',label:'The Chase'});
+    if(status.includes('championship'))tags.push({kind:'championship',label:'Championship'});
+    if(status.includes('all-star'))tags.push({kind:'allstar',label:'All-Star'});
+    if((status.includes('pre-season')||status.includes('preseason'))&&/clash/i.test(title))tags.push({kind:'clash',label:'Clash'});
+    else if(status.includes('pre-season')||status.includes('preseason'))tags.push({kind:'preseason',label:'Preseason'});
+    if(event.league==='iracing'||status.includes('special event'))tags.push({kind:'special',label:'Special Event'});
+    if(/crown jewel/i.test(special)||/(daytona 500|coca-cola 600|lowe['’]?s 600|southern 500|brickyard 400|brickyard 500|queen city 500|goodyear southern 300)/i.test(title))tags.push({kind:'crown',label:'Crown Jewel'});
+    if(event.offWeek)tags.push({kind:'offweek',label:'Off Week'});
+    return tags.filter((tag,index,array)=>array.findIndex((item)=>item.kind===tag.kind&&item.label===tag.label)===index);
+  };
+  const runtimeMonthLabel = (key) => {
+    if(key==='tbd')return'Upcoming Events (TBA)';const [year,month]=key.split('-').map(Number);
+    return new Date(Date.UTC(year,month-1,1,12)).toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
+  };
+  function renderPublishedList(events) {
+    if(!(listOut instanceof HTMLElement))return;
+    const grouped=events.reduce((map,event,index)=>{const month=event.tbd?'tbd':String(event.date).slice(0,7);(map[month]||=[]).push({event,index});return map;},{});
+    listOut.innerHTML=Object.entries(grouped).map(([month,items])=>`<section class="aw-month-block" data-month-key="${escapeHtml(month)}"><div class="aw-month-heading"><h2>${escapeHtml(runtimeMonthLabel(month))}</h2><span data-month-count></span></div><div class="aw-event-stack">${items.map(({event,index})=>{
+      const slug=event.shareSlug,criteria=runtimeCriteria(event),league=event.league==='open'?'open':event.league;
+      const classes=['aw-event-card',isAlliance(event.league)?'is-alliance':'',event.league==='iracing'?'is-special':'',event.offWeek?'is-off-week':''].filter(Boolean).join(' ');
+      const tags=`<span>${escapeHtml(event.leagueName)}</span>${event.status&&!criteria.length?`<b>${escapeHtml(event.status)}</b>`:''}${criteria.map((tag)=>`<em class="is-${escapeHtml(tag.kind)}">${escapeHtml(tag.label)}</em>`).join('')}${isAlliance(event.league)?'<i>StarClutch Racing Alliance</i>':''}`;
+      const explanation=event.league==='iracing'?'iRacing special event. This entry is represented as a multi-day event window rather than a single weekly start time.':event.offWeek?'Scheduled off-week. Race Control skips this entry when selecting the next actual operation.':'Official calendar entry from the current Aetherwing schedule source.';
+      return `<article id="event-${escapeHtml(slug)}" class="${classes}" data-event-card data-event-index="${index}" data-event-slug="${escapeHtml(slug)}" data-league="${escapeHtml(league)}"><button class="aw-event-summary" type="button" data-event-toggle aria-expanded="false" aria-controls="event-dock-${index}"><div class="aw-event-date"><strong>${escapeHtml(runtimeDisplayDate(event))}</strong><span>${escapeHtml(event.time)}</span></div><div class="aw-event-main"><div class="aw-event-tags">${tags}</div><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.track)}</p></div><div class="aw-event-chevron"><span>INFO</span><b>⌄</b></div></button><div class="aw-event-dock" id="event-dock-${index}" data-event-dock hidden><div class="aw-dock-bar"><span>Event Information Dock</span><div><strong data-event-live-state>Scheduled</strong><button type="button" class="aw-event-share" data-event-share="${escapeHtml(slug)}" aria-label="Copy share link for ${escapeHtml(event.title)}">↗ SHARE</button></div></div><div class="aw-dock-grid"><div><span>Competition</span><strong>${escapeHtml(event.leagueName)}</strong></div><div><span>Relationship</span><strong>${isAlliance(event.league)?'StarClutch Racing Alliance':'Aetherwing Program'}</strong></div><div><span>${event.league==='iracing'?'Event Window':'Scheduled Start'}</span><strong>${escapeHtml(event.displayDate||runtimeDisplayDate(event))} · ${escapeHtml(event.time)}</strong></div><div><span>Track</span><strong>${escapeHtml(event.track)}</strong></div><div><span>Season Phase</span><strong>${escapeHtml(event.status||'Scheduled')}</strong></div><div><span>Round / Marker</span><strong>${escapeHtml(event.round||(event.offWeek?'OFF WEEK':'—'))}</strong></div><div><span>Event Criteria</span><strong>${escapeHtml(criteria.map((tag)=>tag.label).join(' · ')||'Standard Event')}</strong></div></div><div class="aw-dock-bottom"><div><span>Race Control</span><strong data-event-countdown>Calculating…</strong></div><p>${escapeHtml(explanation)}</p></div>${!event.offWeek&&!event.tbd?'<div class="aw-dock-cal" data-cal-target hidden></div>':''}</div></article>`;
+    }).join('')}</div></section>`).join('');
+  }
+  try {
+    const response=await fetch(`/api/site-content?runtime=${Date.now()}`,{cache:'no-store',headers:{accept:'application/json'}});
+    if(response.ok){
+      const published=await response.json(),rows=published?.datasets?.['schedule-events'];
+      if(Array.isArray(rows)&&rows.length){
+        scheduleEvents=rows.map((event)=>({...event,shareSlug:runtimeEventSlug(event)})).sort((a,b)=>String(a.date??'9999').localeCompare(String(b.date??'9999'))||String(a.time??'').localeCompare(String(b.time??'')));
+        dataNode.textContent=JSON.stringify(scheduleEvents);renderPublishedList(scheduleEvents);
+      }
+    }
+  } catch(error) { console.warn('Live schedule data unavailable; using the bundled calendar.',error); }
   const cards = Array.from(page.querySelectorAll('[data-event-card]'));
   const monthBlocks = Array.from(page.querySelectorAll('[data-month-key]'));
   const toolbar = page.querySelector('[data-schedule-toolbar]');
@@ -335,7 +385,6 @@ const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event
   const calMount = page.querySelector('[data-calendar-mount]');
   const laneMount = page.querySelector('[data-series-lanes]');
   const viewBtns = page.querySelectorAll('[data-view-toggle]');
-  const listOut = page.querySelector('[data-schedule-output]');
   const toggleWrap = page.querySelector('.aw-schedule-toggle-wrap');
   const readout = page.querySelector('.aw-schedule-readout');
   let activeFilter = 'all'; let activeSubfilter = 'uarl-all'; let showFullSchedule = false; let currentWeatherTrack = null; let weatherCycle = null; let forcedEventSlug = ''; let toastTimer = null;
@@ -526,7 +575,10 @@ const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event
   const announceShare = (text) => { if (!(scheduleToast instanceof HTMLElement)) return; scheduleToast.textContent=text; scheduleToast.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>scheduleToast.hidden=true,1500); };
   page.querySelectorAll('[data-event-share]').forEach(button => button.addEventListener('click', async () => {
     const slug=button.dataset.eventShare || ''; if(!slug) return;
-    await copyText(`${location.origin}/event/${encodeURIComponent(slug)}/?v=47`);
+    const shareUrl=bundledSlugs.has(slug)
+      ? `${location.origin}/event/${encodeURIComponent(slug)}/?v=47`
+      : `${location.origin}/schedule/#event-${encodeURIComponent(slug)}`;
+    await copyText(shareUrl);
     announceShare('Event link copied');
   }));
 
@@ -611,8 +663,6 @@ const featuredEvents = scheduleEvents.filter((event) => !event.offWeek && !event
     {key:'open',name:'UARL Open',rhythm:'Sundays · 11:30 AM ET'},
     {key:'iracing',name:'iRacing Special Events',rhythm:'Multi-day event windows'}
   ];
-  const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
-
   function updateRaceWeek() {
     const featureCards = Array.from(page.querySelectorAll('[data-race-week-card]'));
     const events = filteredEvents().filter(event=>!event.offWeek).slice(0,featureCards.length);

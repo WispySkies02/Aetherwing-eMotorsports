@@ -61,3 +61,7 @@ The **Standings** tab supports drag-and-drop row ordering on desktop plus Move U
 ## v0.4.52 publication control
 
 The Calendar and every other main-site tab can publish unsaved form changes directly. Admin first stores the authoritative public-data revision, then queues a cache-cleared site rebuild. The three-step status strip shows draft, public data, and rebuild states separately so a missing hook cannot masquerade as a completed deployment. League selectors are generated from the editable **Leagues** tab plus existing calendar IDs, allowing a future league to be added without changing Admin code.
+
+## v0.4.53 live Schedule delivery
+
+The public Schedule requests the published Calendar dataset directly from `/api/site-content` when the page opens. A successful **Publish current changes** therefore updates the visible Schedule after a refresh even when the Netlify build hook is missing, delayed, or failing. The schedule bundled during the last deployment remains available as an automatic fallback when the content endpoint cannot be reached. Static event social-card pages and other build-time pages still require a successful site rebuild.
