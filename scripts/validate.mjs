@@ -265,6 +265,7 @@ assert(adminPage.includes('name="scrAffiliate"') && adminScript.includes("data.g
 assert(adminScript.includes('slugField.readOnly = editingSeed') && adminFunction.includes('share slug is locked for pre-existing paints'), 'Original paint edits preserve their existing share slugs');
 assert(adminFunction.includes("source: editingSeed ? 'seed-override' : 'admin'"), 'Original-paint edits save as non-destructive overrides');
 assert(text('src/layouts/BaseLayout.astro').includes('location.replace(`/admin/${hash}`)'), 'Identity email tokens route into the central admin');
+assert(text('src/layouts/BaseLayout.astro').includes("params.get('season') === 'summer-end'") && text('src/layouts/BaseLayout.astro').includes("Number(eastern.day) <= 24") && text('src/styles/global.css').includes("html[data-season=\"summer-end\"] .aw-summers-end"), 'Summer’s End overlay runs September 18–24 Eastern with a manual preview switch');
 assert(adminScript.includes('AUTO_LOGIN') && adminScript.includes("window.netlifyIdentity.open('login')"), 'Admin login convenience route can auto-open the secure sign-in dialog');
 const contentAdminScript = text('public/admin/content-admin.js');
 const controlCenterCss = text('public/admin/control-center.css');

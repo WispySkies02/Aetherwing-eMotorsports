@@ -1,3 +1,12 @@
+# v0.4.55 — Summer’s End Seasonal Overlay
+
+- Added a sitewide Summer’s End presentation for September 18–24 in the America/New_York time zone.
+- Added warm sunset glow, dusky purple haze, restrained golden particles, and a compact “Summer’s Final Stretch” seasonal signal.
+- Kept the treatment non-interactive so it cannot block navigation, controls, or page content.
+- Reduced particle density on mobile and disabled drifting motion for visitors who prefer reduced motion.
+- Added `?season=summer-end` as an explicit preview switch outside the automatic date window.
+- The overlay automatically disappears after September 24 so the September 25 Halloween teaser can take its place later.
+
 # v0.4.54 — SCR Affiliate Paint Controls
 
 - Added an **SCR Affiliate paint** checkbox to Paint Operations for both new and existing paint records.

@@ -28,6 +28,11 @@ const bannerEvents=(eventsRaw as any[]).filter((e:any)=>!e.offWeek).map((e:any)=
       if (/^#(?:invite_token|confirmation_token|recovery_token|email_change_token)=/.test(hash)) {
         location.replace(`/admin/${hash}`);
       }
+      const params = new URLSearchParams(location.search);
+      const eastern = new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', month:'numeric', day:'numeric' })
+        .formatToParts(new Date()).reduce((parts, part) => ({ ...parts, [part.type]:part.value }), {});
+      const summersEnd = params.get('season') === 'summer-end' || (Number(eastern.month) === 9 && Number(eastern.day) >= 18 && Number(eastern.day) <= 24);
+      if (summersEnd) document.documentElement.dataset.season = 'summer-end';
     })();
   </script>
   <SEOHead {...props} />
@@ -47,6 +52,14 @@ const bannerEvents=(eventsRaw as any[]).filter((e:any)=>!e.offWeek).map((e:any)=
       <strong class="aw-banner-count" data-banner-count>--:--</strong>
     </div>
   </a>
+  <div class="aw-summers-end" aria-hidden="true">
+    <div class="aw-summers-end__sun"></div>
+    <div class="aw-summers-end__haze"></div>
+    <div class="aw-summers-end__particles">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="aw-summers-end__label"><span>Seasonal Signal</span><strong>Summer’s Final Stretch</strong></div>
+  </div>
   <main id="main-content"><slot /></main>
   <SiteFooter />
 </body>
