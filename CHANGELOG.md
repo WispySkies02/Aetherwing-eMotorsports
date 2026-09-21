@@ -1,3 +1,10 @@
+# v0.4.56 — Paint Tags + Multi-Paint Race Feature
+
+- Added managed Dash4Cash and Chase paint controls to Paint Operations Admin.
+- Preserved SCR Affiliate, Dash4Cash, and Chase classifications as explicit paint data and public badge tags.
+- Upgraded the next-race feature from one paint to a multi-select lineup while retaining backwards compatibility with older single-paint records.
+- Feature records now remain valid when one selected paint is drafted, renamed, or archived.
+
 # v0.4.55 — Summer’s End Seasonal Overlay
 
 - Added a sitewide Summer’s End presentation for September 18–24 in the America/New_York time zone.

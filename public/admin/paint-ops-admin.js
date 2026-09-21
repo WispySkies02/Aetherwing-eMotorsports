@@ -138,11 +138,19 @@
       next.drafts = (next.drafts || []).filter((item) => item.slug !== priorSlug && item.slug !== paint.slug);
       const target = status === 'draft' ? next.drafts : next.paints;
       target.push({ ...paint, status, archived: false, source: editingSeed ? 'seed-override' : 'admin', updatedAt: new Date().toISOString() });
+      if (next.feature) {
+        const selected = next.feature.slugs?.length ? next.feature.slugs : next.feature.slug ? [next.feature.slug] : [];
+        if (selected.includes(priorSlug)) {
+          const slugs = status === 'draft' ? selected.filter((item) => item !== priorSlug) : selected.map((item) => item === priorSlug ? paint.slug : item);
+          next.feature = slugs.length ? { ...next.feature, slug: slugs[0], slugs } : null;
+        }
+      }
       return { registry: localWrite(next, status === 'draft' ? 'draft.saved' : 'paint.published', paint.slug) };
     }
     if (action === 'setFeature') {
-      next.feature = payload.feature;
-      return { registry: localWrite(next, 'feature.published', payload.feature.slug) };
+      const slugs = [...new Set(payload.feature.slugs?.length ? payload.feature.slugs : payload.feature.slug ? [payload.feature.slug] : [])];
+      next.feature = { ...payload.feature, slug: slugs[0] || '', slugs };
+      return { registry: localWrite(next, 'feature.published', slugs.join(', ')) };
     }
     if (action === 'clearFeature') {
       next.feature = null;
@@ -151,7 +159,13 @@
     if (action === 'archivePaint') {
       if (seedSlugs().has(payload.slug)) throw new Error('Pre-existing paints stay in the permanent archive. Edit their details instead of archiving them.');
       next.paints = (next.paints || []).map((paint) => paint.slug === payload.slug ? { ...paint, archived: payload.archived !== false } : paint);
-      if (next.feature?.slug === payload.slug && payload.archived !== false) next.feature = null;
+      if (next.feature && payload.archived !== false) {
+        const selected = next.feature.slugs?.length ? next.feature.slugs : next.feature.slug ? [next.feature.slug] : [];
+        if (selected.includes(payload.slug)) {
+          const slugs = selected.filter((item) => item !== payload.slug);
+          next.feature = slugs.length ? { ...next.feature, slug: slugs[0], slugs } : null;
+        }
+      }
       return { registry: localWrite(next, payload.archived === false ? 'paint.restored' : 'paint.archived', payload.slug) };
     }
     throw new Error('Unknown local preview action.');
@@ -205,8 +219,12 @@
     const data = new FormData(form);
     const tags = String(data.get('tags') || '').split(',').map((tag) => slugify(tag)).filter(Boolean);
     const scrAffiliate = data.get('scrAffiliate') === 'on';
+    const dash4Cash = data.get('dash4Cash') === 'on';
+    const chase = data.get('chase') === 'on';
     const special = tags.filter((tag) => ['throwback','patriotic','racewinner','concept','tribute','prized','legacy'].includes(tag));
     if (scrAffiliate && !special.includes('starclutch')) special.push('starclutch');
+    if (dash4Cash && !special.includes('dash4cash')) special.push('dash4cash');
+    if (chase && !special.includes('chase')) special.push('chase');
     return {
       slug: slugify(data.get('slug')),
       sponsor: String(data.get('sponsor') || '').trim(),
@@ -223,6 +241,8 @@
       tags,
       special,
       scrAffiliate,
+      dash4Cash,
+      chase,
       debutRace: String(data.get('debutRace') || '').trim()
     };
   }
@@ -247,7 +267,10 @@
       ? (isIRacing ? ['Hailey Bell', ''] : ['Hailey', paint.username || '@Aokikoto'])
       : [paint.driver, paint.username];
     const affiliate = paint.scrAffiliate || paint.special?.includes('starclutch');
-    $('[data-paint-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">${esc(paint.leagueName)} ${paint.number ? '· #' + esc(paint.number) : ''}</p>${affiliate ? '<span class="scr-affiliate-badge">SCR Affiliate</span>' : ''}<h3>${esc(paint.sponsor)}</h3><p>${esc(identity[0])}${identity[1] ? '<br>' + esc(identity[1]) : ''}</p>${paint.note ? `<p>${esc(paint.note)}</p>` : ''}<div class="preview-race"><strong>/${esc(paint.slug)}/</strong><span>${paint.schemeId ? 'Scheme ID ' + esc(paint.schemeId) : 'iRacing custom livery'}</span></div></div>`;
+    const dash4Cash = paint.dash4Cash || paint.special?.includes('dash4cash');
+    const chase = paint.chase || paint.special?.includes('chase');
+    const badges = `${affiliate ? '<span class="scr-affiliate-badge">SCR Affiliate</span>' : ''}${dash4Cash ? '<span class="scr-affiliate-badge is-dash4cash">Dash4Cash</span>' : ''}${chase ? '<span class="scr-affiliate-badge is-chase">Chase</span>' : ''}`;
+    $('[data-paint-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">${esc(paint.leagueName)} ${paint.number ? '· #' + esc(paint.number) : ''}</p>${badges}<h3>${esc(paint.sponsor)}</h3><p>${esc(identity[0])}${identity[1] ? '<br>' + esc(identity[1]) : ''}</p>${paint.note ? `<p>${esc(paint.note)}</p>` : ''}<div class="preview-race"><strong>/${esc(paint.slug)}/</strong><span>${paint.schemeId ? 'Scheme ID ' + esc(paint.schemeId) : 'iRacing custom livery'}</span></div></div>`;
   }
 
   function featureFromForm() {
@@ -257,30 +280,30 @@
     const expires = date ? new Date(`${date}T23:59:59`) : null;
     if (expires) expires.setDate(expires.getDate() + 1);
     return {
-      slug: String(data.get('slug') || ''), series: String(data.get('series') || '').trim(),
+      slugs: data.getAll('slugs').map((value) => String(value || '')).filter(Boolean), series: String(data.get('series') || '').trim(),
       race: String(data.get('race') || '').trim(), track: String(data.get('track') || '').trim(),
       date, message: String(data.get('message') || '').trim(), expiresAt: expires?.toISOString() || ''
     };
   }
 
   function featurePreview(feature) {
-    const paint = publicPaints().find((item) => item.slug === feature.slug);
-    if (!paint) {
+    const selected = (feature.slugs?.length ? feature.slugs : feature.slug ? [feature.slug] : []).map((slug) => publicPaints().find((item) => item.slug === slug)).filter(Boolean);
+    if (!selected.length) {
       $('[data-feature-preview-card]').innerHTML = '<div class="preview-empty">Choose a published paint to build the race feature.</div>';
       return;
     }
-    $('[data-feature-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">Next race paint</p><h3>${esc(paint.sponsor)}</h3><p>Hailey<br>@Aokikoto</p>${feature.message ? `<p>${esc(feature.message)}</p>` : ''}<div class="preview-race"><strong>${esc([feature.race, feature.track].filter(Boolean).join(' · ') || 'Upcoming race')}</strong><span>${esc([feature.series, feature.date].filter(Boolean).join(' · ') || 'Add race details')}</span></div></div>`;
+    $('[data-feature-preview-card]').innerHTML = `<div class="feature-preview-grid">${selected.map((paint) => `<div><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"><strong>${esc(paint.sponsor)}</strong><span>${esc(paint.driver)}${paint.number ? ' · #'+esc(paint.number) : ''}</span></div>`).join('')}</div><div class="preview-body"><p class="kicker">Next race paints · ${selected.length} selected</p><h3>${esc(feature.race || 'Upcoming race')}</h3>${feature.message ? `<p>${esc(feature.message)}</p>` : ''}<div class="preview-race"><strong>${esc([feature.race, feature.track].filter(Boolean).join(' · ') || 'Upcoming race')}</strong><span>${esc([feature.series, feature.date].filter(Boolean).join(' · ') || 'Add race details')}</span></div></div>`;
   }
 
   function populatePaintSelect() {
     const select = $('[data-feature-paint]');
-    const current = select.value || registry.feature?.slug || '';
+    const current = registry.feature?.slugs?.length ? registry.feature.slugs : registry.feature?.slug ? [registry.feature.slug] : Array.from(select.selectedOptions).map((option) => option.value);
     const options = publicPaints().filter((paint) => !paint.archived).sort((a, b) => a.sponsor.localeCompare(b.sponsor));
-    select.innerHTML = '<option value="">Choose a paint</option>' + options.map((paint) => {
+    select.innerHTML = options.map((paint) => {
       const leagueName = paint.leagueName || leagues.find(([id]) => id === paint.leagues?.[0])?.[1] || paint.leagues?.[0] || '';
       return `<option value="${esc(paint.slug)}">${esc(leagueName)} · ${paint.number ? '#' + esc(paint.number) + ' · ' : ''}${esc(paint.sponsor)}</option>`;
     }).join('');
-    if (options.some((paint) => paint.slug === current)) select.value = current;
+    Array.from(select.options).forEach((option) => { option.selected = current.includes(option.value); });
   }
 
   function hydrateFeature() {
@@ -289,8 +312,10 @@
     const form = $('[data-feature-form]');
     for (const [key, value] of Object.entries(feature)) {
       const field = form.elements.namedItem(key);
-      if (field) field.value = value || '';
+      if (field && key !== 'slugs') field.value = value || '';
     }
+    const slugs = feature.slugs?.length ? feature.slugs : feature.slug ? [feature.slug] : [];
+    Array.from(form.elements.namedItem('slugs')?.options || []).forEach((option) => { option.selected = slugs.includes(option.value); });
     featurePreview(feature);
   }
 
@@ -314,7 +339,9 @@
         : '';
       const publishAction = paint.status === 'draft' ? `<button type="button" data-publish-draft="${esc(paint.slug)}">Publish</button>` : '';
       const affiliate = paint.scrAffiliate || paint.special?.includes('starclutch');
-      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
+      const dash4Cash = paint.dash4Cash || paint.special?.includes('dash4cash');
+      const chase = paint.chase || paint.special?.includes('chase');
+      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}${dash4Cash ? ' <span class="status dash4cash">DASH4CASH</span>' : ''}${chase ? ' <span class="status chase">CHASE</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
     }).join('');
   }
 
@@ -345,7 +372,7 @@
 
   function fillPaintForm(paint) {
     const form = $('[data-paint-form]');
-    const values = { ...paint, league: paint.leagues?.[0] || '', tags: (paint.tags || paint.special || []).filter((tag) => tag !== 'starclutch').join(', '), scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch') };
+    const values = { ...paint, league: paint.leagues?.[0] || '', tags: (paint.tags || paint.special || []).filter((tag) => !['starclutch','dash4cash','chase'].includes(tag)).join(', '), scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch'), dash4Cash: paint.dash4Cash === true || paint.special?.includes('dash4cash'), chase: paint.chase === true || paint.special?.includes('chase') };
     for (const [key, value] of Object.entries(values)) {
       const field = form.elements.namedItem(key);
       if (field instanceof HTMLInputElement && field.type === 'checkbox') field.checked = Boolean(value);
@@ -411,8 +438,8 @@
       try {
         const paint = await savePaint('published');
         chooseTab('feature');
-        $('[data-feature-paint]').value = paint.slug;
-        featurePreview({ slug: paint.slug });
+        Array.from($('[data-feature-paint]').options).forEach((option) => { option.selected = option.value === paint.slug; });
+        featurePreview({ slugs: [paint.slug] });
         toast(`${paint.sponsor} is published. Add the race details to feature it.`);
       } catch (error) { toast(error.message, true); }
     });
@@ -423,7 +450,7 @@
     featureForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const feature = featureFromForm();
-      if (!feature.slug || !feature.series || !feature.race || !feature.track || !feature.date) return toast('Choose a paint and complete the race details first.', true);
+      if (!feature.slugs.length || !feature.series || !feature.race || !feature.track || !feature.date) return toast('Choose at least one paint and complete the race details first.', true);
       try { const result = await request('setFeature', { feature }); registry = result.registry; featurePreview(feature); renderLibrary(); toast('Upcoming race feature is live.'); }
       catch (error) { toast(error.message, true); }
     });

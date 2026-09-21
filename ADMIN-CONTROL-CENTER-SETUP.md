@@ -70,6 +70,10 @@ The public Schedule requests the published Calendar dataset directly from `/api/
 
 The Paint Editor includes an **SCR Affiliate paint** checkbox. Check it when a livery belongs to the StarClutch Racing affiliate collection. The option is saved with drafts and published paints, appears in Admin previews and Library rows, and is delivered to the public Paint Booth as `scrAffiliate: true`. Existing paints with the legacy `starclutch` classification automatically load with the checkbox selected; clearing the checkbox and saving removes that classification.
 
+## v0.4.56 paint tags and multi-paint race feature
+
+Paint Operations now has dedicated SCR Affiliate, Dash4Cash, and Chase checkboxes. The next-race editor is a multi-select: choose every paint in the upcoming SCR lineup, then publish the shared race details once.
+
 ## v0.4.55 Summer’s End overlay
 
 The main website automatically enables **Summer’s Final Stretch** from September 18 through September 24 using the America/New_York calendar date. The overlay is decorative, does not intercept clicks, reduces its particle count on phones, and honors reduced-motion preferences. Append `?season=summer-end` to a main-site page URL to preview it outside that date window. The Admin interface and separate Paint Booth deployment are not altered by this main-site overlay.

@@ -41,7 +41,7 @@ async function call(handler,body,role='admin',method=body?'POST':'GET') {
   const response=await handler(new Request('https://aetherwing.net/.netlify/functions/test',{method,headers:{...(role?{authorization:`Bearer ${role}`} : {}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}));
   return {status:response.status,body:await response.json()};
 }
-const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[],scrAffiliate:true};
+const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[],scrAffiliate:true,dash4Cash:true,chase:true};
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},null)).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'fake-role')).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'expired')).status,403);
@@ -49,6 +49,8 @@ assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...paint,image:'j
 let response=await call(paintAdmin,{action:'savePaint',paint,status:'draft'});
 assert.equal(response.status,200);assert.equal(response.body.registry.drafts.length,1);
 assert.equal(response.body.registry.drafts[0].scrAffiliate,true);assert.ok(response.body.registry.drafts[0].special.includes('starclutch'));
+assert.equal(response.body.registry.drafts[0].dash4Cash,true);assert.ok(response.body.registry.drafts[0].special.includes('dash4cash'));
+assert.equal(response.body.registry.drafts[0].chase,true);assert.ok(response.body.registry.drafts[0].special.includes('chase'));
 assert.equal((await call(paintAdmin)).body.registry.drafts.length,1);
 assert.equal((await call(paintData,undefined,null)).body.paints.length,35);
 response=await call(paintAdmin,{action:'savePaint',paint,priorSlug:paint.slug,status:'published'},'paint-admin');
@@ -56,12 +58,13 @@ assert.equal(response.status,200);
 assert.equal((await call(paintData,undefined,null)).body.paints.length,36);
 assert.equal((await call(paintData,undefined,null)).body.paints.find((item)=>item.slug===paint.slug).scrAffiliate,true);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint})).status,409);
-assert.equal((await call(paintAdmin,{action:'setFeature',feature:{slug:paint.slug,series:'NRRS',race:'Fixture 400',track:'Fixture Raceway',date:'2099-01-01'}})).status,200);
-assert.equal((await call(paintData,undefined,null)).body.feature.slug,paint.slug);
+assert.equal((await call(paintAdmin,{action:'setFeature',feature:{slugs:[paint.slug,'d1-ironmouse'],series:'NRRS',race:'Fixture 400',track:'Fixture Raceway',date:'2099-01-01'}})).status,200);
+assert.deepEqual((await call(paintData,undefined,null)).body.feature.slugs,[paint.slug,'d1-ironmouse']);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...paint,slug:'fixture-renamed'},priorSlug:paint.slug})).status,200);
-assert.equal((await call(paintData,undefined,null)).body.feature.slug,'fixture-renamed');
+assert.deepEqual((await call(paintData,undefined,null)).body.feature.slugs,['fixture-renamed','d1-ironmouse']);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:'fixture-renamed'})).status,200);
-response=await call(paintData,undefined,null);assert.equal(response.body.paints.length,35);assert.equal(response.body.feature,null);
+response=await call(paintData,undefined,null);assert.equal(response.body.paints.length,35);assert.deepEqual(response.body.feature.slugs,['d1-ironmouse']);
+assert.equal((await call(paintAdmin,{action:'clearFeature'})).status,200);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:'fixture-renamed',archived:false})).status,200);
 const seedPaint=require('../data/paint-seed.json').paints.find((item)=>item.slug==='d1-ironmouse');
 const editedSeed={...seedPaint,sponsor:'Ironmouse Admin Edit',leagueName:'NRRS'};

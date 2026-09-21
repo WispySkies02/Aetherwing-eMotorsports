@@ -31,7 +31,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v0.4.55</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v0.4.56</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -122,7 +122,7 @@
         <div class="panel-heading"><span>01</span><div><h2>Upcoming race feature</h2><p>Give the next scheme a reason to matter before race day.</p></div></div>
         <div class="editor-layout">
           <form data-feature-form>
-            <label><span>Paint</span><select name="slug" required data-feature-paint><option value="">Choose a paint</option></select></label>
+            <label><span>Featured paints <small>choose one or several</small></span><select name="slugs" required multiple size="9" data-feature-paint></select><small class="field-help">Select every SCR scheme running the upcoming race. On desktop use Ctrl/Cmd-click; on mobile tap each paint in the picker.</small></label>
             <div class="field-row">
               <label><span>Series</span><input name="series" required placeholder="NRRS"></label>
               <label><span>Race</span><input name="race" required placeholder="Southern 500"></label>
@@ -169,6 +169,16 @@
               <input type="checkbox" name="scrAffiliate">
               <span><b>SCR Affiliate paint</b><small>Marks this scheme as part of the StarClutch Racing affiliate collection in the public Paint Booth.</small></span>
             </label>
+            <div class="paint-flag-grid">
+              <label class="paint-flag-toggle is-dash4cash">
+                <input type="checkbox" name="dash4Cash">
+                <span><b>Dash4Cash paint</b><small>Use for Kmart Dash4Cash schemes. Adds a public Dash4Cash badge.</small></span>
+              </label>
+              <label class="paint-flag-toggle is-chase">
+                <input type="checkbox" name="chase">
+                <span><b>Chase paint</b><small>Use for Chase or playoff schemes in any league. Adds a public Chase badge.</small></span>
+              </label>
+            </div>
             <div class="actions"><button class="secondary" type="button" data-paint-preview>Preview</button><button class="secondary" type="button" data-save-draft>Save draft</button><button class="primary" type="submit">Publish paint</button><button class="accent" type="button" data-publish-feature>Publish + feature</button></div>
           </form>
           <aside class="preview-card paint-preview" data-paint-preview-card aria-live="polite"><div class="preview-empty">Fill in the paint details, then preview the collection card.</div></aside>

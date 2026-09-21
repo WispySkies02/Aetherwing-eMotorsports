@@ -65,7 +65,12 @@ function mergedPublishedPaints(registry) {
     if (!baseSlugs.has(paint.slug)) paints.push({ ...paint, source: paint.source || 'admin' });
   }
   return paints.filter((paint) => !paint.archived && paint.status !== 'draft').map((paint) => {
-    paint = { ...paint, scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch') };
+    paint = {
+      ...paint,
+      scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch'),
+      dash4Cash: paint.dash4Cash === true || paint.special?.includes('dash4cash'),
+      chase: paint.chase === true || paint.special?.includes('chase')
+    };
     const league = Array.isArray(paint.leagues) ? paint.leagues[0] : '';
     if (league === 'iracing' && ['Nicholas Waggoner','Hailey','Wispy','Hailey Bell'].includes(paint.driver)) {
       return { ...paint, driver: 'Hailey Bell', username: '' };
@@ -121,9 +126,14 @@ function safeUrl(value) {
 
 function sanitizePaint(input) {
   const league = slug(Array.isArray(input?.leagues) ? input.leagues[0] : input?.league);
-  const scrAffiliate = input?.scrAffiliate === true;
-  const special = Array.isArray(input?.special) ? input.special.map((item) => slug(item)).filter((item) => item && item !== 'starclutch').slice(0, 12) : [];
+  const inputSpecial = Array.isArray(input?.special) ? input.special.map((item) => slug(item)).filter(Boolean) : [];
+  const scrAffiliate = input?.scrAffiliate === true || inputSpecial.includes('starclutch');
+  const dash4Cash = input?.dash4Cash === true || inputSpecial.includes('dash4cash');
+  const chase = input?.chase === true || inputSpecial.includes('chase');
+  const special = inputSpecial.filter((item) => !['starclutch','dash4cash','chase'].includes(item)).slice(0, 12);
   if (scrAffiliate && !special.includes('starclutch')) special.push('starclutch');
+  if (dash4Cash && !special.includes('dash4cash')) special.push('dash4cash');
+  if (chase && !special.includes('chase')) special.push('chase');
   return {
     slug: slug(input?.slug),
     sponsor: text(input?.sponsor, 140),
@@ -140,6 +150,8 @@ function sanitizePaint(input) {
     tags: Array.isArray(input?.tags) ? input.tags.map((item) => slug(item)).filter(Boolean).slice(0, 12) : [],
     special,
     scrAffiliate,
+    dash4Cash,
+    chase,
     debutRace: text(input?.debutRace, 160)
   };
 }
@@ -162,8 +174,9 @@ function sanitizeFeature(input) {
     expiry.setUTCDate(expiry.getUTCDate() + 1);
     expiresAt = expiry.toISOString();
   }
+  const slugs = [...new Set((Array.isArray(input?.slugs) ? input.slugs : [input?.slug]).map((item) => slug(item)).filter(Boolean))].slice(0, 12);
   return {
-    slug: slug(input?.slug), series: text(input?.series, 80), race: text(input?.race, 140),
+    slug: slugs[0] || '', slugs, series: text(input?.series, 80), race: text(input?.race, 140),
     track: text(input?.track, 140), date, message: text(input?.message, 280), expiresAt
   };
 }

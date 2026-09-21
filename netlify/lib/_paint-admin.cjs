@@ -64,20 +64,24 @@ exports.handler = async (event, context) => {
       registry.drafts = registry.drafts.filter((item) => item.slug !== priorSlug && item.slug !== paint.slug);
       const savedPaint = { ...paint, status, archived: false, source: editingSeed ? 'seed-override' : 'admin', updatedAt: new Date().toISOString() };
       (status === 'draft' ? registry.drafts : registry.paints).push(savedPaint);
-      if (registry.feature?.slug === priorSlug) {
-        if (status === 'draft') registry.feature=null;
-        else registry.feature.slug=paint.slug;
+      if (registry.feature) {
+        const selected = registry.feature.slugs?.length ? registry.feature.slugs : registry.feature.slug ? [registry.feature.slug] : [];
+        if (selected.includes(priorSlug)) {
+          const slugs = status === 'draft' ? selected.filter((item) => item !== priorSlug) : selected.map((item) => item === priorSlug ? paint.slug : item);
+          registry.feature = slugs.length ? { ...registry.feature, slug: slugs[0], slugs } : null;
+        }
       }
       addRevision(registry, status === 'draft' ? 'draft.saved' : 'paint.published', paint.slug, user);
     } else if (action === 'setFeature') {
       const feature = sanitizeFeature(input.feature);
-      if (!feature.slug || !feature.series || !feature.race || !feature.track || !feature.date) {
-        return respond(400, { error: 'Paint, series, race, track, and date are required.' });
+      if (!feature.slugs.length || !feature.series || !feature.race || !feature.track || !feature.date) {
+        return respond(400, { error: 'At least one paint, series, race, track, and date are required.' });
       }
-      const exists = [...seedPaints(), ...registry.paints].some((paint) => paint.slug === feature.slug && !paint.archived);
-      if (!exists) return respond(404, { error: 'That paint is not published.' });
+      const published = new Set([...seedPaints(), ...registry.paints].filter((paint) => !paint.archived && paint.status !== 'draft').map((paint) => paint.slug));
+      const missing = feature.slugs.find((paintSlug) => !published.has(paintSlug));
+      if (missing) return respond(404, { error: `The paint “${missing}” is not published.` });
       registry.feature = feature;
-      addRevision(registry, 'feature.published', feature.slug, user);
+      addRevision(registry, 'feature.published', feature.slugs.join(', '), user);
     } else if (action === 'clearFeature') {
       registry.feature = null;
       addRevision(registry, 'feature.cleared', '', user);
@@ -90,7 +94,13 @@ exports.handler = async (event, context) => {
       if (!paint) return respond(404, { error: 'Only paints added through Aetherwing Admin can be archived here.' });
       paint.archived = input.archived !== false;
       paint.updatedAt = new Date().toISOString();
-      if (paint.archived && registry.feature?.slug === slug) registry.feature = null;
+      if (paint.archived && registry.feature) {
+        const selected = registry.feature.slugs?.length ? registry.feature.slugs : registry.feature.slug ? [registry.feature.slug] : [];
+        if (selected.includes(slug)) {
+          const slugs = selected.filter((item) => item !== slug);
+          registry.feature = slugs.length ? { ...registry.feature, slug: slugs[0], slugs } : null;
+        }
+      }
       addRevision(registry, paint.archived ? 'paint.archived' : 'paint.restored', slug, user);
     } else {
       return respond(400, { error: 'Unknown Paint Operations action.' });
