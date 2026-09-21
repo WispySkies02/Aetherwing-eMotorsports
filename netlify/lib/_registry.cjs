@@ -9,6 +9,8 @@ async function getBlobsModule() {
 const STORE_NAME = 'aetherwing-paint-ops';
 const REGISTRY_KEY = 'registry.json';
 const EMPTY = Object.freeze({ version: 1, paints: [], drafts: [], feature: null, revisions: [] });
+const PRIMARY_PAINT_TAGS = ['starclutch','dash4cash','chase','throwback','special'];
+const CLASSIFICATION_TAGS = ['patriotic','racewinner','concept','tribute','prized','legacy','crownjewel','championship','allstar','anniversary','charity','holiday','memorial','alternate'];
 
 function cleanRegistry(value) {
   const registry = value && typeof value === 'object' ? value : {};
@@ -69,7 +71,9 @@ function mergedPublishedPaints(registry) {
       ...paint,
       scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch'),
       dash4Cash: paint.dash4Cash === true || paint.special?.includes('dash4cash'),
-      chase: paint.chase === true || paint.special?.includes('chase')
+      chase: paint.chase === true || paint.special?.includes('chase'),
+      throwback: paint.throwback === true || paint.special?.includes('throwback'),
+      specialPaint: paint.specialPaint === true || paint.special?.includes('special')
     };
     const league = Array.isArray(paint.leagues) ? paint.leagues[0] : '';
     if (league === 'iracing' && ['Nicholas Waggoner','Hailey','Wispy','Hailey Bell'].includes(paint.driver)) {
@@ -130,10 +134,14 @@ function sanitizePaint(input) {
   const scrAffiliate = input?.scrAffiliate === true || inputSpecial.includes('starclutch');
   const dash4Cash = input?.dash4Cash === true || inputSpecial.includes('dash4cash');
   const chase = input?.chase === true || inputSpecial.includes('chase');
-  const special = inputSpecial.filter((item) => !['starclutch','dash4cash','chase'].includes(item)).slice(0, 12);
+  const throwback = input?.throwback === true || inputSpecial.includes('throwback');
+  const specialPaint = input?.specialPaint === true || inputSpecial.includes('special');
+  const special = inputSpecial.filter((item) => CLASSIFICATION_TAGS.includes(item)).slice(0, CLASSIFICATION_TAGS.length);
   if (scrAffiliate && !special.includes('starclutch')) special.push('starclutch');
   if (dash4Cash && !special.includes('dash4cash')) special.push('dash4cash');
   if (chase && !special.includes('chase')) special.push('chase');
+  if (throwback && !special.includes('throwback')) special.push('throwback');
+  if (specialPaint && !special.includes('special')) special.push('special');
   return {
     slug: slug(input?.slug),
     sponsor: text(input?.sponsor, 140),
@@ -152,6 +160,8 @@ function sanitizePaint(input) {
     scrAffiliate,
     dash4Cash,
     chase,
+    throwback,
+    specialPaint,
     debutRace: text(input?.debutRace, 160)
   };
 }

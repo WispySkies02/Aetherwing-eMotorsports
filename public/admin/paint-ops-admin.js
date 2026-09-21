@@ -217,14 +217,20 @@
   function paintFromForm() {
     const form = $('[data-paint-form]');
     const data = new FormData(form);
-    const tags = String(data.get('tags') || '').split(',').map((tag) => slugify(tag)).filter(Boolean);
+    const managedTags = ['starclutch','dash4cash','chase','throwback','special','patriotic','racewinner','concept','tribute','prized','legacy','crownjewel','championship','allstar','anniversary','charity','holiday','memorial','alternate'];
+    const inputTags = String(data.get('tags') || '').split(',').map((tag) => slugify(tag)).filter(Boolean);
+    const tags = inputTags.filter((tag) => !managedTags.includes(tag));
     const scrAffiliate = data.get('scrAffiliate') === 'on';
     const dash4Cash = data.get('dash4Cash') === 'on';
     const chase = data.get('chase') === 'on';
-    const special = tags.filter((tag) => ['throwback','patriotic','racewinner','concept','tribute','prized','legacy'].includes(tag));
+    const throwback = data.get('throwback') === 'on';
+    const specialPaint = data.get('specialPaint') === 'on';
+    const special = [...new Set(data.getAll('specialTags').map((tag) => slugify(tag)).filter(Boolean))];
     if (scrAffiliate && !special.includes('starclutch')) special.push('starclutch');
     if (dash4Cash && !special.includes('dash4cash')) special.push('dash4cash');
     if (chase && !special.includes('chase')) special.push('chase');
+    if (throwback && !special.includes('throwback')) special.push('throwback');
+    if (specialPaint && !special.includes('special')) special.push('special');
     return {
       slug: slugify(data.get('slug')),
       sponsor: String(data.get('sponsor') || '').trim(),
@@ -243,6 +249,8 @@
       scrAffiliate,
       dash4Cash,
       chase,
+      throwback,
+      specialPaint,
       debutRace: String(data.get('debutRace') || '').trim()
     };
   }
@@ -269,7 +277,11 @@
     const affiliate = paint.scrAffiliate || paint.special?.includes('starclutch');
     const dash4Cash = paint.dash4Cash || paint.special?.includes('dash4cash');
     const chase = paint.chase || paint.special?.includes('chase');
-    const badges = `${affiliate ? '<span class="scr-affiliate-badge">SCR Affiliate</span>' : ''}${dash4Cash ? '<span class="scr-affiliate-badge is-dash4cash">Dash4Cash</span>' : ''}${chase ? '<span class="scr-affiliate-badge is-chase">Chase</span>' : ''}`;
+    const throwback = paint.throwback || paint.special?.includes('throwback');
+    const specialPaint = paint.specialPaint || paint.special?.includes('special');
+    const classificationLabels = {patriotic:'Patriotic',racewinner:'Race Winner',concept:'Concept',tribute:'Tribute',prized:'Prized Livery',legacy:'Legacy / Part-Time',crownjewel:'Crown Jewel',championship:'Championship',allstar:'All-Star',anniversary:'Anniversary',charity:'Charity',holiday:'Holiday',memorial:'Memorial',alternate:'Alternate Scheme'};
+    const extraBadges = (paint.special || []).filter((tag) => classificationLabels[tag]).map((tag) => `<span class="scr-affiliate-badge is-classification">${esc(classificationLabels[tag])}</span>`).join('');
+    const badges = `${affiliate ? '<span class="scr-affiliate-badge">SCR Affiliate</span>' : ''}${dash4Cash ? '<span class="scr-affiliate-badge is-dash4cash">Dash4Cash</span>' : ''}${chase ? '<span class="scr-affiliate-badge is-chase">Chase</span>' : ''}${throwback ? '<span class="scr-affiliate-badge is-throwback">Throwback</span>' : ''}${specialPaint ? '<span class="scr-affiliate-badge is-special">Special Paint</span>' : ''}${extraBadges}`;
     $('[data-paint-preview-card]').innerHTML = `<div class="preview-visual"><img src="${esc(paint.image)}" alt="Preview of ${esc(paint.sponsor)}"></div><div class="preview-body"><p class="kicker">${esc(paint.leagueName)} ${paint.number ? '· #' + esc(paint.number) : ''}</p>${badges}<h3>${esc(paint.sponsor)}</h3><p>${esc(identity[0])}${identity[1] ? '<br>' + esc(identity[1]) : ''}</p>${paint.note ? `<p>${esc(paint.note)}</p>` : ''}<div class="preview-race"><strong>/${esc(paint.slug)}/</strong><span>${paint.schemeId ? 'Scheme ID ' + esc(paint.schemeId) : 'iRacing custom livery'}</span></div></div>`;
   }
 
@@ -341,7 +353,9 @@
       const affiliate = paint.scrAffiliate || paint.special?.includes('starclutch');
       const dash4Cash = paint.dash4Cash || paint.special?.includes('dash4cash');
       const chase = paint.chase || paint.special?.includes('chase');
-      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}${dash4Cash ? ' <span class="status dash4cash">DASH4CASH</span>' : ''}${chase ? ' <span class="status chase">CHASE</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
+      const throwback = paint.throwback || paint.special?.includes('throwback');
+      const specialPaint = paint.specialPaint || paint.special?.includes('special');
+      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}${dash4Cash ? ' <span class="status dash4cash">DASH4CASH</span>' : ''}${chase ? ' <span class="status chase">CHASE</span>' : ''}${throwback ? ' <span class="status throwback">THROWBACK</span>' : ''}${specialPaint ? ' <span class="status special-paint">SPECIAL PAINT</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
     }).join('');
   }
 
@@ -372,12 +386,15 @@
 
   function fillPaintForm(paint) {
     const form = $('[data-paint-form]');
-    const values = { ...paint, league: paint.leagues?.[0] || '', tags: (paint.tags || paint.special || []).filter((tag) => !['starclutch','dash4cash','chase'].includes(tag)).join(', '), scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch'), dash4Cash: paint.dash4Cash === true || paint.special?.includes('dash4cash'), chase: paint.chase === true || paint.special?.includes('chase') };
+    const managedTags = ['starclutch','dash4cash','chase','throwback','special','patriotic','racewinner','concept','tribute','prized','legacy','crownjewel','championship','allstar','anniversary','charity','holiday','memorial','alternate'];
+    const freeTags = [...new Set([...(paint.tags || []), ...(paint.special || [])])].filter((tag) => !managedTags.includes(tag));
+    const values = { ...paint, league: paint.leagues?.[0] || '', tags: freeTags.join(', '), scrAffiliate: paint.scrAffiliate === true || paint.special?.includes('starclutch'), dash4Cash: paint.dash4Cash === true || paint.special?.includes('dash4cash'), chase: paint.chase === true || paint.special?.includes('chase'), throwback: paint.throwback === true || paint.special?.includes('throwback'), specialPaint: paint.specialPaint === true || paint.special?.includes('special') };
     for (const [key, value] of Object.entries(values)) {
       const field = form.elements.namedItem(key);
       if (field instanceof HTMLInputElement && field.type === 'checkbox') field.checked = Boolean(value);
       else if (field) field.value = value || '';
     }
+    form.querySelectorAll('[name="specialTags"]').forEach((field) => { field.checked = paint.special?.includes(field.value) || false; });
     form.dataset.editingSlug = paint.slug;
     const editingSeed = seedSlugs().has(paint.slug);
     form.dataset.editingSeed = editingSeed ? 'true' : 'false';

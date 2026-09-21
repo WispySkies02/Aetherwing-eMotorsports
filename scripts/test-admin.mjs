@@ -41,7 +41,7 @@ async function call(handler,body,role='admin',method=body?'POST':'GET') {
   const response=await handler(new Request('https://aetherwing.net/.netlify/functions/test',{method,headers:{...(role?{authorization:`Bearer ${role}`} : {}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}));
   return {status:response.status,body:await response.json()};
 }
-const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:[],scrAffiliate:true,dash4Cash:true,chase:true};
+const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:['patriotic','crownjewel'],scrAffiliate:true,dash4Cash:true,chase:true,throwback:true,specialPaint:true};
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},null)).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'fake-role')).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'expired')).status,403);
@@ -51,6 +51,9 @@ assert.equal(response.status,200);assert.equal(response.body.registry.drafts.len
 assert.equal(response.body.registry.drafts[0].scrAffiliate,true);assert.ok(response.body.registry.drafts[0].special.includes('starclutch'));
 assert.equal(response.body.registry.drafts[0].dash4Cash,true);assert.ok(response.body.registry.drafts[0].special.includes('dash4cash'));
 assert.equal(response.body.registry.drafts[0].chase,true);assert.ok(response.body.registry.drafts[0].special.includes('chase'));
+assert.equal(response.body.registry.drafts[0].throwback,true);assert.ok(response.body.registry.drafts[0].special.includes('throwback'));
+assert.equal(response.body.registry.drafts[0].specialPaint,true);assert.ok(response.body.registry.drafts[0].special.includes('special'));
+assert.ok(response.body.registry.drafts[0].special.includes('patriotic'));assert.ok(response.body.registry.drafts[0].special.includes('crownjewel'));
 assert.equal((await call(paintAdmin)).body.registry.drafts.length,1);
 assert.equal((await call(paintData,undefined,null)).body.paints.length,35);
 response=await call(paintAdmin,{action:'savePaint',paint,priorSlug:paint.slug,status:'published'},'paint-admin');

@@ -31,7 +31,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v0.4.56</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v0.4.57</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -178,7 +178,35 @@
                 <input type="checkbox" name="chase">
                 <span><b>Chase paint</b><small>Use for Chase or playoff schemes in any league. Adds a public Chase badge.</small></span>
               </label>
+              <label class="paint-flag-toggle is-throwback">
+                <input type="checkbox" name="throwback">
+                <span><b>Throwback paint</b><small>Marks a historic or heritage-inspired scheme with a public Throwback badge.</small></span>
+              </label>
+              <label class="paint-flag-toggle is-special">
+                <input type="checkbox" name="specialPaint">
+                <span><b>Special paint</b><small>Marks any one-off or race-specific scheme with a public Special Paint badge.</small></span>
+              </label>
             </div>
+            <fieldset class="paint-classifications">
+              <legend>Additional paint classifications</legend>
+              <div class="paint-class-grid">
+                <label><input type="checkbox" name="specialTags" value="patriotic"><span>Patriotic</span></label>
+                <label><input type="checkbox" name="specialTags" value="racewinner"><span>Race Winner</span></label>
+                <label><input type="checkbox" name="specialTags" value="concept"><span>Concept</span></label>
+                <label><input type="checkbox" name="specialTags" value="tribute"><span>Tribute</span></label>
+                <label><input type="checkbox" name="specialTags" value="prized"><span>Prized Livery</span></label>
+                <label><input type="checkbox" name="specialTags" value="legacy"><span>Legacy / Part-Time</span></label>
+                <label><input type="checkbox" name="specialTags" value="crownjewel"><span>Crown Jewel</span></label>
+                <label><input type="checkbox" name="specialTags" value="championship"><span>Championship</span></label>
+                <label><input type="checkbox" name="specialTags" value="allstar"><span>All-Star</span></label>
+                <label><input type="checkbox" name="specialTags" value="anniversary"><span>Anniversary</span></label>
+                <label><input type="checkbox" name="specialTags" value="charity"><span>Charity</span></label>
+                <label><input type="checkbox" name="specialTags" value="holiday"><span>Holiday</span></label>
+                <label><input type="checkbox" name="specialTags" value="memorial"><span>Memorial</span></label>
+                <label><input type="checkbox" name="specialTags" value="alternate"><span>Alternate Scheme</span></label>
+              </div>
+              <small class="field-help">Use the Tags field above only for custom search keywords; these classifications create visible public badges.</small>
+            </fieldset>
             <div class="actions"><button class="secondary" type="button" data-paint-preview>Preview</button><button class="secondary" type="button" data-save-draft>Save draft</button><button class="primary" type="submit">Publish paint</button><button class="accent" type="button" data-publish-feature>Publish + feature</button></div>
           </form>
           <aside class="preview-card paint-preview" data-paint-preview-card aria-live="polite"><div class="preview-empty">Fill in the paint details, then preview the collection card.</div></aside>

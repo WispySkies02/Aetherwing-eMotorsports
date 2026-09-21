@@ -70,6 +70,10 @@ The public Schedule requests the published Calendar dataset directly from `/api/
 
 The Paint Editor includes an **SCR Affiliate paint** checkbox. Check it when a livery belongs to the StarClutch Racing affiliate collection. The option is saved with drafts and published paints, appears in Admin previews and Library rows, and is delivered to the public Paint Booth as `scrAffiliate: true`. Existing paints with the legacy `starclutch` classification automatically load with the checkbox selected; clearing the checkbox and saving removes that classification.
 
+## v0.4.57 expanded paint classifications
+
+Paint Operations now includes dedicated Throwback and Special Paint switches plus structured special-type checkboxes. Those classifications publish with each paint and are available to the public Paint Booth and race-day team-reveal graphic.
+
 ## v0.4.56 paint tags and multi-paint race feature
 
 Paint Operations now has dedicated SCR Affiliate, Dash4Cash, and Chase checkboxes. The next-race editor is a multi-select: choose every paint in the upcoming SCR lineup, then publish the shared race details once.

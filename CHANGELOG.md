@@ -1,3 +1,10 @@
+# v0.4.57 — Expanded Paint Classifications
+
+- Added dedicated Throwback and Special Paint switches to Paint Operations.
+- Added structured classifications for patriotic, race winner, concept, tribute, prized, legacy, Crown Jewel, championship, All-Star, anniversary, charity, holiday, memorial, and alternate schemes.
+- Preserved classification metadata through draft, publish, preview, and public Paint Booth registry flows.
+- Upgraded race-day reveal metadata so special scheme types can be presented as prominent graphic badges.
+
 # v0.4.56 — Paint Tags + Multi-Paint Race Feature
 
 - Added managed Dash4Cash and Chase paint controls to Paint Operations Admin.

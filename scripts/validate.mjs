@@ -262,6 +262,9 @@ assert(existsSync(resolve(root, 'data/paint-seed.json')) && existsSync(resolve(r
 assert(paintStoreLib.includes('function mergedPublishedPaints') && paintStoreLib.includes("source: 'seed-override'"), 'Published paint registry merges original paints with Admin overrides');
 assert(adminScript.includes('function libraryPaints()') && adminScript.includes("_origin: 'seed'"), 'Paint Operations library exposes original paints for editing');
 assert(adminPage.includes('name="scrAffiliate"') && adminScript.includes("data.get('scrAffiliate') === 'on'") && paintStoreLib.includes("paint.special?.includes('starclutch')"), 'Paint add/edit form persists an explicit SCR Affiliate flag and normalizes existing StarClutch paints');
+assert(adminPage.includes('name="throwback"') && adminPage.includes('name="specialPaint"') && adminPage.includes('name="specialTags"'), 'Paint add/edit form exposes Throwback, Special Paint, and structured special-type controls');
+assert(adminScript.includes("data.get('throwback') === 'on'") && adminScript.includes("data.get('specialPaint') === 'on'") && adminScript.includes("data.getAll('specialTags')"), 'Paint Operations saves expanded paint classifications');
+assert(paintStoreLib.includes('throwback') && paintStoreLib.includes('specialPaint') && paintStoreLib.includes("'crownjewel'") && paintStoreLib.includes("'championship'"), 'Published registry normalizes expanded paint classifications');
 assert(adminScript.includes('slugField.readOnly = editingSeed') && adminFunction.includes('share slug is locked for pre-existing paints'), 'Original paint edits preserve their existing share slugs');
 assert(adminFunction.includes("source: editingSeed ? 'seed-override' : 'admin'"), 'Original-paint edits save as non-destructive overrides');
 assert(text('src/layouts/BaseLayout.astro').includes('location.replace(`/admin/${hash}`)'), 'Identity email tokens route into the central admin');

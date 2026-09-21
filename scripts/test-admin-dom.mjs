@@ -46,11 +46,17 @@ for(const [name,value] of Object.entries({slug:'dom-paint',sponsor:'DOM TEST Pai
 form.elements.namedItem('scrAffiliate').checked=true;
 form.elements.namedItem('dash4Cash').checked=true;
 form.elements.namedItem('chase').checked=true;
+form.elements.namedItem('throwback').checked=true;
+form.elements.namedItem('specialPaint').checked=true;
+form.querySelector('[name="specialTags"][value="championship"]').checked=true;
 submit('[data-paint-form]');await tick();
 const savedPaint=JSON.parse(window.localStorage.getItem('aetherwing-paint-ops')).paints[0];
 assert.equal(savedPaint.slug,'dom-paint');assert.equal(savedPaint.scrAffiliate,true);assert.ok(savedPaint.special.includes('starclutch'));
 assert.equal(savedPaint.dash4Cash,true);assert.ok(savedPaint.special.includes('dash4cash'));
 assert.equal(savedPaint.chase,true);assert.ok(savedPaint.special.includes('chase'));
+assert.equal(savedPaint.throwback,true);assert.ok(savedPaint.special.includes('throwback'));
+assert.equal(savedPaint.specialPaint,true);assert.ok(savedPaint.special.includes('special'));
+assert.ok(savedPaint.special.includes('championship'));
 click('[data-tab="feature"]');
 const featureForm=$('[data-feature-form]'),featureSelect=featureForm.elements.namedItem('slugs');
 Array.from(featureSelect.options).slice(0,2).forEach((option)=>{option.selected=true});
