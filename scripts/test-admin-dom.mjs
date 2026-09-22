@@ -22,6 +22,12 @@ input(['title'],'DOM TEST calendar edit');click('[data-content-publish]');await 
 let saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));
 assert.equal(saved.published['schedule-events'][0].title,'DOM TEST calendar edit','Publish must include unsaved Calendar changes without a separate Save Draft click');
 assert.equal(saved.drafts['schedule-events'],undefined);
+click('[data-content-add]');
+assert.equal($('[data-content-add]').textContent,'Add race');
+input(['league'],'uarl-d1');input(['leagueName'],'UARL Division 1');input(['title'],'DOM TEST auto-placed race');input(['track'],'Fixture Raceway');input(['date'],'2026-04-07');input(['time'],'6:00 PM ET');
+click('[data-content-publish]');await tick();
+saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));
+assert.equal(saved.published['schedule-events'][0].title,'DOM TEST auto-placed race','Added race should automatically move ahead of a later same-day start');
 click('[data-admin-dataset="results"]');await tick();
 input(['latestResult','finish'],3);submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.results.latestResult.finish,3);
 click('[data-admin-dataset="milestones"]');await tick();click('[data-content-add]');

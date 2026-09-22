@@ -1,4 +1,4 @@
-const { seeds, read, write, validate, json } = require('./_content.cjs');
+const { seeds, read, write, validate, normalize, json } = require('./_content.cjs');
 async function rebuild(revision) {
   const hook = process.env.AETHERWING_BUILD_HOOK;
   if (!hook) return { queued:false, message:'Set AETHERWING_BUILD_HOOK in the main Netlify project to publish site edits.' };
@@ -31,14 +31,15 @@ exports.handler = async (event, context) => {
     const key = input.dataset;
     let publishedKeys = [];
     if (input.action === 'saveDraft') {
-      const error = validate(key, input.data);
+      const data = normalize(key, input.data);
+      const error = validate(key, data);
       if (error) return json(400, { error });
-      registry.drafts[key] = input.data;
+      registry.drafts[key] = data;
     } else if (input.action === 'discardDraft') {
       if (!(key in seeds())) return json(400, { error:'Unknown section.' });
       delete registry.drafts[key];
     } else if (input.action === 'publish') {
-      const data = input.data ?? registry.drafts[key];
+      const data = normalize(key, input.data ?? registry.drafts[key]);
       if (!data) return json(400, { error:'Make a change or save a draft before publishing.' });
       const error = validate(key, data);
       if (error) return json(400, { error });
@@ -46,7 +47,7 @@ exports.handler = async (event, context) => {
       delete registry.drafts[key];
       publishedKeys = [key];
     } else if (input.action === 'publishAll') {
-      const entries = Object.entries(registry.drafts || {});
+      const entries = Object.entries(registry.drafts || {}).map(([draftKey,data])=>[draftKey,normalize(draftKey,data)]);
       if (!entries.length) return json(400, { error:'There are no saved drafts to publish.' });
       for (const [draftKey,data] of entries) {
         const error = validate(draftKey, data);

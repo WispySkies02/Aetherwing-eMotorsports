@@ -1,1 +1,1 @@
-Aetherwing eMotorsports v0.4.57 — expanded paint classifications + race-day reveal metadata
+Aetherwing eMotorsports v0.4.58 — automatic schedule race placement

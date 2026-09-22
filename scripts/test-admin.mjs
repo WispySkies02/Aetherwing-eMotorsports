@@ -86,16 +86,24 @@ let revision=response.body.registry.revision;
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.
 const directSchedule=structuredClone(seeds['schedule-events']);
 directSchedule[0].title='Direct Publication Fixture';
+directSchedule.push({...structuredClone(directSchedule[0]),title:'Auto-Placed Early Fixture',league:'uarl-d1',leagueName:'UARL Division 1',time:'6:00 PM ET'});
 let direct=await call(siteAdmin,{action:'publish',dataset:'schedule-events',data:directSchedule,revision});
 assert.equal(direct.status,200);revision=direct.body.registry.revision;
 assert.equal(direct.body.publication.dataPublished,true);
-assert.equal((await call(siteData,undefined,null)).body.datasets['schedule-events'][0].title,'Direct Publication Fixture');
+const placedSchedule=(await call(siteData,undefined,null)).body.datasets['schedule-events'];
+assert.equal(placedSchedule[0].title,'Auto-Placed Early Fixture','New races should be placed by date and parsed 12-hour start time');
+assert.equal(placedSchedule[1].title,'Direct Publication Fixture');
+assert.deepEqual([
+  {date:'2099-01-01',time:'8:00 PM ET',league:'kmart',title:'Late'},
+  {date:'2099-01-01',time:'11:30 AM ET',league:'sunoco',title:'Early'},
+  {date:'2099-01-01',time:'8:00 PM ET',league:'nrrs',title:'League tie'}
+].sort(content.compareScheduleEvents).map((event)=>event.title),['Early','League tie','Late'],'Schedule ordering should use time then league for same-day ties');
 for(const [key,data] of Object.entries(seeds)) {
   const beforeDraft=(await call(siteData,undefined,null)).body.datasets[key];
   const draft=await call(siteAdmin,{action:'saveDraft',dataset:key,data,revision});assert.equal(draft.status,200,`${key} draft`);revision=draft.body.registry.revision;
   assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],beforeDraft,'Draft must remain private');
   const published=await call(siteAdmin,{action:'publish',dataset:key,revision});assert.equal(published.status,200,`${key} publish`);revision=published.body.registry.revision;
-  assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],data);
+  assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],content.normalize(key,data));
 }
 // Multiple saved drafts publish atomically and queue only one rebuild.
 for(const key of ['wins','milestones']) {

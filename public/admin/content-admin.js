@@ -10,7 +10,7 @@
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
   const datasetMeta = {
-    'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Edit every race, off-week, special event, event window, status badge, track, date, and start time. The bulk ±7-day tool is available below.',guide:'Each row is one calendar operation. Date + league + event title determine its share route, so review those three before publishing.'},
+    'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Add or edit every race, off-week, special event, event window, status badge, track, date, and start time. New races automatically move into chronological order when saved or published.',guide:'Choose Add Race, then complete its league, date, and start time. The Calendar places it by date, parsed 12-hour time, and league; date + league + event title determine its share route.'},
     results:{number:'02',kicker:'RACE OPERATION',title:'Latest Result',description:'Control the latest-result feature and its supporting historical result snapshot. Every number and line of result copy is editable.',guide:'Use this for the current result card/feature. Historical snapshots inside this record can be retained even after the current result changes.'},
     wins:{number:'03',kicker:'RACE OPERATION',title:'Win Archive',description:'Add, correct, or remove individual wins used by Wins & History.',guide:'One row equals one recorded win. Keep historical driver names when that is how the result was originally recorded.'},
     standings:{number:'04',kicker:'RACE OPERATION',title:'Standings',description:'Edit complete championship snapshots. Drag driver rows into display order, edit the official position label, and toggle Aetherwing highlighting per driver.',guide:'Drag standings rows to reorder them. The Position field stays independently editable so partial/team-only tables can keep positions like P1, P2, P4. Use Highlight Driver for Aetherwing emphasis.'},
@@ -102,6 +102,28 @@
     const values = [...new Map([...scheduled,...competitionChoices(),currentValue?[[currentValue,currentValue]]:[]].map((item)=>[item[0],item])).values()];
     return values;
   };
+  const scheduleLeagueOrder=['nrrs','kmart','sunoco','uarl-d1','open','iracing','uarl-d2'];
+  function scheduleTimeMinutes(value='') {
+    const match=String(value).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
+    if(!match)return Number.MAX_SAFE_INTEGER;
+    let hour=Number(match[1])%12;if(match[3].toUpperCase()==='PM')hour+=12;
+    return hour*60+Number(match[2]||0);
+  }
+  function compareScheduleEvents(a,b) {
+    const date=String(a?.date||'9999-12-31').localeCompare(String(b?.date||'9999-12-31'));
+    if(date)return date;
+    const time=scheduleTimeMinutes(a?.time)-scheduleTimeMinutes(b?.time);
+    if(time)return time;
+    const league=(scheduleLeagueOrder.indexOf(a?.league)===-1?scheduleLeagueOrder.length:scheduleLeagueOrder.indexOf(a?.league))-(scheduleLeagueOrder.indexOf(b?.league)===-1?scheduleLeagueOrder.length:scheduleLeagueOrder.indexOf(b?.league));
+    return league||String(a?.title||'').localeCompare(String(b?.title||''));
+  }
+  function autoPlaceScheduleEvents() {
+    if(key!=='schedule-events'||!Array.isArray(data))return false;
+    const selected=current();
+    data.sort(compareScheduleEvents);
+    index=Math.max(0,data.indexOf(selected));
+    return true;
+  }
   function updateControlCenterStatus(publication=null) {
     const drafts=Object.keys(registry.drafts||{}),published=Object.keys(registry.published||{});
     const revision=$('[data-admin-revision]'),draftCount=$('[data-admin-draft-count]'),publishedCount=$('[data-admin-published-count]'),last=$('[data-admin-last-published]');
@@ -336,6 +358,7 @@
     const search=$('[data-content-search]').value.toLowerCase();
     $('[data-content-list]').innerHTML=Array.isArray(data)?data.map((r,i)=>({r,i})).filter(({r})=>JSON.stringify(r).toLowerCase().includes(search)).map(({r,i})=>`<button type="button" data-entry="${i}" aria-pressed="${i===index}"><strong>${esc(title(r,i))}</strong><small>${esc([r.leagueName||r.competition||r.category||'',r.date||r.numbers||r.slug||''].filter(Boolean).join(' · '))}</small></button>`).join(''):'<p>This section is one complete record. Edit its fields on the right.</p>';
     $('[data-content-add]').hidden=!Array.isArray(data);
+    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':'Add new entry';
     $('[data-content-remove]').hidden=!Array.isArray(data)||!data.length;
   }
   function featureSelectedStory() {
@@ -380,7 +403,7 @@
   }
   function chooseDataset(name) {
     key=name; data=structuredClone(base(key)); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
-    if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r}));
+    if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r})).sort(compareScheduleEvents);
     const meta=datasetMeta[key]||{number:'EDIT',kicker:'CONTENT WORKSPACE',title:label(key),description:'Edit this content section.'};
     $('[data-content-number]').textContent=meta.number;
     $('[data-content-kicker]').textContent=meta.kicker;
@@ -488,11 +511,13 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;commit();data.push(blank(seeds[key][0]));index=data.length-1;dirty=true;render();});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;commit();data.push(blank(seeds[key][0]));index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data)||!confirm('Remove this entry from the section draft? It stays public until you publish.'))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');
     if(busy)throw new Error('A save is already in progress.');
+    const autoPlaced=['saveDraft','publish'].includes(name)&&autoPlaceScheduleEvents();
+    if(autoPlaced){render();refreshScheduleShiftTool();}
     busy=true;
     $('[data-content-editor]').inert=true;
     try {
@@ -501,9 +526,9 @@
       if(name==='publish') {
         const publication=response.publication;
         status(publication?.queued
-          ? `Published revision ${publication.revision}. Public data is updated and the site rebuild is queued.`
-          : `Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Publish site / retry build.'}`);
-      } else status(response.publication?.message||(name==='saveDraft'?'Private draft saved. Nothing public changed.':'Section updated.'));
+          ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Public data is updated and the site rebuild is queued.`
+          : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Publish site / retry build.'}`);
+      } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?'Calendar sorted by date, start time, and league. Private draft saved; nothing public changed.':'Private draft saved. Nothing public changed.'):'Section updated.'));
       updateControlCenterStatus(response.publication);
     } finally { busy=false; $('[data-content-editor]').inert=false; }
   }

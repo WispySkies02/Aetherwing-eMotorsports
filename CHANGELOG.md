@@ -1,3 +1,11 @@
+# v0.4.58 — Automatic Schedule Race Placement
+
+- Renamed the Calendar creation control to Add Race.
+- Automatically sorts newly added and edited races by date and parsed 12-hour start time whenever the Calendar is saved or published.
+- Uses a consistent league order as the tie-breaker when races share the same date and time.
+- Normalizes Calendar order in the protected backend so older or alternate Admin clients cannot publish an out-of-order schedule.
+- Uses the same correct time-aware ordering on both the static and live public Schedule.
+
 # v0.4.57 — Expanded Paint Classifications
 
 - Added dedicated Throwback and Special Paint switches to Paint Operations.

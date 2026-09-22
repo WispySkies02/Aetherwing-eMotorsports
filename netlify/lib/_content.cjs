@@ -6,6 +6,24 @@ async function getBlobsModule() {
   return blobsModulePromise;
 }
 const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'news'];
+const SCHEDULE_LEAGUE_ORDER = ['nrrs','kmart','sunoco','uarl-d1','open','iracing','uarl-d2'];
+function scheduleTimeMinutes(value='') {
+  const match=String(value).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
+  if(!match)return Number.MAX_SAFE_INTEGER;
+  let hour=Number(match[1])%12;if(match[3].toUpperCase()==='PM')hour+=12;
+  return hour*60+Number(match[2]||0);
+}
+function compareScheduleEvents(a,b) {
+  const date=String(a?.date||'9999-12-31').localeCompare(String(b?.date||'9999-12-31'));
+  if(date)return date;
+  const time=scheduleTimeMinutes(a?.time)-scheduleTimeMinutes(b?.time);
+  if(time)return time;
+  const rank=(league)=>{const index=SCHEDULE_LEAGUE_ORDER.indexOf(league);return index===-1?SCHEDULE_LEAGUE_ORDER.length:index;};
+  return rank(a?.league)-rank(b?.league)||String(a?.title||'').localeCompare(String(b?.title||''));
+}
+function normalize(key,data) {
+  return key==='schedule-events'&&Array.isArray(data)?[...data].sort(compareScheduleEvents):data;
+}
 function seeds() {
   return Object.fromEntries(FILES.map((key) => {
     const filename=[path.resolve(process.cwd(),`src/data/${key}.json`),path.resolve(__dirname,`../../src/data/${key}.json`),path.resolve(__dirname,`src/data/${key}.json`)].find((p)=>fs.existsSync(p));
@@ -95,4 +113,4 @@ function validate(key, data) {
   return '';
 }
 function json(statusCode, data) { return { statusCode, headers: { 'content-type':'application/json; charset=utf-8', 'cache-control':'no-store', 'x-content-type-options':'nosniff' }, body:JSON.stringify(data) }; }
-module.exports = { FILES, seeds, read, write, validate, json };
+module.exports = { FILES, seeds, read, write, validate, normalize, compareScheduleEvents, json };
