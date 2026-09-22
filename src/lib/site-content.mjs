@@ -15,7 +15,20 @@ import leadershipSeed from '../data/leadership.json';
 import partnersSeed from '../data/partners.json';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const scheduleEvents = choose('schedule-events', scheduleSeed);
-export const results = choose('results', resultsSeed);
+const resultSlug=(value='')=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+const scheduleResultId=(event={})=>`${event.date||'tbd'}-${event.league||'event'}-${resultSlug(event.title||event.track||'scheduled-event')}`;
+const normalizeResults=(value)=>{
+  if(Array.isArray(value))return value;
+  if(Array.isArray(value?.races))return value.races;
+  const old=value?.latestResult;if(!old)return [];
+  const parsed=new Date(old.date),date=Number.isNaN(parsed.getTime())?'':parsed.toISOString().slice(0,10);
+  const event=scheduleEvents.find((item)=>item.league==='nrrs'&&(item.title===old.title||item.track===old.track)&&(!date||item.date===date));
+  return [{scheduleId:event?scheduleResultId(event):`${date||'tbd'}-nrrs-${resultSlug(old.title)}`,league:event?.league||'nrrs',leagueName:event?.leagueName||old.series||'NRRS',title:event?.title||old.title||'',track:event?.track||old.track||'',date:event?.date||date,round:event?.round||old.round||'',status:event?.status||'',specialTag:event?.specialTag||old.specialTag||'',featured:true,headline:old.headline||'',headlineAccent:old.headlineAccent||'',summary:old.summary||'',entries:[{driver:old.driver||'',number:String(old.number||''),start:Number(old.start||0),stage1Finish:0,stage1Points:0,stage2Finish:0,stage2Points:Number(old.stagePoints||0),finish:Number(old.finish||0),racePoints:Number(old.pointsChange||0),featuredDriver:true}]}];
+};
+export const results = normalizeResults(choose('results', resultsSeed)).map((result)=>{
+  const event=scheduleEvents.find((item)=>scheduleResultId(item)===result.scheduleId);
+  return event?{...result,league:event.league,leagueName:event.leagueName,title:event.title,track:event.track,date:event.date,round:event.round||'',status:event.status||'',specialTag:event.specialTag||''}:result;
+}).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
 export const wins = choose('wins', winsSeed);
 export const standings = choose('standings', standingsSeed);
 export const milestones = choose('milestones', milestonesSeed);

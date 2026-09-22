@@ -70,6 +70,14 @@ The public Schedule requests the published Calendar dataset directly from `/api/
 
 The Paint Editor includes an **SCR Affiliate paint** checkbox. Check it when a livery belongs to the StarClutch Racing affiliate collection. The option is saved with drafts and published paints, appears in Admin previews and Library rows, and is delivered to the public Paint Booth as `scrAffiliate: true`. Existing paints with the legacy `starclutch` classification automatically load with the checkbox selected; clearing the checkbox and saving removes that classification.
 
+## v0.4.59 schedule-linked Race Results
+
+- Open **Race Results**, filter the Calendar by league, select the completed race, and choose **Load race results**.
+- Event identity fields are copied from the Calendar and remain read-only in Results.
+- Driver pickers only show Driver League Assignments for the selected league; update Assignments first when a new or substitute driver needs to become eligible.
+- Add one Driver Results item for each Aetherwing entry, choose one featured driver, and choose one race as the current Latest Result.
+- Saving or publishing retains older race records instead of replacing the previous league's result.
+
 ## v0.4.58 automatic Calendar placement
 
 Use **Add Race** in the Calendar tab, then enter its league, date, and start time. Saving a private draft or publishing automatically places the race by date, parsed 12-hour time, and league. The same ordering is enforced by the backend and public Schedule.

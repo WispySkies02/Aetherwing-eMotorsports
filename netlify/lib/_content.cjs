@@ -22,7 +22,9 @@ function compareScheduleEvents(a,b) {
   return rank(a?.league)-rank(b?.league)||String(a?.title||'').localeCompare(String(b?.title||''));
 }
 function normalize(key,data) {
-  return key==='schedule-events'&&Array.isArray(data)?[...data].sort(compareScheduleEvents):data;
+  if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
+  if(key==='results'&&Array.isArray(data))return [...data].sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));
+  return data;
 }
 function seeds() {
   return Object.fromEntries(FILES.map((key) => {
@@ -70,7 +72,7 @@ function validate(key, data) {
   if (!structure(seed,data)) return 'A field has the wrong type. Use numeric inputs for points and finishes, and lists for grouped entries.';
   if (key==='schedule-events' && !data.length) return 'Keep at least one calendar entry.';
   const required = {
-    'schedule-events':['league','leagueName','title','track','date','time'],
+    'schedule-events':['league','leagueName','title','track','date','time'], results:['scheduleId','league','leagueName','title','track','date'],
     wins:['league','track','driver','date'], milestones:['date','title','description'],
     'roster-profiles':['slug','name','role','affiliation','numbers'],
     'driver-profiles':['slug','displayName','subtitle','intro'],
@@ -85,6 +87,19 @@ function validate(key, data) {
       if (typeof row.offWeek!=='undefined' && typeof row.offWeek!=='boolean') return 'Off-week must be checked or unchecked.';
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.league)) return 'Use a lowercase League ID containing letters, numbers, and hyphens.';
       if (!row.tbd && (!/^\d{4}-\d{2}-\d{2}$/.test(row.date) || Number.isNaN(Date.parse(row.date)))) return 'Use a valid YYYY-MM-DD event date.';
+    }
+    if(key==='results'){
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date)||Number.isNaN(Date.parse(row.date)))return `Result ${index+1}: select a valid scheduled race.`;
+      if(!Array.isArray(row.entries)||!row.entries.length)return `Result ${index+1}: add at least one roster driver result.`;
+      if(row.entries.filter((entry)=>entry.featuredDriver).length!==1)return `Result ${index+1}: choose exactly one featured driver.`;
+      const roster=seeds().drivers,leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
+      const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.displayName,String(driver.number||'')]));
+      for(const entry of row.entries){
+        if(!eligible.has(entry.driver))return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
+        if(String(entry.number)!==eligible.get(entry.driver))return `Result ${index+1}: ${entry.driver}'s car number must match the Driver Roster.`;
+        for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!Number.isFinite(entry[field])||entry[field]<0)return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
+      }
+      if(new Set(row.entries.map((entry)=>entry.driver)).size!==row.entries.length)return `Result ${index+1}: each driver can appear only once.`;
     }
     if (key === 'news' && (!/^\d{4}-\d{2}-\d{2}$/.test(row.dateIso) || !Array.isArray(row.sections) || !Array.isArray(row.tags) || row.sections.some((s) => !s.heading || !Array.isArray(s.paragraphs)))) return 'Stories need an ISO date, tags, and sections with headings and paragraphs.';
     if (key === 'roster-profiles' && !Array.isArray(row.programs)) return 'Driver programs must be a list.';
@@ -108,7 +123,11 @@ function validate(key, data) {
     if(new Set(rows.map(eventKey)).size!==rows.length)return 'Two calendar entries would have the same share route. Change the date, league, or title.';
   }
   if (key === 'news' && rows.filter((r) => r.featured).length !== 1) return 'Choose exactly one featured Team Wire story.';
-  if (key === 'results' && (!data.latestResult || !Number.isFinite(data.latestResult.start) || !Number.isFinite(data.latestResult.finish) || !Number.isFinite(data.latestResult.stagePoints) || !data.latestResult.title || !data.latestResult.track || !data.latestResult.driver || Number.isNaN(Date.parse(data.latestResult.date)))) return 'Latest result needs a driver, title, track, valid date, numeric start, finish, and stage points.';
+  if(key==='results'){
+    if(!data.length)return 'Keep at least one race result.';
+    if(data.filter((race)=>race.featured).length!==1)return 'Choose exactly one race as the current latest result.';
+    if(new Set(data.map((race)=>race.scheduleId)).size!==data.length)return 'Each scheduled race can have only one result record.';
+  }
   if (key === 'iracing-garage' && !Array.isArray(data.entries)) return 'The iRacing garage needs an entries list.';
   return '';
 }

@@ -129,6 +129,8 @@
 
 /* v0.4.45 — Schedule Manager bulk week-shift controls */
 .schedule-shift-tool{margin:1rem 0 1.35rem;border:1px solid #2b6477;border-left:4px solid var(--blue);background:linear-gradient(120deg,rgba(24,194,255,.09),#080808 62%);box-shadow:6px 6px 0 rgba(0,0,0,.35)}
+.results-race-tool{margin:1rem 0 1.35rem;border:1px solid #66511d;border-left:4px solid #f2c84b;background:linear-gradient(120deg,rgba(242,200,75,.09),#080808 62%);box-shadow:6px 6px 0 rgba(0,0,0,.35)}
+.results-race-tool[hidden]{display:none}.results-race-tool .schedule-shift-head span,.results-race-tool .schedule-shift-head>strong{color:#f2c84b;border-color:#f2c84b}.results-race-controls{display:grid;grid-template-columns:minmax(170px,.65fr) minmax(280px,1.5fr) auto;gap:.75rem;align-items:end;padding:1rem}.results-race-controls label{display:grid;gap:.35rem;color:#aaa;font:900 .54rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}.results-race-controls select{min-height:46px;border:1px solid #4b4430;background:#090909;color:#fff;padding:.6rem .7rem;font:700 .78rem/1.25 var(--mono)}.results-race-controls button{min-height:46px;padding:.7rem 1rem}.results-race-note{margin:0;padding:0 1rem 1rem;color:#929292;font-size:.72rem;line-height:1.5}@media(max-width:780px){.results-race-controls{grid-template-columns:1fr}.results-race-controls button{width:100%}}
 .schedule-shift-tool[hidden]{display:none}
 .schedule-shift-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1rem;border-bottom:1px solid #24414b}
 .schedule-shift-head span{display:block;color:var(--blue);font:900 .56rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}

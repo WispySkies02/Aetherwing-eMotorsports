@@ -68,8 +68,11 @@ assert(!leadership.some((p) => p.roles.some((r) => /co-owner|co-founder/i.test(r
 assert(leadership.some((p) => p.name === 'Callornot' && p.roles.includes('Team Principal')), 'Callornot is Team Principal');
 
 const results = json('results.json');
-const latestResult = results.latestResult;
-assert(latestResult?.title === 'Southern 500' && latestResult?.start === 9 && latestResult?.stagePoints === 0 && latestResult?.finish === 5, 'Latest NRRS result is Southern 500: P9 start, 0 stage points, P5 finish');
+const latestRace = results.find((race)=>race.featured);
+const latestResult = latestRace?.entries?.find((entry)=>entry.featuredDriver);
+assert(latestRace?.title === 'Southern 500' && latestResult?.start === 9 && latestResult?.stage1Points + latestResult?.stage2Points === 0 && latestResult?.finish === 5, 'Latest NRRS result is schedule-linked Southern 500: P9 start, 0 stage points, P5 finish');
+assert(Array.isArray(results) && results.every((race)=>race.scheduleId && Array.isArray(race.entries)), 'Race Results uses schedule-linked race records with driver result rows');
+assert(text('public/admin/content-admin.js').includes('data-result-driver-choice') && text('public/admin/content-admin.js').includes("resultRoster(current()?.league"), 'Race Results driver pickers are restricted to the selected league roster');
 assert(text('src/styles/pages/history.css').includes('content:attr(data-track)') && !text('src/styles/pages/history.css').includes('content:"DAYTONA"'), 'Latest Result background etching reads DARLINGTON, not DAYTONA');
 
 assert(!schedule.some((event) => event.id === 'uarl-d2') && !competitions.some((event) => event.id === 'uarl-d2') && !scheduleEvents.some((event) => event.league === 'uarl-d2'), 'UARL D2 is closed and removed from active competition/schedule data');
@@ -274,7 +277,7 @@ const contentAdminScript = text('public/admin/content-admin.js');
 const controlCenterCss = text('public/admin/control-center.css');
 assert(adminPage.includes('data-schedule-shift') && adminPage.includes('data-shift-preview="-7"') && adminPage.includes('data-shift-preview="7"'), 'Schedule Manager includes one-week earlier/later bulk shift controls');
 assert(contentAdminScript.includes('function previewScheduleShift(days)') && contentAdminScript.includes('function applyScheduleShift()') && contentAdminScript.includes('function undoScheduleShift()'), 'Schedule Manager bulk shift supports preview, apply, and undo');
-assert(contentAdminScript.includes('function autoPlaceScheduleEvents()') && contentAdminScript.includes("key==='schedule-events'?'Add race':'Add new entry'"), 'Schedule Manager adds races with automatic chronological placement');
+assert(contentAdminScript.includes('function autoPlaceScheduleEvents()') && contentAdminScript.includes("key==='schedule-events'?'Add race':key==='results'?'Choose race above':'Add new entry'"), 'Schedule Manager adds races with automatic chronological placement');
 assert(contentAdminScript.includes('scheduleTimeMinutes') && contentStoreLib.includes('compareScheduleEvents') && schedulePage.includes('.sort(compareScheduleEvents)'), 'Admin, backend, and public Schedule share date/time/league ordering behavior');
 assert(contentAdminScript.includes("event.league===league&&event.date&&String(event.date)>=String(start.date)") && contentAdminScript.includes('event.endDate=shiftIsoDate(event.endDate,days)'), 'Bulk week shift affects only the selected series from the chosen event forward and preserves multi-day windows');
 assert(contentAdminScript.includes('Use Publish current changes when the dates look right.') && contentAdminScript.includes("['saveDraft','publish'].includes(name)?{data}"), 'Bulk week shift can publish current unsaved Calendar changes without a separate draft save');

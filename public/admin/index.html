@@ -31,14 +31,14 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v0.4.58</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v0.4.59</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
       <nav class="admin-workspace-tabs" aria-label="Aetherwing Admin workspaces" data-admin-tabs>
         <button class="is-active" type="button" data-admin-tab="overview" aria-selected="true"><small>00</small>Overview</button>
         <button type="button" data-admin-dataset="schedule-events"><small>01</small>Calendar</button>
-        <button type="button" data-admin-dataset="results"><small>02</small>Latest Result</button>
+        <button type="button" data-admin-dataset="results"><small>02</small>Race Results</button>
         <button type="button" data-admin-dataset="wins"><small>03</small>Wins</button>
         <button type="button" data-admin-dataset="standings"><small>04</small>Standings</button>
         <button type="button" data-admin-dataset="milestones"><small>05</small>Milestones</button>
@@ -107,6 +107,18 @@
               <button type="button" data-shift-undo hidden>Undo Last Shift</button>
             </div>
           </div>
+        </section>
+        <section class="results-race-tool" data-results-race-tool hidden aria-labelledby="results-race-title">
+          <div class="schedule-shift-head">
+            <div><span>Schedule-Linked Results</span><h3 id="results-race-title">Choose the completed race</h3><p>Filter the calendar by league, then select a race. Its league, event, track, date, round, and status are copied automatically.</p></div>
+            <strong>LIVE CALENDAR</strong>
+          </div>
+          <div class="results-race-controls">
+            <label>League filter<select data-results-league-filter></select></label>
+            <label>Scheduled race<select data-results-race-select></select></label>
+            <button type="button" class="primary" data-results-load-race>Load race results</button>
+          </div>
+          <p class="results-race-note">Loading a race never deletes another result. Driver pickers only include people assigned to that league in the Driver Roster.</p>
         </section>
         <div class="content-layout"><aside><input type="search" placeholder="Search this tab" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add new entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save private draft</button><button type="button" class="primary" data-content-publish>Publish current changes</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
       </section>

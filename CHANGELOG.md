@@ -1,3 +1,12 @@
+# v0.4.59 — Schedule-Linked Race Results
+
+- Replaced the confusing one-driver Latest Result object and obsolete Martinsville snapshot with a race-by-race Results Manager.
+- Added a league filter and scheduled-race picker that imports the race name, track, date, round, league, status, and special tag from the Calendar.
+- Restricts every result driver picker to drivers assigned to that race's league in Driver League Assignments and fills the roster car number automatically.
+- Supports multiple Aetherwing driver results per race, individual start/stage/finish/points fields, retained result history, and one explicitly featured current result.
+- Updated the public post-race card for any active league and added an all-Aetherwing-results strip when multiple team drivers competed.
+- Preserved migration support for the earlier single-driver result record already stored in Admin.
+
 # v0.4.58 — Automatic Schedule Race Placement
 
 - Renamed the Calendar creation control to Add Race.

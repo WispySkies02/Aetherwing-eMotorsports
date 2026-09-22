@@ -1,6 +1,6 @@
-> Current package: **v0.4.58** — Aetherwing with automatic Calendar race placement by date, parsed start time, and league; expanded paint classifications; multi-paint next-race features; and the full Admin control center.
+> Current package: **v0.4.59** — Aetherwing with schedule-linked, league-filtered, roster-restricted multi-driver race results; automatic Calendar placement; expanded paint classifications; and the full Admin control center.
 
-**Current release: v0.4.58 — Automatic Schedule Race Placement**
+**Current release: v0.4.59 — Schedule-Linked Race Results**
 
 Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All routine content editors are direct tabs in /admin/; the standalone Paint Booth is public-only. **Publish current changes** saves and publishes the open section in one action, then reports public-data and rebuild status separately. The public Schedule now reads the published Calendar dataset directly on page load, so schedule changes no longer wait on a successful static rebuild. Other statically rendered pages still use the private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
 

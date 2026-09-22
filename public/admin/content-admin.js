@@ -4,14 +4,14 @@
   const endpoint = '/.netlify/functions/site-admin';
   const modules = {
     schedule: { title:'Schedule Manager', sections:[['schedule-events','Race calendar']] },
-    results: { title:'Results & Milestones', sections:[['results','Latest result'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
+    results: { title:'Results & Milestones', sections:[['results','Race results'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
     roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['driver-profiles','Driver profiles'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['competitions','League details']] },
     organization: { title:'Organization', sections:[['leadership','Leadership'],['partners','Partners']] },
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
   const datasetMeta = {
     'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Add or edit every race, off-week, special event, event window, status badge, track, date, and start time. New races automatically move into chronological order when saved or published.',guide:'Choose Add Race, then complete its league, date, and start time. The Calendar places it by date, parsed 12-hour time, and league; date + league + event title determine its share route.'},
-    results:{number:'02',kicker:'RACE OPERATION',title:'Latest Result',description:'Control the latest-result feature and its supporting historical result snapshot. Every number and line of result copy is editable.',guide:'Use this for the current result card/feature. Historical snapshots inside this record can be retained even after the current result changes.'},
+    results:{number:'02',kicker:'RACE OPERATION',title:'Race Results',description:'Choose a scheduled race, then enter one or more results using only drivers assigned to that league in the Driver Roster.',guide:'Filter the calendar by league and load the completed race. Event details stay synced to the schedule, older results remain saved, and one race can be selected as the current featured result.'},
     wins:{number:'03',kicker:'RACE OPERATION',title:'Win Archive',description:'Add, correct, or remove individual wins used by Wins & History.',guide:'One row equals one recorded win. Keep historical driver names when that is how the result was originally recorded.'},
     standings:{number:'04',kicker:'RACE OPERATION',title:'Standings',description:'Edit complete championship snapshots. Drag driver rows into display order, edit the official position label, and toggle Aetherwing highlighting per driver.',guide:'Drag standings rows to reorder them. The Position field stays independently editable so partial/team-only tables can keep positions like P1, P2, P4. Use Highlight Driver for Aetherwing emphasis.'},
     milestones:{number:'05',kicker:'RACE OPERATION',title:'Milestones',description:'Manage the timeline of major Aetherwing and driver milestones.',guide:'Use this for meaningful historical markers, not routine race results.'},
@@ -33,7 +33,7 @@
   const statusChoices = ['Full-Time','Part-Time','Development','Active','Shared Part-Time Entry','Factory Driver','Team Entry','OPEN'];
   const fieldLabels = {
     'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD'},
-    results:{latestKnownMartinsville:'Historical Martinsville snapshot',latestResult:'Current latest result',headline:'Headline line 1',headlineAccent:'Headline accent line',stagePoints:'Total stage points'},
+    results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Current latest result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',driver:'Roster driver',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',racePoints:'Total race points',featuredDriver:'Featured driver'},
     wins:{league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
     standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{date:'Display date',title:'Milestone title',description:'Milestone description'},
@@ -124,6 +124,26 @@
     index=Math.max(0,data.indexOf(selected));
     return true;
   }
+  const slugifyResultPart=(value='')=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+  const resultScheduleId=(event={})=>`${event.date||'tbd'}-${event.league||'event'}-${slugifyResultPart(event.title||event.track||'scheduled-event')}`;
+  const resultLeagueId=(league='')=>league==='open'?'uarl-open':league==='iracing'?'iracing-factory':league;
+  function resultRoster(league='') {
+    const id=resultLeagueId(league);
+    return (base('drivers')||seeds.drivers||[]).filter((driver)=>driver.competitionId===id&&String(driver.displayName||'').trim()).sort((a,b)=>String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true}));
+  }
+  function isoResultDate(value='') {
+    if(/^\d{4}-\d{2}-\d{2}$/.test(String(value)))return String(value);
+    const parsed=new Date(value);return Number.isNaN(parsed.getTime())?'':parsed.toISOString().slice(0,10);
+  }
+  function migrateResults(value) {
+    if(Array.isArray(value))return value;
+    if(Array.isArray(value?.races))return value.races;
+    const old=value?.latestResult;if(!old)return [];
+    const date=isoResultDate(old.date),schedule=(base('schedule-events')||seeds['schedule-events']||[]).find((event)=>event.league==='nrrs'&&(event.title===old.title||event.track===old.track)&&(!date||event.date===date));
+    const league=schedule?.league||'nrrs',assignment=resultRoster(league).find((driver)=>String(driver.number)===String(old.number));
+    return [{scheduleId:schedule?resultScheduleId(schedule):`${date||'tbd'}-${league}-${slugifyResultPart(old.title)}`,league,leagueName:schedule?.leagueName||old.series||'NRRS',title:schedule?.title||old.title||'',track:schedule?.track||old.track||'',date:schedule?.date||date,round:schedule?.round||old.round||'',status:schedule?.status||'',specialTag:schedule?.specialTag||old.specialTag||'',featured:true,headline:old.headline||'',headlineAccent:old.headlineAccent||'',summary:old.summary||'',entries:[{driver:assignment?.displayName||old.driver||'',number:String(assignment?.number||old.number||''),start:Number(old.start||0),stage1Finish:0,stage1Points:0,stage2Finish:0,stage2Points:Number(old.stagePoints||0),finish:Number(old.finish||0),racePoints:Number(old.pointsChange||0),featuredDriver:true}]}];
+  }
+  function compareResults(a,b){return String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||''));}
   function updateControlCenterStatus(publication=null) {
     const drafts=Object.keys(registry.drafts||{}),published=Object.keys(registry.published||{});
     const revision=$('[data-admin-revision]'),draftCount=$('[data-admin-draft-count]'),publishedCount=$('[data-admin-published-count]'),last=$('[data-admin-last-published]');
@@ -227,6 +247,16 @@
       if (key==='roster-profiles' && (k==='programs' || k==='numbers')) {
         const shown=Array.isArray(v)?v.join(' · '):String(v||'');
         return shell(pretty,`<input type="text" readonly value="${esc(shown)}">`,'Automatically generated from Driver League Assignments when the site builds.','is-readonly');
+      }
+      if(key==='results'&&['scheduleId','league','leagueName','title','track','date','round','status','specialTag'].includes(k)) {
+        return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Synced automatically from the selected scheduled race.','is-readonly');
+      }
+      if(key==='results'&&k==='driver'&&path[0]==='entries') {
+        const choices=resultRoster(current()?.league||'');
+        return shell(pretty,`<select ${attr} data-field-type="string" data-result-driver-choice>${!v?'<option value="" selected disabled>Choose roster driver</option>':''}${choices.map((driver)=>`<option value="${esc(driver.displayName)}" ${driver.displayName===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,choices.length?'Only drivers assigned to this league in Driver League Assignments are available.':'No drivers are assigned to this league yet. Add the driver in Driver League Assignments first.');
+      }
+      if(key==='results'&&k==='featuredDriver') {
+        return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" data-result-featured-driver ${v?'checked':''}><span><b>${esc(pretty)}</b><small>Use this driver for the large public result card. Selecting one clears the others in this race.</small></span></label>`;
       }
       if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) {
         const standingRows=key==='standings'&&k==='rows';
@@ -354,11 +384,44 @@
     if(!shiftState.snapshot)return status('There is no bulk shift to undo in this session.');
     data=structuredClone(shiftState.snapshot);shiftState.snapshot=null;dirty=true;render();refreshScheduleShiftTool();$('[data-shift-undo]').hidden=true;status('Last bulk week shift undone. The Schedule Manager still has unsaved changes.');
   }
+  function refreshResultsRaceOptions(preferredId='') {
+    const tool=$('[data-results-race-tool]');if(!tool)return;
+    tool.hidden=key!=='results';if(key!=='results')return;
+    const events=(base('schedule-events')||seeds['schedule-events']||[]).filter((event)=>!event.offWeek&&event.date&&event.league);
+    const leagueSelect=$('[data-results-league-filter]'),raceSelect=$('[data-results-race-select]');
+    const leagues=[...new Map(events.map((event)=>[event.league,event.leagueName||event.league])).entries()];
+    leagueSelect.innerHTML=leagues.map(([id,name])=>`<option value="${esc(id)}">${esc(name)}</option>`).join('');
+    const preferred=data?.[index]?.league;if(preferred&&leagues.some(([id])=>id===preferred))leagueSelect.value=preferred;
+    const populate=()=>{
+      const filtered=events.filter((event)=>event.league===leagueSelect.value).sort((a,b)=>String(b.date).localeCompare(String(a.date))||scheduleTimeMinutes(a.time)-scheduleTimeMinutes(b.time));
+      raceSelect.innerHTML=filtered.map((event)=>{const id=resultScheduleId(event);return `<option value="${esc(id)}">${esc(shortDate(event.date))} · ${esc(event.title)} · ${esc(event.track)}</option>`;}).join('');
+      const wanted=preferredId||data?.[index]?.scheduleId;if(wanted&&filtered.some((event)=>resultScheduleId(event)===wanted))raceSelect.value=wanted;
+      $('[data-results-load-race]').disabled=!filtered.length;
+    };
+    leagueSelect.onchange=()=>{populate();status(`Showing scheduled races for ${leagueSelect.options[leagueSelect.selectedIndex]?.text||leagueSelect.value}.`);};
+    populate();
+  }
+  function loadSelectedResultRace() {
+    if(key!=='results'||!Array.isArray(data))return;
+    commit();
+    const id=$('[data-results-race-select]').value,event=(base('schedule-events')||seeds['schedule-events']||[]).find((item)=>resultScheduleId(item)===id);
+    if(!event)return status('Choose a scheduled race first.');
+    const existing=data.findIndex((race)=>race.scheduleId===id);
+    if(existing!==-1){index=existing;render();refreshResultsRaceOptions(id);return status(`${event.title} is already in Race Results. Its saved result is open now.`);}
+    const eligible=resultRoster(event.league),first=eligible[0];
+    data.push({scheduleId:id,league:event.league,leagueName:event.leagueName||event.league,title:event.title||'',track:event.track||'',date:event.date||'',round:event.round||'',status:event.status||'',specialTag:event.specialTag||'',featured:data.length===0,headline:'',headlineAccent:'',summary:'',entries:[{driver:first?.displayName||'',number:String(first?.number||''),start:0,stage1Finish:0,stage1Points:0,stage2Finish:0,stage2Points:0,finish:0,racePoints:0,featuredDriver:true}]});
+    data.sort(compareResults);index=data.findIndex((race)=>race.scheduleId===id);dirty=true;render();refreshResultsRaceOptions(id);
+    status(`${event.title} loaded from the schedule. ${eligible.length} roster driver${eligible.length===1?' is':'s are'} eligible for this league.`);
+  }
+  function featureSelectedResult() {
+    if(key!=='results'||!current())return;
+    commit();data.forEach((race,i)=>{race.featured=i===index;});dirty=true;render();status(`${current().title} will be the current Latest Result after you publish.`);
+  }
   function renderList() {
     const search=$('[data-content-search]').value.toLowerCase();
     $('[data-content-list]').innerHTML=Array.isArray(data)?data.map((r,i)=>({r,i})).filter(({r})=>JSON.stringify(r).toLowerCase().includes(search)).map(({r,i})=>`<button type="button" data-entry="${i}" aria-pressed="${i===index}"><strong>${esc(title(r,i))}</strong><small>${esc([r.leagueName||r.competition||r.category||'',r.date||r.numbers||r.slug||''].filter(Boolean).join(' · '))}</small></button>`).join(''):'<p>This section is one complete record. Edit its fields on the right.</p>';
     $('[data-content-add]').hidden=!Array.isArray(data);
-    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':'Add new entry';
+    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':key==='results'?'Choose race above':'Add new entry';
     $('[data-content-remove]').hidden=!Array.isArray(data)||!data.length;
   }
   function featureSelectedStory() {
@@ -380,6 +443,9 @@
     $('[data-content-fields]').innerHTML=row?fields(row):'<p>No entries. Choose Add entry to start.</p>';
     if (key==='news' && row) {
       const button=document.createElement('button');button.type='button';button.textContent='Make this the featured homepage story';button.addEventListener('click',featureSelectedStory);$('[data-content-fields]').prepend(button);
+    }
+    if(key==='results'&&row){
+      const button=document.createElement('button');button.type='button';button.textContent=row.featured?'Current featured latest result':'Make this the current latest result';button.disabled=Boolean(row.featured);button.addEventListener('click',featureSelectedResult);$('[data-content-fields]').prepend(button);
     }
   }
   function setActiveAdminTab(selector,value) {
@@ -404,6 +470,7 @@
   function chooseDataset(name) {
     key=name; data=structuredClone(base(key)); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
     if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r})).sort(compareScheduleEvents);
+    if(key==='results')data=migrateResults(data).sort(compareResults);
     const meta=datasetMeta[key]||{number:'EDIT',kicker:'CONTENT WORKSPACE',title:label(key),description:'Edit this content section.'};
     $('[data-content-number]').textContent=meta.number;
     $('[data-content-kicker]').textContent=meta.kicker;
@@ -411,7 +478,7 @@
     $('[data-content-description]').textContent=meta.description;
     const select=$('[data-content-dataset]');
     if(select)select.value=key;
-    render();refreshScheduleShiftTool();
+    render();refreshScheduleShiftTool();refreshResultsRaceOptions();
     status(`${registry.drafts[key]?'PRIVATE SAVED DRAFT':registry.published[key]?'PUBLISHED OVERRIDE':'BUNDLED BASELINE'} · Revision ${registry.revision}. Save Draft never changes the public site; Publish applies this tab and queues the site rebuild.`);
     updateControlCenterStatus();
   }
@@ -455,10 +522,20 @@
   $('[data-shift-cancel]').addEventListener('click',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];status('Bulk schedule preview cancelled. No dates were changed.');});
   $('[data-shift-apply]').addEventListener('click',applyScheduleShift);
   $('[data-shift-undo]').addEventListener('click',undoScheduleShift);
+  $('[data-results-load-race]').addEventListener('click',loadSelectedResultRace);
   $('[data-content-search]').addEventListener('input',renderList);
-  $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();index=Number(button.dataset.entry);render();}});
+  $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();index=Number(button.dataset.entry);render();if(key==='results')refreshResultsRaceOptions(current()?.scheduleId||'');}});
   $('[data-content-form]').addEventListener('input',()=>{dirty=true;});
   $('[data-content-fields]').addEventListener('change',(event)=>{
+    const resultDriver=event.target.closest?.('[data-result-driver-choice]');
+    if(resultDriver&&key==='results'){
+      const path=JSON.parse(resultDriver.dataset.fieldPath),entry=valueAt(current(),path.slice(0,-1)),assignment=resultRoster(current()?.league||'').find((driver)=>driver.displayName===resultDriver.value);
+      entry.driver=resultDriver.value;entry.number=String(assignment?.number||'');dirty=true;render();status(`${entry.driver} selected from the ${current().leagueName} roster. Car number #${entry.number} was filled automatically.`);return;
+    }
+    const featuredDriver=event.target.closest?.('[data-result-featured-driver]');
+    if(featuredDriver&&key==='results'&&featuredDriver.checked){
+      const path=JSON.parse(featuredDriver.dataset.fieldPath),chosen=Number(path[1]);commit();current().entries.forEach((entry,i)=>{entry.featuredDriver=i===chosen;});dirty=true;render();status(`${current().entries[chosen]?.driver||'Driver'} will lead the public result card.`);return;
+    }
     const league=event.target.closest?.('[data-competition-choice]');
     if(!league)return;
     const name=competitionChoices().find(([id])=>id===league.value)?.[1]||league.value;
@@ -483,7 +560,7 @@
     }
     const button=event.target.closest('[data-array-add],[data-array-remove]');if(!button)return;
     commit();
-    if(button.dataset.arrayAdd){const path=JSON.parse(button.dataset.arrayAdd),arr=valueAt(current(),path);const template=arr[0]||arrayTemplate(path.at(-1))||{};arr.push(blank(template));}
+    if(button.dataset.arrayAdd){const path=JSON.parse(button.dataset.arrayAdd),arr=valueAt(current(),path);const template=arr[0]||arrayTemplate(path.at(-1))||{};const added=blank(template);if(key==='results'&&path.at(-1)==='entries'){const used=new Set(arr.map((entry)=>entry.driver)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.displayName));if(next){added.driver=next.displayName;added.number=String(next.number||'');}added.featuredDriver=arr.length===0;}arr.push(added);}
     else {const path=JSON.parse(button.dataset.arrayRemove);valueAt(current(),path.slice(0,-1)).splice(Number(path.at(-1)),1);}
     dirty=true;render();
   });
@@ -511,7 +588,7 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;commit();data.push(blank(seeds[key][0]));index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();data.push(blank(seeds[key][0]));index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data)||!confirm('Remove this entry from the section draft? It stays public until you publish.'))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');

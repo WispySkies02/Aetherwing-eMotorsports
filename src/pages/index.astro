@@ -12,13 +12,18 @@ import '../styles/pages/home.css';
 const initialTeam=roster.slice(0,4);
 const initialCompetition=competitions[0];
 const liveEvent=events.find((event)=>event.league==='uarl-d1' && /Daytona 500/i.test(event.title)) ?? events[0];
-const latest=result.latestResult;
+const latestRace=result.find((race)=>race.featured) ?? result[0] ?? {entries:[]};
+const latestEntry=latestRace.entries?.find((entry)=>entry.featuredDriver) ?? latestRace.entries?.[0] ?? {};
+const latest={...latestRace,...latestEntry,series:latestRace.leagueName,stagePoints:Number(latestEntry.stage1Points||0)+Number(latestEntry.stage2Points||0)};
+const latestNrrsRace=result.find((race)=>race.league==='nrrs') ?? latestRace;
+const latestNrrsEntry=latestNrrsRace.entries?.find((entry)=>entry.featuredDriver) ?? latestNrrsRace.entries?.[0] ?? {};
+const latestNrrs={...latestNrrsRace,...latestNrrsEntry,stagePoints:Number(latestNrrsEntry.stage1Points||0)+Number(latestNrrsEntry.stage2Points||0)};
 const featuredNews=news.find((story)=>story.featured) ?? news[0];
 const nrrsChase=(standings as any[]).find((s:any)=>s.id==='nrrs');
 const wispyRow=(nrrsChase?.rows??[]).find((row:any)=>row.highlight) ?? (nrrsChase?.rows??[]).find((row:any)=>row.driver==='Hailey') ?? (nrrsChase?.rows??[])[0];
 const wispyPos=parseInt(String(wispyRow?.position??'P6').replace('P',''),10);
 const wispyGap=Math.abs(parseInt(String(wispyRow?.delta??'-58'),10));
-const nextNrrsChase=events.filter((event)=>event.league==='nrrs' && event.date>new Date(latest.date).toISOString().slice(0,10) && !event.offWeek).sort((a,b)=>a.date.localeCompare(b.date))[0];
+const nextNrrsChase=events.filter((event)=>event.league==='nrrs' && event.date>latestNrrs.date && !event.offWeek).sort((a,b)=>a.date.localeCompare(b.date))[0];
 const chaseField=Array.from({length:12},(_,i)=>{
   const pos=i+1;
   const row=(nrrsChase?.rows as any[]??[]).find((r:any)=>parseInt(String(r.position).replace('P',''),10)===pos);
@@ -60,8 +65,8 @@ const chaseField=Array.from({length:12},(_,i)=>{
       <div class="aw-chase-story">
         <div>
           <p class="eyebrow">NRRS Chase for the Cup · {nrrsChase?.subtitle ?? 'After Chase Race 1 of 6'}</p>
-          <h2>{wispyRow?.driver ?? latest.driver} is {wispyRow?.position ?? 'unranked'} in the Chase, {wispyGap} points off the lead heading to {nextNrrsChase?.track?.replace(' Raceway','') ?? 'Richmond'}.</h2>
-          <p>The No. {wispyRow?.number ?? latest.number} carries {(wispyRow?.points ?? 0).toLocaleString('en-US')} points after {latest.title}, where {latest.driver} finished P{latest.finish} with {latest.stagePoints} stage points.</p>
+          <h2>{wispyRow?.driver ?? latestNrrs.driver} is {wispyRow?.position ?? 'unranked'} in the Chase, {wispyGap} points off the lead heading to {nextNrrsChase?.track?.replace(' Raceway','') ?? 'Richmond'}.</h2>
+          <p>The No. {wispyRow?.number ?? latestNrrs.number} carries {(wispyRow?.points ?? 0).toLocaleString('en-US')} points after {latestNrrs.title}, where {latestNrrs.driver} finished P{latestNrrs.finish} with {latestNrrs.stagePoints} stage points.</p>
         </div>
         <div class="aw-chase-position" aria-label={`Hailey is ${wispyRow?.position ?? 'P6'} in the NRRS Chase`}>
           <span>Chase position</span>

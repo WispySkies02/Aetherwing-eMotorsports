@@ -8,7 +8,7 @@ const overlayFile=new URL('../src/data/admin-content.json',import.meta.url);
 const baselineOverlay=fs.readFileSync(overlayFile,'utf8');
 const data=seeds();
 data['schedule-events'].push({...data['schedule-events'][0],date:'2027-02-01',title:'Publication Fixture Race'});
-data.results.latestResult={...data.results.latestResult,title:'Publication Fixture Result',finish:2,headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.'};
+data.results[0]={...data.results[0],scheduleId:'2099-01-01-nrrs-publication-fixture-result',date:'2099-01-01',title:'Publication Fixture Result',track:'Fixture Raceway',headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.',entries:data.results[0].entries.map((entry,i)=>i?entry:{...entry,finish:2})};
 data.wins.push({league:'NRRS',track:'Publication Fixture Win',driver:'Wispy',date:'Sep 18, 2026'});
 data.milestones.push({date:'Sep 18, 2026',title:'Publication Fixture Milestone',description:'Publication fixture milestone text.'});
 data['roster-profiles'][0].name='Publication Fixture Driver';

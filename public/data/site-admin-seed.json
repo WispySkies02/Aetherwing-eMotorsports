@@ -1297,46 +1297,37 @@
       "round": "ROUND 18"
     }
   ],
-  "results": {
-    "latestKnownMartinsville": {
-      "driver": "Wispy",
-      "number": "32",
-      "start": 7,
-      "finish": 4,
-      "pointsChange": 39,
-      "stage1": {
-        "finish": 8,
-        "points": 0
-      },
-      "stage2": {
-        "finish": 5,
-        "points": 6
-      },
-      "standings": {
-        "position": 6,
-        "points": 553,
-        "leaderGap": -196,
-        "chaseMargin": 211,
-        "chaseLocked": true
-      }
-    },
-    "latestResult": {
-      "headline": "P5 AT DARLINGTON KEEPS WISPY",
-      "headlineAccent": "IN THE CHASE",
-      "summary": "Wispy qualified ninth, scored no stage points, and finished P5 in the Southern 500 at Darlington.",
-      "driver": "Wispy",
-      "number": "32",
-      "series": "NRRS Town Fair Tire Cup Series",
+  "results": [
+    {
+      "scheduleId": "2026-09-15-nrrs-southern-500",
+      "league": "nrrs",
+      "leagueName": "NRRS Town Fair Tire Cup Series",
       "title": "Southern 500",
       "track": "Darlington Raceway",
-      "date": "September 15, 2026",
-      "round": "Round 20",
+      "date": "2026-09-15",
+      "round": "ROUND 20",
+      "status": "The Chase",
       "specialTag": "Chase Race 1",
-      "start": 9,
-      "stagePoints": 0,
-      "finish": 5
+      "featured": true,
+      "headline": "P5 AT DARLINGTON KEEPS HAILEY",
+      "headlineAccent": "IN THE CHASE",
+      "summary": "Hailey qualified ninth, scored no stage points, and finished P5 in the Southern 500 at Darlington.",
+      "entries": [
+        {
+          "driver": "Hailey",
+          "number": "32",
+          "start": 9,
+          "stage1Finish": 0,
+          "stage1Points": 0,
+          "stage2Finish": 0,
+          "stage2Points": 0,
+          "finish": 5,
+          "racePoints": 0,
+          "featuredDriver": true
+        }
+      ]
     }
-  },
+  ],
   "wins": [
     {
       "league": "Kmart · Historic AEM",
