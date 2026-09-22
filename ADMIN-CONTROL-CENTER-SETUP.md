@@ -2,9 +2,9 @@
 
 The canonical control center is **https://aetherwing.net/admin/**. The convenience URL **https://aetherwing.net/admin/login** redirects there and automatically opens the sign-in dialog.
 
-One login at **https://aetherwing.net/admin/** now opens a direct-tab control center. Routine content is split into dedicated tabs for Calendar, Latest Result, Wins, Standings, Milestones, Driver Assignments, Driver Directory, Driver Profiles, Charters, iRacing Roster, League Details, Leadership, Partners, Team Wire, Paint Feature, Paint Editor, and Paint Library. The separate Paint Booth is public-only.
+One login at **https://aetherwing.net/admin/** now opens a direct-tab control center. Routine content is split into dedicated tabs for Calendar, Race Results, Wins, Standings, Milestones, Driver Assignments, Driver Directory, Driver Profiles, Charters, iRacing Roster, League Details, Leadership, Partners, Site Settings, Navigation, Page Content, Livery Brands, Team Wire, Paint Feature, Paint Editor, and Paint Library. The separate Paint Booth is public-only.
 
-Protected sitewide infrastructure is intentionally not exposed as routine form fields: global navigation/routes, brand/design-system tokens, technical track-location aliases, and build/deploy configuration remain code-level changes.
+Layout code, security, design-system tokens, technical track-location aliases, and build/deploy configuration remain protected code-level infrastructure. Visible navigation, identity text/images, page copy/links/images, records, and routine site data are Admin-managed.
 
 ## v0.4.43 runtime requirement
 
@@ -30,6 +30,15 @@ The main site must deploy before the Paint Booth package so `/api/paints` is ava
 - Paint Booth: add/edit paints, save drafts, publish, feature an upcoming race scheme, clear its feature, archive/restore added paints. The 35 original paints remain protected in the bundled collection.
 - Roster: driver cards, program entries, profile pages/stats, charter allocations, and iRacing factory entries. These are linked sections: keep profile slugs and driver IDs consistent when changing them.
 - Team Wire: stories, sections/paragraphs, metadata, quotes, metrics, and the featured story used by the homepage. Choose exactly one featured story.
+- Site shell: identity/settings, global navigation links and groups, Paint Booth livery brands, plus scanned public-page text, links, and images.
+
+## v0.4.60 page control and number artwork
+
+- In **Driver League Assignments**, paste a transparent PNG/WebP/SVG URL into **Number image URL**. Leave it empty to keep the normal `#00` text treatment.
+- Race Results already store the assignment ID selected by the league-restricted driver picker, so their number artwork follows automatically.
+- For a historical **Win** or **Milestone**, choose **Linked driver assignment** once. That record will then reuse any future number-image change made on the assignment.
+- The Drivers page, homepage/latest-result cards, Wins & History result graphic, latest victories, win archive, and milestones all support the linked artwork.
+- In **Page Content**, enter a public route such as `/mission-values/`, choose **Scan page**, edit the replacement values, and publish. The scanner registers visible text, links, and images while leaving page structure and code protected.
 
 ## Saving versus publishing
 

@@ -163,3 +163,4 @@ html[data-season="summer-end"] .site-header::after{background:linear-gradient(90
 @keyframes aw-summer-drift{0%{transform:translate3d(0,0,0);opacity:0}12%{opacity:.75}75%{opacity:.35}100%{transform:translate3d(34px,-105vh,0);opacity:0}}
 @media(max-width:620px){.aw-summers-end__sun{right:-8rem;top:7rem;width:25rem}.aw-summers-end__particles{opacity:.45}.aw-summers-end__particles i:nth-child(even){display:none}.aw-summers-end__label{padding:.5rem .62rem}.aw-summers-end__label span{font-size:.5rem}.aw-summers-end__label strong{font-size:1rem}}
 @media(prefers-reduced-motion:reduce){.aw-summers-end__particles i{animation:none;opacity:.28}.aw-summers-end__particles i:nth-child(n+7){display:none}}
+.aw-inline-number-image{display:inline-block;width:auto;max-width:82px;height:2.15em;object-fit:contain;vertical-align:middle;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.7))}

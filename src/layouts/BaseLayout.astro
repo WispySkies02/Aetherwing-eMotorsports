@@ -130,3 +130,21 @@ const bannerEvents=(eventsRaw as any[]).filter((e:any)=>!e.offWeek).map((e:any)=
   tick();setInterval(tick,1000);
 })();
 </script>
+<script>
+(() => {
+  const normalizePath=(value)=>{const path=String(value||'/').split('?')[0].split('#')[0]||'/';return path==='/'?'/':`${path.replace(/\/+$/,'')}/`;};
+  const currentPage=normalizePath(location.pathname);
+  const applyOverrides=(rules)=>{
+    const active=(Array.isArray(rules)?rules:[]).filter((rule)=>rule?.enabled!==false&&(normalizePath(rule.page)===currentPage||rule.page==='*')&&rule.value!==rule.original);
+    if(!active.length)return;
+    const textRules=active.filter((rule)=>rule.type==='text'),linkRules=active.filter((rule)=>rule.type==='link'),imageRules=active.filter((rule)=>rule.type==='image');
+    if(textRules.length){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while((node=walker.nextNode())){if(['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement?.tagName||''))continue;const raw=node.nodeValue||'',clean=raw.replace(/\s+/g,' ').trim(),rule=textRules.find((item)=>item.original===clean);if(rule){const leading=raw.match(/^\s*/)?.[0]||'',trailing=raw.match(/\s*$/)?.[0]||'';node.nodeValue=`${leading}${rule.value}${trailing}`;}}}
+    linkRules.forEach((rule)=>document.querySelectorAll('a[href]').forEach((link)=>{if(link.getAttribute('href')===rule.original)link.setAttribute('href',rule.value);}));
+    imageRules.forEach((rule)=>document.querySelectorAll('img[src]').forEach((img)=>{if(img.getAttribute('src')===rule.original)img.setAttribute('src',rule.value);}));
+  };
+  fetch(`/api/site-content?page=${Date.now()}`,{cache:'no-store',headers:{accept:'application/json'}}).then((response)=>response.ok?response.json():null).then((published)=>{
+    const datasets=published?.datasets;if(!datasets)return;applyOverrides(datasets['page-overrides']);window.__AETHERWING_CONTENT__=datasets;window.dispatchEvent(new CustomEvent('aetherwing:content',{detail:datasets}));
+    let queued=false;const observer=new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;applyOverrides(datasets['page-overrides']);});});observer.observe(document.body,{subtree:true,childList:true,characterData:true});setTimeout(()=>observer.disconnect(),10000);
+  }).catch(()=>{});
+})();
+</script>

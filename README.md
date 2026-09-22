@@ -1,8 +1,15 @@
-> Current package: **v0.4.59** — Aetherwing with schedule-linked, league-filtered, roster-restricted multi-driver race results; automatic Calendar placement; expanded paint classifications; and the full Admin control center.
+> Current package: **v0.4.60** — Aetherwing with an expanded Admin control center, editable site settings/navigation/page content, assignment-linked driver number artwork, and live-published results/history records.
 
-**Current release: v0.4.59 — Schedule-Linked Race Results**
+**Current release: v0.4.60 — Full Control Center & Driver Number Artwork**
 
 Read ADMIN-CONTROL-CENTER-SETUP.md before deployment. All routine content editors are direct tabs in /admin/; the standalone Paint Booth is public-only. **Publish current changes** saves and publishes the open section in one action, then reports public-data and rebuild status separately. The public Schedule now reads the published Calendar dataset directly on page load, so schedule changes no longer wait on a successful static rebuild. Other statically rendered pages still use the private Netlify build hook. Deploy the main project first and Paint Booth v44 second. These are complete source projects, not static-only drag-and-drop packages.
+
+**v0.4.60 — Full Control Center & Driver Number Artwork**
+- Site Settings, Navigation, Page Content, and Livery Brands are editable from dedicated Admin tabs.
+- Page Content can scan a public route and create exact text, link, and image replacements without editing templates.
+- Driver League Assignments accept an optional transparent number-image URL. Drivers, latest results, multi-driver results, wins, and milestones reuse that one linked asset.
+- Wins and milestones can be linked to a Driver League Assignment, so later number-art changes stay synchronized.
+- Public latest-result and history modules read their published Admin datasets at page view time, with the deployed static content as fallback.
 
 **v0.4.39 — Southern 500 Team Wire Feature (historical baseline)**
 - UARL D2 / NFFF Grand National has closed operations and is removed from the active competition structure.

@@ -82,6 +82,9 @@ response=await call(siteAdmin);assert.equal(response.status,200);
 const seeds=response.body.seeds;
 const content=require('../netlify/lib/_content.cjs');
 for(const [key,data] of Object.entries(seeds))assert.equal(content.validate(key,data),'',key);
+const numberArtDrivers=structuredClone(seeds.drivers);numberArtDrivers[0].numberImage='https://example.test/number-32.png';
+assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept HTTPS number artwork');
+numberArtDrivers[0].numberImage='javascript:alert(1)';assert.notEqual(content.validate('drivers',numberArtDrivers),'','Driver number artwork must reject unsafe URLs');
 let revision=response.body.registry.revision;
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.
 const directSchedule=structuredClone(seeds['schedule-events']);

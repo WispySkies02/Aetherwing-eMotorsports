@@ -1,19 +1,17 @@
 ---
 const path=Astro.url.pathname;
 const active=(href:string)=>href==='/'?path==='/':path.startsWith(href);
-const groups=[
-  {label:'Team',links:[['Drivers','/drivers/'],['Paint Booth','https://paint.aetherwing.net/'],['Mission & Values','/mission-values/'],['Team Handbook','/team-handbook/']]},
-  {label:'Race',links:[['Schedule','/schedule/'],['Wins & History','/wins-history/'],['News & Updates','/news/']]},
-  {label:'Connect',links:[['Partners','/partners/'],['Contact HQ','/contact/']]}
-];
+import { navigation, siteSettings } from '../../lib/site-content.mjs';
+const homeLink=navigation.find((item)=>item.group==='Home')??{label:'Home',href:'/'};
+const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.filter((item)=>item.group===label).map((item)=>[item.label,item.href])})).filter((group)=>group.links.length);
 ---
 <header class="site-header" data-site-header>
   <div class="shell site-header__inner">
     <a class="brand" href="/" aria-label="Aetherwing eMotorsports home">
-      <img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports" />
+      <img src={siteSettings.logo} alt={siteSettings.name} />
     </a>
     <nav class="desktop-nav" aria-label="Primary navigation">
-      <a class:list={[{active:active('/')}]} href="/">Home</a>
+      <a class:list={[{active:active(homeLink.href)}]} href={homeLink.href}>{homeLink.label}</a>
       {groups.map((group)=>(
         <div class="nav-group">
           <button type="button" aria-haspopup="true" aria-expanded="false">{group.label}<span aria-hidden="true">+</span></button>
@@ -42,8 +40,8 @@ const groups=[
         </section>
       ))}
       <div class="mobile-feature">
-        <strong>Born to Soar. Built to Fight.</strong>
-        <p>Aetherwing eMotorsports // 4 Aetherwing Programs • 2 Alliance Series • 6 Competition Relationships.</p>
+        <strong>{siteSettings.tagline}</strong>
+        <p>{siteSettings.mobileSummary}</p>
       </div>
     </div>
   </nav>

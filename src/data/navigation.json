@@ -1,42 +1,52 @@
 [
   {
     "label": "Home",
-    "href": "/"
+    "href": "/",
+    "group": "Home"
   },
   {
     "label": "Drivers",
-    "href": "/drivers/"
+    "href": "/drivers/",
+    "group": "Team"
   },
   {
     "label": "Schedule",
-    "href": "/schedule/"
+    "href": "/schedule/",
+    "group": "Race"
   },
   {
     "label": "Paint Booth",
-    "href": "https://paint.aetherwing.net/"
+    "href": "https://paint.aetherwing.net/",
+    "group": "Team"
   },
   {
     "label": "Partners",
-    "href": "/partners/"
+    "href": "/partners/",
+    "group": "Connect"
   },
   {
     "label": "News",
-    "href": "/news/"
+    "href": "/news/",
+    "group": "Race"
   },
   {
     "label": "History",
-    "href": "/wins-history/"
+    "href": "/wins-history/",
+    "group": "Race"
   },
   {
     "label": "Mission",
-    "href": "/mission-values/"
+    "href": "/mission-values/",
+    "group": "Team"
   },
   {
     "label": "Handbook",
-    "href": "/team-handbook/"
+    "href": "/team-handbook/",
+    "group": "Team"
   },
   {
     "label": "Contact",
-    "href": "/contact/"
+    "href": "/contact/",
+    "group": "Connect"
   }
 ]

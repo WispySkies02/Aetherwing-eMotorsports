@@ -1,3 +1,12 @@
+# v0.4.60 — Full Control Center & Driver Number Artwork
+
+- Added dedicated Site Settings, Navigation, Page Content, and Livery Brands editors to the central Admin.
+- Added a public-page scanner that registers visible text, links, and images for exact Admin-managed replacements.
+- Added an optional Number Image URL to every Driver League Assignment and reused the linked asset on driver cards, latest results, multi-driver result rows, wins, and milestones.
+- Linked Race Results to stable roster assignment IDs and added optional assignment links for historical wins and milestones.
+- Made the homepage latest result and Wins & History result/archive modules consume the current published datasets at page view time, with static fallbacks.
+- Expanded backend validation and regression coverage for the new datasets and safe driver-number image URLs.
+
 # v0.4.59 — Schedule-Linked Race Results
 
 - Replaced the confusing one-driver Latest Result object and obsolete Martinsville snapshot with a race-by-race Results Manager.

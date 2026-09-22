@@ -5,7 +5,7 @@ async function getBlobsModule() {
   blobsModulePromise ||= import('@netlify/blobs');
   return blobsModulePromise;
 }
-const FILES = ['schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'news'];
+const FILES = ['site', 'navigation', 'page-overrides', 'schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'livery-brands', 'news'];
 const SCHEDULE_LEAGUE_ORDER = ['nrrs','kmart','sunoco','uarl-d1','open','iracing','uarl-d2'];
 function scheduleTimeMinutes(value='') {
   const match=String(value).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
@@ -48,13 +48,13 @@ async function write(registry, etag) {
   const result = await contentStore.setJSON('content.json', registry, etag ? { onlyIfMatch: etag } : { onlyIfNew: true });
   if (result?.modified === false) throw new Error('CONFLICT');
 }
-function validate(key, data) {
+function validate(key, data, registry={}) {
   if (!FILES.includes(key)) return 'Unknown content section.';
   const seed = seeds()[key];
   if (Array.isArray(seed) !== Array.isArray(data) || !data || typeof data !== 'object') return 'Invalid section format.';
   if (JSON.stringify(data).length > 1500000) return 'Section is too large.';
   if (Array.isArray(data) && data.length > 1500) return 'Too many entries.';
-  if (['roster-profiles', 'driver-profiles', 'leadership', 'partners', 'news'].includes(key) && !data.length) return 'Keep at least one entry in this section.';
+  if (['navigation','page-overrides','roster-profiles', 'driver-profiles', 'leadership', 'partners','livery-brands', 'news'].includes(key) && !data.length) return 'Keep at least one entry in this section.';
   const rows = Array.isArray(data) ? data : [];
   function unsafe(value, depth=0) {
     if (depth>20) return true;
@@ -72,16 +72,19 @@ function validate(key, data) {
   if (!structure(seed,data)) return 'A field has the wrong type. Use numeric inputs for points and finishes, and lists for grouped entries.';
   if (key==='schedule-events' && !data.length) return 'Keep at least one calendar entry.';
   const required = {
-    'schedule-events':['league','leagueName','title','track','date','time'], results:['scheduleId','league','leagueName','title','track','date'],
+    navigation:['label','href','group'],'page-overrides':['id','page','type','label','original','value'],'schedule-events':['league','leagueName','title','track','date','time'], results:['scheduleId','league','leagueName','title','track','date'],
     wins:['league','track','driver','date'], milestones:['date','title','description'],
     'roster-profiles':['slug','name','role','affiliation','numbers'],
     'driver-profiles':['slug','displayName','subtitle','intro'],
     drivers:['id','profile','displayName','competitionId','competition','number','status'], competitions:['id','name','type','label','schedule','machine','platform'],
-    standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'], news:['slug','title','summary','dateIso','date','category','context','kicker']
+    standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'],'livery-brands':['name','order'], news:['slug','title','summary','dateIso','date','category','context','kicker']
   }[key] || [];
   for (const [index, row] of rows.entries()) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) return `Entry ${index + 1} must be an object.`;
-    for (const field of required) if (typeof row[field] !== 'string' || !row[field].trim()) return `Entry ${index + 1}: complete ${field}.`;
+    for (const field of required) {
+      const value=row[field];
+      if ((typeof value==='string'&&!value.trim()) || (typeof value==='number'&&!Number.isFinite(value)) || !['string','number'].includes(typeof value)) return `Entry ${index + 1}: complete ${field}.`;
+    }
     if (row.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.slug)) return `Entry ${index + 1}: invalid slug.`;
     if (key === 'schedule-events') {
       if (typeof row.offWeek!=='undefined' && typeof row.offWeek!=='boolean') return 'Off-week must be checked or unchecked.';
@@ -92,11 +95,12 @@ function validate(key, data) {
       if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date)||Number.isNaN(Date.parse(row.date)))return `Result ${index+1}: select a valid scheduled race.`;
       if(!Array.isArray(row.entries)||!row.entries.length)return `Result ${index+1}: add at least one roster driver result.`;
       if(row.entries.filter((entry)=>entry.featuredDriver).length!==1)return `Result ${index+1}: choose exactly one featured driver.`;
-      const roster=seeds().drivers,leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
-      const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.displayName,String(driver.number||'')]));
+      const roster=registry.drafts?.drivers??registry.published?.drivers??seeds().drivers,leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
+      const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
       for(const entry of row.entries){
-        if(!eligible.has(entry.driver))return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
-        if(String(entry.number)!==eligible.get(entry.driver))return `Result ${index+1}: ${entry.driver}'s car number must match the Driver Roster.`;
+        const assignment=eligible.get(entry.assignmentId);
+        if(!assignment)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
+        if(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||''))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
         for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!Number.isFinite(entry[field])||entry[field]<0)return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
       }
       if(new Set(row.entries.map((entry)=>entry.driver)).size!==row.entries.length)return `Result ${index+1}: each driver can appear only once.`;
@@ -115,8 +119,15 @@ function validate(key, data) {
     }
     if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
     if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^https:\/\//.test(row.logo))) return 'Partners need HTTPS website/logo URLs and a tags list.';
+    if(key==='navigation'&&!/^(\/|https:\/\/)/.test(row.href))return `Navigation entry ${index+1}: use a site-relative path or HTTPS URL.`;
+    if(key==='page-overrides'){
+      if(!['text','link','image'].includes(row.type))return `Page Content entry ${index+1}: choose text, link, or image.`;
+      if(!row.page.startsWith('/'))return `Page Content entry ${index+1}: page must begin with /.`;
+      if(['link','image'].includes(row.type)&&!/^((https:\/\/)|\/|#)/.test(row.value))return `Page Content entry ${index+1}: link and image replacements need an HTTPS URL, site-relative path, or anchor.`;
+    }
+    if(key==='drivers'&&row.numberImage&&!/^(https:\/\/|\/)/.test(row.numberImage))return `Entry ${index+1}: number image must use an HTTPS URL or a site-relative path.`;
   }
-  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['drivers','standings','charters','competitions'].includes(key) ? 'id' : null;
+  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;
   if (key==='schedule-events') {
     const eventKey=(r)=>`${r.date}-${r.league}-${r.title.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;
@@ -128,6 +139,7 @@ function validate(key, data) {
     if(data.filter((race)=>race.featured).length!==1)return 'Choose exactly one race as the current latest result.';
     if(new Set(data.map((race)=>race.scheduleId)).size!==data.length)return 'Each scheduled race can have only one result record.';
   }
+  if(key==='site'&&(!data.name||!/^https:\/\//.test(data.url)||!/^https:\/\//.test(data.discordUrl)))return 'Site Settings needs a name, HTTPS site URL, and HTTPS Discord URL.';
   if (key === 'iracing-garage' && !Array.isArray(data.entries)) return 'The iRacing garage needs an entries list.';
   return '';
 }

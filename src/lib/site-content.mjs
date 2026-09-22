@@ -13,8 +13,16 @@ import newsSeed from '../data/news.json';
 import competitionsSeed from '../data/competitions.json';
 import leadershipSeed from '../data/leadership.json';
 import partnersSeed from '../data/partners.json';
+import siteSeed from '../data/site.json';
+import navigationSeed from '../data/navigation.json';
+import liveryBrandsSeed from '../data/livery-brands.json';
+import pageOverridesSeed from '../data/page-overrides.json';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const scheduleEvents = choose('schedule-events', scheduleSeed);
+export const siteSettings = choose('site', siteSeed);
+export const navigation = choose('navigation', navigationSeed);
+export const liveryBrands = choose('livery-brands', liveryBrandsSeed);
+export const pageOverrides = choose('page-overrides', pageOverridesSeed);
 const resultSlug=(value='')=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
 const scheduleResultId=(event={})=>`${event.date||'tbd'}-${event.league||'event'}-${resultSlug(event.title||event.track||'scheduled-event')}`;
 const normalizeResults=(value)=>{
@@ -44,6 +52,7 @@ export const rosterProfiles = rosterBase.map((profile) => {
   return {
     ...profile,
     numbers: [...new Set(assignments.map((entry) => entry.number).filter(Boolean))].join(' / '),
+    numberImages: assignments.filter((entry)=>entry.numberImage).map((entry)=>({assignmentId:entry.id,competitionId:entry.competitionId,number:entry.number,image:entry.numberImage})),
     programs: [...new Set(assignments.map((entry) => rosterProgramLabels[entry.competitionId] || entry.competition).filter(Boolean))]
   };
 });

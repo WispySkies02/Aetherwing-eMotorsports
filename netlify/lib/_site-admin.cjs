@@ -32,7 +32,7 @@ exports.handler = async (event, context) => {
     let publishedKeys = [];
     if (input.action === 'saveDraft') {
       const data = normalize(key, input.data);
-      const error = validate(key, data);
+      const error = validate(key, data, registry);
       if (error) return json(400, { error });
       registry.drafts[key] = data;
     } else if (input.action === 'discardDraft') {
@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
     } else if (input.action === 'publish') {
       const data = normalize(key, input.data ?? registry.drafts[key]);
       if (!data) return json(400, { error:'Make a change or save a draft before publishing.' });
-      const error = validate(key, data);
+      const error = validate(key, data, registry);
       if (error) return json(400, { error });
       registry.published[key] = data;
       delete registry.drafts[key];
@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
       const entries = Object.entries(registry.drafts || {}).map(([draftKey,data])=>[draftKey,normalize(draftKey,data)]);
       if (!entries.length) return json(400, { error:'There are no saved drafts to publish.' });
       for (const [draftKey,data] of entries) {
-        const error = validate(draftKey, data);
+        const error = validate(draftKey, data, registry);
         if (error) return json(400, { error:`${draftKey}: ${error}` });
       }
       for (const [draftKey,data] of entries) registry.published[draftKey] = data;

@@ -82,8 +82,8 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
               data-slug={driver.slug} data-affiliation={driver.affiliation} data-programs={driver.programs.join('|')}>
               <div class="aw-flip-inner">
                 <div class="aw-flip-front" data-ghost-num={driver.numberParts[0]??''}>
-                  <div class:list={['aw-driver-num',{'is-multi':driver.numberParts.length>1}]}>
-                    {driver.numberParts.map(num=><b>#{num}</b>)}
+                  <div class:list={['aw-driver-num',{'is-multi':driver.numberParts.length>1}]}> 
+                    {driver.numberImages?.length?driver.numberImages.map((asset)=><img src={asset.image} alt={`Number ${asset.number}`} loading="lazy" />):driver.numberParts.map(num=><b>#{num}</b>)}
                   </div>
                   <strong class="aw-flip-name">{driver.name}</strong>
                   <small class="aw-flip-role">{driver.role}</small>
@@ -106,7 +106,7 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
           <p class="aw-driver-handle">{selected.handle}</p>
           <p>{selected.bio}</p>
           <div class="aw-driver-programs">{selected.programs.map((program)=><span>{program}</span>)}</div>
-          <div class="aw-driver-stage__footer"><span>Active numbers</span><strong>{formatNumbers(selected.numbers)}</strong></div>
+          <div class="aw-driver-stage__footer"><span>Active numbers</span><strong>{selected.numberImages?.length?selected.numberImages.map((asset)=><img class="aw-driver-number-art" src={asset.image} alt={`Number ${asset.number}`} />):formatNumbers(selected.numbers)}</strong></div>
         </article>
       </div>
     </div>
@@ -174,8 +174,10 @@ const rosterDisplay=roster.map((driver)=>({...driver,numberParts:numberParts(dri
     const competitionIdByFilter={'NRRS':'nrrs','UARL D1':'uarl-d1','UARL Open':'uarl-open','Kmart':'kmart','Sunoco':'sunoco'};
     let activeRosterFilter='all';
     const numbersFor=(driver,filter=activeRosterFilter)=>{const competitionId=competitionIdByFilter[filter];if(competitionId){const entry=driverEntries.find(item=>item.profile===driver.slug&&item.competitionId===competitionId);if(entry?.number)return `#${entry.number}`;}return formatNumbers(driver.numbers);};
-    const renderOptionNumber=(option,driver)=>{const node=option.querySelector('.aw-driver-num');if(!(node instanceof HTMLElement)||!driver)return;const parts=numbersFor(driver).split(' / ').filter(Boolean);node.classList.toggle('is-multi',parts.length>1);node.innerHTML=parts.map(part=>`<b>${part}</b>`).join('');};
-    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';const numbers=numbersFor(driver);stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">${numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>${competitionIdByFilter[activeRosterFilter]?'Series number':'Active numbers'}</span><strong>${numbers}</strong></div>`;};
+    const imageAssetsFor=(driver,filter=activeRosterFilter)=>{const competitionId=competitionIdByFilter[filter];return (driver.numberImages||[]).filter((asset)=>!competitionId||asset.competitionId===competitionId);};
+    const numberMarkup=(driver,filter=activeRosterFilter)=>{const assets=imageAssetsFor(driver,filter);return assets.length?assets.map((asset)=>`<img class="aw-driver-number-art" src="${asset.image}" alt="Number ${asset.number}">`).join(''):numbersFor(driver,filter).split(' / ').filter(Boolean).map((part)=>`<b>${part}</b>`).join('');};
+    const renderOptionNumber=(option,driver)=>{const node=option.querySelector('.aw-driver-num');if(!(node instanceof HTMLElement)||!driver)return;const assets=imageAssetsFor(driver);const parts=numbersFor(driver).split(' / ').filter(Boolean);node.classList.toggle('is-multi',(assets.length||parts.length)>1);node.innerHTML=numberMarkup(driver);};
+    const render=(driver)=>{if(!(stage instanceof HTMLElement)||!driver)return;const alliance=driver.affiliation==='alliance';const numbers=numbersFor(driver);stage.classList.toggle('panel--alliance',alliance);stage.innerHTML=`<div class="aw-driver-stage__ghost" aria-hidden="true">${numbers}</div><div class="aw-driver-stage__meta"><span class="tag ${alliance?'tag--alliance':''}">${driver.role}</span><span class="tag tag--gold">${driver.feature}</span></div><h2>${driver.name}</h2><p class="aw-driver-handle">${driver.handle||''}</p><p>${driver.bio}</p><div class="aw-driver-programs">${driver.programs.map(p=>`<span>${p}</span>`).join('')}</div><div class="aw-driver-stage__footer"><span>${competitionIdByFilter[activeRosterFilter]?'Series number':'Active numbers'}</span><strong>${numberMarkup(driver)}</strong></div>`;};
     options.forEach(option=>option.addEventListener('click',()=>{
       const wasSelected=option.getAttribute('aria-selected')==='true';
       options.forEach(o=>{o.setAttribute('aria-selected','false');o.classList.remove('is-selected','is-flipped');});

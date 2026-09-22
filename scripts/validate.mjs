@@ -186,13 +186,15 @@ assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
 const siteHeader = text('src/components/global/SiteHeader.astro');
 const siteFooter = text('src/components/global/SiteFooter.astro');
-assert(siteHeader.includes("['Paint Booth','https://paint.aetherwing.net/']"), 'Header links directly to the canonical Paint Booth subdomain');
-assert(siteFooter.includes('href="https://paint.aetherwing.net/"'), 'Footer links directly to the canonical Paint Booth subdomain');
+assert(siteHeader.includes("import { navigation, siteSettings }") && siteHeader.includes('group.links.map'), 'Header links are rendered from Admin-managed navigation');
+assert(siteFooter.includes("import { navigation, siteSettings }") && siteFooter.includes('navigation.map'), 'Footer links are rendered from Admin-managed navigation');
 const navigation = json('navigation.json');
 assert(navigation.some((item) => item.label === 'Paint Booth' && item.href === 'https://paint.aetherwing.net/'), 'Navigation data uses the canonical Paint Booth subdomain');
 const baseLayout = text('src/layouts/BaseLayout.astro');
 assert(baseLayout.includes('preconnect" href="https://i.ibb.co'), 'Global shell preconnects to the paint image host');
 const driversPage = text('src/pages/drivers/index.astro');
+assert(driversPage.includes('driver.numberImages') && driversPage.includes('aw-driver-number-art'), 'Drivers page renders assignment-linked driver number artwork');
+assert(text('src/pages/wins-history/index.astro').includes('numberArtFor') && text('src/pages/wins-history/index.astro').includes('data-live-milestones'), 'Results, wins, and milestones reuse assignment-linked number artwork');
 assert(driversPage.includes('aw-driver-num') && driversPage.includes('numberParts'), 'Drivers page uses split multi-number rendering for Wispy and other multi-program drivers');
 assert(driversPage.includes('Aetherwing Charter Board') && driversPage.includes('data-charter-group'), 'Drivers page includes the Aetherwing Charter Board');
 const nrrsCharters = charters.find((group) => group.id === 'nrrs');

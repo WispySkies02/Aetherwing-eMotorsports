@@ -1,4 +1,86 @@
 {
+  "site": {
+    "name": "Aetherwing eMotorsports",
+    "founded": 2023,
+    "description": "A small eMotorsports organization competing across RoRacing and iRacing with a focus on racing, creative identity, and community.",
+    "url": "https://aetherwing.net",
+    "logo": "/images/brand/aetherwing-logo.png",
+    "discordUrl": "https://discord.gg/Q7xKySQFy5",
+    "tagline": "Born to Soar. Built to Fight.",
+    "footerEyebrow": "Follow the flight",
+    "legalNotice": "All trademarks, league names, partner names, vehicle references, and sponsor marks belong to their respective owners.",
+    "mobileSummary": "Aetherwing eMotorsports // 4 Aetherwing Programs • 2 Alliance Series • 6 Competition Relationships.",
+    "featuredPartners": 2,
+    "verifiedWins": 27,
+    "estimatedStarts": "600+",
+    "competitionRelationships": 6,
+    "activeRoRacingDrivers": 10,
+    "aetherwingDrivers": 5,
+    "allianceOnlyDrivers": 5
+  },
+  "navigation": [
+    {
+      "label": "Home",
+      "href": "/",
+      "group": "Home"
+    },
+    {
+      "label": "Drivers",
+      "href": "/drivers/",
+      "group": "Team"
+    },
+    {
+      "label": "Schedule",
+      "href": "/schedule/",
+      "group": "Race"
+    },
+    {
+      "label": "Paint Booth",
+      "href": "https://paint.aetherwing.net/",
+      "group": "Team"
+    },
+    {
+      "label": "Partners",
+      "href": "/partners/",
+      "group": "Connect"
+    },
+    {
+      "label": "News",
+      "href": "/news/",
+      "group": "Race"
+    },
+    {
+      "label": "History",
+      "href": "/wins-history/",
+      "group": "Race"
+    },
+    {
+      "label": "Mission",
+      "href": "/mission-values/",
+      "group": "Team"
+    },
+    {
+      "label": "Handbook",
+      "href": "/team-handbook/",
+      "group": "Team"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact/",
+      "group": "Connect"
+    }
+  ],
+  "page-overrides": [
+    {
+      "id": "home-competition-introduction",
+      "page": "/",
+      "type": "text",
+      "label": "Home hero introduction",
+      "original": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
+      "value": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
+      "enabled": true
+    }
+  ],
   "schedule-events": [
     {
       "date": "2026-04-07",
@@ -1314,6 +1396,7 @@
       "summary": "Hailey qualified ninth, scored no stage points, and finished P5 in the Southern 500 at Darlington.",
       "entries": [
         {
+          "assignmentId": "wispy-nrrs",
           "driver": "Hailey",
           "number": "32",
           "start": 9,
@@ -2406,6 +2489,51 @@
         "Rigs + Accessories",
         "Sim Racing"
       ]
+    }
+  ],
+  "livery-brands": [
+    {
+      "name": "PetSmart",
+      "order": 1
+    },
+    {
+      "name": "The Home Depot",
+      "order": 2
+    },
+    {
+      "name": "GHOST Energy",
+      "order": 3
+    },
+    {
+      "name": "Ironmouse",
+      "order": 4
+    },
+    {
+      "name": "Mobil 1",
+      "order": 5,
+      "logo": "https://i.ibb.co/k6Pfj3JN/Untitled507-20260903172810.png"
+    },
+    {
+      "name": "DeWalt",
+      "order": 6
+    },
+    {
+      "name": "Rheem",
+      "order": 7,
+      "logo": "https://i.ibb.co/HLsngRyx/Untitled508-20260903172343.png"
+    },
+    {
+      "name": "Interstate Batteries",
+      "order": 8
+    },
+    {
+      "name": "RIDGID",
+      "order": 9,
+      "logo": "https://i.ibb.co/Z6bZ42Cm/Untitled507-20260903171856.png"
+    },
+    {
+      "name": "Arrow Electronics",
+      "order": 10
     }
   ],
   "news": [

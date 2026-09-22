@@ -31,7 +31,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v0.4.59</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v0.4.60</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -50,10 +50,14 @@
         <button type="button" data-admin-dataset="competitions"><small>11</small>Leagues</button>
         <button type="button" data-admin-dataset="leadership"><small>12</small>Leadership</button>
         <button type="button" data-admin-dataset="partners"><small>13</small>Partners</button>
-        <button type="button" data-admin-dataset="news"><small>14</small>Team Wire</button>
-        <button type="button" data-admin-paint-tab="feature"><small>15</small>Paint Feature</button>
-        <button type="button" data-admin-paint-tab="add"><small>16</small>Paint Editor</button>
-        <button type="button" data-admin-paint-tab="library"><small>17</small>Paint Library</button>
+        <button type="button" data-admin-dataset="site"><small>14</small>Site Settings</button>
+        <button type="button" data-admin-dataset="navigation"><small>15</small>Navigation</button>
+        <button type="button" data-admin-dataset="page-overrides"><small>16</small>Page Content</button>
+        <button type="button" data-admin-dataset="livery-brands"><small>17</small>Livery Brands</button>
+        <button type="button" data-admin-dataset="news"><small>18</small>Team Wire</button>
+        <button type="button" data-admin-paint-tab="feature"><small>19</small>Paint Feature</button>
+        <button type="button" data-admin-paint-tab="add"><small>20</small>Paint Editor</button>
+        <button type="button" data-admin-paint-tab="library"><small>21</small>Paint Library</button>
       </nav>
 
       <section class="admin-overview" data-admin-overview>
@@ -119,6 +123,11 @@
             <button type="button" class="primary" data-results-load-race>Load race results</button>
           </div>
           <p class="results-race-note">Loading a race never deletes another result. Driver pickers only include people assigned to that league in the Driver Roster.</p>
+        </section>
+        <section class="results-race-tool page-scan-tool" data-page-scan-tool hidden aria-labelledby="page-scan-title">
+          <div class="schedule-shift-head"><div><span>Public Page Scanner</span><h3 id="page-scan-title">Bring page content into Admin</h3><p>Enter a public page path. The scanner imports visible text, link destinations, and standalone image sources as editable Page Content records.</p></div><strong>NO CODE</strong></div>
+          <div class="results-race-controls"><label>Public page path<input type="text" value="/" list="admin-page-paths" data-page-scan-path><datalist id="admin-page-paths"><option value="/"><option value="/drivers/"><option value="/schedule/"><option value="/wins-history/"><option value="/partners/"><option value="/news/"><option value="/mission-values/"><option value="/team-handbook/"><option value="/contact/"></datalist></label><button type="button" class="primary" data-page-scan>Scan page content</button></div>
+          <p class="results-race-note">Scanning merges new items with existing rules. It does not publish anything until you choose Publish current changes.</p>
         </section>
         <div class="content-layout"><aside><input type="search" placeholder="Search this tab" aria-label="Search content entries" data-content-search><button type="button" data-content-add>Add new entry</button><div data-content-list></div></aside><form data-content-form><div data-content-fields></div><div class="actions"><button type="submit" class="secondary">Save private draft</button><button type="button" class="primary" data-content-publish>Publish current changes</button><button type="button" data-content-discard>Discard saved draft</button><button type="button" class="danger" data-content-remove>Remove this entry</button></div></form></div>
       </section>

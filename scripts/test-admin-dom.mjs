@@ -33,13 +33,14 @@ assert.equal($('[data-results-race-tool]').hidden,false,'Race Results should sho
 const resultLeague=$('[data-results-league-filter]');resultLeague.value='uarl-d1';resultLeague.dispatchEvent(new window.Event('change',{bubbles:true}));
 const resultRace=$('[data-results-race-select]');resultRace.value=Array.from(resultRace.options).find((option)=>option.textContent.includes('DOM TEST auto-placed race')).value;click('[data-results-load-race]');
 assert.equal($('[data-content-add]').textContent,'Choose race above');
-const driverPicker=$('[data-result-driver-choice]');assert.ok(driverPicker,'Driver result should use a roster picker');assert.ok(Array.from(driverPicker.options).every((option)=>!option.value||['Hailey','Rocky','BurgerTown2Good','Gk3r'].includes(option.value)),'Driver picker should contain only UARL D1 roster assignments');
+const driverPicker=$('[data-result-driver-choice]');assert.ok(driverPicker,'Driver result should use a roster picker');assert.ok(Array.from(driverPicker.options).every((option)=>!option.value||['wispy-uarl-d1','rocky-uarl-d1','burgertown-uarl-d1','gk3r-uarl-d1'].includes(option.value)),'Driver picker should contain only UARL D1 roster assignment IDs');
 input(['entries',0,'finish'],3);submit('[data-content-form]');await tick();
 const resultDraft=JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.results;assert.equal(resultDraft.find((race)=>race.title==='DOM TEST auto-placed race').entries[0].finish,3);
 click('[data-admin-dataset="milestones"]');await tick();click('[data-content-add]');
 input(['title'],'DOM TEST milestone');input(['date'],'Sep 18, 2026');input(['description'],'Testing meaningful milestones.');submit('[data-content-form]');await tick();
 saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));assert.equal(saved.drafts.milestones.at(-1).title,'DOM TEST milestone');
 click('[data-admin-dataset="roster-profiles"]');await tick();input(['name'],'DOM TEST driver');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts['roster-profiles'][0].name,'DOM TEST driver');
+click('[data-admin-dataset="drivers"]');await tick();input(['numberImage'],'https://example.test/number-art.png');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.drivers[0].numberImage,'https://example.test/number-art.png','Driver League Assignments should save reusable number artwork');
 click('[data-admin-dataset="news"]');await tick();input(['sections',0,'heading'],'DOM TEST story section');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.news[0].sections[0].heading,'DOM TEST story section');
 // Standings rows support drag/reorder controls and explicit Aetherwing highlighting.
 click('[data-admin-dataset="standings"]');await tick();
