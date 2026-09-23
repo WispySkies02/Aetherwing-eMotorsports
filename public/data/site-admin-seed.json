@@ -1573,28 +1573,28 @@
   "standings": [
     {
       "id": "nrrs",
-      "title": "NRRS Chase for the Cup",
-      "subtitle": "After Race 20 of 25 · After Chase Race 1 of 6",
+      "title": "NRRS Championship · Chase for the Cup",
+      "subtitle": "Town Fair Cup · Season 3 · After R21/25 · North Wilkesboro · Chase Race 2 · Sep 22, 2026",
       "league": "nrrs",
       "status": "THE CHASE",
       "rows": [
         {
           "position": "P1",
-          "number": "94",
-          "driver": "Will",
-          "points": 2145,
-          "delta": "--",
-          "positionChange": "0",
+          "number": "45",
+          "driver": "Trent",
+          "points": 2197,
+          "delta": "LEADER",
+          "positionChange": "▲1",
           "chaseEligible": true,
           "highlight": false
         },
         {
           "position": "P2",
-          "number": "45",
-          "driver": "Trent",
-          "points": 2124,
-          "delta": "-21",
-          "positionChange": "+1 spot",
+          "number": "94",
+          "driver": "Will",
+          "points": 2195,
+          "delta": "-2",
+          "positionChange": "▼1",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1602,9 +1602,9 @@
           "position": "P3",
           "number": "9",
           "driver": "Clutch",
-          "points": 2124,
-          "delta": "-21",
-          "positionChange": "-1 spot",
+          "points": 2173,
+          "delta": "-24",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1612,9 +1612,9 @@
           "position": "P4",
           "number": "77",
           "driver": "Jaxon",
-          "points": 2089,
-          "delta": "-56",
-          "positionChange": "+2 spots",
+          "points": 2130,
+          "delta": "-67",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1622,9 +1622,9 @@
           "position": "P5",
           "number": "21",
           "driver": "Outlaw",
-          "points": 2088,
-          "delta": "-57",
-          "positionChange": "-1 spot",
+          "points": 2128,
+          "delta": "-69",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1633,10 +1633,11 @@
           "number": "32",
           "driver": "Hailey",
           "points": 2087,
-          "delta": "-58",
-          "positionChange": "-1 spot",
+          "delta": "-110",
+          "positionChange": "—",
           "chaseEligible": true,
-          "highlight": true
+          "highlight": true,
+          "note": "Listed as Wispy in league standings"
         },
         {
           "position": "P7",
@@ -1680,77 +1681,372 @@
         },
         {
           "position": "P11",
+          "number": "3",
+          "driver": "Matty",
+          "points": 231,
+          "delta": null,
+          "positionChange": "▲1",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P12",
           "number": "6",
           "driver": "Eazy",
           "points": 227,
+          "delta": null,
+          "positionChange": "▼1",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P13",
+          "number": "14",
+          "driver": "JDUB",
+          "points": 184,
           "delta": null,
           "positionChange": null,
           "chaseEligible": false,
           "highlight": false
         },
         {
-          "position": "P12",
-          "number": "3",
-          "driver": "Matty",
-          "points": 201,
+          "position": "P14",
+          "number": "67",
+          "driver": "Roto",
+          "points": 182,
           "delta": null,
-          "positionChange": "+1 spot",
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "—",
+          "number": "20",
+          "driver": "Cod",
+          "points": 121,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "—",
+          "number": "",
+          "driver": "Ryan",
+          "points": 114,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "—",
+          "number": "99",
+          "driver": "AJ",
+          "points": 61,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "—",
+          "number": "15",
+          "driver": "Kentong",
+          "points": 59,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "P15",
+          "number": "11",
+          "driver": "Fysh",
+          "points": 57,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "—",
+          "number": "1",
+          "driver": "Max Verstappen",
+          "points": 47,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "—",
+          "number": "",
+          "driver": "chanler",
+          "points": 36,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "note": "Left league",
+          "unranked": true
+        },
+        {
+          "position": "—",
+          "number": "07",
+          "driver": "Jaykay",
+          "points": 35,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "P16",
+          "number": "87",
+          "driver": "Charms",
+          "points": 31,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P17",
+          "number": "8",
+          "driver": "Tnfan",
+          "points": 28,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P18",
+          "number": "71",
+          "driver": "froznhd",
+          "points": 27,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "—",
+          "number": "",
+          "driver": "Butters",
+          "points": 26,
+          "delta": null,
+          "positionChange": null,
+          "chaseEligible": false,
+          "highlight": false,
+          "unranked": true
+        },
+        {
+          "position": "P19",
+          "number": "7",
+          "driver": "Matt",
+          "points": 20,
+          "delta": null,
+          "positionChange": null,
           "chaseEligible": false,
           "highlight": false
         }
-      ]
+      ],
+      "cutoffAfter": 6,
+      "cutoffLabel": "Chase cutoff · Top 6",
+      "pointsContext": "Chase gaps are measured from the championship leader."
     },
     {
       "id": "kmart",
-      "title": "Kmart Auto Parts Series",
-      "subtitle": "After Race 6 of 23 · SCR Drivers Only",
+      "title": "Kmart Cup Driver Standings",
+      "subtitle": "Updated Chase Bubble · Sep 21, 2026 · Full-time drivers",
       "league": "kmart",
-      "status": "CURRENT",
+      "status": "CHASE BUBBLE",
       "rows": [
         {
           "position": "P1",
           "number": "34",
           "driver": "Jaxon",
-          "points": 231,
-          "delta": "+111",
+          "points": 267,
+          "delta": "+147",
+          "chaseEligible": true,
           "highlight": false
         },
         {
           "position": "P2",
           "number": "24",
           "driver": "Will",
-          "points": 180,
-          "delta": "+60",
+          "points": 244,
+          "delta": "+124",
+          "chaseEligible": true,
+          "highlight": false
+        },
+        {
+          "position": "P3",
+          "number": "61",
+          "driver": "Carl",
+          "points": 201,
+          "delta": "+81",
+          "chaseEligible": true,
           "highlight": false
         },
         {
           "position": "P4",
           "number": "15",
           "driver": "Hailey",
-          "points": 156,
-          "delta": "+36",
-          "highlight": true
+          "points": 190,
+          "delta": "+70",
+          "chaseEligible": true,
+          "highlight": true,
+          "note": "Listed as Wispy in league standings"
+        },
+        {
+          "position": "P5",
+          "number": "88",
+          "driver": "TJ",
+          "points": 173,
+          "delta": "+53",
+          "chaseEligible": true,
+          "highlight": false
+        },
+        {
+          "position": "P6",
+          "number": "45",
+          "driver": "Trent",
+          "points": 125,
+          "delta": "+5",
+          "chaseEligible": true,
+          "highlight": false
+        },
+        {
+          "position": "P7",
+          "number": "0",
+          "driver": "Sparklez",
+          "points": 120,
+          "delta": "-5",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P8",
+          "number": "21",
+          "driver": "Outlaw",
+          "points": 107,
+          "delta": "-18",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P9",
+          "number": "50",
+          "driver": "Tnfan",
+          "points": 60,
+          "delta": "-65",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P10",
+          "number": "05",
+          "driver": "Cod",
+          "points": 58,
+          "delta": "-67",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P11",
+          "number": "5",
+          "driver": "B4L_ALEX",
+          "points": 53,
+          "delta": "-72",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P12",
+          "number": "9",
+          "driver": "redfont",
+          "points": 53,
+          "delta": "-72",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P13",
+          "number": "1",
+          "driver": "rusty214_",
+          "points": 37,
+          "delta": "-88",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P14",
+          "number": "18",
+          "driver": "Nico",
+          "points": 36,
+          "delta": "-89",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P15",
+          "number": "13",
+          "driver": "Stampy",
+          "points": 36,
+          "delta": "-89",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P16",
+          "number": "54",
+          "driver": "Matt",
+          "points": 29,
+          "delta": "-96",
+          "chaseEligible": false,
+          "highlight": false
+        },
+        {
+          "position": "P17",
+          "number": "10",
+          "driver": "MannyGtr",
+          "points": 27,
+          "delta": "-98",
+          "chaseEligible": false,
+          "highlight": false
         }
       ],
       "ptEntry": {
         "number": "29",
-        "title": "SCR PT Car",
+        "title": "Part-time drivers · Shared #29",
         "status": "NOT CHASE ELIGIBLE",
         "drivers": [
           {
             "driver": "Clutch",
-            "points": 135
+            "points": 179
+          },
+          {
+            "driver": "Matty",
+            "points": 95
           },
           {
             "driver": "Eazy",
             "points": 59
-          },
-          {
-            "driver": "Matty",
-            "points": 58
           }
         ]
-      }
+      },
+      "cutoffAfter": 6,
+      "cutoffLabel": "Chase cutoff · Top 6 full-time drivers",
+      "pointsContext": "Gap is measured from the Chase cutoff, not the points leader."
     },
     {
       "id": "sunoco",

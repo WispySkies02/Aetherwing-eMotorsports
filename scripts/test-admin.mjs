@@ -84,6 +84,7 @@ const content=require('../netlify/lib/_content.cjs');
 for(const [key,data] of Object.entries(seeds))assert.equal(content.validate(key,data),'',key);
 const numberArtDrivers=structuredClone(seeds.drivers);numberArtDrivers[0].numberImage='https://example.test/number-32.png';
 assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept HTTPS number artwork');
+numberArtDrivers[0].numberImage='data:image/webp;base64,UklGRg==';assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept uploaded WebP artwork');
 numberArtDrivers[0].numberImage='javascript:alert(1)';assert.notEqual(content.validate('drivers',numberArtDrivers),'','Driver number artwork must reject unsafe URLs');
 let revision=response.body.registry.revision;
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.
@@ -122,19 +123,17 @@ assert.notEqual(content.validate('roster-profiles', [{...seeds['roster-profiles'
 const oldConsole=console.error;console.error=()=>{};storageDown=true;
 assert.equal((await call(paintAdmin)).status,500);
 assert.equal((await call(siteData,undefined,null)).status,503);storageDown=false;console.error=oldConsole;
-// Read-only Paint Booth functions must consume central publication and preserve sharing.
+// The read-only Paint Booth must consume central publication without owning individual share routes.
 const publicRegistry=(await call(paintData,undefined,null)).body;
 const boothRoot=process.env.AETHERWING_PAINT_PROJECT?path.resolve(process.env.AETHERWING_PAINT_PROJECT):fileURLToPath(new URL('../../aetherwing_paint_public/',import.meta.url));
 if (fs.existsSync(path.join(boothRoot,'netlify/functions/paint-data.cjs'))) {
 globalThis.fetch=async(input)=>{assert.equal(String(input),'https://aetherwing.net/api/paints');return Response.json(publicRegistry);};
 const boothData=require(path.join(boothRoot,'netlify/functions/paint-data.cjs'));
-const boothShare=require(path.join(boothRoot,'netlify/functions/paint-share.cjs'));
 assert.equal((await boothData.handler({httpMethod:'GET'})).statusCode,200);
-assert.equal((await boothShare.handler({httpMethod:'GET',queryStringParameters:{slug:'fixture-renamed'}})).statusCode,200);
-assert.equal((await boothShare.handler({httpMethod:'GET',queryStringParameters:{slug:'missing'}})).statusCode,200);
+assert.ok(!fs.existsSync(path.join(boothRoot,'netlify/functions/paint-share.cjs')),'Per-paint embed routes should be removed.');
 globalThis.fetch=async()=>{throw Error('Fixture outage');};console.error=()=>{};
 assert.equal((await boothData.handler({httpMethod:'GET'})).statusCode,503);console.error=oldConsole;
 } else console.log('Booth integration test skipped: set AETHERWING_PAINT_PROJECT to the extracted Booth project to include it.');
 globalThis.fetch=nativeFetch;
 for(const filename of ['paint-ops-admin.js','content-admin.js'])new vm.Script(fs.readFileSync(new URL(`public/admin/${filename}`,root),'utf8'));
-console.log(`PASS: verified-login/role guards, persisted draft/publish/reload, paint feature/rename/archive, all ${Object.keys(seeds).length} content sections, private drafts, stale-write protection, safe storage errors, public booth proxy and dynamic shares. Tests used mock Identity/storage, not the live account.`);
+console.log(`PASS: verified-login/role guards, persisted draft/publish/reload, paint feature/rename/archive, all ${Object.keys(seeds).length} content sections, private drafts, stale-write protection, safe storage errors, and the public booth proxy. Tests used mock Identity/storage, not the live account.`);

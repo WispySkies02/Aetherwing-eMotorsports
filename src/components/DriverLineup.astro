@@ -19,6 +19,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   const root=document.querySelector('[data-lineup]');if(!root)return;
   let assignments=entries,profiles=people,charters=boards,series='all';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement)||!image.closest('.aw-lineup__number'))return;const fallback=document.createElement('b');fallback.textContent=`#${image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
   function render(){
     const active=assignments.filter(e=>e.affiliation==='aetherwing'&&e.competitionId!=='iracing-factory');
@@ -38,7 +39,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const person=profiles.find(p=>p.slug===e.profile),open=e.flex||/open charter|^open$/i.test(e.displayName||'');
       const image=e.numberImage&&!open?`<img src="${esc(e.numberImage)}" alt="Number ${esc(e.number)}" loading="lazy">`:`<b>#${esc(e.number)}</b>`;
       const profile=person&&!open&&profileSlugs.includes(person.slug)?`<a href="/drivers/${encodeURIComponent(person.slug)}/" aria-label="View ${esc(person.name||e.displayName)} profile">View profile ↗</a>`:`<span>${open?'Program entry':'Driver profile coming soon'}</span>`;
-      return `<article class="aw-lineup__poster ${open?'is-charter':''}"><div class="aw-lineup__number">${image}</div><div class="aw-lineup__plate"><small>${esc(programs.get(e.competitionId)||label(e))} · ${esc(e.status||'ACTIVE')}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:'AETHERWING eMOTORSPORTS')}</p>${profile}</div></article>`;
+      return `<article class="aw-lineup__poster ${open?'is-charter':''}" data-number="${esc(e.number)}"><div class="aw-lineup__number">${image}</div><div class="aw-lineup__plate"><small>${esc(programs.get(e.competitionId)||label(e))} · ${esc(e.status||'ACTIVE')}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:'AETHERWING eMOTORSPORTS')}</p>${profile}</div></article>`;
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
   }
   window.addEventListener('aetherwing:content',e=>{const d=e.detail||{};if(Array.isArray(d.drivers))assignments=d.drivers;if(Array.isArray(d['roster-profiles']))profiles=d['roster-profiles'];if(Array.isArray(d.charters))charters=d.charters;render();});

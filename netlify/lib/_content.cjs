@@ -130,7 +130,7 @@ function validate(key, data, registry={}) {
       if(!row.page.startsWith('/'))return `Page Content entry ${index+1}: page must begin with /.`;
       if(['link','image'].includes(row.type)&&!/^((https:\/\/)|\/|#)/.test(row.value))return `Page Content entry ${index+1}: link and image replacements need an HTTPS URL, site-relative path, or anchor.`;
     }
-    if(key==='drivers'&&row.numberImage&&!/^(https:\/\/|\/)/.test(row.numberImage))return `Entry ${index+1}: number image must use an HTTPS URL or a site-relative path.`;
+    if(key==='drivers'&&row.numberImage&&!(/^(https:\/\/|\/)/.test(row.numberImage)||(/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(row.numberImage)&&row.numberImage.length<=160000)))return `Entry ${index+1}: number image must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
   }
   const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;

@@ -26,10 +26,12 @@ Home, Race Calendar, Programs, Driver Lineup and profiles, Championships, Paint 
 
 ## Font and Paint Booth boundary
 
-Edo SZ and Funkrocker retain the existing CDN references; Inter, Saira Condensed, and Share Tech Mono remain in use. Smile Moon was not present in the supplied site ZIP. The separately supplied Smile Moon archive identifies its font as personal-use-only unless a promotional/commercial license is held. No font binary has been added to this project; provide a licensed web font file when available.
+Edo SZ remains a display font for letters, while Smile Moon supplies its numerals and fallback car numbers. The supplied Smile Moon font is bundled locally at `public/fonts/smile-moon.otf`. Driver League Assignments in Admin can accept a transparent number-art upload or image URL; uploaded artwork replaces the fallback text on driver cards, the home page, and profile headers.
 
 The full scene viewer at `paint.aetherwing.net` is a separate project. This archive includes the main-site gallery and existing paint registry bridge, but not that viewer's frontend.
 
 ## Source integrity
 
 Current-season roster numbers and older historical results remain as supplied. Planned next-season assignments have not replaced active data. Existing Netlify authentication/storage code remains in place. The automated Admin tests use mocked accounts and do not publish live content.
+
+The bundled NRRS standings include the R21 North Wilkesboro Chase and non-Chase list supplied by Hailey. The Kmart board includes the driver standings visible in the Sep 21 screenshot, including its Chase cutoff and part-time entries; the screenshot did not show enough of the owner standings to transcribe them.

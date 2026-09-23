@@ -40,7 +40,13 @@ export const results = normalizeResults(choose('results', resultsSeed)).map((res
   return event?{...result,league:event.league,leagueName:event.leagueName,title:event.title,track:event.track,date:event.date,round:event.round||'',status:event.status||'',specialTag:event.specialTag||''}:result;
 }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
 export const wins = choose('wins', winsSeed);
-export const standings = choose('standings', standingsSeed);
+const publishedStandings = choose('standings', standingsSeed);
+const supersededSnapshot = (board) => board?.id === 'nrrs'
+  ? /After Race 20 of 25/.test(board.subtitle || '')
+  : board?.id === 'kmart' && /After Race 6 of 23/.test(board.subtitle || '');
+export const standings = Array.isArray(publishedStandings)
+  ? publishedStandings.map((board) => supersededSnapshot(board) ? standingsSeed.find((fresh) => fresh.id === board.id) || board : board)
+  : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
 export const drivers = choose('drivers', driversSeed);
 const rosterProgramLabels = {

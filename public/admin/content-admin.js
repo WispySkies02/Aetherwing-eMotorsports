@@ -63,7 +63,7 @@
     displayName:'The name shown for this specific context; it can differ by platform.',
     identityNote:'Internal/public clarification for platform or historical identity handling.',
     number:'Enter the number exactly as it should display. Multiple iRacing numbers may use “28 / 97”.',
-    numberImage:'Optional transparent PNG, WebP, or SVG URL. When supplied, this image replaces number text everywhere this league assignment appears.',
+    numberImage:'Upload transparent PNG/WebP artwork or paste a direct image URL. The image replaces the fallback text number for this league assignment.',
     date:'Use the event/result date expected by this content type.',
     dateIso:'Machine-readable publication date used for sorting.',
     endDate:'Optional final day for multi-day event windows.',
@@ -125,6 +125,21 @@
       let quality=.9,result=canvas.toDataURL('image/webp',quality);
       while(result.length>50000&&quality>.45){quality-=.1;result=canvas.toDataURL('image/webp',quality);}
       if(result.length>50000)throw new Error('This logo is still too complex after optimization. Use the Logo URL field instead.');
+      return result;
+    } finally { URL.revokeObjectURL(source); }
+  }
+  async function uploadedNumberData(file) {
+    if(!/^image\/(png|jpeg|webp)$/.test(file?.type||''))throw new Error('Choose a PNG, JPG, or WebP number image. Transparent PNG or WebP works best.');
+    if(file.size>5000000)throw new Error('Number image files must be 5 MB or smaller.');
+    const source=URL.createObjectURL(file);
+    try {
+      const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('That number image could not be read.'));img.src=source;});
+      const scale=Math.min(1,1000/image.naturalWidth,650/image.naturalHeight),canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      let quality=.92,result=canvas.toDataURL('image/webp',quality);
+      while(result.length>160000&&quality>.45){quality-=.08;result=canvas.toDataURL('image/webp',quality);}
+      if(result.length>160000)throw new Error('This number art is too large after optimization. Please use a smaller image or an image URL.');
       return result;
     } finally { URL.revokeObjectURL(source); }
   }
@@ -295,6 +310,10 @@
       if(key==='driver-portfolios'&&k==='logo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current brand logo preview">`:'';
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}">`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
+      }
+      if(key==='drivers'&&k==='numberImage') {
+        const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current number artwork preview">`:'';
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste an image URL or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Upload a transparent PNG or WebP, or paste an image URL. This art replaces the large text number for this league assignment when you publish.','is-wide driver-number-field');
       }
       if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) {
         const standingRows=key==='standings'&&k==='rows';
@@ -586,6 +605,12 @@
   $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();index=Number(button.dataset.entry);render();if(key==='results')refreshResultsRaceOptions(current()?.scheduleId||'');}});
   $('[data-content-form]').addEventListener('input',()=>{dirty=true;});
   $('[data-content-fields]').addEventListener('change',async(event)=>{
+    const numberUpload=event.target.closest?.('[data-number-image-upload]');
+    if(numberUpload&&key==='drivers'){
+      const file=numberUpload.files?.[0];if(!file)return;
+      commit();const selected=current();
+      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;dirty=true;if(current()===selected)render();status(`${file.name} is attached to #${selected.number}. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
+    }
     const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
     if(logoUpload&&key==='driver-portfolios'){
       const file=logoUpload.files?.[0];if(!file)return;
