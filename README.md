@@ -37,3 +37,7 @@ The full scene viewer at `paint.aetherwing.net` is a separate project. This arch
 Current-season roster numbers and older historical results remain as supplied. Planned next-season assignments have not replaced active data. Existing Netlify authentication/storage code remains in place. The automated Admin tests use mocked accounts and do not publish live content.
 
 The bundled NRRS standings include the R21 North Wilkesboro Chase and non-Chase list supplied by Hailey. The Kmart board includes the driver standings visible in the Sep 21 screenshot, including its Chase cutoff and part-time entries; the screenshot did not show enough of the owner standings to transcribe them.
+
+## Faith identity
+
+The home page includes a deliberately low-key faith statement near the bottom of the page, after the partner network and before the footer. Site Settings can edit the eyebrow, headline, statement, and verse reference. The sitewide footer keeps the same theme visible without making it the primary brand message.
