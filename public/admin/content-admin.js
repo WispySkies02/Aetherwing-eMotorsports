@@ -589,7 +589,8 @@
     const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
     if(logoUpload&&key==='driver-portfolios'){
       const file=logoUpload.files?.[0];if(!file)return;
-      try{status(`Optimizing ${file.name}…`);const path=JSON.parse(logoUpload.dataset.logoPath);assign(current(),path,await uploadedLogoData(file));dirty=true;render();status(`${file.name} is attached to this brand. Save Draft or Publish to keep it.`);}catch(error){status(error.message);}return;
+      commit();const selected=current(),path=JSON.parse(logoUpload.dataset.logoPath),brand=valueAt(selected,path.slice(0,-1));
+      try{status(`Optimizing ${file.name}…`);const logo=await uploadedLogoData(file);if(!data.includes(selected)||!selected.brands.includes(brand))throw new Error('The portfolio changed during upload. Select the brand and upload again.');brand.logo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to this brand. Publish this section to show it on the Partners page.`);}catch(error){status(error.message);}return;
     }
     const resultDriver=event.target.closest?.('[data-result-driver-choice]');
     if(resultDriver&&key==='results'){

@@ -1,3 +1,10 @@
+# v0.4.62 — Published Portfolio Logos on Partners
+
+- Partners now refreshes its driver portfolios and logos from published Admin data when the page opens, without waiting for a new site build.
+- Kept existing driver portfolios as the initial page view, with the published data applied on load.
+- Fixed logo uploads discarding other unsaved fields in the same portfolio while the image was processed.
+- Added a visible brand-name fallback when a logo URL fails to load.
+
 # v0.4.61 — Admin-Managed Driver Portfolios
 
 - Replaced the hard-coded Hailey, Nico, and Rocky brand lists with one published Driver Portfolios dataset.
