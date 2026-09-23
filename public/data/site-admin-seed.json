@@ -25,24 +25,9 @@
       "group": "Home"
     },
     {
-      "label": "Calendar",
-      "href": "/schedule/",
-      "group": "Race"
-    },
-    {
-      "label": "Programs",
-      "href": "/programs/",
-      "group": "Race"
-    },
-    {
       "label": "Drivers",
       "href": "/drivers/",
       "group": "Team"
-    },
-    {
-      "label": "Championships",
-      "href": "/championships/",
-      "group": "Race"
     },
     {
       "label": "Paint Booth",
@@ -50,9 +35,19 @@
       "group": "Team"
     },
     {
-      "label": "Partners",
-      "href": "/partners/",
+      "label": "Programs",
+      "href": "/programs/",
       "group": "Team"
+    },
+    {
+      "label": "Schedule",
+      "href": "/schedule/",
+      "group": "Race"
+    },
+    {
+      "label": "Championships",
+      "href": "/championships/",
+      "group": "Race"
     },
     {
       "label": "News",
@@ -63,6 +58,16 @@
       "label": "History",
       "href": "/history/",
       "group": "Race"
+    },
+    {
+      "label": "Partners",
+      "href": "/partners/",
+      "group": "Connect"
+    },
+    {
+      "label": "Discord",
+      "href": "https://discord.gg/Q7xKySQFy5",
+      "group": "Connect"
     }
   ],
   "page-overrides": [

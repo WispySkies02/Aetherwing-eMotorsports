@@ -17,6 +17,8 @@ Netlify uses `npm run build` and publishes `dist`. The existing Admin remains at
 
 Home, Race Calendar, Programs, Driver Lineup and profiles, Championships, Paint Booth gallery, Partners, Newsroom and articles, History, and event Race Weekend pages. Share-only schedule variants and their generated social-card collection were removed. Every event URL now opens a real page.
 
+The original supplied site header is restored on desktop and mobile. Its page picker groups current routes under Team (Drivers, Paint Booth, Programs), Race (Schedule, Championships, News, History), and Connect (Partners, Discord). Previously published navigation that still points to removed legacy pages falls back to this updated menu.
+
 ## Content flow
 
 - Static pages use `src/lib/site-content.mjs`, which applies the published Admin overlay to seed datasets at build time.

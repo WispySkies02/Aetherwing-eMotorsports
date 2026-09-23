@@ -21,7 +21,12 @@ import pageOverridesSeed from '../data/page-overrides.json';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const scheduleEvents = choose('schedule-events', scheduleSeed);
 export const siteSettings = choose('site', siteSeed);
-export const navigation = choose('navigation', navigationSeed);
+const publishedNavigation = choose('navigation', navigationSeed);
+const obsoleteNavigation = Array.isArray(publishedNavigation) && (
+  publishedNavigation.some((item) => ['/mission-values/','/team-handbook/','/contact/','/wins-history/'].includes(item.href)) ||
+  ['/programs/','/championships/','/history/'].some((href) => !publishedNavigation.some((item) => item.href === href))
+);
+export const navigation = obsoleteNavigation ? navigationSeed : publishedNavigation;
 export const liveryBrands = choose('livery-brands', liveryBrandsSeed);
 export const driverPortfolios = choose('driver-portfolios', driverPortfoliosSeed);
 export const pageOverrides = choose('page-overrides', pageOverridesSeed);

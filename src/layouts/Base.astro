@@ -1,5 +1,6 @@
 ---
-import { siteSettings, navigation, standings } from '../lib/site-content.mjs';
+import { siteSettings, standings } from '../lib/site-content.mjs';
+import SiteHeader from '../components/global/SiteHeader.astro';
 import '../styles/site.css';
 interface Props { title?:string; description?:string; image?:string; }
 const { title='Aetherwing eMotorsports', description=siteSettings.description, image='/images/social/default-social.png' }=Astro.props;
@@ -16,16 +17,10 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Saira+Condensed:wght@500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 </head><body>
   <a class="skip" href="#main">Skip to content</a>
-  <header class="site-header"><div class="wrap header-inner"><a class="wordmark" href="/" aria-label="Aetherwing home"><img src="/images/brand/aetherwing-logo.png" alt=""/><span>AETHERWING<small>eMOTORSPORTS</small></span></a>
-    <nav class="header-nav" id="nav" aria-label="Main navigation">{navigation.filter(item=>item.href!=='/').map(item=><a href={item.href}>{item.label}</a>)}</nav>
-    <button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
-  </div></header>
+  <SiteHeader />
   <main id="main"><slot/></main>
   <script type="application/json" id="aetherwing-updated-standings" set:html={JSON.stringify(standings.filter(board=>['nrrs','kmart'].includes(board.id))).replace(/</g,'\\u003c')}></script>
   <footer class="site-footer"><div class="wrap footer-grid"><div><strong>AETHERWING <em>eMOTORSPORTS</em></strong><p>Born to Soar. Built to Fight.</p></div><div><span>THE GARAGE</span><a href="/schedule/">Race calendar</a><a href="/drivers/">Driver lineup</a><a href="/paint-booth/">Paint Booth</a></div><div><span>THE TEAM</span><a href="/partners/">Partners</a><a href="/news/">Newsroom</a><a href="/history/">History</a></div><div><span>FOLLOW THE FLIGHT</span><a href={siteSettings.discordUrl}>Discord ↗</a><a href="https://paint.aetherwing.net/">Full scene viewer ↗</a><a href="/admin/">Team admin ↗</a></div></div><div class="wrap footnote">© {new Date().getFullYear()} Aetherwing eMotorsports · Matthew 17:20</div></footer>
-  <script is:inline>
-    (()=>{const button=document.querySelector('.menu-button'),nav=document.querySelector('.header-nav');button?.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));button.setAttribute('aria-label',open?'Open menu':'Close menu');nav.classList.toggle('is-open',!open);});nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('is-open');button.setAttribute('aria-expanded','false');}));})();
-  </script>
   <script is:inline>
     (()=>{const page=location.pathname.replace(/\/+$/,'/')||'/';const apply=(rules)=>{for(const rule of Array.isArray(rules)?rules:[]){if(rule.enabled===false||!['*',page].includes(rule.page)||rule.value===rule.original)continue;if(rule.type==='link')document.querySelectorAll('a[href]').forEach(a=>{if(a.getAttribute('href')===rule.original)a.setAttribute('href',rule.value);});else if(rule.type==='image')document.querySelectorAll('img[src]').forEach(img=>{if(img.getAttribute('src')===rule.original)img.setAttribute('src',rule.value);});else if(rule.type==='text'){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while((node=walker.nextNode())){if(['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement?.tagName||''))continue;const raw=node.nodeValue||'';if(raw.trim().replace(/\s+/g,' ')===rule.original)node.nodeValue=raw.replace(rule.original,rule.value);}}}};fetch(`/api/site-content?v=${Date.now()}`,{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(data?.datasets){const live=data.datasets.standings;if(Array.isArray(live)){const updated=JSON.parse(document.getElementById('aetherwing-updated-standings')?.textContent||'[]');data.datasets.standings=live.map(board=>{const old=board.id==='nrrs'?/After Race 20 of 25/.test(board.subtitle||''):board.id==='kmart'&&/After Race 6 of 23/.test(board.subtitle||'');return old?updated.find(item=>item.id===board.id)||board:board;});}window.__AETHERWING_CONTENT__=data.datasets;apply(data.datasets['page-overrides']);window.dispatchEvent(new CustomEvent('aetherwing:content',{detail:data.datasets}));}}).catch(()=>{});})();
   </script>
