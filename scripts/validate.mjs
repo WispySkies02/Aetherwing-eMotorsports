@@ -172,8 +172,8 @@ assert(schedulePage.includes('eventCriteria') && schedulePage.includes('Crown Je
 assert(schedulePage.includes('data-event-share') && schedulePage.includes('revealEventHash'), 'Schedule includes share buttons and exact event deep-link reveal logic');
 assert(existsSync(resolve(root, 'src/pages/event/[slug].astro')), 'Static share route exists for schedule events');
 const eventShareRoute = text('src/pages/event/[slug].astro');
-assert(eventShareRoute.includes('/images/social/events/${event.shareSlug}-v47.jpg'), 'Schedule event shares use cache-busted v47 event-specific image cards');
-assert(eventShareRoute.includes('og:title') && eventShareRoute.includes('&#8203;') && !eventShareRoute.includes('og:description'), 'Schedule event embeds suppress visible Discord title/description text');
+assert(eventShareRoute.includes('/images/social/events/${slug}-v47.jpg'), 'Race weekend pages use event-specific image cards');
+assert(eventShareRoute.includes('<BaseLayout') && eventShareRoute.includes('data-share-event'), 'Race weekend pages provide readable content and a share control');
 assert(!eventShareRoute.includes('http-equiv="refresh"'), 'Schedule event share crawler pages do not meta-refresh away from their OG image');
 assert(schedulePage.includes('applyLeagueSelection(target.league)'), 'Shared schedule events open with their own league filter selected');
 assert(scheduleEvents.every((event) => existsSync(resolve(root, 'public/images/social/events', `${eventSlugForValidation(event)}-v47.jpg`))), 'All 125 active schedule events have v47 share-card images');
@@ -185,14 +185,14 @@ assert(leagueShareRoute.includes('export function getStaticPaths() {\n  const de
 assert(leagueShareRoute.includes('/images/social/leagues/${league}-v57.jpg') && leagueShareRoute.includes('&#8203;') && !leagueShareRoute.includes('og:description'), 'League embeds use image-only v57 next-race cards with race-type badges');
 for (const league of ['nrrs','kmart','sunoco','uarl-all','uarl-d1','open','iracing']) { assert(existsSync(resolve(root, 'public/images/social/leagues', `${league}-v57.jpg`)), `League share image exists: ${league}`); }
 assert(schedulePage.includes("'uarl-all':{key:'uarl-all'") && schedulePage.includes("activeFilter === 'uarl-group'"), 'UARL All Divisions share selection is supported');
-assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes("location.replace(target)"), 'Legacy main-site Paint Booth route bridges to the canonical paint subdomain');
+assert(paintPage.includes('https://paint.aetherwing.net/') && paintPage.includes('data-paint-gallery'), 'Main-site Paint Booth gallery links to the full scene viewer');
 assert(paintPage.includes("#paint-") && paintPage.includes('encodeURIComponent(slug)'), 'Legacy Paint Booth hash links preserve the selected paint slug');
 const siteHeader = text('src/components/global/SiteHeader.astro');
 const siteFooter = text('src/components/global/SiteFooter.astro');
 assert(siteHeader.includes("import { navigation, siteSettings }") && siteHeader.includes('group.links.map'), 'Header links are rendered from Admin-managed navigation');
 assert(siteFooter.includes("import { navigation, siteSettings }") && siteFooter.includes('navigation.map'), 'Footer links are rendered from Admin-managed navigation');
 const navigation = json('navigation.json');
-assert(navigation.some((item) => item.label === 'Paint Booth' && item.href === 'https://paint.aetherwing.net/'), 'Navigation data uses the canonical Paint Booth subdomain');
+assert(navigation.some((item) => item.label === 'Paint Booth' && item.href === '/paint-booth/'), 'Navigation opens the main-site Paint Booth gallery');
 const baseLayout = text('src/layouts/BaseLayout.astro');
 assert(baseLayout.includes('preconnect" href="https://i.ibb.co'), 'Global shell preconnects to the paint image host');
 const driversPage = text('src/pages/drivers/index.astro');
@@ -310,7 +310,7 @@ const homePage = text('src/pages/index.astro');
 assert(schedulePage.includes('SEP 15') && schedulePage.includes('September 15, 2026'), 'Schedule review stamp is September 15, 2026');
 assert(schedulePage.includes('function selectPrimaryOperation') && schedulePage.includes("event.league === 'iracing'"), 'Schedule Next Operation uses fixed-race priority over active iRacing windows');
 assert(schedulePage.includes('applyLeagueSelection(requested)'), 'UARL division subfilters activate their parent filter');
-assert(driversPage.includes('data-filter="UARL Open"'), 'Drivers page includes UARL Open filter');
+assert(driversPage.includes('<DriverLineup />') && text('src/components/DriverLineup.astro').includes('charters'), 'Drivers page includes program-driven charter filters');
 assert(driversPage.includes("'UARL Open':'uarl-open'") && driversPage.includes('Series number'), 'Drivers filters use series-specific numbers, including Hailey #28 for UARL Open');
 assert(homePage.includes('story.featured') && homePage.includes('Read the Story'), 'Homepage Latest Updates follows the featured Southern 500 story');
 assert(homePage.includes('/Daytona 500/i.test(event.title)') && !homePage.includes('uarl-d2'), 'Homepage initial UARL fallback follows the active D1 Daytona 500 rather than closed D2');

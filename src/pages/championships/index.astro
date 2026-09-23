@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import { standings } from '../../lib/site-content.mjs';
+import '../../styles/records.css';
+---
+<Base title="Championship Battles" description="Current standings and title fights across Aetherwing programs."><PageIntro eyebrow="The points picture" title="Championship Battles" description="Where the team stands and what remains on the line."/><section class="section"><div class="wrap" data-standings-root>{standings.map(board=><article class="standings-board" data-board={board.id}><header><span>{board.status||board.league}</span><h2>{board.title}</h2><p>{board.subtitle}</p></header><div class="standings-board__rows">{(board.rows||[]).length?board.rows.map(row=><div class:list={['standing-row',{'is-team':row.highlight}]}><b>{row.position}</b><strong>#{row.number} {row.driver}</strong><span>{Number(row.points||0).toLocaleString('en-US')} PTS</span><small>{row.delta||'—'}</small></div>):<p class="no-records">Standings will appear after official results are published.</p>}</div></article>)}</div></section></Base>
+<script>
+  window.addEventListener('aetherwing:content',({detail:d})=>{if(!Array.isArray(d.standings))return;const root=document.querySelector('[data-standings-root]');if(!root)return;const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));root.innerHTML=d.standings.map(board=>`<article class="standings-board"><header><span>${esc(board.status||board.league)}</span><h2>${esc(board.title)}</h2><p>${esc(board.subtitle)}</p></header><div class="standings-board__rows">${(board.rows||[]).length?board.rows.map(row=>`<div class="standing-row ${row.highlight?'is-team':''}"><b>${esc(row.position)}</b><strong>#${esc(row.number)} ${esc(row.driver)}</strong><span>${Number(row.points||0).toLocaleString('en-US')} PTS</span><small>${esc(row.delta||'—')}</small></div>`).join(''):'<p class="no-records">Standings will appear after official results are published.</p>'}</div></article>`).join('');});
+</script>

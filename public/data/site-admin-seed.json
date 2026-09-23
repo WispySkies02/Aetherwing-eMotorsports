@@ -25,24 +25,34 @@
       "group": "Home"
     },
     {
+      "label": "Calendar",
+      "href": "/schedule/",
+      "group": "Race"
+    },
+    {
+      "label": "Programs",
+      "href": "/programs/",
+      "group": "Race"
+    },
+    {
       "label": "Drivers",
       "href": "/drivers/",
       "group": "Team"
     },
     {
-      "label": "Schedule",
-      "href": "/schedule/",
+      "label": "Championships",
+      "href": "/championships/",
       "group": "Race"
     },
     {
       "label": "Paint Booth",
-      "href": "https://paint.aetherwing.net/",
+      "href": "/paint-booth/",
       "group": "Team"
     },
     {
       "label": "Partners",
       "href": "/partners/",
-      "group": "Connect"
+      "group": "Team"
     },
     {
       "label": "News",
@@ -51,23 +61,8 @@
     },
     {
       "label": "History",
-      "href": "/wins-history/",
+      "href": "/history/",
       "group": "Race"
-    },
-    {
-      "label": "Mission",
-      "href": "/mission-values/",
-      "group": "Team"
-    },
-    {
-      "label": "Handbook",
-      "href": "/team-handbook/",
-      "group": "Team"
-    },
-    {
-      "label": "Contact",
-      "href": "/contact/",
-      "group": "Connect"
     }
   ],
   "page-overrides": [
@@ -76,8 +71,8 @@
       "page": "/",
       "type": "text",
       "label": "Home hero introduction",
-      "original": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
-      "value": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
+      "original": "One team. Multiple series. Every green flag is another chance to fly.",
+      "value": "One team. Multiple series. Every green flag is another chance to fly.",
       "enabled": true
     }
   ],

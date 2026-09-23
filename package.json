@@ -1,12 +1,12 @@
 {
   "name": "aetherwing-site",
-  "version": "0.4.62",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "validate": "node scripts/validate.mjs",
+    "validate": "node scripts/validate-rebuild.mjs",
     "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs",
     "build": "npm run validate && node scripts/prepare-admin.mjs && node scripts/sync-admin-content.mjs && astro build",
     "preview": "astro preview"

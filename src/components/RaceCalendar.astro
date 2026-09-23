@@ -1,0 +1,71 @@
+---
+import { scheduleEvents, results } from '../lib/site-content.mjs';
+import { eventSlug } from '../lib/schedule-events.mjs';
+import '../styles/race-calendar.css';
+const initial = scheduleEvents.filter((event) => !event.offWeek).map((event) => ({ ...event, url: `/event/${eventSlug(event)}/` }));
+const initialResults = results;
+---
+<section class="aw-calendar section" id="race-calendar" aria-labelledby="calendar-title" data-race-calendar>
+  <div class="shell">
+    <div class="section-head"><div><p class="eyebrow">Aetherwing Race Control</p><h2 class="section-title" id="calendar-title">Race Calendar</h2></div><p class="lede">Where the team races next. Choose a program to see its own countdown and schedule.</p></div>
+    <div class="aw-calendar__filters" role="group" aria-label="Choose racing program" data-calendar-filters></div>
+    <div class="aw-calendar__layout">
+      <article class="aw-calendar__hero" aria-live="polite" data-calendar-hero></article>
+      <div class="aw-calendar__upcoming"><div class="aw-calendar__heading"><span data-calendar-heading>UPCOMING</span><a href="/schedule/">Full schedule ↗</a></div><div data-calendar-list></div></div>
+    </div>
+    <div class="aw-calendar__recent" data-calendar-recent></div>
+  </div>
+</section>
+<script define:vars={{ initial, initialResults }}>
+(() => {
+  const root=document.querySelector('[data-race-calendar]');if(!root)return;
+  let events=initial, raceResults=initialResults, selected='all';
+  const esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const labels=(rows)=>new Map(rows.map(e=>[e.league,e.leagueName||e.league.toUpperCase()]));
+  const start=(e)=>{
+    if(e.startAt){const t=new Date(e.startAt);if(!isNaN(t))return t;}
+    const m=String(e.time||'').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    let h=m?Number(m[1]):12;if(m&&m[3].toUpperCase()==='PM'&&h<12)h+=12;if(m&&m[3].toUpperCase()==='AM'&&h===12)h=0;
+    const date=new Date(`${e.date}T12:00:00Z`);
+    const zone=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset'}).formatToParts(date).find(p=>p.type==='timeZoneName')?.value||'GMT-4';
+    const match=zone.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
+    const offset=match?`${match[1]}${match[2].padStart(2,'0')}:${match[3]||'00'}`:'-04:00';
+    return new Date(`${e.date}T${String(h).padStart(2,'0')}:${m?m[2]:'00'}:00${offset}`);
+  };
+  const end=(e)=>e.endDate?new Date(`${e.endDate}T23:59:59Z`):new Date(start(e).getTime()+(Number(e.durationMinutes)||90)*60000);
+  const dateLabel=(e)=>{const d=new Date(`${e.date}T12:00:00Z`);return isNaN(d)?'DATE TBD':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();};
+  const relative=(ms)=>ms<=0?'LIVE':`${Math.max(1,Math.ceil(ms/86400000))}D`;
+  const url=(e)=>e.url||`/event/${e.date||'tbd'}-${e.league||'event'}-${String(e.title||e.track||'scheduled-event').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}/`;
+  function tick(){
+    const now=new Date(), visible=events.filter(e=>!e.offWeek&&(selected==='all'||e.league===selected));
+    const upcoming=visible.filter(e=>end(e)>=now).sort((a,b)=>start(a)-start(b));
+    const current=upcoming.find(e=>start(e)<=now&&end(e)>=now) || upcoming[0];
+    const filters=root.querySelector('[data-calendar-filters]'), list=root.querySelector('[data-calendar-list]'), hero=root.querySelector('[data-calendar-hero]');
+    const names=labels(events), keys=['all',...names.keys()];
+    if(filters.dataset.keys!==keys.join('|')){
+      filters.dataset.keys=keys.join('|');
+      filters.innerHTML=keys.map(k=>`<button type="button" data-series="${esc(k)}" aria-pressed="${k===selected}"><strong>${k==='all'?'ALL':esc(k==='uarl-d1'?'UARL D1':names.get(k))}</strong><small data-series-status></small></button>`).join('');
+      filters.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{selected=button.dataset.series;tick();}));
+    }
+    filters.querySelectorAll('button').forEach(button=>{
+      const k=button.dataset.series, future=events.filter(e=>!e.offWeek&&(k==='all'||e.league===k)&&end(e)>=now).sort((a,b)=>start(a)-start(b))[0];
+      button.setAttribute('aria-pressed',String(k===selected));button.querySelector('small').textContent=k==='all'?`${names.size} SERIES`:future?`NEXT · ${relative(start(future)-now)}`:'SEASON COMPLETE';
+    });
+    root.querySelector('[data-calendar-heading]').textContent=`${selected==='all'?'ALL SERIES':names.get(selected)||selected} · UPCOMING`;
+    const signature=upcoming.slice(0,5).map(e=>`${e.date}/${e.title}`).join('|')+selected;
+    if(list.dataset.signature!==signature){list.dataset.signature=signature;list.innerHTML=upcoming.length?upcoming.slice(0,5).map((e,i)=>`<a href="${esc(url(e))}" class="aw-calendar__event"><span>${dateLabel(e)}</span><div><small>${esc(e.leagueName||e.league)} · ${esc(e.round||e.status||'RACE')}</small><strong>${esc(e.track||e.title)}</strong><em>${esc(e.title)}${e.time?' · '+esc(e.time):''}</em></div>${i===0?'<b>NEXT →</b>':'<b>↗</b>'}</a>`).join(''):'<p class="aw-calendar__empty">Season complete 🏁 <a href="/schedule/">View season results →</a></p>';}
+    if(!current){hero.innerHTML=`<span class="eyebrow">${esc(names.get(selected)||'ALL SERIES')}</span><h3>SEASON COMPLETE</h3><p>No upcoming events in this program.</p><a href="/schedule/">View season results →</a>`;}
+    else{
+      const id=`${current.date}/${current.league}/${current.title}`;
+      if(hero.dataset.event!==id){hero.dataset.event=id;hero.innerHTML=`<div class="aw-calendar__hero-top"><span data-calendar-state>UPCOMING</span><small>${esc(current.leagueName||current.league)} · ${esc(current.round||current.status||'RACE')}</small></div><div><p>NEXT IN ${esc(selected==='all'?'AETHERWING':names.get(selected)||selected)}</p><h3>${esc(current.track||current.title)}</h3><h4>${esc(current.title)}</h4><strong data-calendar-clock>—</strong><small>${dateLabel(current)} · ${esc(current.time||'TIME TBD')}</small></div><a href="${esc(url(current))}">Race weekend →</a>`;}
+      const diff=Math.max(0,start(current)-now),d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+      hero.querySelector('[data-calendar-state]').textContent=diff===0?'RACE DAY / LIVE':'UPCOMING';hero.querySelector('[data-calendar-clock]').textContent=diff===0?'LIVE':`${String(d).padStart(2,'0')}D  ${String(h).padStart(2,'0')}H  ${String(m).padStart(2,'0')}M  ${String(s).padStart(2,'0')}S`;
+    }
+    const recent=visible.filter(e=>end(e)<now).sort((a,b)=>start(b)-start(a))[0];
+    const official=recent&&raceResults.find(r=>r.league===recent.league&&r.date===recent.date&&r.title===recent.title),driver=official?.entries?.find(e=>e.featuredDriver)||official?.entries?.[0];
+    root.querySelector('[data-calendar-recent]').innerHTML=recent?`<span>${official?'✓ RESULT':'✓ RECENT'}</span><b>${esc(recent.leagueName||recent.league)} · ${esc(recent.track||recent.title)}</b><small>${dateLabel(recent)}${driver?` · #${esc(driver.number)} ${esc(driver.driver)} ${driver.finish?`P${esc(driver.finish)}`:'DNS'}`:''}</small><a href="${esc(url(recent))}">View event →</a>`:'';
+  }
+  window.addEventListener('aetherwing:content',e=>{if(Array.isArray(e.detail?.['schedule-events']))events=e.detail['schedule-events'].filter(item=>!item.offWeek);if(Array.isArray(e.detail?.results))raceResults=e.detail.results;tick();});
+  tick();setInterval(tick,1000);
+})();
+</script>
