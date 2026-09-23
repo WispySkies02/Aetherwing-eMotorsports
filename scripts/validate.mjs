@@ -42,6 +42,7 @@ const paintLeagues = json('paint-leagues.json');
 const news = json('news.json');
 const standings = json('standings.json');
 const charters = json('charters.json');
+const driverPortfolios = json('driver-portfolios.json');
 
 
 assert(news.length === 11, 'News archive matches the current 11-story Team Wire');
@@ -56,6 +57,8 @@ assert(news.every((story) => Array.isArray(story.sections) && story.sections.len
 
 assert(site.competitionRelationships === 6, 'Six active competition relationships');
 assert(site.featuredPartners === 2 && partners.filter((p) => p.featured).length === 2, 'Exactly two featured partners');
+assert(driverPortfolios.map((portfolio)=>portfolio.name).join('|') === 'Hailey|Nico|Rocky', 'Driver portfolio seed includes Hailey, Nico, and Rocky');
+assert(driverPortfolios.every((portfolio)=>portfolio.id && portfolio.name && Array.isArray(portfolio.brands) && portfolio.brands.length), 'Every driver portfolio has an editable identity and brand list');
 assert(site.verifiedWins === 27 && wins.length === 27, '27 verified Aetherwing wins and 27 history rows');
 assert(site.activeRoRacingDrivers === 10 && roster.length === 10, 'Ten current RoRacing driver profiles');
 assert(site.aetherwingDrivers === 5 && site.allianceOnlyDrivers === 5, 'Drivers split is five Aetherwing / five alliance-only');
@@ -256,8 +259,11 @@ assert(contentSyncScript.includes("url.searchParams.set('admin_sync'") && conten
 const adminFunction = text('netlify/lib/_paint-admin.cjs');
 assert(adminPage.includes('Aetherwing Control Center') && adminPage.includes('Paint Operations'), 'Central Aetherwing Admin includes the live Paint Operations module');
 assert(adminPage.includes('https://paint.aetherwing.net/'), 'Central Paint Operations links to the public Paint Booth');
-assert(text('src/lib/site-content.mjs').includes("choose('leadership', leadershipSeed)") && text('src/lib/site-content.mjs').includes("choose('partners', partnersSeed)"), 'Leadership and partners consume published Admin overlays');
-assert(adminPage.includes('data-admin-dataset="schedule-events"') && adminPage.includes('data-admin-dataset="results"') && adminPage.includes('data-admin-dataset="drivers"') && adminPage.includes('data-admin-dataset="leadership"') && adminPage.includes('data-admin-dataset="partners"') && adminPage.includes('data-admin-dataset="news"') && adminPage.includes('data-admin-paint-tab="add"') && adminPage.includes('/admin/content-admin.js'), 'Central admin exposes dedicated tabs for all routine site-management editors');
+assert(text('src/lib/site-content.mjs').includes("choose('leadership', leadershipSeed)") && text('src/lib/site-content.mjs').includes("choose('partners', partnersSeed)") && text('src/lib/site-content.mjs').includes("choose('driver-portfolios', driverPortfoliosSeed)"), 'Leadership, partners, and driver portfolios consume published Admin overlays');
+assert(adminPage.includes('data-admin-dataset="schedule-events"') && adminPage.includes('data-admin-dataset="results"') && adminPage.includes('data-admin-dataset="drivers"') && adminPage.includes('data-admin-dataset="leadership"') && adminPage.includes('data-admin-dataset="partners"') && adminPage.includes('data-admin-dataset="driver-portfolios"') && adminPage.includes('data-admin-dataset="news"') && adminPage.includes('data-admin-paint-tab="add"') && adminPage.includes('/admin/content-admin.js'), 'Central admin exposes dedicated tabs for all routine site-management editors');
+const partnersPage = text('src/pages/partners/index.astro');
+assert(partnersPage.includes('driverPortfolios as portfolioSource') && !partnersPage.includes('const otherPortfolios'), 'Partners page renders every individual driver portfolio from Admin-managed data');
+assert(text('public/admin/content-admin.js').includes('data-portfolio-logo-upload') && text('public/admin/content-admin.js').includes('uploadedLogoData'), 'Driver portfolio brand logos support direct URLs and optimized file uploads');
 assert(adminScript.includes("roles.includes('admin') || roles.includes('paint-admin')"), 'Admin interface accepts the admin and paint-admin roles');
 assert(!adminScript.includes('netlifyIdentity.init()'), 'Identity widget is not initialized twice');
 assert(adminFunction.includes('context?.clientContext?.user') && adminFunction.includes("role === 'admin' || role === 'paint-admin'"), 'Paint publishing is protected by verified Netlify user roles');
@@ -279,7 +285,7 @@ const contentAdminScript = text('public/admin/content-admin.js');
 const controlCenterCss = text('public/admin/control-center.css');
 assert(adminPage.includes('data-schedule-shift') && adminPage.includes('data-shift-preview="-7"') && adminPage.includes('data-shift-preview="7"'), 'Schedule Manager includes one-week earlier/later bulk shift controls');
 assert(contentAdminScript.includes('function previewScheduleShift(days)') && contentAdminScript.includes('function applyScheduleShift()') && contentAdminScript.includes('function undoScheduleShift()'), 'Schedule Manager bulk shift supports preview, apply, and undo');
-assert(contentAdminScript.includes('function autoPlaceScheduleEvents()') && contentAdminScript.includes("key==='schedule-events'?'Add race':key==='results'?'Choose race above':'Add new entry'"), 'Schedule Manager adds races with automatic chronological placement');
+assert(contentAdminScript.includes('function autoPlaceScheduleEvents()') && contentAdminScript.includes("key==='schedule-events'?'Add race'") && contentAdminScript.includes("key==='results'?'Choose race above'"), 'Schedule Manager adds races with automatic chronological placement');
 assert(contentAdminScript.includes('scheduleTimeMinutes') && contentStoreLib.includes('compareScheduleEvents') && schedulePage.includes('.sort(compareScheduleEvents)'), 'Admin, backend, and public Schedule share date/time/league ordering behavior');
 assert(contentAdminScript.includes("event.league===league&&event.date&&String(event.date)>=String(start.date)") && contentAdminScript.includes('event.endDate=shiftIsoDate(event.endDate,days)'), 'Bulk week shift affects only the selected series from the chosen event forward and preserves multi-day windows');
 assert(contentAdminScript.includes('Use Publish current changes when the dates look right.') && contentAdminScript.includes("['saveDraft','publish'].includes(name)?{data}"), 'Bulk week shift can publish current unsaved Calendar changes without a separate draft save');

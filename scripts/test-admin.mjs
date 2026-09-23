@@ -137,4 +137,4 @@ assert.equal((await boothData.handler({httpMethod:'GET'})).statusCode,503);conso
 } else console.log('Booth integration test skipped: set AETHERWING_PAINT_PROJECT to the extracted Booth project to include it.');
 globalThis.fetch=nativeFetch;
 for(const filename of ['paint-ops-admin.js','content-admin.js'])new vm.Script(fs.readFileSync(new URL(`public/admin/${filename}`,root),'utf8'));
-console.log('PASS: verified-login/role guards, persisted draft/publish/reload, paint feature/rename/archive, all 14 content sections, private drafts, stale-write protection, safe storage errors, public booth proxy and dynamic shares. Tests used mock Identity/storage, not the live account.');
+console.log(`PASS: verified-login/role guards, persisted draft/publish/reload, paint feature/rename/archive, all ${Object.keys(seeds).length} content sections, private drafts, stale-write protection, safe storage errors, public booth proxy and dynamic shares. Tests used mock Identity/storage, not the live account.`);

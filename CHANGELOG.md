@@ -1,3 +1,11 @@
+# v0.4.61 — Admin-Managed Driver Portfolios
+
+- Replaced the hard-coded Hailey, Nico, and Rocky brand lists with one published Driver Portfolios dataset.
+- Added a Driver Portfolios Admin editor for changing existing drivers, adding drivers, and managing every individual partner/brand.
+- Added optional Driver Directory linking with support for custom/external drivers such as Nico.
+- Added brand-logo entry by direct URL or local PNG/JPG/WebP upload; file uploads are automatically optimized before being stored.
+- Made the public Partners page sort and render all drivers and brands directly from published Admin data.
+
 # v0.4.60 — Full Control Center & Driver Number Artwork
 
 - Added dedicated Site Settings, Navigation, Page Content, and Livery Brands editors to the central Admin.

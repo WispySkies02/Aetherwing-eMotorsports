@@ -6,7 +6,7 @@
     schedule: { title:'Schedule Manager', sections:[['schedule-events','Race calendar']] },
     results: { title:'Results & Milestones', sections:[['results','Race results'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
     roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['driver-profiles','Driver profiles'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['competitions','League details']] },
-    organization: { title:'Organization', sections:[['leadership','Leadership'],['partners','Partners'],['site','Site settings'],['navigation','Navigation'],['page-overrides','Page Content'],['livery-brands','Livery brands']] },
+    organization: { title:'Organization', sections:[['leadership','Leadership'],['partners','Team partners'],['site','Site settings'],['navigation','Navigation'],['page-overrides','Page Content'],['driver-portfolios','Driver portfolios']] },
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
   const datasetMeta = {
@@ -26,7 +26,7 @@
     site:{number:'14',kicker:'SITE CONTROL',title:'Site Settings',description:'Edit global organization details, public URLs, identity copy, footer text, totals, and shared sitewide presentation.',guide:'These values are reused across the site. Technical security, deployment, and design-system settings remain protected.'},
     navigation:{number:'15',kicker:'SITE CONTROL',title:'Navigation',description:'Add, rename, regroup, reorder, or remove public navigation links.',guide:'Use Home, Team, Race, or Connect as the group. External destinations must use full HTTPS URLs.'},
     'page-overrides':{number:'16',kicker:'SITE CONTROL',title:'Page Content',description:'Scan any public page, then edit its visible text, destinations, and image sources without changing code.',guide:'Choose a page and scan it. Existing structured records should still be managed in their dedicated tabs; this workspace controls presentation copy, links, and standalone images.'},
-    'livery-brands':{number:'17',kicker:'SITE CONTROL',title:'Livery Brands',description:'Manage the driver livery-brand portfolio shown on Partners.',guide:'Logo may be blank for a text-only brand tile. Order controls its public sequence.'},
+    'driver-portfolios':{number:'17',kicker:'PEOPLE + PARTNERS',title:'Driver Portfolios',description:'Create and edit every driver’s individual partner, sponsor, and livery-brand portfolio shown on the Partners page.',guide:'Add a portfolio for any driver, then add, remove, rename, reorder, or attach optional logos to that driver’s brands. Link a Driver Directory profile when one exists, or leave it as a custom / external driver.'},
     news:{number:'18',kicker:'TEAM WIRE',title:'Team Wire',description:'Edit complete stories: metadata, headline treatment, metrics, quotes, sections, paragraphs, tags, callouts, and homepage-feature status.',guide:'Exactly one story must be featured. Story slugs are public URLs; changing a slug can affect existing links unless a redirect is added in code.'}
   };
   const rosterGuides = Object.fromEntries(Object.entries(datasetMeta).map(([id,meta])=>[id,[meta.title,meta.guide]]));
@@ -52,7 +52,7 @@
     site:{name:'Organization name',founded:'Founded year',description:'Organization description',url:'Main site URL',logo:'Main logo URL',discordUrl:'Discord invite URL',tagline:'Public tagline',footerEyebrow:'Footer eyebrow',legalNotice:'Footer legal notice',mobileSummary:'Mobile navigation summary',featuredPartners:'Featured partner count',verifiedWins:'Verified win count',estimatedStarts:'Estimated starts',competitionRelationships:'Competition relationship count',activeRoRacingDrivers:'Active RoRacing driver count',aetherwingDrivers:'Aetherwing driver count',allianceOnlyDrivers:'Alliance-only driver count'},
     navigation:{label:'Link label',href:'Destination URL / path',group:'Navigation group'},
     'page-overrides':{id:'Content rule ID',page:'Public page path',type:'Content type',label:'Admin label',original:'Current page value',value:'Published replacement',enabled:'Apply this replacement'},
-    'livery-brands':{name:'Brand name',logo:'Logo URL',order:'Display order'},
+    'driver-portfolios':{id:'Portfolio ID',profile:'Linked Driver Directory profile',name:'Driver display name',handle:'Driver handle / username',label:'Portfolio label',order:'Driver display order',brands:'Individual partners / brands',logo:'Optional logo URL'},
     news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout'}
   };
   const fieldHelp = {
@@ -89,7 +89,8 @@
     uses:'Possible identities/usages for this one Open Charter. One use = one number. Multiple uses still count as one actual charter slot and are not simultaneous.',
     highlight:'Adds Aetherwing visual emphasis to this driver on the public standings cards.',
     slotLabel:'Optional public slot label such as “4TH CHARTER” or “OPEN CHARTER 2”.',
-    active:'Turn this charter or number identity on/off without deleting it.'
+    active:'Turn this charter or number identity on/off without deleting it.',
+    brands:'Add, remove, rename, reorder, or attach an optional logo to every individual driver brand.'
   };
   const fieldLabel = (name) => fieldLabels[key]?.[name] || label(name);
   const helpFor = (name) => fieldHelp[name] || '';
@@ -112,6 +113,21 @@
     return values;
   };
   const scheduleLeagueOrder=['nrrs','kmart','sunoco','uarl-d1','open','iracing','uarl-d2'];
+  async function uploadedLogoData(file) {
+    if(!/^image\/(png|jpeg|webp)$/.test(file?.type||''))throw new Error('Choose a PNG, JPG, or WebP logo file.');
+    if(file.size>5000000)throw new Error('Logo files must be 5 MB or smaller before optimization.');
+    const source=URL.createObjectURL(file);
+    try {
+      const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('That logo image could not be read.'));img.src=source;});
+      const scale=Math.min(1,640/image.naturalWidth,260/image.naturalHeight),canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      let quality=.9,result=canvas.toDataURL('image/webp',quality);
+      while(result.length>50000&&quality>.45){quality-=.1;result=canvas.toDataURL('image/webp',quality);}
+      if(result.length>50000)throw new Error('This logo is still too complex after optimization. Use the Logo URL field instead.');
+      return result;
+    } finally { URL.revokeObjectURL(source); }
+  }
   function scheduleTimeMinutes(value='') {
     const match=String(value).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
     if(!match)return Number.MAX_SAFE_INTEGER;
@@ -276,6 +292,10 @@
       if(key==='results'&&k==='featuredDriver') {
         return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" data-result-featured-driver ${v?'checked':''}><span><b>${esc(pretty)}</b><small>Use this driver for the large public result card. Selecting one clears the others in this race.</small></span></label>`;
       }
+      if(key==='driver-portfolios'&&k==='logo') {
+        const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current brand logo preview">`:'';
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}">`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
+      }
       if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) {
         const standingRows=key==='standings'&&k==='rows';
         const items=v.map((item,i)=>{
@@ -298,6 +318,10 @@
         const profiles=(base('roster-profiles')||seeds['roster-profiles']||[]).map((profile)=>[profile.slug,profile.name]);
         return shell(pretty,`<select ${attr} data-field-type="string">${profiles.map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)} · ${esc(id)}</option>`).join('')}</select>`,help);
       }
+      if (key==='driver-portfolios' && k==='profile') {
+        const profiles=(base('roster-profiles')||seeds['roster-profiles']||[]).map((profile)=>[profile.slug,profile.name]);
+        return shell(pretty,`<select ${attr} data-field-type="string" data-portfolio-profile-choice><option value="" ${!v?'selected':''}>Custom / external driver</option>${profiles.map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)} · ${esc(id)}</option>`).join('')}</select>`,'Linking a profile can fill the driver name and handle automatically. Choose Custom / external driver for someone outside the Driver Directory.');
+      }
       if (key==='drivers' && k==='competitionId') return shell(pretty,`<select ${attr} data-field-type="string" data-competition-choice>${competitionChoices().map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
       if (key==='drivers' && k==='competition') return shell(pretty,`<input ${attr} data-field-type="string" data-competition-name readonly value="${esc(v)}">`,'Filled automatically from the League selector.','is-readonly');
       if (key==='drivers' && k==='status') return shell(pretty,`<select ${attr} data-field-type="string">${[...new Set([...statusChoices,v])].filter(Boolean).map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
@@ -318,7 +342,7 @@
       return shell(pretty,`<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?'nullable':'string'}" type="${inputType}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}">`,help);
     }).join('');
   }
-  function title(row,i) { if(key==='drivers') return `${row.displayName||row.profile||'Driver'} · ${row.competition||'Choose league'}${row.number?` · #${row.number}`:''}`; return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
+  function title(row,i) { if(key==='drivers') return `${row.displayName||row.profile||'Driver'} · ${row.competition||'Choose league'}${row.number?` · #${row.number}`:''}`; if(key==='driver-portfolios')return `${row.name||'New driver'} · ${(row.brands||[]).length} brand${(row.brands||[]).length===1?'':'s'}`; return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
   const shiftState={days:0,indexes:[],snapshot:null};
   const shiftLeagueNames={nrrs:'NRRS','uarl-d1':'UARL D1',open:'UARL Open',kmart:'Kmart',sunoco:'Sunoco',iracing:'iRacing','uarl-d2':'UARL D2'};
   function shiftIsoDate(value,days) {
@@ -453,7 +477,7 @@
     const search=$('[data-content-search]').value.toLowerCase();
     $('[data-content-list]').innerHTML=Array.isArray(data)?data.map((r,i)=>({r,i})).filter(({r})=>JSON.stringify(r).toLowerCase().includes(search)).map(({r,i})=>`<button type="button" data-entry="${i}" aria-pressed="${i===index}"><strong>${esc(title(r,i))}</strong><small>${esc([r.leagueName||r.competition||r.category||'',r.date||r.numbers||r.slug||''].filter(Boolean).join(' · '))}</small></button>`).join(''):'<p>This section is one complete record. Edit its fields on the right.</p>';
     $('[data-content-add]').hidden=!Array.isArray(data);
-    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':key==='results'?'Choose race above':'Add new entry';
+    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':key==='results'?'Choose race above':key==='driver-portfolios'?'Add driver portfolio':'Add new entry';
     $('[data-content-remove]').hidden=!Array.isArray(data)||!data.length;
   }
   function featureSelectedStory() {
@@ -561,7 +585,12 @@
   $('[data-content-search]').addEventListener('input',renderList);
   $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();index=Number(button.dataset.entry);render();if(key==='results')refreshResultsRaceOptions(current()?.scheduleId||'');}});
   $('[data-content-form]').addEventListener('input',()=>{dirty=true;});
-  $('[data-content-fields]').addEventListener('change',(event)=>{
+  $('[data-content-fields]').addEventListener('change',async(event)=>{
+    const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
+    if(logoUpload&&key==='driver-portfolios'){
+      const file=logoUpload.files?.[0];if(!file)return;
+      try{status(`Optimizing ${file.name}…`);const path=JSON.parse(logoUpload.dataset.logoPath);assign(current(),path,await uploadedLogoData(file));dirty=true;render();status(`${file.name} is attached to this brand. Save Draft or Publish to keep it.`);}catch(error){status(error.message);}return;
+    }
     const resultDriver=event.target.closest?.('[data-result-driver-choice]');
     if(resultDriver&&key==='results'){
       const path=JSON.parse(resultDriver.dataset.fieldPath),entry=valueAt(current(),path.slice(0,-1)),assignment=resultRoster(current()?.league||'').find((driver)=>driver.id===resultDriver.value);
@@ -574,6 +603,13 @@
     const historyDriver=event.target.closest?.('[data-history-driver-choice]');
     if(historyDriver&&['wins','milestones'].includes(key)){
       const assignment=(base('drivers')||seeds.drivers||[]).find((driver)=>driver.id===historyDriver.value);current().assignmentId=historyDriver.value;if(key==='wins'&&assignment){current().driver=assignment.displayName;current().league=assignment.competition;}dirty=true;render();status(assignment?`${assignment.displayName}'s #${assignment.number} number artwork is now linked to this ${key==='wins'?'win':'milestone'}.`:'Driver number artwork link removed.');return;
+    }
+    const portfolioProfile=event.target.closest?.('[data-portfolio-profile-choice]');
+    if(portfolioProfile&&key==='driver-portfolios'){
+      commit();const profile=(base('roster-profiles')||seeds['roster-profiles']||[]).find((item)=>item.slug===portfolioProfile.value);
+      current().profile=portfolioProfile.value;
+      if(profile){current().name=profile.name||current().name;current().handle=profile.handle||current().handle;}
+      dirty=true;render();status(profile?`${profile.name} is linked. Their current public name and handle were filled in.`:'This portfolio can now use a custom driver name and handle.');return;
     }
     const league=event.target.closest?.('[data-competition-choice]');
     if(!league)return;
@@ -627,7 +663,7 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data)||!confirm('Remove this entry from the section draft? It stays public until you publish.'))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');

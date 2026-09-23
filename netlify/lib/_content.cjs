@@ -5,7 +5,7 @@ async function getBlobsModule() {
   blobsModulePromise ||= import('@netlify/blobs');
   return blobsModulePromise;
 }
-const FILES = ['site', 'navigation', 'page-overrides', 'schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'livery-brands', 'news'];
+const FILES = ['site', 'navigation', 'page-overrides', 'schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'livery-brands', 'driver-portfolios', 'news'];
 const SCHEDULE_LEAGUE_ORDER = ['nrrs','kmart','sunoco','uarl-d1','open','iracing','uarl-d2'];
 function scheduleTimeMinutes(value='') {
   const match=String(value).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
@@ -52,9 +52,9 @@ function validate(key, data, registry={}) {
   if (!FILES.includes(key)) return 'Unknown content section.';
   const seed = seeds()[key];
   if (Array.isArray(seed) !== Array.isArray(data) || !data || typeof data !== 'object') return 'Invalid section format.';
-  if (JSON.stringify(data).length > 1500000) return 'Section is too large.';
+  if (JSON.stringify(data).length > (key==='driver-portfolios'?4000000:1500000)) return 'Section is too large.';
   if (Array.isArray(data) && data.length > 1500) return 'Too many entries.';
-  if (['navigation','page-overrides','roster-profiles', 'driver-profiles', 'leadership', 'partners','livery-brands', 'news'].includes(key) && !data.length) return 'Keep at least one entry in this section.';
+  if (['navigation','page-overrides','roster-profiles', 'driver-profiles', 'leadership', 'partners','livery-brands','driver-portfolios', 'news'].includes(key) && !data.length) return 'Keep at least one entry in this section.';
   const rows = Array.isArray(data) ? data : [];
   function unsafe(value, depth=0) {
     if (depth>20) return true;
@@ -77,7 +77,7 @@ function validate(key, data, registry={}) {
     'roster-profiles':['slug','name','role','affiliation','numbers'],
     'driver-profiles':['slug','displayName','subtitle','intro'],
     drivers:['id','profile','displayName','competitionId','competition','number','status'], competitions:['id','name','type','label','schedule','machine','platform'],
-    standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'],'livery-brands':['name','order'], news:['slug','title','summary','dateIso','date','category','context','kicker']
+    standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'],'livery-brands':['name','order'],'driver-portfolios':['id','name','label','order'], news:['slug','title','summary','dateIso','date','category','context','kicker']
   }[key] || [];
   for (const [index, row] of rows.entries()) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) return `Entry ${index + 1} must be an object.`;
@@ -119,6 +119,11 @@ function validate(key, data, registry={}) {
     }
     if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
     if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^https:\/\//.test(row.logo))) return 'Partners need HTTPS website/logo URLs and a tags list.';
+    if (key === 'driver-portfolios') {
+      if (!Array.isArray(row.brands) || !row.brands.length) return `Driver portfolio ${index + 1}: add at least one brand.`;
+      if (row.brands.some((brand) => !String(brand?.name || '').trim() || !Number.isFinite(brand?.order))) return `Driver portfolio ${index + 1}: every brand needs a name and numeric display order.`;
+      if (row.brands.some((brand) => brand.logo && !/^(https:\/\/|\/|data:image\/(?:png|jpeg|webp);base64,)/.test(brand.logo))) return `Driver portfolio ${index + 1}: logos must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
+    }
     if(key==='navigation'&&!/^(\/|https:\/\/)/.test(row.href))return `Navigation entry ${index+1}: use a site-relative path or HTTPS URL.`;
     if(key==='page-overrides'){
       if(!['text','link','image'].includes(row.type))return `Page Content entry ${index+1}: choose text, link, or image.`;
@@ -127,7 +132,7 @@ function validate(key, data, registry={}) {
     }
     if(key==='drivers'&&row.numberImage&&!/^(https:\/\/|\/)/.test(row.numberImage))return `Entry ${index+1}: number image must use an HTTPS URL or a site-relative path.`;
   }
-  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions'].includes(key) ? 'id' : null;
+  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;
   if (key==='schedule-events') {
     const eventKey=(r)=>`${r.date}-${r.league}-${r.title.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;
