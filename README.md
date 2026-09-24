@@ -58,3 +58,10 @@ The supplied Aetherwing editorial reference image is now a single full-viewport,
 - The desktop Admin workspace rail now stays below the sticky Admin header instead of sliding underneath it.
 - Published Navigation data is consumed live by the public header, so changing an existing menu destination (including Paint Booth) no longer depends on the Netlify build hook.
 - Summer’s End is an actual runtime theme from Sep. 20–24 Eastern: a small seasonal banner, sunset/dusk accent shift, warm page glow, and seasonal page-intro/footer accents. Preview any time with `?season=summer-end`; disable during the window with `?season=off`.
+
+
+## v1.1.10 UI fixes
+
+- Public header styles are global within the header component so live Navigation rerenders retain the proper dropdown styling instead of falling back to raw browser buttons/links.
+- Race Calendar program filters now force high-contrast text in both selected and unselected states.
+- Restored the custom Aetherwing page scrollbar and matching horizontal calendar-filter scrollbar.
