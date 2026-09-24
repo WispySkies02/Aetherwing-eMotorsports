@@ -46,11 +46,19 @@ export const results = normalizeResults(choose('results', resultsSeed)).map((res
 }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
 export const wins = choose('wins', winsSeed);
 const publishedStandings = choose('standings', standingsSeed);
-const supersededSnapshot = (board) => board?.id === 'nrrs'
-  ? /After Race 20 of 25/.test(board.subtitle || '')
-  : board?.id === 'kmart' && /After Race 6 of 23/.test(board.subtitle || '');
+const standingsSeedById = new Map(standingsSeed.map((board) => [board.id, board]));
+const supersededSnapshot = (board) => {
+  if (board?.id === 'nrrs') return /After Race 20 of 25/.test(board.subtitle || '');
+  if (board?.id !== 'kmart') return false;
+  const fresh = standingsSeedById.get('kmart');
+  const publishedRows = Array.isArray(board.rows) ? board.rows.length : 0;
+  const freshRows = Array.isArray(fresh?.rows) ? fresh.rows.length : 0;
+  const publishedPt = Array.isArray(board.ptEntry?.drivers) ? board.ptEntry.drivers.length : 0;
+  const freshPt = Array.isArray(fresh?.ptEntry?.drivers) ? fresh.ptEntry.drivers.length : 0;
+  return /After Race 6 of 23/.test(board.subtitle || '') || publishedRows < freshRows || publishedPt < freshPt;
+};
 export const standings = Array.isArray(publishedStandings)
-  ? publishedStandings.map((board) => supersededSnapshot(board) ? standingsSeed.find((fresh) => fresh.id === board.id) || board : board)
+  ? publishedStandings.map((board) => supersededSnapshot(board) ? standingsSeedById.get(board.id) || board : board)
   : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
 export const drivers = choose('drivers', driversSeed);

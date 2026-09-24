@@ -43,3 +43,7 @@ The bundled NRRS standings include the R21 North Wilkesboro Chase and non-Chase 
 The home page includes a deliberately low-key faith statement near the bottom of the page, after the partner network and before the footer. Site Settings can edit the eyebrow, headline, statement, and verse reference. The sitewide footer keeps the same theme visible without making it the primary brand message.
 
 The Drivers, Race Calendar, History, and every Race Weekend page now carry their own small faith signature as well. Each page-specific line is separately editable in Site Settings so the acknowledgment of God can stay present and intentional without overtaking the motorsports content.
+
+## Kmart standings completeness fallback
+
+The bundled Sep. 21, 2026 Kmart Chase bubble contains all 17 full-time drivers, the top-six cutoff, and the three part-time ineligible drivers. If older published Admin data is missing rows or the part-time block, the site now keeps this complete bundled snapshot instead of replacing it with the incomplete live payload. A future complete Admin board can still supersede it.
