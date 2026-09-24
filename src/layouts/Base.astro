@@ -13,24 +13,15 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
   <title>{fullTitle}</title><meta name="description" content={description}/><link rel="canonical" href={canonical}/>
   <meta property="og:type" content="website"/><meta property="og:title" content={fullTitle}/><meta property="og:description" content={description}/><meta property="og:image" content={new URL(image,Astro.site).href}/>
   <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml"/>
+  <script is:inline>
+    (()=>{try{const q=new URLSearchParams(location.search),forced=q.get('season');let active=forced==='summer-end';if(forced!=='off'&&!forced){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));active=parts.month==='09'&&Number(parts.day)>=20&&Number(parts.day)<=24;}if(active)document.documentElement.dataset.season='summer-end';else delete document.documentElement.dataset.season;}catch{}})();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link rel="preconnect" href="https://fonts.cdnfonts.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Saira+Condensed:wght@500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
-  <script is:inline>
-    (()=>{
-      const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
-      const get=t=>Number(parts.find(p=>p.type===t)?.value||0),y=get('year'),m=get('month'),d=get('day'),md=m*100+d;
-      let season='standard';
-      if(y===2026){
-        if(md>=920&&md<=924)season='summers-end';else if(md>=925&&md<=930)season='halloween-teaser';else if(md>=1001&&md<=1024)season='spooky';else if(md>=1025&&md<=1031)season='halloween-week';else if(md>=1101&&md<=1126)season='fall';else if(md>=1127&&md<=1130)season='christmas-teaser';else if(md>=1201&&md<=1217)season='christmas';else if(md>=1218&&md<=1225)season='christmas-week';else if(md>=1226&&md<=1230)season='calm-winter';else if(md===1231)season='new-year';
-      }else if(y===2027){
-        if(md===101)season='new-year';else if(md>=102&&md<=131)season='winter';else if(md>=201&&md<=207)season='valentine-teaser';else if(md>=208&&md<=214)season='valentine';else if(md>=215&&md<=228)season='late-winter';else if(md>=301&&md<=316)season='spring';else if(md===317)season='st-patricks';else if(md>=318&&md<=321)season='spring';else if(md>=322&&md<=328)season='easter';else if(md>=329&&md<=527)season='spring';else if(md>=528&&md<=531)season='memorial';else if(md>=601&&md<=627)season='summer';else if(md>=628&&md<=704)season='independence';else if(md>=705&&md<=824)season='summer';else if(md>=825&&md<=907)season='summers-end';else if(md>=908&&md<=924)season='standard';else if(md>=925&&md<=930)season='halloween-teaser';else if(md>=1001&&md<=1024)season='spooky';else if(md>=1025&&md<=1031)season='halloween-week';else if(md>=1101&&md<=1125)season='fall';else if(md>=1126&&md<=1130)season='christmas-teaser';else if(md>=1201&&md<=1217)season='christmas';else if(md>=1218&&md<=1225)season='christmas-week';else if(md>=1226&&md<=1230)season='calm-winter';else if(md===1231)season='new-year';
-      }else if(y===2028&&md===101)season='new-year';
-      document.documentElement.dataset.season=season;
-    })();
-  </script>
 </head><body>
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
+  <div class="aw-season-banner" role="note" aria-label="Summer’s End seasonal theme"><span>SUMMER’S END</span><b>SEP 20–24 · LAST LIGHT OF THE SEASON</b></div>
   <main id="main"><slot/></main>
   <script type="application/json" id="aetherwing-updated-standings" set:html={JSON.stringify(standings.filter(board=>['nrrs','kmart'].includes(board.id))).replace(/</g,'\\u003c')}></script>
   <footer class="site-footer"><div class="wrap footer-grid"><div><strong>AETHERWING <em>eMOTORSPORTS</em></strong><p>Born to Soar. Built to Fight.</p></div><div><span>THE GARAGE</span><a href="/schedule/">Race calendar</a><a href="/drivers/">Driver lineup</a><a href="/paint-booth/">Paint Booth</a></div><div><span>THE TEAM</span><a href="/partners/">Partners</a><a href="/news/">Newsroom</a><a href="/history/">History</a></div><div><span>FOLLOW THE FLIGHT</span><a href={siteSettings.discordUrl}>Discord ↗</a><a href="https://paint.aetherwing.net/">Full scene viewer ↗</a><a href="/admin/">Team admin ↗</a></div></div><div class="wrap footnote"><span>© {new Date().getFullYear()} Aetherwing eMotorsports</span><strong>TO GOD BE THE GLORY · {siteSettings.faithVerse||'Matthew 17:20'}</strong></div></footer>

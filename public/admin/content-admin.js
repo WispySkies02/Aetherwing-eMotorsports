@@ -703,7 +703,8 @@
       registry=response.registry;dirty=false;
       if(name==='publish') {
         const publication=response.publication;
-        status(publication?.queued
+        if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
+        else status(publication?.queued
           ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Public data is updated and the site rebuild is queued.`
           : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Publish site / retry build.'}`);
       } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?'Calendar sorted by date, start time, and league. Private draft saved; nothing public changed.':'Private draft saved. Nothing public changed.'):'Section updated.'));
@@ -713,7 +714,8 @@
   $('[data-content-form]').addEventListener('submit',async(event)=>{event.preventDefault();commit();try{await action('saveDraft');}catch(error){status(error.message);}});
   $('[data-content-publish]').addEventListener('click',async()=>{
     commit();
-    if(!confirm(`${dirty?'Save and publish the current changes':'Publish this section'} and rebuild the public site?`))return;
+    const prompt=key==='navigation'?`${dirty?'Save and publish the current navigation changes':'Publish this navigation section'}? The public menu reads these links live.`:`${dirty?'Save and publish the current changes':'Publish this section'} and rebuild the public site?`;
+    if(!confirm(prompt))return;
     try{await action('publish');}catch(error){status(error.message);}
   });
   $('[data-content-discard]').addEventListener('click',async()=>{if(!confirm('Discard this saved section draft and return to published content?'))return;try{await action('discardDraft');chooseDataset(key);status('Draft discarded. Published content is unchanged.');}catch(error){status(error.message);}});

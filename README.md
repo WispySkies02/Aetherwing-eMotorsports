@@ -52,9 +52,9 @@ The bundled Sep. 21, 2026 Kmart Chase bubble contains all 17 full-time drivers, 
 
 The supplied Aetherwing editorial reference image is now a single full-viewport, fixed-cover background on the public site instead of a 1400px-wide repeating body texture. A dark sitewide veil keeps text and cards readable while preserving the artwork. The private `/admin/` control center intentionally uses a solid dark background with no reference image so forms, labels, tabs, and standings editing remain legible. Championship standings panels were made more opaque for the same reason.
 
-## v1.1.9 visual polish
 
-- Race Calendar filter league names are forced to white for readability on both inactive and active filter buttons.
-- The home-page faith statement is compact again: no full-viewport height and no oversized empty panel, while preserving the reference-art atmosphere behind it.
-- Public pages use a custom Aetherwing vertical scrollbar with a blue/gold thumb.
-- Seasonal presentation is selected automatically using America/New_York dates from the supplied 2026–2027 design calendar. The current Sep 20–24 window uses a restrained Summer’s End wash: warm sunset amber, cool late-summer blue, and the normal dark Aetherwing contrast.
+## v1.1.9 interface fixes
+
+- The desktop Admin workspace rail now stays below the sticky Admin header instead of sliding underneath it.
+- Published Navigation data is consumed live by the public header, so changing an existing menu destination (including Paint Booth) no longer depends on the Netlify build hook.
+- Summer’s End is an actual runtime theme from Sep. 20–24 Eastern: a small seasonal banner, sunset/dusk accent shift, warm page glow, and seasonal page-intro/footer accents. Preview any time with `?season=summer-end`; disable during the window with `?season=off`.

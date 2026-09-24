@@ -10,7 +10,7 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
     <a class="brand" href="/" aria-label="Aetherwing eMotorsports home">
       <img src={siteSettings.logo} alt={siteSettings.name} />
     </a>
-    <nav class="desktop-nav" aria-label="Primary navigation">
+    <nav class="desktop-nav" aria-label="Primary navigation" data-desktop-nav>
       <a class:list={[{active:active(homeLink.href)}]} href={homeLink.href}>{homeLink.label}</a>
       {groups.map((group)=>(
         <div class="nav-group">
@@ -29,7 +29,8 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
 <nav class="mobile-menu" id="mobile-menu" aria-label="Aetherwing mobile navigation" hidden>
     <div class="mobile-menu__inner">
       <div class="mobile-kicker">Navigation Control</div>
-      <a class="mobile-home" href="/">Aetherwing Hub</a>
+      <a class="mobile-home" href={homeLink.href} data-mobile-home>{homeLink.label}</a>
+      <div data-mobile-groups>
       {groups.map((group,index)=>(
         <section class="mobile-group">
           <button type="button" class="mobile-group__toggle" aria-expanded={index===0?'true':'false'}>
@@ -40,6 +41,7 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
           </div>
         </section>
       ))}
+      </div>
       <div class="mobile-feature">
         <strong>{siteSettings.tagline}</strong>
         <p>{siteSettings.mobileSummary}</p>
@@ -52,6 +54,12 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
     const toggle=header.querySelector('.menu-toggle');
     const menu=document.querySelector('#mobile-menu');
     const scrim=document.querySelector('[data-menu-scrim]');
+    const desktopNav=header.querySelector('[data-desktop-nav]');
+    const mobileHome=menu?.querySelector('[data-mobile-home]');
+    const mobileGroups=menu?.querySelector('[data-mobile-groups]');
+    const esc=(value='')=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const currentPath=()=>location.pathname.replace(/\/+$/,'/')||'/';
+    const isActive=(href='')=>href.startsWith('/')&&(href==='/'?currentPath()==='/':currentPath().startsWith(href));
     const setMenuOpen=(isOpen,focusMenu=false)=>{
       if(!(toggle instanceof HTMLButtonElement)||!(menu instanceof HTMLElement))return;
       toggle.setAttribute('aria-expanded',String(isOpen));
@@ -63,34 +71,48 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
     };
     const close=()=>setMenuOpen(false);
     const open=()=>setMenuOpen(true,true);
-
-    // Always boot in the closed state. iOS Safari can restore a previously-mutated
-    // aria-expanded value from its back/forward cache while restoring hidden content
-    // separately, which can leave the close X visible with no drawer on screen.
-    close();
-    window.addEventListener('pageshow',close);
-    window.addEventListener('pagehide',close);
-    window.addEventListener('resize',()=>{if(window.matchMedia('(min-width: 981px)').matches)close()});
-
-    if(toggle instanceof HTMLButtonElement)toggle.addEventListener('click',()=>toggle.getAttribute('aria-expanded')==='true'?close():open());
-    scrim?.addEventListener('click',close);
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();if(toggle instanceof HTMLButtonElement)toggle.focus()}});
-    menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
-    menu?.querySelectorAll('.mobile-group__toggle').forEach(btn=>btn.addEventListener('click',()=>{
-      if(!(btn instanceof HTMLButtonElement))return;
-      const links=btn.nextElementSibling;
-      const expanded=btn.getAttribute('aria-expanded')==='true';
-      btn.setAttribute('aria-expanded',String(!expanded));
-      if(links instanceof HTMLElement)links.hidden=expanded;
-    }));
-    header.querySelectorAll('.nav-group').forEach(group=>{
+    const bindDesktopGroups=()=>header.querySelectorAll('.nav-group').forEach(group=>{
       const btn=group.querySelector('button');
-      if(!(btn instanceof HTMLButtonElement))return;
+      if(!(btn instanceof HTMLButtonElement)||btn.dataset.bound==='1')return;
+      btn.dataset.bound='1';
       group.addEventListener('mouseenter',()=>btn.setAttribute('aria-expanded','true'));
       group.addEventListener('mouseleave',()=>btn.setAttribute('aria-expanded','false'));
       group.addEventListener('focusin',()=>btn.setAttribute('aria-expanded','true'));
       group.addEventListener('focusout',e=>{if(e.relatedTarget instanceof Node&&!group.contains(e.relatedTarget))btn.setAttribute('aria-expanded','false')});
     });
+    const renderNavigation=(items)=>{
+      if(!Array.isArray(items)||!items.length)return;
+      const home=items.find(item=>item?.group==='Home')||{label:'Home',href:'/'};
+      const groups=['Team','Race','Connect'].map(label=>({label,links:items.filter(item=>item?.group===label)})).filter(group=>group.links.length);
+      if(desktopNav instanceof HTMLElement){
+        desktopNav.innerHTML=`<a class="${isActive(home.href)?'active':''}" href="${esc(home.href)}">${esc(home.label)}</a>`+groups.map(group=>`<div class="nav-group"><button type="button" aria-haspopup="true" aria-expanded="false">${esc(group.label)}<span aria-hidden="true">+</span></button><div class="nav-group__menu"><small>${esc(group.label)} Control</small>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></div>`).join('');
+      }
+      if(mobileHome instanceof HTMLAnchorElement){mobileHome.href=home.href;mobileHome.textContent=home.label;}
+      if(mobileGroups instanceof HTMLElement){
+        mobileGroups.innerHTML=groups.map((group,index)=>`<section class="mobile-group"><button type="button" class="mobile-group__toggle" aria-expanded="${index===0?'true':'false'}"><span>${esc(group.label)}</span><b aria-hidden="true">+</b></button><div class="mobile-group__links" ${index===0?'':'hidden'}>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></section>`).join('');
+      }
+      bindDesktopGroups();
+    };
+
+    close();
+    window.addEventListener('pageshow',close);
+    window.addEventListener('pagehide',close);
+    window.addEventListener('resize',()=>{if(window.matchMedia('(min-width: 981px)').matches)close()});
+    if(toggle instanceof HTMLButtonElement)toggle.addEventListener('click',()=>toggle.getAttribute('aria-expanded')==='true'?close():open());
+    scrim?.addEventListener('click',close);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();if(toggle instanceof HTMLButtonElement)toggle.focus()}});
+    menu?.addEventListener('click',event=>{
+      const link=event.target instanceof Element?event.target.closest('a'):null;
+      if(link)return close();
+      const btn=event.target instanceof Element?event.target.closest('.mobile-group__toggle'):null;
+      if(!(btn instanceof HTMLButtonElement))return;
+      const links=btn.nextElementSibling;
+      const expanded=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',String(!expanded));
+      if(links instanceof HTMLElement)links.hidden=expanded;
+    });
+    bindDesktopGroups();
+    window.addEventListener('aetherwing:content',event=>renderNavigation(event.detail?.navigation));
   }
 </script>
 <style>
