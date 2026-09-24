@@ -9,7 +9,7 @@
     "tagline": "Born to Soar. Built to Fight.",
     "footerEyebrow": "Follow the flight",
     "legalNotice": "All trademarks, league names, partner names, vehicle references, and sponsor marks belong to their respective owners.",
-    "mobileSummary": "Aetherwing eMotorsports // 4 Aetherwing Programs \u2022 2 Alliance Series \u2022 6 Competition Relationships.",
+    "mobileSummary": "Aetherwing eMotorsports // 4 Aetherwing Programs • 2 Alliance Series • 6 Competition Relationships.",
     "featuredPartners": 2,
     "verifiedWins": 27,
     "estimatedStarts": "600+",
@@ -20,7 +20,11 @@
     "faithEyebrow": "Before every green flag",
     "faithTitle": "To God Be the Glory.",
     "faithStatement": "Every time we get behind the wheel, we thank God for the opportunity to compete. Through every win, every loss, and every challenge, we give Him the glory for bringing us this far.",
-    "faithVerse": "Matthew 17:20"
+    "faithVerse": "Matthew 17:20",
+    "faithDriversLine": "We race with gratitude, purpose, and one aim above all: to give God the glory.",
+    "faithScheduleLine": "Before every green flag, we thank God for the opportunity to compete.",
+    "faithHistoryLine": "Through every season, every setback, and every milestone — to God be the glory.",
+    "faithRaceDayLine": "Before the green flag, we thank God for the opportunity to compete. To God be the glory."
   },
   "navigation": [
     {
@@ -157,7 +161,7 @@
       "league": "sunoco",
       "leagueName": "Sunoco Trucks",
       "status": "Regular Season",
-      "title": "Black\u2019s Tire 200",
+      "title": "Black’s Tire 200",
       "track": "Rockingham Speedway",
       "time": "8:00 PM ET"
     },
@@ -243,7 +247,7 @@
       "league": "sunoco",
       "leagueName": "Sunoco Trucks",
       "status": "Regular Season",
-      "title": "Men\u2019s Mental Health Awareness Month 200",
+      "title": "Men’s Mental Health Awareness Month 200",
       "track": "Martinsville Speedway",
       "time": "8:00 PM ET"
     },
@@ -407,7 +411,7 @@
     {
       "date": "2026-08-04",
       "endDate": "2026-08-09",
-      "displayDate": "Aug 4\u20139",
+      "displayDate": "Aug 4–9",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -439,7 +443,7 @@
     {
       "date": "2026-08-14",
       "endDate": "2026-08-15",
-      "displayDate": "Aug 14\u201315",
+      "displayDate": "Aug 14–15",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -512,7 +516,7 @@
     {
       "date": "2026-08-25",
       "endDate": "2026-08-30",
-      "displayDate": "Aug 25\u201330",
+      "displayDate": "Aug 25–30",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -567,7 +571,7 @@
     {
       "date": "2026-09-02",
       "endDate": "2026-09-07",
-      "displayDate": "Sep 2\u20137",
+      "displayDate": "Sep 2–7",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -594,7 +598,7 @@
       "durationMinutes": 90,
       "series": "Kmart",
       "round": "ROUND 7",
-      "specialTag": "POSTPONED \u00b7 DASH4CASH",
+      "specialTag": "POSTPONED · DASH4CASH",
       "status": "Regular Season"
     },
     {
@@ -620,7 +624,7 @@
     {
       "date": "2026-09-10",
       "endDate": "2026-09-15",
-      "displayDate": "Sep 10\u201315",
+      "displayDate": "Sep 10–15",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -674,7 +678,7 @@
     {
       "date": "2026-09-18",
       "endDate": "2026-09-20",
-      "displayDate": "Sep 18\u201320",
+      "displayDate": "Sep 18–20",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -738,7 +742,7 @@
     {
       "date": "2026-09-25",
       "endDate": "2026-09-27",
-      "displayDate": "Sep 25\u201327",
+      "displayDate": "Sep 25–27",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -801,7 +805,7 @@
     {
       "date": "2026-10-02",
       "endDate": "2026-10-04",
-      "displayDate": "Oct 2\u20134",
+      "displayDate": "Oct 2–4",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -914,7 +918,7 @@
     {
       "date": "2026-10-16",
       "endDate": "2026-10-18",
-      "displayDate": "Oct 16\u201318",
+      "displayDate": "Oct 16–18",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1018,7 +1022,7 @@
     {
       "date": "2026-10-30",
       "endDate": "2026-10-31",
-      "displayDate": "Oct 30\u201331",
+      "displayDate": "Oct 30–31",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1061,7 +1065,7 @@
     {
       "date": "2026-11-04",
       "endDate": "2026-11-09",
-      "displayDate": "Nov 4\u20139",
+      "displayDate": "Nov 4–9",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1103,7 +1107,7 @@
     {
       "date": "2026-11-13",
       "endDate": "2026-11-15",
-      "displayDate": "Nov 13\u201315",
+      "displayDate": "Nov 13–15",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1146,7 +1150,7 @@
     {
       "date": "2026-11-17",
       "endDate": "2026-11-21",
-      "displayDate": "Nov 17\u201321",
+      "displayDate": "Nov 17–21",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1222,7 +1226,7 @@
     {
       "date": "2026-12-02",
       "endDate": "2026-12-07",
-      "displayDate": "Dec 2\u20137",
+      "displayDate": "Dec 2–7",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1277,7 +1281,7 @@
     {
       "date": "2026-12-15",
       "endDate": "2026-12-20",
-      "displayDate": "Dec 15\u201320",
+      "displayDate": "Dec 15–20",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1288,7 +1292,7 @@
     {
       "date": "2026-12-18",
       "endDate": "2026-12-19",
-      "displayDate": "Dec 18\u201319",
+      "displayDate": "Dec 18–19",
       "league": "iracing",
       "leagueName": "iRacing Events",
       "status": "Special Event",
@@ -1417,73 +1421,73 @@
   ],
   "wins": [
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Budweiser Shootout",
       "driver": "Will",
       "date": "Sep 15, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Daytona 500",
       "driver": "Flamingo",
       "date": "Sep 22, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Las Vegas",
       "driver": "Player_13",
       "date": "Oct 6, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Texas",
       "driver": "Flamingo",
       "date": "Oct 13, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Richmond",
       "driver": "Will",
       "date": "Oct 20, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Bristol Dirt",
       "driver": "Will",
       "date": "Oct 27, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Auto Club",
       "driver": "Flamingo",
       "date": "Nov 3, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Darlington",
       "driver": "Player_13",
       "date": "Dec 1, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Atlanta",
       "driver": "Will",
       "date": "Dec 15, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Las Vegas",
       "driver": "Flamingo",
       "date": "Dec 29, 2025"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "New Hampshire",
       "driver": "Will",
       "date": "Jan 12, 2026"
     },
     {
-      "league": "Kmart \u00b7 Historic AEM",
+      "league": "Kmart · Historic AEM",
       "track": "Kansas",
       "driver": "Will",
       "date": "Feb 9, 2026"
@@ -1582,8 +1586,8 @@
   "standings": [
     {
       "id": "nrrs",
-      "title": "NRRS Championship \u00b7 Chase for the Cup",
-      "subtitle": "Town Fair Cup \u00b7 Season 3 \u00b7 After R21/25 \u00b7 North Wilkesboro \u00b7 Chase Race 2 \u00b7 Sep 22, 2026",
+      "title": "NRRS Championship · Chase for the Cup",
+      "subtitle": "Town Fair Cup · Season 3 · After R21/25 · North Wilkesboro · Chase Race 2 · Sep 22, 2026",
       "league": "nrrs",
       "status": "THE CHASE",
       "rows": [
@@ -1593,7 +1597,7 @@
           "driver": "Trent",
           "points": 2197,
           "delta": "LEADER",
-          "positionChange": "\u25b21",
+          "positionChange": "▲1",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1603,7 +1607,7 @@
           "driver": "Will",
           "points": 2195,
           "delta": "-2",
-          "positionChange": "\u25bc1",
+          "positionChange": "▼1",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1613,7 +1617,7 @@
           "driver": "Clutch",
           "points": 2173,
           "delta": "-24",
-          "positionChange": "\u2014",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1623,7 +1627,7 @@
           "driver": "Jaxon",
           "points": 2130,
           "delta": "-67",
-          "positionChange": "\u2014",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1633,7 +1637,7 @@
           "driver": "Outlaw",
           "points": 2128,
           "delta": "-69",
-          "positionChange": "\u2014",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
         },
@@ -1643,7 +1647,7 @@
           "driver": "Hailey",
           "points": 2087,
           "delta": "-110",
-          "positionChange": "\u2014",
+          "positionChange": "—",
           "chaseEligible": true,
           "highlight": true,
           "note": "Listed as Wispy in league standings"
@@ -1694,7 +1698,7 @@
           "driver": "Matty",
           "points": 231,
           "delta": null,
-          "positionChange": "\u25b21",
+          "positionChange": "▲1",
           "chaseEligible": false,
           "highlight": false
         },
@@ -1704,7 +1708,7 @@
           "driver": "Eazy",
           "points": 227,
           "delta": null,
-          "positionChange": "\u25bc1",
+          "positionChange": "▼1",
           "chaseEligible": false,
           "highlight": false
         },
@@ -1729,7 +1733,7 @@
           "highlight": false
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "20",
           "driver": "Cod",
           "points": 121,
@@ -1740,7 +1744,7 @@
           "unranked": true
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "",
           "driver": "Ryan",
           "points": 114,
@@ -1751,7 +1755,7 @@
           "unranked": true
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "99",
           "driver": "AJ",
           "points": 61,
@@ -1762,7 +1766,7 @@
           "unranked": true
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "15",
           "driver": "Kentong",
           "points": 59,
@@ -1783,7 +1787,7 @@
           "highlight": false
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "1",
           "driver": "Max Verstappen",
           "points": 47,
@@ -1794,7 +1798,7 @@
           "unranked": true
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "",
           "driver": "chanler",
           "points": 36,
@@ -1806,7 +1810,7 @@
           "unranked": true
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "07",
           "driver": "Jaykay",
           "points": 35,
@@ -1847,7 +1851,7 @@
           "highlight": false
         },
         {
-          "position": "\u2014",
+          "position": "—",
           "number": "",
           "driver": "Butters",
           "points": 26,
@@ -1869,13 +1873,13 @@
         }
       ],
       "cutoffAfter": 6,
-      "cutoffLabel": "Chase cutoff \u00b7 Top 6",
+      "cutoffLabel": "Chase cutoff · Top 6",
       "pointsContext": "Chase gaps are measured from the championship leader."
     },
     {
       "id": "kmart",
       "title": "Kmart Cup Driver Standings",
-      "subtitle": "Updated Chase Bubble \u00b7 Sep 21, 2026 \u00b7 Full-time drivers",
+      "subtitle": "Updated Chase Bubble · Sep 21, 2026 · Full-time drivers",
       "league": "kmart",
       "status": "CHASE BUBBLE",
       "rows": [
@@ -2036,7 +2040,7 @@
       ],
       "ptEntry": {
         "number": "29",
-        "title": "Part-time drivers \u00b7 Shared #29",
+        "title": "Part-time drivers · Shared #29",
         "status": "NOT CHASE ELIGIBLE",
         "drivers": [
           {
@@ -2054,13 +2058,13 @@
         ]
       },
       "cutoffAfter": 6,
-      "cutoffLabel": "Chase cutoff \u00b7 Top 6 full-time drivers",
+      "cutoffLabel": "Chase cutoff · Top 6 full-time drivers",
       "pointsContext": "Gap is measured from the Chase cutoff, not the points leader."
     },
     {
       "id": "sunoco",
       "title": "Sunoco Truck Series Chase",
-      "subtitle": "After Round 18 of 25 \u00b7 After Chase Race 3 of 10",
+      "subtitle": "After Round 18 of 25 · After Chase Race 3 of 10",
       "league": "sunoco",
       "status": "CHASE ACTIVE",
       "rows": [
@@ -2104,8 +2108,8 @@
     },
     {
       "id": "uarl",
-      "title": "UARL \u00b7 Division 1 + Open",
-      "subtitle": "Season 6 \u00b7 D2 Closed",
+      "title": "UARL · Division 1 + Open",
+      "subtitle": "Season 6 · D2 Closed",
       "league": "uarl",
       "status": "D1 POSTPONED",
       "emptyMessage": "No official UARL standings snapshot published yet",
@@ -2140,8 +2144,8 @@
     },
     {
       "date": "Aug 25, 2026",
-      "title": "Wispy \u2014 5\u00d7 Chase Qualifier",
-      "description": "The NRRS Season 3 berth became Wispy\u2019s fifth confirmed Chase appearance across NRRS, Kmart, and UARL."
+      "title": "Wispy — 5× Chase Qualifier",
+      "description": "The NRRS Season 3 berth became Wispy’s fifth confirmed Chase appearance across NRRS, Kmart, and UARL."
     }
   ],
   "roster-profiles": [
@@ -2293,7 +2297,7 @@
       "slug": "wispy",
       "displayName": "Hailey",
       "iracingName": "Hailey Bell",
-      "subtitle": "Founder \u00b7 Team Owner \u00b7 Driver",
+      "subtitle": "Founder · Team Owner · Driver",
       "intro": "Aetherwing founder and multi-program driver. On Roblox / RoRacing the current display name is Hailey with username @Aokikoto; on iRacing the current name is Hailey Bell.",
       "stats": [
         {
@@ -2647,14 +2651,14 @@
       "name": "NRRS",
       "type": "aetherwing",
       "label": "Aetherwing Program",
-      "schedule": "Tuesdays \u00b7 7:30 PM ET",
+      "schedule": "Tuesdays · 7:30 PM ET",
       "machine": "BBR Next-Gen Toyota",
       "platform": "Roblox / BBR Next-Gen platform",
       "roster": [
         "#32 Hailey",
         "#43 Plarker",
         "#54 OPEN",
-        "4TH \u00b7 AETHERWING OPEN CHARTER \u00b7 #62 PT / #82 DEVELOPMENT"
+        "4TH · AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"
       ]
     },
     {
@@ -2663,7 +2667,7 @@
       "series": "L.L. Bean Cup Series",
       "type": "aetherwing",
       "label": "Aetherwing Program",
-      "schedule": "Sundays \u00b7 8:30 PM ET",
+      "schedule": "Sundays · 8:30 PM ET",
       "machine": "BBR Next-Gen Cadillac (Toyota Body)",
       "platform": "Roblox / BBR Next-Gen platform",
       "roster": [
@@ -2672,7 +2676,7 @@
         "#52 Gk3r",
         "#54 OPEN",
         "#92 Rocky",
-        "AETHERWING OPEN CHARTER \u00b7 #62 PT / #82 DEVELOPMENT"
+        "AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"
       ]
     },
     {
@@ -2680,7 +2684,7 @@
       "name": "UARL Open",
       "type": "aetherwing",
       "label": "Aetherwing Program",
-      "schedule": "Sundays \u00b7 11:30 AM ET",
+      "schedule": "Sundays · 11:30 AM ET",
       "machine": "Super Late Model Open Series",
       "platform": "Roblox / UARL Late Model platform",
       "roster": [
@@ -2693,7 +2697,7 @@
       "type": "aetherwing",
       "label": "Aetherwing Program",
       "schedule": "Special-event windows",
-      "machine": "Multiple Cars \u00b7 Multiple Disciplines",
+      "machine": "Multiple Cars · Multiple Disciplines",
       "platform": "iRacing / Aetherwing Factory Program",
       "roster": [
         "#6 Levi Ramsey",
@@ -2707,14 +2711,14 @@
       "name": "Kmart Auto Parts Series",
       "type": "alliance",
       "label": "StarClutch Racing Alliance",
-      "schedule": "Mondays \u00b7 8:30 PM ET",
-      "machine": "Dodge \u00b7 BBR D2 Chevy Body",
+      "schedule": "Mondays · 8:30 PM ET",
+      "machine": "Dodge · BBR D2 Chevy Body",
       "platform": "Roblox / StarClutch Racing",
       "roster": [
         "#15 Hailey",
         "#24 Will",
         "#34 Jaxon",
-        "#29 PT \u00b7 Clutch / Eazy / Matty"
+        "#29 PT · Clutch / Eazy / Matty"
       ]
     },
     {
@@ -2722,8 +2726,8 @@
       "name": "Sunoco Truck Series",
       "type": "alliance",
       "label": "StarClutch Racing Alliance",
-      "schedule": "Saturdays \u00b7 8:00 PM ET",
-      "machine": "Dodge RAM \u00b7 CWS15 Ford Body",
+      "schedule": "Saturdays · 8:00 PM ET",
+      "machine": "Dodge RAM · CWS15 Ford Body",
       "platform": "Roblox / StarClutch Racing",
       "roster": [
         "#27 Eazy",
@@ -2768,7 +2772,7 @@
       "name": "Palmetto Gaming",
       "role": "Gaming Partner",
       "featured": true,
-      "description": "A gaming and collectibles relationship centered on retro and modern games, accessories, Funko Pops, Pok\u00e9mon cards, and similar inventory.",
+      "description": "A gaming and collectibles relationship centered on retro and modern games, accessories, Funko Pops, Pokémon cards, and similar inventory.",
       "url": "https://www.palmettogaming.com",
       "logo": "https://1e7ea100626cc069b156.cdn6.editmysite.com/uploads/b/1e7ea100626cc069b1563209b0ec867317428e47fa0b74a79813b09076b7c39c/PalmettoSNEScontrollerLogoWithBackgroundSquare_1727985535.png?width=2400&optimize=medium",
       "tags": [
@@ -3110,7 +3114,7 @@
         "NRRS",
         "Martinsville",
         "3 Straight NRRS",
-        "5\u00d7 Chase Qualifier"
+        "5× Chase Qualifier"
       ],
       "featured": false,
       "byline": "Aetherwing eMotorsports",
@@ -3129,7 +3133,7 @@
         },
         {
           "label": "Standings",
-          "value": "P6 \u00b7 553"
+          "value": "P6 · 553"
         },
         {
           "label": "Chase Cut",
@@ -3137,7 +3141,7 @@
         },
         {
           "label": "Career Berths",
-          "value": "5\u00d7"
+          "value": "5×"
         }
       ],
       "sections": [
@@ -3158,7 +3162,7 @@
         {
           "heading": "Five Berths, Three Series",
           "paragraphs": [
-            "NRRS accounts for three of the five confirmed Chase appearances, but the postseason r\u00e9sum\u00e9 extends beyond one league. A Kmart Season 1 berth was earned on points after Kansas, while the UARL Season 4 regular-season finale at Indianapolis produced a race-winning ticket into that championship field.",
+            "NRRS accounts for three of the five confirmed Chase appearances, but the postseason résumé extends beyond one league. A Kmart Season 1 berth was earned on points after Kansas, while the UARL Season 4 regular-season finale at Indianapolis produced a race-winning ticket into that championship field.",
             "The record now stands at three NRRS berths, one Kmart berth, and one UARL berth. Two of those five were secured directly through victories: the NRRS Season 2 All-Star Race at Miami and the UARL Season 4 finale at Indianapolis."
           ]
         },
@@ -3171,9 +3175,9 @@
         }
       ],
       "callout": {
-        "label": "Postseason R\u00e9sum\u00e9",
+        "label": "Postseason Résumé",
         "title": "Five Trips Into The Fight",
-        "text": "NRRS \u00d73 \u00b7 Kmart \u00d71 \u00b7 UARL \u00d71. Two of the five confirmed berths were secured through race victories."
+        "text": "NRRS ×3 · Kmart ×1 · UARL ×1. Two of the five confirmed berths were secured through race victories."
       },
       "timeline": [
         {
@@ -3277,13 +3281,13 @@
           "heading": "A Milestone That Moved the Standings",
           "paragraphs": [
             "The Talladega result moved Wispy up one position to fourth in the NRRS standings. Instead of the 100th start living only as a career-count statistic, it directly improved the competitive position of the #32 team.",
-            "The story was preserved in the Team Wire because it combined the personal milestone with an actual race-day result \u2014 exactly the kind of moment the archive was built to keep."
+            "The story was preserved in the Team Wire because it combined the personal milestone with an actual race-day result — exactly the kind of moment the archive was built to keep."
           ]
         }
       ],
       "callout": {
         "label": "Milestone File",
-        "title": "100 Starts \u00b7 50 Points",
+        "title": "100 Starts · 50 Points",
         "text": "Stage 1 win, runner-up finish, and a move to fourth in the NRRS standings in Wispy's 100th recorded RoRacing start."
       }
     },
@@ -3339,7 +3343,7 @@
           "heading": "The Truck Win Marked Number 25",
           "paragraphs": [
             "The Class C Series - Fixed victory also carried an organizational milestone: it became Aetherwing's 25th recorded team win in the modern record book.",
-            "That placed the Michigan truck result in two parts of the archive at once \u2014 as the completion of Waggoner's Michigan double and as the victory that pushed the team-win count to 25."
+            "That placed the Michigan truck result in two parts of the archive at once — as the completion of Waggoner's Michigan double and as the victory that pushed the team-win count to 25."
           ]
         },
         {
@@ -3365,7 +3369,7 @@
       "context": "NASCAR iRacing Series",
       "kicker": "Photo Finish",
       "title": "Waggoner Wins Michigan NIS Thriller for Rowdy",
-      "summary": "Nicholas Waggoner scored an emotional NASCAR iRacing Series victory at Michigan in a photo finish, winning by 0.029 seconds in the #28 Cheddar\u2019s Scratch Kitchen Toyota and dedicating the win to Kyle \u201cRowdy\u201d Busch.",
+      "summary": "Nicholas Waggoner scored an emotional NASCAR iRacing Series victory at Michigan in a photo finish, winning by 0.029 seconds in the #28 Cheddar’s Scratch Kitchen Toyota and dedicating the win to Kyle “Rowdy” Busch.",
       "tags": [
         "Race Win",
         "iRacing",
@@ -3407,7 +3411,7 @@
         {
           "heading": "For Rowdy",
           "paragraphs": [
-            "The result carried an emotional layer beyond the finishing margin. Waggoner dedicated the Michigan victory to Kyle \u201cRowdy\u201d Busch, making the race one of the more personal wins preserved in the team's iRacing history.",
+            "The result carried an emotional layer beyond the finishing margin. Waggoner dedicated the Michigan victory to Kyle “Rowdy” Busch, making the race one of the more personal wins preserved in the team's iRacing history.",
             "The combination of the #28 entry, Cheddar's Scratch Kitchen livery, razor-thin margin, and dedication is why the Team Wire keeps the event as more than a line in the win table."
           ]
         },
@@ -3434,7 +3438,7 @@
       "context": "iRacing",
       "kicker": "Crown Jewel",
       "title": "Waggoner Wins the Indianapolis 500 on iRacing",
-      "summary": "Nicholas Waggoner delivered a crown-jewel victory for Aetherwing, winning the Indianapolis 500 on iRacing and adding one of sim racing\u2019s biggest oval trophies to the team record book.",
+      "summary": "Nicholas Waggoner delivered a crown-jewel victory for Aetherwing, winning the Indianapolis 500 on iRacing and adding one of sim racing’s biggest oval trophies to the team record book.",
       "tags": [
         "Race Win",
         "iRacing",
@@ -3552,12 +3556,12 @@
         }
       ],
       "quote": {
-        "text": "Winning a Clash event is about more than just grabbing a trophy\u2014it\u2019s about establishing dominance before the championship points even start counting.",
+        "text": "Winning a Clash event is about more than just grabbing a trophy—it’s about establishing dominance before the championship points even start counting.",
         "attribution": "Original Aetherwing race report"
       },
       "callout": {
         "label": "Opening Statement",
-        "title": "Two Clashes \u00b7 Two Wins",
+        "title": "Two Clashes · Two Wins",
         "text": "Jaxon won the NRRS Clash at Target Speedway and Jayden completed the sweep with a UARL Clash victory."
       }
     },
@@ -3616,7 +3620,7 @@
           ]
         },
         {
-          "heading": "Scout \u00b7 Develop \u00b7 Promote",
+          "heading": "Scout · Develop · Promote",
           "paragraphs": [
             "The pathway was organized around three steps. Scout meant identifying new drivers, watching race craft, and tracking availability. Develop meant building consistency, improving communication, and learning team standards. Promote meant opening reserve or primary opportunities for drivers who proved they fit the long-term organization.",
             "The structure gave Aetherwing a middle step between outside competition and direct signing, while NGM provided a development partner familiar with the RoRacing environment."
@@ -3631,12 +3635,12 @@
         }
       ],
       "quote": {
-        "text": "This is about building the next wave \u2014 not just finding fast drivers, but finding the right drivers.",
+        "text": "This is about building the next wave — not just finding fast drivers, but finding the right drivers.",
         "attribution": "Aetherwing team note"
       },
       "callout": {
         "label": "Evaluation Focus",
-        "title": "Consistency \u00b7 Availability \u00b7 Attitude",
+        "title": "Consistency · Availability · Attitude",
         "text": "Race craft, preparation, communication and long-term team fit were part of the development review alongside outright speed."
       }
     },
@@ -3715,7 +3719,7 @@
       },
       "callout": {
         "label": "Identity File",
-        "title": "BellSouth \u2192 Aetherwing",
+        "title": "BellSouth → Aetherwing",
         "text": "A new name and visual direction carried the existing modern team history forward into the 2026 Aetherwing era."
       }
     },
@@ -3783,7 +3787,7 @@
       ],
       "callout": {
         "label": "Career First",
-        "title": "Victory Lane \u00b7 Dec 2, 2025",
+        "title": "Victory Lane · Dec 2, 2025",
         "text": "The #28 Aetherwing entry won the NRRS Season 2 All-Star Race for Wispy's first recorded career RoRacing victory."
       }
     },
@@ -3815,7 +3819,7 @@
         },
         {
           "label": "Finish",
-          "value": "1\u20132"
+          "value": "1–2"
         },
         {
           "label": "Event",
@@ -3830,7 +3834,7 @@
         {
           "heading": "A Landmark Daytona 500 Win",
           "paragraphs": [
-            "The 2025\u201326 Kmart Cup Series opened with Flamingo taking the #22 Apex Sim Racing Chevrolet to victory in the Daytona 500 on September 22, 2025.",
+            "The 2025–26 Kmart Cup Series opened with Flamingo taking the #22 Apex Sim Racing Chevrolet to victory in the Daytona 500 on September 22, 2025.",
             "The win became Aetherwing's first points-paying victory and delivered a crown-jewel result at the beginning of the season."
           ]
         },
@@ -3845,7 +3849,7 @@
           "heading": "The White Flag Protection",
           "paragraphs": [
             "On the final lap, Will protected Flamingo's rear quarter while the pair worked through Turns 3 and 4 and defended against a late challenge from behind.",
-            "Flamingo reached the checkered flag first and Will finished second, completing the 1\u20132 sweep in one of the biggest races on the Kmart Cup schedule."
+            "Flamingo reached the checkered flag first and Will finished second, completing the 1–2 sweep in one of the biggest races on the Kmart Cup schedule."
           ]
         },
         {
@@ -3858,7 +3862,7 @@
       ],
       "callout": {
         "label": "Historic Finish",
-        "title": "Aetherwing 1\u20132 at Daytona",
+        "title": "Aetherwing 1–2 at Daytona",
         "text": "Flamingo won the Daytona 500 with teammate Will second, delivering the team's first points-paying victory and a crown-jewel sweep of the top two positions."
       }
     }

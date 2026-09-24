@@ -41,3 +41,5 @@ The bundled NRRS standings include the R21 North Wilkesboro Chase and non-Chase 
 ## Faith identity
 
 The home page includes a deliberately low-key faith statement near the bottom of the page, after the partner network and before the footer. Site Settings can edit the eyebrow, headline, statement, and verse reference. The sitewide footer keeps the same theme visible without making it the primary brand message.
+
+The Drivers, Race Calendar, History, and every Race Weekend page now carry their own small faith signature as well. Each page-specific line is separately editable in Site Settings so the acknowledgment of God can stay present and intentional without overtaking the motorsports content.

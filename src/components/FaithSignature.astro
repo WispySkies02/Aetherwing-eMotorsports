@@ -1,0 +1,42 @@
+---
+import { siteSettings } from '../lib/site-content.mjs';
+interface Props {
+  field: 'faithDriversLine' | 'faithScheduleLine' | 'faithHistoryLine' | 'faithRaceDayLine';
+  label?: string;
+  variant?: 'strip' | 'closing';
+}
+const { field, label='To God be the glory', variant='strip' } = Astro.props;
+const fallback = {
+  faithDriversLine: 'We race with gratitude, purpose, and one aim above all: to give God the glory.',
+  faithScheduleLine: 'Before every green flag, we thank God for the opportunity to compete.',
+  faithHistoryLine: 'Through every season, every setback, and every milestone — to God be the glory.',
+  faithRaceDayLine: 'Before the green flag, we thank God for the opportunity to compete. To God be the glory.'
+};
+const copy = siteSettings[field] || fallback[field];
+const verse = siteSettings.faithVerse || 'Matthew 17:20';
+---
+<section class={`faith-signature faith-signature--${variant}`} data-faith-signature={field} aria-label="Aetherwing faith statement">
+  <div class="wrap faith-signature__inner">
+    <span class="faith-signature__spark" aria-hidden="true">✦</span>
+    <div class="faith-signature__copy">
+      <small>{label}</small>
+      <p data-faith-copy>{copy}</p>
+    </div>
+    <strong data-faith-verse>{verse}</strong>
+  </div>
+</section>
+<script is:inline>
+  (()=>{
+    const roots=[...document.querySelectorAll('[data-faith-signature]')];
+    if(!roots.length)return;
+    const apply=(d)=>roots.forEach(root=>{
+      const field=root.dataset.faithSignature;
+      const copy=d?.site?.[field];
+      const verse=d?.site?.faithVerse;
+      if(copy)root.querySelector('[data-faith-copy]').textContent=copy;
+      if(verse)root.querySelector('[data-faith-verse]').textContent=verse;
+    });
+    if(window.__AETHERWING_CONTENT__)apply(window.__AETHERWING_CONTENT__);
+    window.addEventListener('aetherwing:content',({detail})=>apply(detail));
+  })();
+</script>

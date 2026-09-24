@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import FaithSignature from '../../components/FaithSignature.astro';
 import { scheduleEvents, results, drivers } from '../../lib/site-content.mjs';
 import { eventSlug, eventDisplayDate } from '../../lib/schedule-events.mjs';
 import '../../styles/records.css';
@@ -10,6 +11,7 @@ const entries=drivers.filter(d=>d.competitionId===event.league&&d.affiliation===
 ---
 <Base title={`${event.title} · Race Weekend`} description={`${event.leagueName} at ${event.track} · ${eventDisplayDate(event)}.`}>
   <section class="page-intro"><div class="wrap"><a class="eyebrow" href="/schedule/">← Race calendar</a><p class="eyebrow">{event.leagueName} · {event.round||event.status||'RACE WEEKEND'}</p><h1>{event.track}</h1><p>{event.title} · {eventDisplayDate(event)} · {event.time||'TIME TBD'}</p><button class="btn" type="button" data-share>Copy event link ↗</button></div></section>
+  <FaithSignature field="faithRaceDayLine" label="Before the green flag"/>
   <section class="section"><div class="wrap story-grid"><article class="story-panel"><p class="eyebrow">01 / Race weekend</p><h3>{event.title}</h3><p>{event.status||'Scheduled'} · {event.track} · {eventDisplayDate(event)}</p><a href="/schedule/">Full calendar ↗</a></article><article class="story-panel"><p class="eyebrow">02 / The garage</p><h3>Aetherwing Entries</h3><div data-event-entries>{entries.length?entries.map(e=><div class="profile-assignment"><span>{e.displayName}</span><strong>#{e.number}</strong><small>{e.status}</small></div>):<p>Race entries will appear when assigned in Admin.</p>}</div></article><article class="story-panel"><p class="eyebrow">03 / The result</p><h3 data-event-head>{result?'Official Result':'Awaiting Green Flag'}</h3><div data-event-result>{result?<>{result.entries?.map(e=><div class="profile-assignment"><span>{e.driver}</span><strong>#{e.number}</strong><small>{e.finish?`P${e.finish}`:'DNS'}</small></div>)}<p>{result.summary}</p></>:<p>Results appear here after the race is published.</p>}</div><a href="/history/">Results archive ↗</a></article></div></section>
 </Base>
 <script define:vars={{ eventId:eventSlug(event) }}>
