@@ -65,3 +65,11 @@ The supplied Aetherwing editorial reference image is now a single full-viewport,
 - Public header styles are global within the header component so live Navigation rerenders retain the proper dropdown styling instead of falling back to raw browser buttons/links.
 - Race Calendar program filters now force high-contrast text in both selected and unselected states.
 - Restored the custom Aetherwing page scrollbar and matching horizontal calendar-filter scrollbar.
+
+## v1.1.12 roster / results sync
+
+- The Kmart #29 shared part-time seat is represented by separate Clutch, Eazy, and Matty league assignments so Results can record the actual driver who ran a race while keeping the same #29 car identity.
+- Legacy published #29 records that still say `Clutch / Eazy / Matty` are shown as a generic Part-Time Entry until an editor selects the actual driver in Race Results.
+- Driver profiles now listen to the same live Driver Portfolios data used by the Partners page, preventing a profile from keeping an older sponsor list after a portfolio is published.
+- Charter Boards accept uploaded/pasted number art for unsigned full-time charters and for each flexible Open Charter number identity. That artwork is used on the public Driver Lineup.
+- The Driver Lineup includes affiliated StarClutch Racing Kmart and Sunoco rides alongside Aetherwing entries, with partner-team labeling kept distinct from Aetherwing-owned seats.

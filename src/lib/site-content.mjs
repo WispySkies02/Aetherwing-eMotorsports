@@ -19,6 +19,25 @@ import liveryBrandsSeed from '../data/livery-brands.json';
 import driverPortfoliosSeed from '../data/driver-portfolios.json';
 import pageOverridesSeed from '../data/page-overrides.json';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
+
+const normalizeDriverAssignments = (rows=[]) => rows.flatMap((entry) => {
+  if (entry?.id !== 'shared-kmart' && !(entry?.competitionId === 'kmart' && String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName || ''))) return [entry];
+  const common = {
+    number:'29', numberImage:entry.numberImage || '', competition:entry.competition || 'Kmart Auto Parts Series', competitionId:'kmart',
+    status:entry.status || 'Shared Part-Time Entry', affiliation:entry.affiliation || 'alliance', car:entry.car || 'SCR #29 PT'
+  };
+  return [
+    {...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},
+    {...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},
+    {...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}
+  ];
+});
+const normalizeLegacyKmartResult = (result) => ({...result, entries:(result.entries||[]).map((entry) => {
+  if (entry?.assignmentId === 'shared-kmart' || (String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.driver || ''))) {
+    return {...entry, assignmentId:'', driver:'Part-Time Entry'};
+  }
+  return entry;
+})});
 export const scheduleEvents = choose('schedule-events', scheduleSeed);
 export const siteSettings = choose('site', siteSeed);
 const publishedNavigation = choose('navigation', navigationSeed);
@@ -40,7 +59,7 @@ const normalizeResults=(value)=>{
   const event=scheduleEvents.find((item)=>item.league==='nrrs'&&(item.title===old.title||item.track===old.track)&&(!date||item.date===date));
   return [{scheduleId:event?scheduleResultId(event):`${date||'tbd'}-nrrs-${resultSlug(old.title)}`,league:event?.league||'nrrs',leagueName:event?.leagueName||old.series||'NRRS',title:event?.title||old.title||'',track:event?.track||old.track||'',date:event?.date||date,round:event?.round||old.round||'',status:event?.status||'',specialTag:event?.specialTag||old.specialTag||'',featured:true,headline:old.headline||'',headlineAccent:old.headlineAccent||'',summary:old.summary||'',entries:[{driver:old.driver||'',number:String(old.number||''),start:Number(old.start||0),stage1Finish:0,stage1Points:0,stage2Finish:0,stage2Points:Number(old.stagePoints||0),finish:Number(old.finish||0),racePoints:Number(old.pointsChange||0),featuredDriver:true}]}];
 };
-export const results = normalizeResults(choose('results', resultsSeed)).map((result)=>{
+export const results = normalizeResults(choose('results', resultsSeed)).map(normalizeLegacyKmartResult).map((result)=>{
   const event=scheduleEvents.find((item)=>scheduleResultId(item)===result.scheduleId);
   return event?{...result,league:event.league,leagueName:event.leagueName,title:event.title,track:event.track,date:event.date,round:event.round||'',status:event.status||'',specialTag:event.specialTag||''}:result;
 }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
@@ -61,7 +80,7 @@ export const standings = Array.isArray(publishedStandings)
   ? publishedStandings.map((board) => supersededSnapshot(board) ? standingsSeedById.get(board.id) || board : board)
   : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
-export const drivers = choose('drivers', driversSeed);
+export const drivers = normalizeDriverAssignments(choose('drivers', driversSeed));
 const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',
   kmart:'Kmart', sunoco:'Sunoco'

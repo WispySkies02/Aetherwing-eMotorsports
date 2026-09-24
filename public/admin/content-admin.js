@@ -44,7 +44,7 @@
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Competing organization',car:'Car / body',identityNote:'Identity note'},
     'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
     'driver-profiles':{slug:'Profile ID',displayName:'Current RoRacing display name',iracingName:'Current iRacing name',subtitle:'Profile subtitle',intro:'Profile introduction',stats:'Career stat tiles',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
-    charters:{id:'League / charter board ID',label:'Public series label',seriesNote:'Board note',fullTime:'Full-time charters',openCharters:'Open Charters',uses:'Number identities / uses',number:'Car number',driver:'Assigned driver',slotLabel:'Slot label',active:'Active / public',description:'Public explanation'},
+    charters:{id:'League / charter board ID',label:'Public series label',seriesNote:'Board note',fullTime:'Full-time charters',openCharters:'Open Charters',uses:'Number identities / uses',number:'Car number',numberImage:'Number image URL',driver:'Assigned driver',slotLabel:'Slot label',active:'Active / public',description:'Public explanation'},
     'iracing-garage':{factoryDrivers:'Factory driver count',teamEntries:'Team entry count',schemes:'Published scheme count',entries:'Garage entries',driver:'Driver / team name',number:'Car number(s)',placeholder:'Placeholder entry'},
     competitions:{id:'League ID',name:'League / program name',type:'Relationship type',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'},
     leadership:{name:'Current public name',roles:'Leadership roles'},
@@ -63,7 +63,7 @@
     displayName:'The name shown for this specific context; it can differ by platform.',
     identityNote:'Internal/public clarification for platform or historical identity handling.',
     number:'Enter the number exactly as it should display. Multiple iRacing numbers may use “28 / 97”.',
-    numberImage:'Upload transparent PNG/WebP artwork or paste a direct image URL. The image replaces the fallback text number for this league assignment.',
+    numberImage:'Upload transparent PNG/WebP artwork or paste a direct image URL. For driver assignments it replaces the fallback number; on Charter Boards it can also brand unsigned/open charter numbers.',
     date:'Use the event/result date expected by this content type.',
     dateIso:'Machine-readable publication date used for sorting.',
     endDate:'Optional final day for multi-day event windows.',
@@ -102,7 +102,15 @@
   const status = (message) => { $('[data-content-status]').textContent=message; };
   const account = () => window.netlifyIdentity?.currentUser();
   const authorized = () => local || (account()?.app_metadata?.roles || account()?.app_metadata?.authorization?.roles || []).includes('admin');
-  const base = (name) => name==='site' ? {...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})} : (registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
+  const normalizeDriverAssignments = (rows=[]) => rows.flatMap((entry)=>{
+    if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||'')))return [entry];
+    const common={number:'29',numberImage:entry.numberImage||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
+    return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
+  });
+  const base = (name) => {
+    const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
+    return name==='drivers'?normalizeDriverAssignments(value||[]):value;
+  };
   const competitionChoices = () => {
     const live = (base('competitions') || []).map((item)=>[item.id,item.name]).filter(([id])=>id);
     return [...new Map([...legacyCompetitionChoices,...live].map((item)=>[item[0],item])).values()];
@@ -176,7 +184,7 @@
     const parsed=new Date(value);return Number.isNaN(parsed.getTime())?'':parsed.toISOString().slice(0,10);
   }
   function migrateResults(value) {
-    if(Array.isArray(value)||Array.isArray(value?.races))return (Array.isArray(value)?value:value.races).map((race)=>({...race,entries:(race.entries||[]).map((entry)=>{const assignment=resultRoster(race.league).find((driver)=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{...entry,assignmentId:assignment?.id||entry.assignmentId||''};})}));
+    if(Array.isArray(value)||Array.isArray(value?.races))return (Array.isArray(value)?value:value.races).map((race)=>({...race,entries:(race.entries||[]).map((entry)=>{if(entry?.assignmentId==='shared-kmart'||(String(entry?.number)==='29'&&/Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.driver||'')))return{...entry,assignmentId:'',driver:'Select Clutch, Eazy, or Matty',number:'29'};const assignment=resultRoster(race.league).find((driver)=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{...entry,assignmentId:assignment?.id||entry.assignmentId||''};})}));
     const old=value?.latestResult;if(!old)return [];
     const date=isoResultDate(old.date),schedule=(base('schedule-events')||seeds['schedule-events']||[]).find((event)=>event.league==='nrrs'&&(event.title===old.title||event.track===old.track)&&(!date||event.date===date));
     const league=schedule?.league||'nrrs',assignment=resultRoster(league).find((driver)=>String(driver.number)===String(old.number));
@@ -248,12 +256,13 @@
   function migrateCharters(value) {
     if(!Array.isArray(value))return value;
     return value.map((board)=>{
-      if(Array.isArray(board.openCharters))return board;
-      const old=board.openCharter;
-      if(!old)return {...board,openCharters:[]};
-      const uses=[old.partTime,old.development].filter(Boolean).map((use)=>({...use,active:true}));
-      const next={...board,openCharters:[{id:`${board.id||'league'}-open-1`,label:old.label||'Aetherwing Open Charter',slotLabel:old.slotLabel||'',active:true,uses}]};
-      delete next.openCharter;return next;
+      let next=board;
+      if(!Array.isArray(board.openCharters)){
+        const old=board.openCharter;
+        if(!old)next={...board,openCharters:[]};
+        else {const uses=[old.partTime,old.development].filter(Boolean).map((use)=>({...use,active:true}));next={...board,openCharters:[{id:`${board.id||'league'}-open-1`,label:old.label||'Aetherwing Open Charter',slotLabel:old.slotLabel||'',active:true,uses}]};delete next.openCharter;}
+      }
+      return {...next,fullTime:(next.fullTime||[]).map(slot=>({numberImage:'',...slot})),openCharters:(next.openCharters||[]).map(charter=>({...charter,uses:(charter.uses||[]).map(use=>({numberImage:'',...use}))}))};
     });
   }
   function arrayTemplate(name) {
@@ -314,6 +323,10 @@
       if(key==='drivers'&&k==='numberImage') {
         const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current number artwork preview">`:'';
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste an image URL or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Upload a transparent PNG or WebP, or paste an image URL. This art replaces the large text number for this league assignment when you publish.','is-wide driver-number-field');
+      }
+      if(key==='charters'&&k==='numberImage') {
+        const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current charter number artwork preview">`:'';
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste an image URL or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-charter-number-image-upload data-number-path="${esc(JSON.stringify(p))}">`,'Upload transparent number art for this unsigned charter/number identity. It will appear on the public roster instead of the fallback text number.','is-wide driver-number-field');
       }
       if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) {
         const standingRows=key==='standings'&&k==='rows';
@@ -610,6 +623,12 @@
       const file=numberUpload.files?.[0];if(!file)return;
       commit();const selected=current();
       try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;dirty=true;if(current()===selected)render();status(`${file.name} is attached to #${selected.number}. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
+    }
+    const charterNumberUpload=event.target.closest?.('[data-charter-number-image-upload]');
+    if(charterNumberUpload&&key==='charters'){
+      const file=charterNumberUpload.files?.[0];if(!file)return;
+      commit();const selected=current(),path=JSON.parse(charterNumberUpload.dataset.numberPath),target=valueAt(selected,path.slice(0,-1));
+      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected)||!target)throw new Error('The charter entry changed during upload. Select it and upload again.');target.numberImage=numberArt;dirty=true;if(current()===selected)render();status(`${file.name} is attached to charter #${target.number||''}. Publish Charter Boards to update the roster.`);}catch(error){status(error.message);}return;
     }
     const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
     if(logoUpload&&key==='driver-portfolios'){

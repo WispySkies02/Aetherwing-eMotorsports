@@ -6,15 +6,18 @@
     "fullTime": [
       {
         "number": "32",
-        "driver": "Hailey"
+        "driver": "Hailey",
+        "numberImage": ""
       },
       {
         "number": "43",
-        "driver": "Plarker"
+        "driver": "Plarker",
+        "numberImage": ""
       },
       {
         "number": "54",
-        "driver": "Open"
+        "driver": "Open",
+        "numberImage": ""
       }
     ],
     "openCharters": [
@@ -28,13 +31,15 @@
             "number": "62",
             "label": "Part-Time",
             "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot.",
-            "active": true
+            "active": true,
+            "numberImage": ""
           },
           {
             "number": "82",
             "label": "Development",
             "description": "Development entry identity for this shared fourth charter. It does not add another roster slot.",
-            "active": true
+            "active": true,
+            "numberImage": ""
           }
         ]
       }
@@ -47,23 +52,28 @@
     "fullTime": [
       {
         "number": "28",
-        "driver": "Hailey"
+        "driver": "Hailey",
+        "numberImage": ""
       },
       {
         "number": "32",
-        "driver": "BurgerTown2Good"
+        "driver": "BurgerTown2Good",
+        "numberImage": ""
       },
       {
         "number": "52",
-        "driver": "Gk3r"
+        "driver": "Gk3r",
+        "numberImage": ""
       },
       {
         "number": "54",
-        "driver": "Open"
+        "driver": "Open",
+        "numberImage": ""
       },
       {
         "number": "92",
-        "driver": "Rocky"
+        "driver": "Rocky",
+        "numberImage": ""
       }
     ],
     "openCharters": [
@@ -77,13 +87,15 @@
             "number": "62",
             "label": "Part-Time",
             "description": "Part-time identity for the one shared Aetherwing Open Charter. #62 and #82 are never simultaneous charter slots.",
-            "active": true
+            "active": true,
+            "numberImage": ""
           },
           {
             "number": "82",
             "label": "Development",
             "description": "Development identity for the one shared Aetherwing Open Charter. #62 and #82 are never simultaneous charter slots.",
-            "active": true
+            "active": true,
+            "numberImage": ""
           }
         ]
       }

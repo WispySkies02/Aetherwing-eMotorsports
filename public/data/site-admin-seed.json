@@ -2337,7 +2337,8 @@
       "competitionId": "nrrs",
       "status": "Full-Time",
       "affiliation": "aetherwing",
-      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
     },
     {
       "id": "parker-nrrs",
@@ -2347,7 +2348,8 @@
       "competition": "NRRS",
       "competitionId": "nrrs",
       "status": "Full-Time",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "numberImage": ""
     },
     {
       "id": "wispy-uarl-d1",
@@ -2358,7 +2360,8 @@
       "competitionId": "uarl-d1",
       "status": "Full-Time",
       "affiliation": "aetherwing",
-      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
     },
     {
       "id": "rocky-uarl-d1",
@@ -2368,7 +2371,8 @@
       "competition": "UARL Division 1",
       "competitionId": "uarl-d1",
       "status": "Full-Time",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "numberImage": ""
     },
     {
       "id": "wispy-uarl-open",
@@ -2380,7 +2384,8 @@
       "status": "Active",
       "affiliation": "aetherwing",
       "car": "BBR Late Model Toyota",
-      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
     },
     {
       "id": "wispy-kmart",
@@ -2391,7 +2396,8 @@
       "competitionId": "kmart",
       "status": "Active",
       "affiliation": "alliance",
-      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
     },
     {
       "id": "will-kmart",
@@ -2401,7 +2407,8 @@
       "competition": "Kmart Auto Parts Series",
       "competitionId": "kmart",
       "status": "Active",
-      "affiliation": "alliance"
+      "affiliation": "alliance",
+      "numberImage": ""
     },
     {
       "id": "jaxon-kmart",
@@ -2411,17 +2418,44 @@
       "competition": "Kmart Auto Parts Series",
       "competitionId": "kmart",
       "status": "Active",
-      "affiliation": "alliance"
+      "affiliation": "alliance",
+      "numberImage": ""
     },
     {
-      "id": "shared-kmart",
-      "profile": "shared-29",
-      "displayName": "Clutch / Eazy / Matty",
+      "id": "clutch-kmart",
+      "profile": "clutch",
+      "displayName": "Clutch",
       "number": "29",
+      "numberImage": "",
       "competition": "Kmart Auto Parts Series",
       "competitionId": "kmart",
       "status": "Shared Part-Time Entry",
-      "affiliation": "alliance"
+      "affiliation": "alliance",
+      "car": "SCR #29 PT"
+    },
+    {
+      "id": "eazy-kmart",
+      "profile": "eazy",
+      "displayName": "Eazy",
+      "number": "29",
+      "numberImage": "",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Shared Part-Time Entry",
+      "affiliation": "alliance",
+      "car": "SCR #29 PT"
+    },
+    {
+      "id": "matty-kmart",
+      "profile": "matty",
+      "displayName": "Matty",
+      "number": "29",
+      "numberImage": "",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Shared Part-Time Entry",
+      "affiliation": "alliance",
+      "car": "SCR #29 PT"
     },
     {
       "id": "eazy-sunoco",
@@ -2432,7 +2466,8 @@
       "competitionId": "sunoco",
       "status": "Active",
       "affiliation": "alliance",
-      "car": "RAM"
+      "car": "RAM",
+      "numberImage": ""
     },
     {
       "id": "will-sunoco",
@@ -2443,7 +2478,8 @@
       "competitionId": "sunoco",
       "status": "Active",
       "affiliation": "alliance",
-      "car": "RAM"
+      "car": "RAM",
+      "numberImage": ""
     },
     {
       "id": "clutch-sunoco",
@@ -2454,7 +2490,8 @@
       "competitionId": "sunoco",
       "status": "Active",
       "affiliation": "alliance",
-      "car": "RAM"
+      "car": "RAM",
+      "numberImage": ""
     },
     {
       "id": "wispy-sunoco",
@@ -2466,7 +2503,8 @@
       "status": "Active",
       "affiliation": "alliance",
       "car": "RAM",
-      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record."
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
     },
     {
       "id": "levi-iracing",
@@ -2476,7 +2514,8 @@
       "competition": "iRacing Factory Program",
       "competitionId": "iracing-factory",
       "status": "Factory Driver",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "numberImage": ""
     },
     {
       "id": "nicholas-iracing",
@@ -2487,7 +2526,8 @@
       "competitionId": "iracing-factory",
       "status": "Factory Driver",
       "affiliation": "aetherwing",
-      "identityNote": "Current iRacing name: Hailey Bell. Roblox / RoRacing display name: Hailey, username @Aokikoto. Historical iRacing results originally recorded under Nicholas Waggoner retain that attribution."
+      "identityNote": "Current iRacing name: Hailey Bell. Roblox / RoRacing display name: Hailey, username @Aokikoto. Historical iRacing results originally recorded under Nicholas Waggoner retain that attribution.",
+      "numberImage": ""
     },
     {
       "id": "joshua-iracing",
@@ -2497,7 +2537,8 @@
       "competition": "iRacing Factory Program",
       "competitionId": "iracing-factory",
       "status": "Factory Driver",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "numberImage": ""
     },
     {
       "id": "burgertown-uarl-d1",
@@ -2508,7 +2549,8 @@
       "competition": "UARL Division 1",
       "competitionId": "uarl-d1",
       "status": "Full-Time",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "numberImage": ""
     },
     {
       "id": "gk3r-uarl-d1",
@@ -2519,7 +2561,8 @@
       "competition": "UARL Division 1",
       "competitionId": "uarl-d1",
       "status": "Full-Time",
-      "affiliation": "aetherwing"
+      "affiliation": "aetherwing",
+      "numberImage": ""
     }
   ],
   "charters": [
@@ -2530,15 +2573,18 @@
       "fullTime": [
         {
           "number": "32",
-          "driver": "Hailey"
+          "driver": "Hailey",
+          "numberImage": ""
         },
         {
           "number": "43",
-          "driver": "Plarker"
+          "driver": "Plarker",
+          "numberImage": ""
         },
         {
           "number": "54",
-          "driver": "Open"
+          "driver": "Open",
+          "numberImage": ""
         }
       ],
       "openCharters": [
@@ -2552,13 +2598,15 @@
               "number": "62",
               "label": "Part-Time",
               "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot.",
-              "active": true
+              "active": true,
+              "numberImage": ""
             },
             {
               "number": "82",
               "label": "Development",
               "description": "Development entry identity for this shared fourth charter. It does not add another roster slot.",
-              "active": true
+              "active": true,
+              "numberImage": ""
             }
           ]
         }
@@ -2571,23 +2619,28 @@
       "fullTime": [
         {
           "number": "28",
-          "driver": "Hailey"
+          "driver": "Hailey",
+          "numberImage": ""
         },
         {
           "number": "32",
-          "driver": "BurgerTown2Good"
+          "driver": "BurgerTown2Good",
+          "numberImage": ""
         },
         {
           "number": "52",
-          "driver": "Gk3r"
+          "driver": "Gk3r",
+          "numberImage": ""
         },
         {
           "number": "54",
-          "driver": "Open"
+          "driver": "Open",
+          "numberImage": ""
         },
         {
           "number": "92",
-          "driver": "Rocky"
+          "driver": "Rocky",
+          "numberImage": ""
         }
       ],
       "openCharters": [
@@ -2601,13 +2654,15 @@
               "number": "62",
               "label": "Part-Time",
               "description": "Part-time identity for the one shared Aetherwing Open Charter. #62 and #82 are never simultaneous charter slots.",
-              "active": true
+              "active": true,
+              "numberImage": ""
             },
             {
               "number": "82",
               "label": "Development",
               "description": "Development identity for the one shared Aetherwing Open Charter. #62 and #82 are never simultaneous charter slots.",
-              "active": true
+              "active": true,
+              "numberImage": ""
             }
           ]
         }

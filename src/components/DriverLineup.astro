@@ -1,14 +1,14 @@
 ---
 import { drivers, rosterProfiles, charters } from '../lib/site-content.mjs';
 import '../styles/driver-lineup.css';
-const entries = drivers.filter(e=>e.affiliation==='aetherwing'&&e.competitionId!=='iracing-factory');
+const entries = drivers.filter(e=>e.competitionId!=='iracing-factory');
 const people = rosterProfiles;
 const boards = charters;
 const profileSlugs = rosterProfiles.map(profile=>profile.slug);
 ---
 <section class="aw-lineup section" data-lineup aria-labelledby="lineup-title">
   <div class="shell">
-    <div class="section-head"><div><p class="eyebrow">Aetherwing Garage</p><h2 class="section-title" id="lineup-title">Driver Lineup</h2></div><p class="lede">Number art leads the lineup. Each program has its own current seats and flexible entries.</p></div>
+    <div class="section-head"><div><p class="eyebrow">Aetherwing + Partner Teams</p><h2 class="section-title" id="lineup-title">Driver Lineup</h2></div><p class="lede">Aetherwing seats plus affiliated StarClutch Racing rides in Kmart and Sunoco. Number art leads each entry.</p></div>
     <div class="aw-lineup__filters" role="group" aria-label="Filter roster by racing program" data-lineup-filters></div>
     <div class="aw-lineup__program" data-lineup-program></div>
     <div class="aw-lineup__grid" data-lineup-grid></div>
@@ -22,7 +22,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement)||!image.closest('.aw-lineup__number'))return;const fallback=document.createElement('b');fallback.textContent=`#${image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
   function render(){
-    const active=assignments.filter(e=>e.affiliation==='aetherwing'&&e.competitionId!=='iracing-factory');
+    const active=assignments.filter(e=>e.competitionId!=='iracing-factory');
     const programs=new Map(active.map(e=>[e.competitionId,label(e)]));
     for(const board of charters)if(!programs.has(board.id))programs.set(board.id,board.label||board.id);
     if(series!=='all'&&!programs.has(series))series='all';
@@ -31,15 +31,17 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     filters.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{series=b.dataset.program;render();}));
     const shown=active.filter(e=>series==='all'||e.competitionId===series).sort((a,b)=>Number(a.number)-Number(b.number)||String(a.displayName).localeCompare(String(b.displayName)));
     const board=charters.find(c=>c.id===series);
-    const extra=series==='all'?[]:(board?.fullTime||[]).filter(slot=>!shown.some(entry=>entry.number===String(slot.number))).map(slot=>({number:slot.number,displayName:slot.driver==='Open'?'Open charter':slot.driver,status:slot.driver==='Open'?'Open charter':'Full-Time',competitionId:series}));
-    const flex=(series==='all'?[]:(board?.openCharters||[]).filter(c=>c.active!==false).map(c=>({number:(c.uses||[]).filter(u=>u.active!==false).map(u=>u.number).join(' / '),displayName:c.label||'Flexible entry',status:c.slotLabel||'Part-time / development',competitionId:series,flex:true})));
+    const extra=series==='all'?[]:(board?.fullTime||[]).filter(slot=>!shown.some(entry=>entry.number===String(slot.number))).map(slot=>({number:String(slot.number),numberImage:slot.numberImage||'',displayName:slot.driver==='Open'?'Open charter':slot.driver,status:slot.driver==='Open'?'Open charter':'Full-Time',competitionId:series,affiliation:'aetherwing'}));
+    const flex=(series==='all'?[]:(board?.openCharters||[]).filter(c=>c.active!==false).map(c=>{const uses=(c.uses||[]).filter(u=>u.active!==false);return{number:uses.map(u=>u.number).join(' / '),numberImages:uses.map(u=>({number:String(u.number),image:u.numberImage||''})),displayName:c.label||'Flexible entry',status:c.slotLabel||'Part-time / development',competitionId:series,affiliation:'aetherwing',flex:true};}));
     const all=[...shown,...extra,...flex];
-    root.querySelector('[data-lineup-program]').innerHTML=series==='all'?`<span>ONE TEAM · MULTIPLE SERIES</span><strong>${new Set(shown.map(e=>e.profile)).size} DRIVERS</strong>`:`<span>${esc(programs.get(series)||series)} PROGRAM</span><strong>${shown.length} ASSIGNED · ${(board?.openCharters||[]).filter(c=>c.active!==false).length} FLEX CHARTER</strong><a href="/schedule/">View program schedule →</a>`;
+    root.querySelector('[data-lineup-program]').innerHTML=series==='all'?`<span>AETHERWING + PARTNER TEAM ROSTERS</span><strong>${new Set(shown.map(e=>e.profile)).size} DRIVERS</strong>`:`<span>${esc(programs.get(series)||series)} PROGRAM</span><strong>${shown.length} ASSIGNED · ${(board?.openCharters||[]).filter(c=>c.active!==false).length} FLEX CHARTER</strong><a href="/schedule/">View program schedule →</a>`;
     root.querySelector('[data-lineup-grid]').innerHTML=all.map(e=>{
-      const person=profiles.find(p=>p.slug===e.profile),open=e.flex||/open charter|^open$/i.test(e.displayName||'');
-      const image=e.numberImage&&!open?`<img src="${esc(e.numberImage)}" alt="Number ${esc(e.number)}" loading="lazy">`:`<b>#${esc(e.number)}</b>`;
+      const person=profiles.find(p=>p.slug===e.profile),open=e.flex||/open charter|^open$/i.test(e.displayName||''),alliance=e.affiliation==='alliance';
+      const stacked=(e.numberImages||[]);
+      const image=stacked.length?`<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" loading="lazy">`:`<b>#${esc(item.number)}</b>`).join('')}</div>`:e.numberImage?`<img src="${esc(e.numberImage)}" alt="Number ${esc(e.number)}" loading="lazy">`:`<b>#${esc(e.number)}</b>`;
       const profile=person&&!open&&profileSlugs.includes(person.slug)?`<a href="/drivers/${encodeURIComponent(person.slug)}/" aria-label="View ${esc(person.name||e.displayName)} profile">View profile ↗</a>`:`<span>${open?'Program entry':'Driver profile coming soon'}</span>`;
-      return `<article class="aw-lineup__poster ${open?'is-charter':''}" data-number="${esc(e.number)}"><div class="aw-lineup__number">${image}</div><div class="aw-lineup__plate"><small>${esc(programs.get(e.competitionId)||label(e))} · ${esc(e.status||'ACTIVE')}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:'AETHERWING eMOTORSPORTS')}</p>${profile}</div></article>`;
+      const teamLabel=alliance?'STARCLUTCH RACING':'AETHERWING';
+      return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''}" data-number="${esc(e.number)}" data-team-label="${teamLabel}"><div class="aw-lineup__number">${image}</div><div class="aw-lineup__plate"><small>${esc(programs.get(e.competitionId)||label(e))} · ${esc(e.status||'ACTIVE')}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${profile}</div></article>`;
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
   }
   window.addEventListener('aetherwing:content',e=>{const d=e.detail||{};if(Array.isArray(d.drivers))assignments=d.drivers;if(Array.isArray(d['roster-profiles']))profiles=d['roster-profiles'];if(Array.isArray(d.charters))charters=d.charters;render();});

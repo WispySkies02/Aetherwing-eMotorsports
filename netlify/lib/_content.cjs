@@ -13,6 +13,16 @@ function scheduleTimeMinutes(value='') {
   let hour=Number(match[1])%12;if(match[3].toUpperCase()==='PM')hour+=12;
   return hour*60+Number(match[2]||0);
 }
+function normalizeDriverAssignments(rows=[]) {
+  return (rows||[]).flatMap((entry)=>{
+    if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||''))) return [entry];
+    const common={number:'29',numberImage:entry.numberImage||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
+    return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
+  });
+}
+function validNumberImage(value='') {
+  return !value || /^(https:\/\/|\/)/.test(value) || (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) && value.length<=160000);
+}
 function compareScheduleEvents(a,b) {
   const date=String(a?.date||'9999-12-31').localeCompare(String(b?.date||'9999-12-31'));
   if(date)return date;
@@ -23,6 +33,7 @@ function compareScheduleEvents(a,b) {
 }
 function normalize(key,data) {
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
+  if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
   if(key==='results'&&Array.isArray(data))return [...data].sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));
   return data;
 }
@@ -95,7 +106,7 @@ function validate(key, data, registry={}) {
       if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date)||Number.isNaN(Date.parse(row.date)))return `Result ${index+1}: select a valid scheduled race.`;
       if(!Array.isArray(row.entries)||!row.entries.length)return `Result ${index+1}: add at least one roster driver result.`;
       if(row.entries.filter((entry)=>entry.featuredDriver).length!==1)return `Result ${index+1}: choose exactly one featured driver.`;
-      const roster=registry.drafts?.drivers??registry.published?.drivers??seeds().drivers,leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
+      const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seeds().drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
       const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
       for(const entry of row.entries){
         const assignment=eligible.get(entry.assignmentId);
@@ -111,10 +122,12 @@ function validate(key, data, registry={}) {
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !Number.isFinite(r.points)))) return 'Standings rows need numeric points.';
     if (key === 'charters') {
       if (!Array.isArray(row.fullTime) || !Array.isArray(row.openCharters)) return 'Charter boards need full-time entries and an Open Charters list.';
+      if (row.fullTime.some((slot)=>slot?.numberImage && !validNumberImage(slot.numberImage))) return 'Full-time charter number images must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
       for (const charter of row.openCharters) {
         if (!charter || typeof charter !== 'object' || !Array.isArray(charter.uses)) return 'Every Open Charter needs a Number identities / uses list.';
         if (charter.active !== false && !charter.uses.some((use) => use?.active !== false && String(use?.number || '').trim() && String(use?.label || '').trim())) return 'Every active Open Charter needs at least one active number identity with a number and usage label.';
         if (charter.uses.some((use) => use && ('driver' in use))) return 'Open Charter number identities must stay driver-neutral. Assign permanent drivers through full-time charters instead.';
+        if (charter.uses.some((use)=>use?.numberImage && !validNumberImage(use.numberImage))) return 'Open Charter number images must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
       }
     }
     if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
@@ -130,7 +143,7 @@ function validate(key, data, registry={}) {
       if(!row.page.startsWith('/'))return `Page Content entry ${index+1}: page must begin with /.`;
       if(['link','image'].includes(row.type)&&!/^((https:\/\/)|\/|#)/.test(row.value))return `Page Content entry ${index+1}: link and image replacements need an HTTPS URL, site-relative path, or anchor.`;
     }
-    if(key==='drivers'&&row.numberImage&&!(/^(https:\/\/|\/)/.test(row.numberImage)||(/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(row.numberImage)&&row.numberImage.length<=160000)))return `Entry ${index+1}: number image must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
+    if(key==='drivers'&&!validNumberImage(row.numberImage))return `Entry ${index+1}: number image must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
   }
   const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;
@@ -149,4 +162,4 @@ function validate(key, data, registry={}) {
   return '';
 }
 function json(statusCode, data) { return { statusCode, headers: { 'content-type':'application/json; charset=utf-8', 'cache-control':'no-store', 'x-content-type-options':'nosniff' }, body:JSON.stringify(data) }; }
-module.exports = { FILES, seeds, read, write, validate, normalize, compareScheduleEvents, json };
+module.exports = { FILES, seeds, read, write, validate, normalize, normalizeDriverAssignments, compareScheduleEvents, json };
