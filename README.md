@@ -47,3 +47,14 @@ The Drivers, Race Calendar, History, and every Race Weekend page now carry their
 ## Kmart standings completeness fallback
 
 The bundled Sep. 21, 2026 Kmart Chase bubble contains all 17 full-time drivers, the top-six cutoff, and the three part-time ineligible drivers. If older published Admin data is missing rows or the part-time block, the site now keeps this complete bundled snapshot instead of replacing it with the incomplete live payload. A future complete Admin board can still supersede it.
+
+## v1.1.8 background scope correction
+
+The supplied Aetherwing editorial reference image is now a single full-viewport, fixed-cover background on the public site instead of a 1400px-wide repeating body texture. A dark sitewide veil keeps text and cards readable while preserving the artwork. The private `/admin/` control center intentionally uses a solid dark background with no reference image so forms, labels, tabs, and standings editing remain legible. Championship standings panels were made more opaque for the same reason.
+
+## v1.1.9 visual polish
+
+- Race Calendar filter league names are forced to white for readability on both inactive and active filter buttons.
+- The home-page faith statement is compact again: no full-viewport height and no oversized empty panel, while preserving the reference-art atmosphere behind it.
+- Public pages use a custom Aetherwing vertical scrollbar with a blue/gold thumb.
+- Seasonal presentation is selected automatically using America/New_York dates from the supplied 2026–2027 design calendar. The current Sep 20–24 window uses a restrained Summer’s End wash: warm sunset amber, cool late-summer blue, and the normal dark Aetherwing contrast.
