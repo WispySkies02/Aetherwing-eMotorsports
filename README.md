@@ -124,3 +124,8 @@ Admin → Theme Preview is ordered January through December, gives every theme a
 - Adds theme-specific full-page background art treatments for Halloween, Fall, Christmas/Winter, Valentine, Spring, Easter, New Year, Independence Day, and supporting transitional themes.
 - Uses the same background-art language inside Admin Theme Preview, so previewing a theme now includes its backdrop as well as UI, motion, icons, and observance overlays.
 - Keeps content readability protected with the existing dark overlay and opaque data panels.
+
+
+## v1.1.22 · Event-specific entry lists
+
+Race Weekend pages can now show who is actually expected to compete instead of always mirroring the full league roster. In Admin → Calendar, each race has an Event entry list mode. Auto uses the published race result after the race and the current league roster before a result exists. Custom lets an editor select the exact roster drivers for that event, mark an entry note/status, fill the list from the league roster, or copy the actual starters from an already-published result. Driver names and car numbers remain roster-linked.

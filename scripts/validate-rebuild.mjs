@@ -17,6 +17,10 @@ const profileSource=readFileSync('src/pages/drivers/[slug].astro','utf8');
 if(!profileSource.includes("d['driver-portfolios']")||!profileSource.includes('data-profile-partners'))throw Error('Driver profiles must stay synchronized with live Driver Portfolios.');
 const lineupSource=readFileSync('src/components/DriverLineup.astro','utf8');
 if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.includes('STARCLUTCH RACING'))throw Error('Driver Lineup must retain partner-team roster support.');
+const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
+const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
+if(!eventSource.includes("entryListMode==='custom'")||!eventSource.includes("status:'Raced'"))throw Error('Race Weekend pages must support custom event entry lists and result-driven Auto mode.');
+if(!adminContentSource.includes('data-schedule-entry-driver-choice')||!adminContentSource.includes('data-event-entries-sync-result')||!adminContentSource.includes('Fill from league roster'))throw Error('Calendar Admin must retain event-specific entry list editing tools.');
 
 const baseSource=readFileSync('src/layouts/Base.astro','utf8');
 const seasonSource=readFileSync('public/seasonal-theme.js','utf8');
