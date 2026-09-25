@@ -149,3 +149,11 @@ Theme Preview now mirrors the public backdrop rules exactly. Transitional skins 
 ## Seasonal backdrop layering (v1.1.26)
 
 Seasonal background art now lives on the fixed viewport backdrop and the animated atmosphere is a pointer-transparent front-glass layer. Large page surfaces use translucent readability veils instead of repainting an opaque copy of the backdrop, so full seasonal takeovers remain visible on the real site and in Theme Preview. The mobile home hero also no longer reserves a large empty viewport-height block above its copy.
+
+## Mobile seasonal banner resilience (v1.1.27)
+
+The public seasonal/observance strip now reflows into a compact two-line plaque on phones. The theme/observance name occupies the first line and the full message or Scripture reference wraps below it instead of being clipped with an ellipsis. Desktop keeps the existing single-row treatment.
+
+## v1.1.28 mobile seasonal banner
+
+On phones, the seasonal banner is now a slim two-line ribbon: the theme/observance name occupies the first line and the message or Scripture reference occupies the second line. Padding, icon size, type size, and row gap were reduced so the banner does not consume valuable viewport height.
