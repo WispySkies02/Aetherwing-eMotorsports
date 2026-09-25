@@ -101,6 +101,20 @@ function validate(key, data, registry={}) {
       if (typeof row.offWeek!=='undefined' && typeof row.offWeek!=='boolean') return 'Off-week must be checked or unchecked.';
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.league)) return 'Use a lowercase League ID containing letters, numbers, and hyphens.';
       if (!row.tbd && (!/^\d{4}-\d{2}-\d{2}$/.test(row.date) || Number.isNaN(Date.parse(row.date)))) return 'Use a valid YYYY-MM-DD event date.';
+      if (row.entryListMode && !['auto','custom'].includes(row.entryListMode)) return `Entry ${index + 1}: entry list mode must be Auto or Custom.`;
+      if (row.entryListMode==='custom') {
+        if (!Array.isArray(row.entries)) return `Entry ${index + 1}: custom event entries must be a list.`;
+        const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seeds().drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
+        const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
+        const seen=new Set();
+        for (const eventEntry of row.entries) {
+          const assignment=eligible.get(eventEntry?.assignmentId);
+          if(!assignment)return `Entry ${index + 1}: ${eventEntry?.driver||'an event driver'} is not assigned to ${row.leagueName} in Driver League Assignments.`;
+          if(seen.has(assignment.id))return `Entry ${index + 1}: ${assignment.displayName} can appear only once in the event entry list.`;
+          seen.add(assignment.id);
+          if(eventEntry.driver!==assignment.displayName||String(eventEntry.number)!==String(assignment.number||''))return `Entry ${index + 1}: ${assignment.displayName}'s event name and number must match Driver League Assignments.`;
+        }
+      }
     }
     if(key==='results'){
       if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date)||Number.isNaN(Date.parse(row.date)))return `Result ${index+1}: select a valid scheduled race.`;

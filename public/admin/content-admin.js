@@ -10,7 +10,7 @@
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
   const datasetMeta = {
-    'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Add or edit every race, off-week, special event, event window, status badge, track, date, and start time. New races automatically move into chronological order when saved or published.',guide:'Choose Add Race, then complete its league, date, and start time. The Calendar places it by date, parsed 12-hour time, and league; date + league + event title determine its share route.'},
+    'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Add or edit every race, off-week, special event, event window, status badge, track, date, start time, and race-specific entry list. New races automatically move into chronological order when saved or published.',guide:'Choose Add Race, then complete its league, date, and start time. Entry List Mode can stay Auto (published results after the race, otherwise the league roster) or switch to Custom so you can select exactly who is expected to race. The Calendar places events by date, parsed 12-hour time, and league.'},
     results:{number:'02',kicker:'RACE OPERATION',title:'Race Results',description:'Choose a scheduled race, then enter one or more results using only drivers assigned to that league in the Driver Roster.',guide:'Filter the calendar by league and load the completed race. Event details stay synced to the schedule, older results remain saved, and one race can be selected as the current featured result.'},
     wins:{number:'03',kicker:'RACE OPERATION',title:'Win Archive',description:'Add, correct, or remove individual wins used by Wins & History.',guide:'One row equals one recorded win. Keep historical driver names when that is how the result was originally recorded.'},
     standings:{number:'04',kicker:'RACE OPERATION',title:'Standings',description:'Edit complete championship snapshots. Drag driver rows into display order, edit the official position label, and toggle Aetherwing highlighting per driver.',guide:'Drag standings rows to reorder them. The Position field stays independently editable so partial/team-only tables can keep positions like P1, P2, P4. Use Highlight Driver for Aetherwing emphasis.'},
@@ -36,7 +36,7 @@
   ];
   const statusChoices = ['Full-Time','Part-Time','Development','Active','Shared Part-Time Entry','Factory Driver','Team Entry','OPEN'];
   const fieldLabels = {
-    'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD'},
+    'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD',entryListMode:'Event entry list mode',entries:'Event entry list',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',entryStatus:'Entry note / status'},
     results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Current latest result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',racePoints:'Total race points',featuredDriver:'Featured driver'},
     wins:{assignmentId:'Linked driver assignment',league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
     standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
@@ -90,7 +90,10 @@
     highlight:'Adds Aetherwing visual emphasis to this driver on the public standings cards.',
     slotLabel:'Optional public slot label such as “4TH CHARTER” or “OPEN CHARTER 2”.',
     active:'Turn this charter or number identity on/off without deleting it.',
-    brands:'Add, remove, rename, reorder, or attach an optional logo to every individual driver brand.'
+    brands:'Add, remove, rename, reorder, or attach an optional logo to every individual driver brand.',
+    entryListMode:'Auto uses the official published result after the race; before results exist it falls back to the current league roster. Choose Custom to control exactly who appears for this event.',
+    entries:'The race-specific driver list. Use the roster picker, or fill it from the league roster / published result with the buttons in this block.',
+    entryStatus:'Optional public note such as Confirmed, Expected, Raced, Withdrawn, or Substitute.'
   };
   const fieldLabel = (name) => fieldLabels[key]?.[name] || label(name);
   const helpFor = (name) => fieldHelp[name] || '';
@@ -178,6 +181,31 @@
   function resultRoster(league='') {
     const id=resultLeagueId(league);
     return (base('drivers')||seeds.drivers||[]).filter((driver)=>driver.competitionId===id&&String(driver.displayName||'').trim()).sort((a,b)=>String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true}));
+  }
+  function scheduleEntryFromAssignment(driver={},entryStatus='Confirmed') {
+    return {assignmentId:driver.id||'',driver:driver.displayName||'',number:String(driver.number||''),entryStatus};
+  }
+  function normalizeScheduleEntries(event={}) {
+    return (Array.isArray(event.entries)?event.entries:[]).map((entry)=>{
+      const assignment=resultRoster(event.league||'').find((driver)=>driver.id===entry?.assignmentId||(driver.displayName===entry?.driver&&String(driver.number)===String(entry?.number)));
+      return {assignmentId:assignment?.id||entry?.assignmentId||'',driver:assignment?.displayName||entry?.driver||'',number:String(assignment?.number||entry?.number||''),entryStatus:entry?.entryStatus||''};
+    });
+  }
+  function scheduleRosterEntries(event={}) {
+    return resultRoster(event.league||'').map((driver)=>scheduleEntryFromAssignment(driver,'Confirmed'));
+  }
+  function scheduleResultForEvent(event={}) {
+    const raw=registry.published?.results??seeds.results??[];
+    const races=migrateResults(raw);
+    return races.find((race)=>race.scheduleId===resultScheduleId(event)||(race.date===event.date&&race.league===event.league&&race.title===event.title));
+  }
+  function scheduleResultEntries(event={}) {
+    const race=scheduleResultForEvent(event);
+    if(!race?.entries?.length)return [];
+    return race.entries.map((entry)=>{
+      const assignment=resultRoster(event.league||'').find((driver)=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));
+      return {assignmentId:assignment?.id||entry.assignmentId||'',driver:assignment?.displayName||entry.driver||'',number:String(assignment?.number||entry.number||''),entryStatus:'Raced'};
+    });
   }
   function isoResultDate(value='') {
     if(/^\d{4}-\d{2}-\d{2}$/.test(String(value)))return String(value);
@@ -299,6 +327,16 @@
       if(key==='results'&&['scheduleId','league','leagueName','title','track','date','round','status','specialTag'].includes(k)) {
         return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Synced automatically from the selected scheduled race.','is-readonly');
       }
+      if(key==='schedule-events'&&k==='entryListMode'&&path.length===0) {
+        return shell(pretty,`<select ${attr} data-field-type="string"><option value="auto" ${v!=='custom'?'selected':''}>Auto · results after race / roster before race</option><option value="custom" ${v==='custom'?'selected':''}>Custom · only selected event entries</option></select>`,help||'Auto keeps older events useful without manual maintenance. Custom makes the public Event page use only the list below.');
+      }
+      if(key==='schedule-events'&&k==='assignmentId'&&path[0]==='entries') {
+        const choices=resultRoster(current()?.league||'');
+        return shell(pretty,`<select ${attr} data-field-type="string" data-schedule-entry-driver-choice>${!v?'<option value="" selected disabled>Choose roster driver</option>':''}${choices.map((driver)=>`<option value="${esc(driver.id)}" ${driver.id===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,choices.length?'Only drivers assigned to this event league are available.':'No drivers are assigned to this league yet. Add them in Driver League Assignments first.');
+      }
+      if(key==='schedule-events'&&['driver','number'].includes(k)&&path[0]==='entries') {
+        return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Filled automatically from the selected Driver League Assignment.','is-readonly');
+      }
       if(key==='results'&&k==='assignmentId'&&path[0]==='entries') {
         const choices=resultRoster(current()?.league||'');
         return shell(pretty,`<select ${attr} data-field-type="string" data-result-driver-choice>${!v?'<option value="" selected disabled>Choose roster driver</option>':''}${choices.map((driver)=>`<option value="${esc(driver.id)}" ${driver.id===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,choices.length?'Only drivers assigned to this league in Driver League Assignments are available.':'No drivers are assigned to this league yet. Add the driver in Driver League Assignments first.');
@@ -328,7 +366,7 @@
         const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current charter number artwork preview">`:'';
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste an image URL or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-charter-number-image-upload data-number-path="${esc(JSON.stringify(p))}">`,'Upload transparent number art for this unsigned charter/number identity. It will appear on the public roster instead of the fallback text number.','is-wide driver-number-field');
       }
-      if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k))) {
+      if (Array.isArray(v) && (v.some((x)=>x && typeof x==='object') || arrayTemplate(k) || (key==='schedule-events'&&k==='entries'))) {
         const standingRows=key==='standings'&&k==='rows';
         const items=v.map((item,i)=>{
           const itemPath=[...p,i], pathAttr=esc(JSON.stringify(itemPath));
@@ -336,8 +374,10 @@
           const drag=standingRows?` draggable="true" data-standing-drag="${pathAttr}"`:'';
           return `<details open${drag}><summary><span>${standingRows?'DRAG · ':''}${esc(pretty)} ${i+1}</span><small>${esc(title(item,i))}</small></summary>${controls}<div class="admin-nested-fields">${fields(item,itemPath)}</div><button class="admin-array-remove" type="button" data-array-remove="${pathAttr}">Remove ${esc(pretty)} ${i+1}</button></details>`;
         }).join('');
-        const note=standingRows?'Drag rows into the public display order. Position labels do not auto-renumber, so partial standings can keep official positions such as P1, P2, P4.':'Edit every nested item in this group.';
-        return `<fieldset class="admin-fieldset ${standingRows?'is-standings-sortable':''}"><legend><span>${esc(pretty)}</span><small>${esc(help||note)}</small></legend><div class="admin-array" ${standingRows?'data-standings-sortable':''}>${items}</div><button class="admin-array-add" type="button" data-array-add="${esc(JSON.stringify(p))}">+ Add ${esc(pretty)} item</button></fieldset>`;
+        const eventEntries=key==='schedule-events'&&k==='entries'&&path.length===0;
+        const note=standingRows?'Drag rows into the public display order. Position labels do not auto-renumber, so partial standings can keep official positions such as P1, P2, P4.':eventEntries?'Choose Custom entry mode above to make this exact list public. Auto mode uses published result drivers after the race and the league roster before the race.':'Edit every nested item in this group.';
+        const actions=eventEntries?`<div class="admin-array-actions"><button class="admin-array-add" type="button" data-array-add="${esc(JSON.stringify(p))}">+ Add event entry</button><button type="button" data-event-entries-fill-roster>Fill from league roster</button><button type="button" data-event-entries-sync-result>Use published result</button><button type="button" data-event-entries-clear>Clear custom list</button></div>`:`<button class="admin-array-add" type="button" data-array-add="${esc(JSON.stringify(p))}">+ Add ${esc(pretty)} item</button>`;
+        return `<fieldset class="admin-fieldset ${standingRows?'is-standings-sortable':''}"><legend><span>${esc(pretty)}</span><small>${esc(help||note)}</small></legend><div class="admin-array" ${standingRows?'data-standings-sortable':''}>${items}</div>${actions}</fieldset>`;
       }
       if (v && typeof v==='object') return `<fieldset class="admin-fieldset"><legend><span>${esc(pretty)}</span><small>${esc(help||'All fields in this structured block are editable.')}</small></legend><div class="admin-nested-fields">${fields(v,p)}</div></fieldset>`;
       if (typeof v==='boolean') return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" ${v?'checked':''}><span><b>${esc(pretty)}</b>${help?`<small>${esc(help)}</small>`:''}</span></label>`;
@@ -546,21 +586,23 @@
   function hidePaintPanels() {
     document.querySelectorAll('[data-panel]').forEach((panel)=>{panel.hidden=true;});
   }
-  function hideThemeLab() {
-    const lab=$('[data-theme-lab]');if(lab)lab.hidden=true;
+  function hideThemePreview() {
+    const panel=$('[data-admin-theme-preview]');
+    if(panel)panel.hidden=true;
   }
   function showOverview() {
     if(dirty&&!confirm('Leave unsaved changes in this tab?'))return;
     $('[data-admin-overview]').hidden=false;
     $('[data-content-editor]').hidden=true;
-    hidePaintPanels();hideThemeLab();
+    hidePaintPanels();
+    hideThemePreview();
     setActiveAdminTab('overview','overview');
     key='';data=null;dirty=false;
     window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   }
   function chooseDataset(name) {
     key=name; data=structuredClone(base(key)); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
-    if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',...r})).sort(compareScheduleEvents);
+    if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
     if(key==='results')data=migrateResults(data).sort(compareResults);
     if(key==='drivers')data=data.map((row)=>({numberImage:'',...row}));
     if(['wins','milestones'].includes(key))data=data.map((row)=>({assignmentId:'',...row}));
@@ -581,7 +623,8 @@
     try {
       if (!loaded) await load();
       $('[data-admin-overview]').hidden=true;
-      hidePaintPanels();hideThemeLab();
+      hidePaintPanels();
+      hideThemePreview();
       $('[data-content-editor]').hidden=false;
       const select=$('[data-content-dataset]');
       select.innerHTML=Object.entries(datasetMeta).map(([id,meta])=>`<option value="${id}">${esc(meta.title)}</option>`).join('');
@@ -589,16 +632,6 @@
       setActiveAdminTab('dataset',name);
       $('[data-content-editor]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
     } catch(error) { status(error.message); }
-  }
-  function showThemeLab() {
-    if(dirty&&!confirm('Leave unsaved changes in this tab?'))return;
-    $('[data-admin-overview]').hidden=true;
-    $('[data-content-editor]').hidden=true;
-    hidePaintPanels();
-    const lab=$('[data-theme-lab]');if(lab)lab.hidden=false;
-    setActiveAdminTab('tab','themes');
-    key='';data=null;dirty=false;
-    lab?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
   async function openModule(name) {
     const first=modules[name]?.sections?.[0]?.[0];
@@ -609,17 +642,28 @@
     dirty=false;
     $('[data-admin-overview]').hidden=true;
     $('[data-content-editor]').hidden=true;
-    hideThemeLab();
+    hideThemePreview();
     const internal=document.querySelector(`[data-tab="${name}"]`);
     if(internal)internal.click();
     setActiveAdminTab('paint',name);
     document.querySelector(`[data-panel="${name}"]`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
+  function showThemePreview() {
+    if(dirty&&!confirm('Leave unsaved changes in this content tab?'))return;
+    dirty=false;key='';data=null;
+    $('[data-admin-overview]').hidden=true;
+    $('[data-content-editor]').hidden=true;
+    hidePaintPanels();
+    const panel=$('[data-admin-theme-preview]');
+    if(panel)panel.hidden=false;
+    setActiveAdminTab('theme','theme-preview');
+    panel?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }
   document.querySelectorAll('[data-content-module]').forEach((button)=>button.addEventListener('click',()=>openModule(button.dataset.contentModule)));
   document.querySelectorAll('[data-admin-dataset]').forEach((button)=>button.addEventListener('click',()=>openDatasetTab(button.dataset.adminDataset)));
   document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',()=>openPaintTab(button.dataset.adminPaintTab)));
   document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',showOverview);
-  document.querySelector('[data-admin-tab="themes"]')?.addEventListener('click',showThemeLab);
+  document.querySelector('[data-admin-tab="theme-preview"]')?.addEventListener('click',showThemePreview);
   $('[data-content-dataset]').addEventListener('change',(event)=>{ if(dirty&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
   $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
@@ -650,6 +694,11 @@
       const file=logoUpload.files?.[0];if(!file)return;
       commit();const selected=current(),path=JSON.parse(logoUpload.dataset.logoPath),brand=valueAt(selected,path.slice(0,-1));
       try{status(`Optimizing ${file.name}…`);const logo=await uploadedLogoData(file);if(!data.includes(selected)||!selected.brands.includes(brand))throw new Error('The portfolio changed during upload. Select the brand and upload again.');brand.logo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to this brand. Publish this section to show it on the Partners page.`);}catch(error){status(error.message);}return;
+    }
+    const scheduleEntryDriver=event.target.closest?.('[data-schedule-entry-driver-choice]');
+    if(scheduleEntryDriver&&key==='schedule-events'){
+      const path=JSON.parse(scheduleEntryDriver.dataset.fieldPath),entry=valueAt(current(),path.slice(0,-1)),assignment=resultRoster(current()?.league||'').find((driver)=>driver.id===scheduleEntryDriver.value);
+      entry.assignmentId=scheduleEntryDriver.value;entry.driver=assignment?.displayName||'';entry.number=String(assignment?.number||'');entry.entryStatus=entry.entryStatus||'Confirmed';current().entryListMode='custom';dirty=true;render();status(`${entry.driver} added to the custom entry list for ${current().title||'this event'}.`);return;
     }
     const resultDriver=event.target.closest?.('[data-result-driver-choice]');
     if(resultDriver&&key==='results'){
@@ -693,9 +742,15 @@
       if(to>=0&&to<arr.length){const [item]=arr.splice(from,1);arr.splice(to,0,item);dirty=true;render();status('Standings display order changed. Position labels were preserved.');}
       return;
     }
+    const fillRoster=event.target.closest('[data-event-entries-fill-roster]');
+    if(fillRoster&&key==='schedule-events'){commit();current().entries=scheduleRosterEntries(current());current().entryListMode='custom';dirty=true;render();status(`${current().entries.length} league roster entries copied into this event. Remove anyone who is not going.`);return;}
+    const syncResult=event.target.closest('[data-event-entries-sync-result]');
+    if(syncResult&&key==='schedule-events'){commit();const synced=scheduleResultEntries(current());if(!synced.length)return status('No published result exists for this event yet.');current().entries=synced;current().entryListMode='custom';dirty=true;render();status(`${synced.length} actual race driver${synced.length===1?'':'s'} copied from the published result.`);return;}
+    const clearEntries=event.target.closest('[data-event-entries-clear]');
+    if(clearEntries&&key==='schedule-events'){commit();current().entries=[];current().entryListMode='custom';dirty=true;render();status('Custom entry list cleared. Add only the drivers you want shown, or switch Entry List Mode back to Auto.');return;}
     const button=event.target.closest('[data-array-add],[data-array-remove]');if(!button)return;
     commit();
-    if(button.dataset.arrayAdd){const path=JSON.parse(button.dataset.arrayAdd),arr=valueAt(current(),path);const template=arr[0]||arrayTemplate(path.at(-1))||{};const added=blank(template);if(key==='results'&&path.at(-1)==='entries'){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next){added.assignmentId=next.id;added.driver=next.displayName;added.number=String(next.number||'');}added.featuredDriver=arr.length===0;}arr.push(added);}
+    if(button.dataset.arrayAdd){const path=JSON.parse(button.dataset.arrayAdd),arr=valueAt(current(),path);const scheduleEntries=key==='schedule-events'&&path.at(-1)==='entries';const template=arr[0]||arrayTemplate(path.at(-1))||(scheduleEntries?{assignmentId:'',driver:'',number:'',entryStatus:''}:{});const added=blank(template);if(scheduleEntries){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next)Object.assign(added,scheduleEntryFromAssignment(next,'Confirmed'));current().entryListMode='custom';}if(key==='results'&&path.at(-1)==='entries'){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next){added.assignmentId=next.id;added.driver=next.displayName;added.number=String(next.number||'');}added.featuredDriver=arr.length===0;}arr.push(added);}
     else {const path=JSON.parse(button.dataset.arrayRemove);valueAt(current(),path.slice(0,-1)).splice(Number(path.at(-1)),1);}
     dirty=true;render();
   });
@@ -723,7 +778,7 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data)||!confirm('Remove this entry from the section draft? It stays public until you publish.'))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');

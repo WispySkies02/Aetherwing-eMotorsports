@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/admin/paint-ops-admin.css">
   <link rel="stylesheet" href="/admin/control-center.css">
   <link rel="stylesheet" href="/admin/fresh-admin.css">
-  <script src="/seasonal-theme.js"></script>
+  <link rel="stylesheet" href="/seasonal-effects.css">
   <title>Aetherwing Admin — Aetherwing eMotorsports</title>
 </head>
 <body>
@@ -33,7 +33,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v1.1.13</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v1.1.23</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -60,7 +60,7 @@
         <button type="button" data-admin-paint-tab="feature"><small>19</small>Paint Feature</button>
         <button type="button" data-admin-paint-tab="add"><small>20</small>Paint Editor</button>
         <button type="button" data-admin-paint-tab="library"><small>21</small>Paint Library</button>
-        <button type="button" data-admin-tab="themes"><small>22</small>Theme Lab</button>
+        <button type="button" data-admin-tab="theme-preview"><small>22</small>Theme Preview</button>
       </nav>
 
       <section class="admin-overview" data-admin-overview>
@@ -82,18 +82,75 @@
         <aside class="protected-core-note"><strong>Protected sitewide core</strong><p>Brand identity, global navigation/routes, design tokens, technical track-location aliases, build/deploy configuration, and other structural infrastructure stay outside the content editor on purpose. Those are code-level changes, not routine content edits.</p></aside>
       </section>
 
-      <section class="ops-panel theme-lab" data-theme-lab hidden aria-labelledby="theme-lab-title">
-        <div class="panel-heading admin-editor-heading"><span>22</span><div><p class="admin-section-kicker">SEASONAL PRESENTATION</p><h2 id="theme-lab-title">Theme Lab</h2><p>Preview the automatic seasonal UI — including the front-of-screen glass effects — without changing what visitors see.</p></div></div>
-        <div class="theme-lab__status"><div><small>Automatic theme right now · Eastern Time</small><strong data-theme-auto>Loading…</strong></div><div><small>Preview mode</small><strong>LOCAL TO THIS FRAME</strong></div></div>
-        <div class="theme-lab__controls">
-          <label><span>Preview page</span><select data-theme-route><option value="/">Home</option><option value="/drivers/">Drivers</option><option value="/schedule/">Race Calendar</option><option value="/championships/">Championships</option><option value="/partners/">Partners</option><option value="/history/">Wins + History</option></select></label>
-          <label><span>Theme</span><select data-theme-select><option value="auto">Auto / current date</option><option value="off">Off / plain Aetherwing</option></select></label>
-          <button type="button" class="primary" data-theme-open>Open preview in new tab ↗</button>
+      <section class="admin-theme-preview" data-admin-theme-preview hidden aria-labelledby="theme-preview-title">
+        <div class="control-center__heading"><span>22</span><div><p class="admin-section-kicker">VISUAL SANDBOX</p><h2 id="theme-preview-title">Theme Preview</h2><p>Preview any seasonal Aetherwing skin on this Admin page only. Nothing here publishes or changes the public site, and a page reload always returns Admin to the normal Aetherwing look.</p></div></div>
+        <div class="admin-theme-preview__status" role="status" aria-live="polite"><span>Current preview</span><strong data-theme-preview-name>Auto / current date</strong><button type="button" data-theme-auto>Auto / Current Date</button><button type="button" data-theme-motion-toggle hidden>Play Motion Anyway</button><button type="button" data-theme-reset>Plain Aetherwing</button></div>
+        <section class="admin-public-preview" aria-labelledby="public-preview-title">
+          <div class="admin-public-preview__heading">
+            <div><span>LIVE PUBLIC PAGE</span><h3 id="public-preview-title">See the real page while you tune the theme.</h3><p>The preview updates with every theme choice. Nothing here publishes or changes the live site.</p></div>
+            <div class="admin-public-preview__controls">
+              <label><span>Preview page</span><select data-theme-preview-page><option value="/">Home</option><option value="/drivers/">Drivers</option><option value="/schedule/">Schedule</option><option value="/championships/">Championships</option><option value="/partners/">Partners</option><option value="/history/">History</option><option value="/paint-booth/">Paint Booth</option></select></label>
+              <button type="button" data-theme-open-preview>Open preview ↗</button>
+            </div>
+          </div>
+          <div class="admin-public-preview__frame-wrap">
+            <iframe data-theme-public-frame title="Aetherwing public seasonal theme preview" src="/?themePreview=1" loading="eager"></iframe>
+          </div>
+        </section>
+        <section class="admin-season-experience" aria-label="Seasonal experience preview details">
+          <article><span>Calendar window</span><strong data-theme-window>Always</strong><p>The public site switches automatically in Eastern Time.</p></article>
+          <article><span>Ambient motion</span><strong data-theme-motion>None</strong><p data-theme-motion-copy>Default Aetherwing keeps the background still.</p></article>
+          <article><span>UI treatment</span><strong data-theme-ui>Standard race UI</strong><p data-theme-ui-copy>Normal Aetherwing panels, filters, buttons, borders, and scrollbar.</p></article>
+        </section>
+        <section class="admin-theme-stage" data-theme-stage aria-label="Live seasonal UI and motion preview">
+          <div class="admin-theme-stage__chrome"><span>LIVE EXPERIENCE</span><strong data-theme-stage-name>Default Aetherwing</strong><small>UI + MOTION</small></div>
+          <div class="admin-theme-stage__scene">
+            <article class="admin-theme-stage__card">
+              <span class="admin-theme-stage__eyebrow">Race Control</span>
+              <h3>Seasonal UI Preview</h3>
+              <p>Cards, filters, controls, borders, textures, and ambient motion all change with the selected theme.</p>
+              <div class="admin-theme-stage__chips"><button type="button" class="is-active">Selected</button><button type="button">Filter</button><button type="button">Action ↗</button></div>
+            </article>
+            <aside class="admin-theme-stage__mini">
+              <span>LIVE CARD</span><strong>28</strong><small>AETHERWING</small>
+            </aside>
+          </div>
+        </section>
+        <div class="admin-theme-preview__grid" data-theme-grid>
+          <button type="button" data-theme="default" class="is-active"><span class="admin-theme-preview__icon" aria-hidden="true">✦</span><b>Default Aetherwing</b><small>Normal admin look</small><i style="--swatch-a:#12aaf5;--swatch-b:#f3b51d"></i></button>
+          <button type="button" data-theme="new-year"><span class="admin-theme-preview__icon" aria-hidden="true">✨</span><b>New Year</b><small>Gold + silver</small><i style="--swatch-a:#f0d784;--swatch-b:#aeb9c8"></i></button>
+          <button type="button" data-theme="clean-winter"><span class="admin-theme-preview__icon" aria-hidden="true">❄</span><b>Clean Winter</b><small>Ice blue + white</small><i style="--swatch-a:#7a9fba;--swatch-b:#a9d9f4"></i></button>
+          <button type="button" data-theme="valentine-teaser"><span class="admin-theme-preview__icon" aria-hidden="true">♡</span><b>Valentine Teaser</b><small>Soft rose accent</small><i style="--swatch-a:#8f5d77;--swatch-b:#d98fa8"></i></button>
+          <button type="button" data-theme="valentine"><span class="admin-theme-preview__icon" aria-hidden="true">♥</span><b>Valentine</b><small>Full rose takeover</small><i style="--swatch-a:#b84d74;--swatch-b:#f39ab7"></i></button>
+          <button type="button" data-theme="late-winter"><span class="admin-theme-preview__icon" aria-hidden="true">❅</span><b>Late Winter</b><small>Muted thaw</small><i style="--swatch-a:#708797;--swatch-b:#9fc5d8"></i></button>
+          <button type="button" data-theme="spring"><span class="admin-theme-preview__icon" aria-hidden="true">✿</span><b>Spring</b><small>Fresh green + teal</small><i style="--swatch-a:#72b6a1;--swatch-b:#9fd08c"></i></button>
+          <button type="button" data-theme="st-patrick"><span class="admin-theme-preview__icon" aria-hidden="true">☘</span><b>St. Patrick’s Day</b><small>One-day green accent</small><i style="--swatch-a:#258b46;--swatch-b:#65d66f"></i></button>
+          <button type="button" data-theme="easter"><span class="admin-theme-preview__icon" aria-hidden="true">✝</span><b>Easter / Spring</b><small>Cross · renewal · sunrise</small><i style="--swatch-a:#a7c79a;--swatch-b:#c0a5d6"></i></button>
+          <button type="button" data-theme="memorial-day"><span class="admin-theme-preview__icon" aria-hidden="true">★</span><b>Memorial Day</b><small>Respectful red / white / blue</small><i style="--swatch-a:#315c96;--swatch-b:#b94b51"></i></button>
+          <button type="button" data-theme="summer"><span class="admin-theme-preview__icon" aria-hidden="true">☀</span><b>Summer</b><small>Sun gold + sky blue</small><i style="--swatch-a:#39a8d6;--swatch-b:#f0c45a"></i></button>
+          <button type="button" data-theme="independence-day"><span class="admin-theme-preview__icon" aria-hidden="true">✹</span><b>Independence Day</b><small>Red / white / blue</small><i style="--swatch-a:#3871b8;--swatch-b:#d3474f"></i></button>
+          <button type="button" data-theme="summer-end"><span class="admin-theme-preview__icon" aria-hidden="true">◒</span><b>Summer’s End</b><small>Warm sunset fade</small><i style="--swatch-a:#ff7a3d;--swatch-b:#ffc06a"></i></button>
+          <button type="button" data-theme="halloween-teaser"><span class="admin-theme-preview__icon" aria-hidden="true">☾</span><b>Halloween Teaser</b><small>Subtle orange + violet</small><i style="--swatch-a:#d98743;--swatch-b:#7b4aa8"></i></button>
+          <button type="button" data-theme="halloween"><span class="admin-theme-preview__icon" aria-hidden="true">🎃</span><b>Full Halloween</b><small>Spooky season</small><i style="--swatch-a:#f27722;--swatch-b:#7d46a8"></i></button>
+          <button type="button" data-theme="halloween-week"><span class="admin-theme-preview__icon" aria-hidden="true">🦇</span><b>Halloween Week</b><small>Intensified spooky</small><i style="--swatch-a:#ff6a00;--swatch-b:#a75cff"></i></button>
+          <button type="button" data-theme="fall"><span class="admin-theme-preview__icon" aria-hidden="true">🍂</span><b>Fall</b><small>Rust + harvest gold</small><i style="--swatch-a:#a84f2a;--swatch-b:#d99a3e"></i></button>
+          <button type="button" data-theme="christmas-teaser"><span class="admin-theme-preview__icon" aria-hidden="true">💡</span><b>Christmas Teaser</b><small>First lights</small><i style="--swatch-a:#6d9b82;--swatch-b:#a84c4c"></i></button>
+          <button type="button" data-theme="christmas"><span class="admin-theme-preview__icon" aria-hidden="true">❄</span><b>Christmas / Winter</b><small>Evergreen + red + gold</small><i style="--swatch-a:#3f8d65;--swatch-b:#b94747"></i></button>
+          <button type="button" data-theme="christmas-week"><span class="theme-mini-lights" aria-hidden="true"><u></u><u></u><u></u><u></u><u></u><u></u></span><span class="admin-theme-preview__icon" aria-hidden="true">🎄</span><b>Christmas Week</b><small>Lights + snow + tree</small><i style="--swatch-a:#40a46c;--swatch-b:#e05252"></i></button>
+          <button type="button" data-theme="calm-winter"><span class="admin-theme-preview__icon" aria-hidden="true">❅</span><b>Calm Winter</b><small>Quiet blue-gray</small><i style="--swatch-a:#6f8ca5;--swatch-b:#b9d7ea"></i></button>
         </div>
-        <div class="theme-lab__quick" data-theme-buttons aria-label="Theme preview shortcuts"></div>
-        <div class="theme-lab__preview-head"><div><small>Live public preview</small><strong data-theme-preview-name>AUTO</strong></div><p data-theme-effect>Pick any theme to inspect its screen-level effects.</p></div>
-        <div class="theme-lab__frame"><iframe data-theme-preview title="Aetherwing seasonal theme preview" loading="lazy" src="/?season=auto&themeLab=1"></iframe></div>
-        <div class="theme-lab__schedule"><div><small>Automatic calendar</small><h3>Theme windows</h3><p>The public site checks the date in America/New_York on every page load. No republish is needed when one window hands off to the next.</p></div><div data-theme-schedule></div></div>
+        <section class="admin-observance-preview" aria-labelledby="observance-preview-title">
+          <div class="admin-observance-preview__heading"><div><span>ONE-DAY OVERLAYS</span><h3 id="observance-preview-title">Faith & Gratitude Moments</h3><p>These sit on top of the normal seasonal theme only on the matching day. Selecting one here previews the full combination without publishing anything.</p></div><strong>AUTO · EASTERN TIME</strong></div>
+          <div class="admin-observance-preview__grid" data-observance-grid>
+            <button type="button" data-observance="new-years-day" data-base-theme="new-year"><span aria-hidden="true">✦</span><b>New Year’s Day</b><small data-observance-next>Gratitude for the year ahead</small></button>
+            <button type="button" data-observance="good-friday" data-base-theme="easter"><span aria-hidden="true">✝</span><b>Good Friday</b><small data-observance-next>It is finished · John 19:30</small></button>
+            <button type="button" data-observance="easter-sunday" data-base-theme="easter"><span aria-hidden="true">✝</span><b>Easter Sunday</b><small data-observance-next>He is risen · Matthew 28:6</small></button>
+            <button type="button" data-observance="thanksgiving" data-base-theme="fall"><span aria-hidden="true">✦</span><b>Thanksgiving</b><small data-observance-next>In everything give thanks</small></button>
+            <button type="button" data-observance="christmas-eve" data-base-theme="christmas-week"><span aria-hidden="true">★</span><b>Christmas Eve</b><small data-observance-next>Good tidings of great joy</small></button>
+            <button type="button" data-observance="christmas-day" data-base-theme="christmas-week"><span aria-hidden="true">✝</span><b>Christmas Day</b><small data-observance-next>Glory to God in the highest</small></button>
+          </div>
+        </section>
+        <aside class="admin-theme-preview__note"><strong>Preview only.</strong><p>This changes only the appearance of the Admin page in this browser tab. It is never saved to local storage, never published, and never changes the public site. Reload this page to return to Default Aetherwing.</p></aside>
       </section>
 
       <section class="ops-panel content-editor" data-content-editor hidden aria-labelledby="content-title">
@@ -263,7 +320,7 @@
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" onerror="window.__aetherwingIdentityLoadFailed=true"></script>
   <script src="/admin/paint-ops-admin.js" defer></script>
+  <script src="/admin/theme-preview.js" defer></script>
   <script src="/admin/content-admin.js" defer></script>
-  <script src="/admin/theme-lab.js" defer></script>
 </body>
 </html>

@@ -13,18 +13,15 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
   <title>{fullTitle}</title><meta name="description" content={description}/><link rel="canonical" href={canonical}/>
   <meta property="og:type" content="website"/><meta property="og:title" content={fullTitle}/><meta property="og:description" content={description}/><meta property="og:image" content={new URL(image,Astro.site).href}/>
   <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="/seasonal-effects.css"/>
   <script is:inline src="/seasonal-theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link rel="preconnect" href="https://fonts.cdnfonts.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Saira+Condensed:wght@500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 </head><body>
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
-  <div class="aw-season-banner" role="note" aria-label="Seasonal Aetherwing theme"><span data-season-label></span><b data-season-detail></b></div>
+  <div class="aw-season-banner" data-season-banner role="note" aria-label="Seasonal theme" hidden><i class="aw-season-banner__icon" data-season-icon aria-hidden="true"></i><span data-season-title></span><b data-season-subtitle></b></div>
   <main id="main"><slot/></main>
-  <div class="aw-season-glass" aria-hidden="true">
-    <i class="aw-season-web aw-season-web--left"></i><i class="aw-season-web aw-season-web--right"></i><i class="aw-season-scratches"></i>
-    <i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i><i class="aw-season-particle"></i>
-  </div>
   <script type="application/json" id="aetherwing-updated-standings" set:html={JSON.stringify(standings.filter(board=>['nrrs','kmart'].includes(board.id))).replace(/</g,'\\u003c')}></script>
   <footer class="site-footer"><div class="wrap footer-grid"><div><strong>AETHERWING <em>eMOTORSPORTS</em></strong><p>Born to Soar. Built to Fight.</p></div><div><span>THE GARAGE</span><a href="/schedule/">Race calendar</a><a href="/drivers/">Driver lineup</a><a href="/paint-booth/">Paint Booth</a></div><div><span>THE TEAM</span><a href="/partners/">Partners</a><a href="/news/">Newsroom</a><a href="/history/">History</a></div><div><span>FOLLOW THE FLIGHT</span><a href={siteSettings.discordUrl}>Discord ↗</a><a href="https://paint.aetherwing.net/">Full scene viewer ↗</a><a href="/admin/">Team admin ↗</a></div></div><div class="wrap footnote"><span>© {new Date().getFullYear()} Aetherwing eMotorsports</span><strong>TO GOD BE THE GLORY · {siteSettings.faithVerse||'Matthew 17:20'}</strong></div></footer>
   <script is:inline>

@@ -4,17 +4,50 @@ import FaithSignature from '../../components/FaithSignature.astro';
 import { scheduleEvents, results, drivers } from '../../lib/site-content.mjs';
 import { eventSlug, eventDisplayDate } from '../../lib/schedule-events.mjs';
 import '../../styles/records.css';
+
 export function getStaticPaths(){return scheduleEvents.filter(e=>!e.offWeek).map(e=>({params:{slug:eventSlug(e)},props:{event:e}}));}
 const {event}=Astro.props;
 const result=results.find(r=>r.date===event.date&&r.league===event.league&&r.title===event.title);
-const entries=drivers.filter(d=>d.competitionId===event.league);
+const competitionId=(league='')=>league==='open'?'uarl-open':league==='iracing'?'iracing-factory':league;
+const leagueRoster=(league='')=>drivers.filter(d=>d.competitionId===competitionId(league));
+const resolveEventEntries=(raceEvent,raceResult)=>{
+  const roster=leagueRoster(raceEvent.league);
+  if(raceEvent.entryListMode==='custom'){
+    return (raceEvent.entries||[]).map((entry)=>{
+      const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));
+      return {displayName:assignment?.displayName||entry.driver||'Entry',number:String(assignment?.number||entry.number||''),status:entry.entryStatus||'Confirmed'};
+    }).filter(entry=>entry.displayName||entry.number);
+  }
+  if(raceResult?.entries?.length){
+    return raceResult.entries.map(entry=>({displayName:entry.driver||'Entry',number:String(entry.number||''),status:'Raced'}));
+  }
+  return roster.map(entry=>({displayName:entry.displayName,number:String(entry.number||''),status:entry.status||'Roster'}));
+};
+const entries=resolveEventEntries(event,result);
 ---
 <Base title={`${event.title} · Race Weekend`} description={`${event.leagueName} at ${event.track} · ${eventDisplayDate(event)}.`}>
   <section class="page-intro"><div class="wrap"><a class="eyebrow" href="/schedule/">← Race calendar</a><p class="eyebrow">{event.leagueName} · {event.round||event.status||'RACE WEEKEND'}</p><h1>{event.track}</h1><p>{event.title} · {eventDisplayDate(event)} · {event.time||'TIME TBD'}</p><button class="btn" type="button" data-share>Copy event link ↗</button></div></section>
   <FaithSignature field="faithRaceDayLine" label="Before the green flag"/>
-  <section class="section"><div class="wrap story-grid"><article class="story-panel"><p class="eyebrow">01 / Race weekend</p><h3>{event.title}</h3><p>{event.status||'Scheduled'} · {event.track} · {eventDisplayDate(event)}</p><a href="/schedule/">Full calendar ↗</a></article><article class="story-panel"><p class="eyebrow">02 / The garage</p><h3>Team Entries</h3><div data-event-entries>{entries.length?entries.map(e=><div class="profile-assignment"><span>{e.displayName}</span><strong>#{e.number}</strong><small>{e.status}</small></div>):<p>Race entries will appear when assigned in Admin.</p>}</div></article><article class="story-panel"><p class="eyebrow">03 / The result</p><h3 data-event-head>{result?'Official Result':'Awaiting Green Flag'}</h3><div data-event-result>{result?<>{result.entries?.map(e=><div class="profile-assignment"><span>{e.driver}</span><strong>#{e.number}</strong><small>{e.finish?`P${e.finish}`:'DNS'}</small></div>)}<p>{result.summary}</p></>:<p>Results appear here after the race is published.</p>}</div><a href="/history/">Results archive ↗</a></article></div></section>
+  <section class="section"><div class="wrap story-grid"><article class="story-panel"><p class="eyebrow">01 / Race weekend</p><h3>{event.title}</h3><p>{event.status||'Scheduled'} · {event.track} · {eventDisplayDate(event)}</p><a href="/schedule/">Full calendar ↗</a></article><article class="story-panel"><p class="eyebrow">02 / The garage</p><h3>Team Entries</h3><div data-event-entries>{entries.length?entries.map(e=><div class="profile-assignment"><span>{e.displayName}</span><strong>#{e.number}</strong><small>{e.status}</small></div>):<p>No team entries are currently listed for this event.</p>}</div></article><article class="story-panel"><p class="eyebrow">03 / The result</p><h3 data-event-head>{result?'Official Result':'Awaiting Green Flag'}</h3><div data-event-result>{result?<>{result.entries?.map(e=><div class="profile-assignment"><span>{e.driver}</span><strong>#{e.number}</strong><small>{e.finish?`P${e.finish}`:'DNS'}</small></div>)}<p>{result.summary}</p></>:<p>Results appear here after the race is published.</p>}</div><a href="/history/">Results archive ↗</a></article></div></section>
 </Base>
 <script define:vars={{ eventId:eventSlug(event) }}>
   const share=document.querySelector('[data-share]');share?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);share.textContent='✓ LINK COPIED';setTimeout(()=>share.textContent='Copy event link ↗',2000);}catch{share.textContent='Copy the address bar link';}});
-  window.addEventListener('aetherwing:content',({detail:d})=>{const slug=e=>`${e.date}-${e.league}-${String(e.title||e.track||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;const e=d['schedule-events']?.find(v=>slug(v)===eventId);if(!e)return;const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));if(Array.isArray(d.drivers)){document.querySelector('[data-event-entries]').innerHTML=d.drivers.filter(v=>v.competitionId===e.league).map(v=>`<div class="profile-assignment"><span>${esc(v.displayName)}</span><strong>#${esc(v.number)}</strong><small>${esc(v.status)}</small></div>`).join('')||'<p>Race entries will appear when assigned in Admin.</p>';}const result=d.results?.find(r=>r.date===e.date&&r.league===e.league&&r.title===e.title);if(result){document.querySelector('[data-event-head]').textContent='Official Result';document.querySelector('[data-event-result]').innerHTML=(result.entries||[]).map(v=>`<div class="profile-assignment"><span>${esc(v.driver)}</span><strong>#${esc(v.number)}</strong><small>${v.finish?`P${esc(v.finish)}`:'DNS'}</small></div>`).join('')+`<p>${esc(result.summary)}</p>`;}});
+  window.addEventListener('aetherwing:content',({detail:d})=>{
+    const slug=e=>`${e.date}-${e.league}-${String(e.title||e.track||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;
+    const e=d['schedule-events']?.find(v=>slug(v)===eventId);if(!e)return;
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const result=d.results?.find(r=>r.date===e.date&&r.league===e.league&&r.title===e.title);
+    const leagueId=e.league==='open'?'uarl-open':e.league==='iracing'?'iracing-factory':e.league;
+    const roster=Array.isArray(d.drivers)?d.drivers.filter(v=>v.competitionId===leagueId):[];
+    let eventEntries=[];
+    if(e.entryListMode==='custom'){
+      eventEntries=(e.entries||[]).map(entry=>{const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{displayName:assignment?.displayName||entry.driver||'Entry',number:String(assignment?.number||entry.number||''),status:entry.entryStatus||'Confirmed'};}).filter(entry=>entry.displayName||entry.number);
+    } else if(result?.entries?.length){
+      eventEntries=result.entries.map(entry=>({displayName:entry.driver||'Entry',number:String(entry.number||''),status:'Raced'}));
+    } else {
+      eventEntries=roster.map(entry=>({displayName:entry.displayName,number:String(entry.number||''),status:entry.status||'Roster'}));
+    }
+    document.querySelector('[data-event-entries]').innerHTML=eventEntries.map(v=>`<div class="profile-assignment"><span>${esc(v.displayName)}</span><strong>#${esc(v.number)}</strong><small>${esc(v.status)}</small></div>`).join('')||'<p>No team entries are currently listed for this event.</p>';
+    if(result){document.querySelector('[data-event-head]').textContent='Official Result';document.querySelector('[data-event-result]').innerHTML=(result.entries||[]).map(v=>`<div class="profile-assignment"><span>${esc(v.driver)}</span><strong>#${esc(v.number)}</strong><small>${v.finish?`P${esc(v.finish)}`:'DNS'}</small></div>`).join('')+`<p>${esc(result.summary)}</p>`;}
+  });
 </script>

@@ -74,13 +74,61 @@ The supplied Aetherwing editorial reference image is now a single full-viewport,
 - Charter Boards accept uploaded/pasted number art for unsigned full-time charters and for each flexible Open Charter number identity. That artwork is used on the public Driver Lineup.
 - The Driver Lineup includes affiliated StarClutch Racing Kmart and Sunoco rides alongside Aetherwing entries, with partner-team labeling kept distinct from Aetherwing-owned seats.
 
-## Automatic seasonal themes + Theme Lab
 
-The public site now selects a seasonal presentation automatically in America/New_York on every page load. The schedule covers Summer’s End, the Sep. 25–30 Halloween teaser, full Halloween, Halloween week, fall, winter/Christmas phases, New Year, winter, Valentine, spring, St. Patrick’s Day, Easter, Memorial Day, summer, and Independence Day accents. The themes include a fixed pointer-events-none “front glass” layer for fog, frost, snow, leaf flecks, grime, cobwebs, sparkles, and other restrained screen-level effects without blocking interaction. `prefers-reduced-motion` disables moving particles. Admin itself never receives the decorative glass layer.
+## Automatic seasonal themes
 
-Use `?season=<theme-id>` on any public URL to preview a specific theme, `?season=off` for plain Aetherwing, or `?season=auto` to follow the calendar. Admin tab **22 Theme Lab** provides the same controls in a live iframe and shows the full automatic theme calendar.
+The public site now includes a permanent Eastern-Time seasonal controller at `public/seasonal-theme.js`. It automatically selects the active visual skin from the Aetherwing calendar without requiring a new deploy at each transition. The schedule covers clean winter, Valentine teaser/full Valentine, late winter, spring, St. Patrick’s Day, Easter week, Memorial Day weekend, summer, Independence Day, Summer’s End, Halloween teaser/full/Halloween week, fall through Thanksgiving, Christmas teaser/full/Christmas week, calm winter, and New Year. The 2026 Summer’s End window remains the special Sep. 20–24 launch window; later years use the established Aug. 25–Sep. 7 Summer’s End window. Holiday-dependent Easter, Memorial Day, and Thanksgiving windows are calculated for the current year.
+
+For private public-site testing, append `?season=<theme-id>` (for example `?season=halloween`) or `?season=off`. These URL previews do not change the live calendar for other visitors.
+
+Admin also includes tab **22 Theme Preview**. Its buttons restyle only the current Admin page in real time. Theme Preview never publishes, never writes to local storage, and resets to Default Aetherwing on reload.
+
+## v1.1.14 build fix
+
+Astro public seasonal-theme script reference now uses `is:inline` so Netlify/Vite leaves `/public/seasonal-theme.js` unbundled as intended.
 
 
-## Seasonal theme system
+## Seasonal experience engine (v1.1.15)
 
-The public seasonal theme controller is served from `public/seasonal-theme.js`. `src/layouts/Base.astro` references it with Astro's `is:inline` directive so the public asset is emitted as-is instead of being passed through the Vite bundler.
+Seasonal themes now change the public site's UI language and ambient atmosphere, not only its color palette. The Eastern-Time date controller automatically activates the correct theme, while decorative motion stays behind all content and honors `prefers-reduced-motion`. Theme Preview in Admin mirrors both the UI treatment and ambient motion without publishing or persisting the preview. The Theme Preview panel also explains each theme's calendar window, motion treatment, and UI treatment in real time.
+
+## Admin seasonal preview visibility (v1.1.16)
+
+Theme Preview now includes a dedicated live UI + motion stage and stronger theme-specific component treatments so previews demonstrate shapes, panel textures, controls, borders, scrollbar styling, and ambient effects rather than only palette/glow changes. The full Admin page still adopts the selected preview skin. If the device requests Reduced Motion, Admin respects it by default and offers a temporary "Play Motion Anyway" control for previewing animations; the override is not persisted or published.
+## Christmas Week lights
+
+The Dec 18–25 Christmas Week theme now adds animated multicolor string lights around the viewport edges in addition to snowfall and holiday sparkle. The Admin Theme Preview renders the same light frame for Christmas Week, including inside the live experience preview. Side strands collapse on narrow mobile screens to keep the UI readable.
+
+
+
+## Seasonal calendar engine (v1.1.19)
+
+The public site now carries the complete January-to-December seasonal system in code and selects it automatically in America/New_York time. Fixed-date windows recur every year; Easter week, Good Friday, Easter Sunday, Memorial Day weekend, Thanksgiving, and the post-Thanksgiving Christmas teaser are calculated from the current year so the site can keep running without annual date edits. Summer’s End is Sep 20–24 every year, followed by the Halloween teaser Sep 25–30.
+
+One-day faith/gratitude overlays are layered over the normal season on New Year’s Day, Good Friday, Easter Sunday, Thanksgiving, Christmas Eve, and Christmas Day. Good Friday intentionally pauses the Easter motion; Easter Sunday uses a cross/sunrise treatment; Christmas Day keeps the Christmas Week lights and snow while changing the message to “Glory to God in the highest.”
+
+Admin → Theme Preview is ordered January through December, gives every theme a static icon, includes a miniature light strand + tree for Christmas Week, and includes a separate Faith & Gratitude Moments preview row. The preview remains session-only: it never publishes, never writes to local storage, and a reload resets it. Moving-holiday previews calculate the next real occurrence automatically.
+
+## v1.1.20 seasonal overlay polish
+
+- One-day faith/gratitude observances now add visible decorative motifs to the actual public seasonal layer and to Admin Theme Preview, not only color changes and preview buttons.
+- Good Friday keeps motion quiet while still displaying a restrained cross motif.
+- Easter Sunday adds a brighter cross + sunrise treatment; Christmas Eve adds a star motif; Christmas Day adds cross + star over Christmas Week; Thanksgiving and New Year's Day get gratitude marks.
+- Christmas Week now includes a decorative lit Christmas tree in the seasonal layer and Admin preview.
+- Christmas light strands now render as visibly powered bulbs with stronger colored halos and staggered twinkling/chasing brightness instead of dim static dots.
+
+
+## v1.1.21 · Seasonal background art + home faith spacing
+
+- Tightens the home-page faith section so it reads as a major editorial section instead of a nearly empty full-screen hero.
+- Adds theme-specific full-page background art treatments for Halloween, Fall, Christmas/Winter, Valentine, Spring, Easter, New Year, Independence Day, and supporting transitional themes.
+- Uses the same background-art language inside Admin Theme Preview, so previewing a theme now includes its backdrop as well as UI, motion, icons, and observance overlays.
+- Keeps content readability protected with the existing dark overlay and opaque data panels.
+
+
+## v1.1.22 · Event-specific entry lists
+
+Race Weekend pages can now show who is actually expected to compete instead of always mirroring the full league roster. In Admin → Calendar, each race has an Event entry list mode. Auto uses the published race result after the race and the current league roster before a result exists. Custom lets an editor select the exact roster drivers for that event, mark an entry note/status, fill the list from the league roster, or copy the actual starters from an already-published result. Driver names and car numbers remain roster-linked.
+
+
+Admin Theme Preview v1.1.23 keeps the full visual theme picker and restores a live embedded public-page preview that updates as themes or pages are selected.
