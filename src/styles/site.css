@@ -56,3 +56,54 @@ html::-webkit-scrollbar-track,body::-webkit-scrollbar-track{background:#06080b;b
 html::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--blue) 0 58%,var(--gold) 58% 100%);border:3px solid #06080b;border-radius:999px;min-height:56px}
 html::-webkit-scrollbar-thumb:hover,body::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#46c2ff 0 58%,#f0d9a0 58% 100%)}
 html::-webkit-scrollbar-corner,body::-webkit-scrollbar-corner{background:#06080b}
+
+/* v1.1.15 — seasonal atmosphere + UI language. The calendar theme changes more than color: panels, chips, borders and micro-interactions shift with the season while keeping layout/data stable. */
+html[data-season]{--season-corner:2px;--season-panel:color-mix(in srgb,#0b0f13 92%,var(--season-primary) 8%);--season-border:color-mix(in srgb,var(--season-primary) 38%,#343b42);--season-shadow:0 12px 28px rgba(0,0,0,.28);--season-chip:color-mix(in srgb,#0a0d10 88%,var(--season-secondary) 12%);--season-hover:color-mix(in srgb,var(--season-primary) 9%,#0a0d10);--season-divider:linear-gradient(90deg,var(--season-secondary),var(--season-primary),transparent)}
+html[data-season] body>main,html[data-season] body>.site-footer,html[data-season] body>.aw-season-banner{position:relative;z-index:1}
+html[data-season] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,.profile-stat,.profile-assignment,.profile-partners,.home-after__card,.home-story__feature,.home-people__tile,.faith-signature__inner){border-color:var(--season-border)!important;border-radius:var(--season-corner);box-shadow:var(--season-shadow)}
+html[data-season] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button){border-radius:var(--season-corner);transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+html[data-season] :is(.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button):not([aria-pressed="true"]){background:var(--season-chip)!important;border-color:color-mix(in srgb,var(--season-secondary) 30%,#40474d)!important}
+html[data-season] :is(.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button)[aria-pressed="true"]{background:color-mix(in srgb,var(--season-primary) 22%,#0a0d10)!important;border-color:var(--season-primary)!important;box-shadow:inset 0 -2px var(--season-primary)}
+html[data-season] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button):hover{border-color:var(--season-primary)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--season-primary) 30%,transparent),0 8px 22px rgba(0,0,0,.28)}
+html[data-season] .section-head{position:relative;padding-bottom:.65rem}html[data-season] .section-head:after{content:'';position:absolute;left:0;bottom:0;width:min(360px,48%);height:2px;background:var(--season-divider);opacity:.75}
+html[data-season] .section-title{text-shadow:0 8px 24px color-mix(in srgb,var(--season-primary) 10%,transparent)}
+html[data-season]{scrollbar-color:var(--season-primary) #06080b}html[data-season]::-webkit-scrollbar-thumb,html[data-season] body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--season-secondary) 0 52%,var(--season-primary) 52% 100%)}
+
+/* Spooky: clipped-looking corners, distressed dashed accents, ember hover. */
+html[data-season-ui^="spooky"]{--season-corner:0 12px 0 12px;--season-shadow:8px 9px 0 rgba(0,0,0,.48);--season-chip:linear-gradient(135deg,#100d12,#171018)}
+html[data-season-ui^="spooky"] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile){border-style:solid;border-left-width:3px!important;border-left-color:var(--season-primary)!important}
+html[data-season-ui="spooky-max"] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button){box-shadow:inset 0 -2px color-mix(in srgb,var(--season-secondary) 65%,transparent)}
+html[data-season-ui^="spooky"] .section-title{letter-spacing:.01em;text-shadow:3px 4px 0 #000,0 0 20px color-mix(in srgb,var(--season-primary) 15%,transparent)}
+
+/* Fall: warmer paper/metal treatment and softer corners. */
+html[data-season-ui="harvest"]{--season-corner:6px;--season-panel:linear-gradient(145deg,rgba(31,22,14,.94),rgba(10,9,8,.97));--season-shadow:0 12px 30px rgba(31,12,3,.28)}
+html[data-season-ui="harvest"] :is(.story-panel,.results-list article,.aw-calendar__event,.aw-lineup__poster,.home-after__card){background-image:linear-gradient(120deg,color-mix(in srgb,var(--season-primary) 5%,transparent),transparent 45%)!important}
+
+/* Winter / Christmas: frosted top edge and glassier panels. */
+html[data-season-ui="holiday-soft"],html[data-season-ui="holiday"],html[data-season-ui="holiday-max"],html[data-season-ui="frost"],html[data-season-ui="thaw"]{--season-corner:5px;--season-shadow:0 14px 36px rgba(0,8,16,.32)}
+html[data-season-ui="holiday-soft"] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile),html[data-season-ui="holiday"] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile),html[data-season-ui="holiday-max"] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile),html[data-season-ui="frost"] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile){box-shadow:inset 0 2px color-mix(in srgb,var(--season-tertiary) 45%,transparent),var(--season-shadow)}
+html[data-season-ui="holiday-max"] .btn{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--season-primary) 35%,transparent),0 0 18px color-mix(in srgb,var(--season-primary) 10%,transparent)}
+
+/* New Year: crisp metallic surfaces with a restrained sheen. */
+html[data-season-ui="metallic"]{--season-corner:2px;--season-panel:linear-gradient(120deg,#111317f2,#222117e6,#090b0ef5);--season-shadow:0 14px 38px rgba(0,0,0,.38)}
+html[data-season-ui="metallic"] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button){background-image:linear-gradient(110deg,transparent 0 42%,rgba(255,255,255,.08) 48%,transparent 55%)!important;background-size:240% 100%;animation:aw-season-sheen 7s ease-in-out infinite}
+@keyframes aw-season-sheen{0%,70%,100%{background-position:120% 0}82%{background-position:-80% 0}}
+
+/* Spring / Easter / Valentine: softer cards and airy controls. */
+html[data-season-ui="spring"],html[data-season-ui="easter"],html[data-season-ui="rose"],html[data-season-ui="rose-soft"]{--season-corner:12px;--season-shadow:0 12px 30px rgba(0,0,0,.24)}
+html[data-season-ui="spring"] :is(.story-panel,.news-tile,.profile-stat,.aw-calendar__event),html[data-season-ui="easter"] :is(.story-panel,.news-tile,.profile-stat,.aw-calendar__event){background-image:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--season-primary) 8%,transparent),transparent 35%)!important}
+html[data-season-ui="rose"] .section-head:after,html[data-season-ui="rose-soft"] .section-head:after{height:3px;border-radius:999px}
+
+/* Summer: brighter race-day accents and quicker hover response. */
+html[data-season-ui="summer"],html[data-season-ui="sunset"]{--season-corner:4px;--season-shadow:0 14px 34px rgba(0,15,28,.28)}
+html[data-season-ui="summer"] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button):hover,html[data-season-ui="sunset"] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button):hover{transform:translateY(-1px)}
+
+/* Patriotic / Memorial Day: clean stripe language; Memorial Day remains intentionally restrained. */
+html[data-season-ui="patriotic"] .site-header:after,html[data-season-ui="memorial"] .site-header:after{height:4px;background:linear-gradient(90deg,#315c96 0 33.3%,#eee 33.3% 66.6%,#b94b51 66.6%)}
+html[data-season-ui="patriotic"] :is(.story-panel,.results-list article,.standings-board,.aw-calendar__event){box-shadow:inset 3px 0 var(--season-secondary),inset -3px 0 var(--season-tertiary),var(--season-shadow)}
+html[data-season-ui="memorial"] .aw-season-banner{letter-spacing:.14em}
+
+/* St. Patrick's Day: one-day green edge without rebuilding the visual language. */
+html[data-season-ui="green"] :is(.story-panel,.results-list article,.standings-board,.aw-calendar__event){box-shadow:inset 0 2px color-mix(in srgb,var(--season-primary) 38%,transparent),var(--season-shadow)}
+
+@media (prefers-reduced-motion:reduce){html[data-season-ui="metallic"] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button){animation:none!important}}

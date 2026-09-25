@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/admin/paint-ops-admin.css">
   <link rel="stylesheet" href="/admin/control-center.css">
   <link rel="stylesheet" href="/admin/fresh-admin.css">
+  <link rel="stylesheet" href="/seasonal-effects.css">
   <title>Aetherwing Admin — Aetherwing eMotorsports</title>
 </head>
 <body>
@@ -32,7 +33,7 @@
 
     <section class="ops-workspace" data-workspace hidden>
       <header class="workspace-intro admin-intro">
-        <div><p class="kicker">Aetherwing Control Center · v1.1.13</p><h1>Everything has a lane.</h1></div>
+        <div><p class="kicker">Aetherwing Control Center · v1.1.15</p><h1>Everything has a lane.</h1></div>
         <p>Every editable content area has its own tab. Change the racing operation without digging through one giant dropdown or touching protected sitewide infrastructure.</p>
       </header>
 
@@ -84,6 +85,11 @@
       <section class="admin-theme-preview" data-admin-theme-preview hidden aria-labelledby="theme-preview-title">
         <div class="control-center__heading"><span>22</span><div><p class="admin-section-kicker">VISUAL SANDBOX</p><h2 id="theme-preview-title">Theme Preview</h2><p>Preview any seasonal Aetherwing skin on this Admin page only. Nothing here publishes or changes the public site, and a page reload always returns Admin to the normal Aetherwing look.</p></div></div>
         <div class="admin-theme-preview__status" role="status" aria-live="polite"><span>Current preview</span><strong data-theme-preview-name>Default Aetherwing</strong><button type="button" data-theme-reset>Reset to Default</button></div>
+        <section class="admin-season-experience" aria-label="Seasonal experience preview details">
+          <article><span>Calendar window</span><strong data-theme-window>Always</strong><p>The public site switches automatically in Eastern Time.</p></article>
+          <article><span>Ambient motion</span><strong data-theme-motion>None</strong><p data-theme-motion-copy>Default Aetherwing keeps the background still.</p></article>
+          <article><span>UI treatment</span><strong data-theme-ui>Standard race UI</strong><p data-theme-ui-copy>Normal Aetherwing panels, filters, buttons, borders, and scrollbar.</p></article>
+        </section>
         <div class="admin-theme-preview__grid" data-theme-grid>
           <button type="button" data-theme="default" class="is-active"><b>Default Aetherwing</b><small>Normal admin look</small><i style="--swatch-a:#12aaf5;--swatch-b:#f3b51d"></i></button>
           <button type="button" data-theme="summer-end"><b>Summer’s End</b><small>Warm sunset fade</small><i style="--swatch-a:#ff7a3d;--swatch-b:#ffc06a"></i></button>

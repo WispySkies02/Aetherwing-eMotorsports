@@ -82,3 +82,12 @@ The public site now includes a permanent Eastern-Time seasonal controller at `pu
 For private public-site testing, append `?season=<theme-id>` (for example `?season=halloween`) or `?season=off`. These URL previews do not change the live calendar for other visitors.
 
 Admin also includes tab **22 Theme Preview**. Its buttons restyle only the current Admin page in real time. Theme Preview never publishes, never writes to local storage, and resets to Default Aetherwing on reload.
+
+## v1.1.14 build fix
+
+Astro public seasonal-theme script reference now uses `is:inline` so Netlify/Vite leaves `/public/seasonal-theme.js` unbundled as intended.
+
+
+## Seasonal experience engine (v1.1.15)
+
+Seasonal themes now change the public site's UI language and ambient atmosphere, not only its color palette. The Eastern-Time date controller automatically activates the correct theme, while decorative motion stays behind all content and honors `prefers-reduced-motion`. Theme Preview in Admin mirrors both the UI treatment and ambient motion without publishing or persisting the preview. The Theme Preview panel also explains each theme's calendar window, motion treatment, and UI treatment in real time.
