@@ -20,7 +20,7 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
 </head><body>
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
-  <div class="aw-season-banner" data-season-banner role="note" aria-label="Seasonal theme" hidden><span data-season-title></span><b data-season-subtitle></b></div>
+  <div class="aw-season-banner" data-season-banner role="note" aria-label="Seasonal theme" hidden><i class="aw-season-banner__icon" data-season-icon aria-hidden="true"></i><span data-season-title></span><b data-season-subtitle></b></div>
   <main id="main"><slot/></main>
   <script type="application/json" id="aetherwing-updated-standings" set:html={JSON.stringify(standings.filter(board=>['nrrs','kmart'].includes(board.id))).replace(/</g,'\\u003c')}></script>
   <footer class="site-footer"><div class="wrap footer-grid"><div><strong>AETHERWING <em>eMOTORSPORTS</em></strong><p>Born to Soar. Built to Fight.</p></div><div><span>THE GARAGE</span><a href="/schedule/">Race calendar</a><a href="/drivers/">Driver lineup</a><a href="/paint-booth/">Paint Booth</a></div><div><span>THE TEAM</span><a href="/partners/">Partners</a><a href="/news/">Newsroom</a><a href="/history/">History</a></div><div><span>FOLLOW THE FLIGHT</span><a href={siteSettings.discordUrl}>Discord ↗</a><a href="https://paint.aetherwing.net/">Full scene viewer ↗</a><a href="/admin/">Team admin ↗</a></div></div><div class="wrap footnote"><span>© {new Date().getFullYear()} Aetherwing eMotorsports</span><strong>TO GOD BE THE GLORY · {siteSettings.faithVerse||'Matthew 17:20'}</strong></div></footer>

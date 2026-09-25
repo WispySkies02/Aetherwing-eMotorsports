@@ -99,3 +99,12 @@ Theme Preview now includes a dedicated live UI + motion stage and stronger theme
 
 The Dec 18–25 Christmas Week theme now adds animated multicolor string lights around the viewport edges in addition to snowfall and holiday sparkle. The Admin Theme Preview renders the same light frame for Christmas Week, including inside the live experience preview. Side strands collapse on narrow mobile screens to keep the UI readable.
 
+
+
+## Seasonal calendar engine (v1.1.19)
+
+The public site now carries the complete January-to-December seasonal system in code and selects it automatically in America/New_York time. Fixed-date windows recur every year; Easter week, Good Friday, Easter Sunday, Memorial Day weekend, Thanksgiving, and the post-Thanksgiving Christmas teaser are calculated from the current year so the site can keep running without annual date edits. Summer’s End is Sep 20–24 every year, followed by the Halloween teaser Sep 25–30.
+
+One-day faith/gratitude overlays are layered over the normal season on New Year’s Day, Good Friday, Easter Sunday, Thanksgiving, Christmas Eve, and Christmas Day. Good Friday intentionally pauses the Easter motion; Easter Sunday uses a cross/sunrise treatment; Christmas Day keeps the Christmas Week lights and snow while changing the message to “Glory to God in the highest.”
+
+Admin → Theme Preview is ordered January through December, gives every theme a static icon, includes a miniature light strand + tree for Christmas Week, and includes a separate Faith & Gratitude Moments preview row. The preview remains session-only: it never publishes, never writes to local storage, and a reload resets it. Moving-holiday previews calculate the next real occurrence automatically.

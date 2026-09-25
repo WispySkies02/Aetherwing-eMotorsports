@@ -107,3 +107,41 @@ html[data-season-ui="memorial"] .aw-season-banner{letter-spacing:.14em}
 html[data-season-ui="green"] :is(.story-panel,.results-list article,.standings-board,.aw-calendar__event){box-shadow:inset 0 2px color-mix(in srgb,var(--season-primary) 38%,transparent),var(--season-shadow)}
 
 @media (prefers-reduced-motion:reduce){html[data-season-ui="metallic"] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button){animation:none!important}}
+
+/* v1.1.19 — seasonal icons + one-day faith/gratitude observances layered over the normal calendar theme. */
+.aw-season-banner__icon{display:inline-grid;place-items:center;min-width:1.25rem;color:var(--season-primary);font:900 .86rem/1 var(--font-mono);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--season-primary) 35%,transparent))}
+html[data-observance] .aw-season-banner{min-height:35px;border-bottom-color:color-mix(in srgb,var(--season-primary) 60%,transparent);box-shadow:inset 0 2px 0 color-mix(in srgb,var(--season-primary) 65%,transparent),0 8px 26px rgba(0,0,0,.2)}
+html[data-observance] .aw-season-banner__icon{font-size:1rem}
+
+/* Good Friday: solemn, still, and deliberately stripped back. */
+html[data-observance="good-friday"]{--season-primary:#d5bd7a;--season-secondary:#6b7077;--season-tertiary:#b9b2a4;--season-banner:linear-gradient(90deg,#030303,#11100e 48%,#030303);--season-overlay:radial-gradient(circle at 50% 5%,rgba(213,189,122,.06),transparent 25%),linear-gradient(180deg,rgba(2,2,2,.84),rgba(2,2,2,.94))}
+html[data-observance="good-friday"] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile){filter:saturate(.72)}
+html[data-observance="good-friday"] .aw-season-banner__icon{font-size:1.18rem}
+
+/* Easter Sunday: brighter sunrise gold over the existing Easter renewal UI. */
+html[data-observance="easter-sunday"]{--season-primary:#f1d77b;--season-secondary:#9fcf93;--season-tertiary:#f4e8bd;--season-banner:linear-gradient(90deg,#111007,#5c4d1d 46%,#2b4d2c 72%,#111007);--season-overlay:radial-gradient(circle at 50% 0,rgba(241,215,123,.2),transparent 32%),radial-gradient(circle at 82% 22%,rgba(159,207,147,.12),transparent 30%),linear-gradient(180deg,rgba(7,7,5,.65),rgba(5,6,5,.86))}
+html[data-observance="easter-sunday"] .page-intro{box-shadow:inset 0 -40px 78px rgba(241,215,123,.09)}
+html[data-observance="easter-sunday"] .aw-season-banner__icon{font-size:1.2rem}
+
+/* Thanksgiving: gratitude-forward warmth without changing the fall identity. */
+html[data-observance="thanksgiving"]{--season-primary:#e2b35c;--season-secondary:#9d5b32;--season-tertiary:#e7d0a1;--season-banner:linear-gradient(90deg,#100b07,#5f3219 45%,#735329 66%,#100b07);--season-overlay:radial-gradient(circle at 50% 6%,rgba(226,179,92,.12),transparent 30%),linear-gradient(180deg,rgba(8,6,4,.69),rgba(7,5,4,.88))}
+
+/* Christmas Eve: quiet star-light. */
+html[data-observance="christmas-eve"]{--season-primary:#f1d893;--season-secondary:#6b8faa;--season-tertiary:#f4f2df;--season-banner:linear-gradient(90deg,#040912,#152943 46%,#4a3f1c 64%,#040912);--season-overlay:radial-gradient(circle at 52% 2%,rgba(241,216,147,.16),transparent 24%),linear-gradient(180deg,rgba(3,6,11,.7),rgba(3,6,9,.9))}
+html[data-observance="christmas-eve"] .aw-season-banner__icon{font-size:1.15rem}
+
+/* Christmas Day: the lights stay, but the day's message becomes explicitly faith-forward. */
+html[data-observance="christmas-day"]{--season-primary:#f4d783;--season-secondary:#3f8d65;--season-tertiary:#d95858;--season-banner:linear-gradient(90deg,#07100b,#6c5420 38%,#1f6841 62%,#07100b);--season-overlay:radial-gradient(circle at 50% 2%,rgba(244,215,131,.19),transparent 28%),radial-gradient(circle at 82% 18%,rgba(63,141,101,.12),transparent 28%),linear-gradient(180deg,rgba(3,7,7,.64),rgba(3,6,6,.88))}
+html[data-observance="christmas-day"] .aw-season-banner__icon{font-size:1.2rem}
+
+/* New Year's Day: same event-night look, shifted toward gratitude. */
+html[data-observance="new-years-day"]{--season-primary:#f0d784;--season-secondary:#d9dde3;--season-tertiary:#ffffff;--season-banner:linear-gradient(90deg,#060708,#4b4428 42%,#25282d 70%,#060708);--season-overlay:radial-gradient(circle at 50% 6%,rgba(240,215,132,.17),transparent 31%),linear-gradient(180deg,rgba(4,5,7,.68),rgba(4,5,7,.89))}
+
+/* Christmas Week gets a small tree cue in the seasonal strip in addition to the viewport light strands. */
+html[data-season="christmas-week"] .aw-season-banner__icon{font-size:1.05rem;filter:drop-shadow(0 0 9px rgba(255,227,155,.36))}
+
+/* Religious observance marks stay decorative and behind page-intro copy. */
+html[data-observance="good-friday"] .page-intro,html[data-observance="easter-sunday"] .page-intro{position:relative;overflow:hidden}
+html[data-observance="good-friday"] .page-intro:after,html[data-observance="easter-sunday"] .page-intro:after{content:'✝';position:absolute;right:clamp(1rem,7vw,7rem);top:50%;transform:translateY(-50%);color:var(--season-primary);font:900 clamp(8rem,22vw,18rem)/1 Georgia,serif;opacity:.055;pointer-events:none;filter:drop-shadow(0 0 24px color-mix(in srgb,var(--season-primary) 22%,transparent))}
+html[data-observance="easter-sunday"] .page-intro:after{opacity:.09}
+html[data-observance="good-friday"] .page-intro>*,html[data-observance="easter-sunday"] .page-intro>*{position:relative;z-index:1}

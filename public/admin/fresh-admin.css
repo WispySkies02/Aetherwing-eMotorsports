@@ -131,3 +131,88 @@ html[data-admin-theme="summer"] .admin-theme-stage__chrome,html[data-admin-theme
 
 @media(max-width:680px){.admin-theme-stage__scene{grid-template-columns:1fr}.admin-theme-stage__mini{min-height:120px}.admin-theme-stage .aw-admin-season-fx--stage{inset:42px 0 0!important}}
 @media(prefers-reduced-motion:reduce){html:not([data-admin-force-motion="true"]) .aw-admin-season-fx{display:none!important}html[data-admin-force-motion="true"] .aw-admin-season-fx{display:block!important}}
+
+
+/* v1.1.18 — make each Theme Preview button visually match its own theme. */
+.admin-theme-preview__grid button{isolation:isolate;overflow:hidden;border-radius:14px}
+.admin-theme-preview__grid button:before,.admin-theme-preview__grid button:after{content:'';position:absolute;inset:0;pointer-events:none}
+.admin-theme-preview__grid button:before{z-index:0;background:linear-gradient(145deg,color-mix(in srgb,var(--theme-a,#12aaf5) 11%,#10161c),color-mix(in srgb,var(--theme-b,#f3b51d) 8%,#0a0d11) 78%);opacity:.98}
+.admin-theme-preview__grid button:after{z-index:0;opacity:.22;background:var(--theme-texture,linear-gradient(135deg,rgba(255,255,255,.06),transparent 44%))}
+.admin-theme-preview__grid button > *{position:relative;z-index:1}
+.admin-theme-preview__grid button b{letter-spacing:.02em;text-shadow:0 2px 12px rgba(0,0,0,.28)}
+.admin-theme-preview__grid button small{color:#cbd5db;text-shadow:0 1px 10px rgba(0,0,0,.3)}
+.admin-theme-preview__grid button i{box-shadow:inset 0 0 0 8px #080b0ec7,0 0 0 1px rgba(255,255,255,.08),0 6px 16px rgba(0,0,0,.35)}
+.admin-theme-preview__grid button:hover,.admin-theme-preview__grid button:focus-visible{transform:translateY(-1px);border-color:color-mix(in srgb,var(--theme-a,#12aaf5) 75%,#dfe9ef)}
+.admin-theme-preview__grid button.is-active{border-color:var(--theme-a,#12aaf5)!important;box-shadow:inset 4px 0 var(--theme-a,#12aaf5),0 0 0 1px color-mix(in srgb,var(--theme-b,#f3b51d) 28%,transparent);background:transparent!important}
+html[data-admin-theme] .admin-theme-preview__grid button{background:transparent!important;border-color:color-mix(in srgb,var(--theme-a,#12aaf5) 40%,#33404a)!important}
+html[data-admin-theme] .admin-theme-preview__grid button.is-active{border-color:var(--theme-a,#12aaf5)!important;box-shadow:inset 4px 0 var(--theme-a,#12aaf5),0 0 0 1px color-mix(in srgb,var(--theme-b,#f3b51d) 35%,transparent)!important}
+
+.admin-theme-preview__grid button[data-theme="default"]{--theme-a:#12aaf5;--theme-b:#f3b51d;--theme-texture:linear-gradient(135deg,rgba(18,170,245,.14),transparent 40%),linear-gradient(0deg,rgba(243,181,29,.12),transparent 42%)}
+.admin-theme-preview__grid button[data-theme="summer-end"]{--theme-a:#ff7a3d;--theme-b:#ffc06a;--theme-texture:radial-gradient(circle at 100% 0,rgba(255,192,106,.34),transparent 34%),linear-gradient(180deg,transparent 54%,rgba(255,122,61,.18) 100%)}
+.admin-theme-preview__grid button[data-theme="halloween-teaser"]{--theme-a:#d98743;--theme-b:#7b4aa8;--theme-texture:repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 1px,transparent 1px 10px),linear-gradient(135deg,rgba(217,135,67,.22),transparent 36%);clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.admin-theme-preview__grid button[data-theme="halloween"]{--theme-a:#f27722;--theme-b:#7d46a8;--theme-texture:repeating-linear-gradient(135deg,rgba(255,255,255,.065) 0 1px,transparent 1px 9px),radial-gradient(circle at 100% 0,rgba(125,70,168,.22),transparent 40%);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.admin-theme-preview__grid button[data-theme="halloween-week"]{--theme-a:#ff6a00;--theme-b:#a75cff;--theme-texture:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 1px,transparent 1px 8px),radial-gradient(circle at 0 100%,rgba(255,106,0,.18),transparent 42%);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.admin-theme-preview__grid button[data-theme="fall"]{--theme-a:#a84f2a;--theme-b:#d99a3e;--theme-texture:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 5px),linear-gradient(120deg,rgba(217,154,62,.16),transparent 38%);border-radius:18px}
+.admin-theme-preview__grid button[data-theme="christmas-teaser"]{--theme-a:#6d9b82;--theme-b:#a84c4c;--theme-texture:radial-gradient(circle at 12% 18%,rgba(255,243,180,.24) 0 2px,transparent 3px),radial-gradient(circle at 34% 22%,rgba(255,243,180,.16) 0 2px,transparent 3px),linear-gradient(180deg,rgba(255,255,255,.06),transparent 22%)}
+.admin-theme-preview__grid button[data-theme="christmas"]{--theme-a:#3f8d65;--theme-b:#b94747;--theme-texture:linear-gradient(180deg,rgba(235,247,255,.12),transparent 20%),radial-gradient(circle at 90% 18%,rgba(242,220,111,.18),transparent 24%)}
+.admin-theme-preview__grid button[data-theme="christmas-week"]{--theme-a:#40a46c;--theme-b:#e05252;--theme-texture:linear-gradient(180deg,rgba(235,247,255,.14),transparent 20%),radial-gradient(circle at 12% 16%,rgba(247,211,84,.22) 0 3px,transparent 4px),radial-gradient(circle at 28% 22%,rgba(92,193,255,.22) 0 3px,transparent 4px),radial-gradient(circle at 44% 18%,rgba(239,94,94,.24) 0 3px,transparent 4px),radial-gradient(circle at 60% 23%,rgba(112,229,114,.24) 0 3px,transparent 4px),radial-gradient(circle at 76% 17%,rgba(255,214,102,.22) 0 3px,transparent 4px);border-radius:18px}
+.admin-theme-preview__grid button[data-theme="calm-winter"]{--theme-a:#6f8ca5;--theme-b:#b9d7ea;--theme-texture:linear-gradient(180deg,rgba(235,247,255,.12),transparent 22%),linear-gradient(135deg,rgba(185,215,234,.12),transparent 45%)}
+.admin-theme-preview__grid button[data-theme="new-year"]{--theme-a:#f0d784;--theme-b:#aeb9c8;--theme-texture:linear-gradient(120deg,rgba(255,255,255,.05),rgba(240,215,132,.18),rgba(255,255,255,.03)),radial-gradient(circle at 84% 18%,rgba(255,255,255,.2) 0 2px,transparent 3px)}
+.admin-theme-preview__grid button[data-theme="clean-winter"]{--theme-a:#7a9fba;--theme-b:#a9d9f4;--theme-texture:linear-gradient(180deg,rgba(244,250,255,.12),transparent 24%),linear-gradient(135deg,rgba(169,217,244,.12),transparent 46%)}
+.admin-theme-preview__grid button[data-theme="valentine-teaser"]{--theme-a:#8f5d77;--theme-b:#d98fa8;--theme-texture:radial-gradient(circle at 15% 20%,rgba(255,255,255,.12),transparent 24%),linear-gradient(140deg,rgba(217,143,168,.16),transparent 42%);border-radius:18px}
+.admin-theme-preview__grid button[data-theme="valentine"]{--theme-a:#b84d74;--theme-b:#f39ab7;--theme-texture:radial-gradient(circle at 14% 18%,rgba(255,255,255,.16),transparent 24%),linear-gradient(140deg,rgba(243,154,183,.18),transparent 42%);border-radius:20px}
+.admin-theme-preview__grid button[data-theme="late-winter"]{--theme-a:#708797;--theme-b:#9fc5d8;--theme-texture:linear-gradient(180deg,rgba(244,250,255,.08),transparent 22%),linear-gradient(135deg,rgba(159,197,216,.1),transparent 45%)}
+.admin-theme-preview__grid button[data-theme="spring"]{--theme-a:#72b6a1;--theme-b:#9fd08c;--theme-texture:radial-gradient(circle at 100% 0,rgba(159,208,140,.16),transparent 36%),linear-gradient(135deg,rgba(114,182,161,.12),transparent 44%);border-radius:20px}
+.admin-theme-preview__grid button[data-theme="st-patrick"]{--theme-a:#258b46;--theme-b:#65d66f;--theme-texture:radial-gradient(circle at 84% 18%,rgba(101,214,111,.24) 0 2px,transparent 3px),linear-gradient(135deg,rgba(37,139,70,.14),transparent 44%);border-radius:18px}
+.admin-theme-preview__grid button[data-theme="easter"]{--theme-a:#a7c79a;--theme-b:#c0a5d6;--theme-texture:radial-gradient(circle at 100% 0,rgba(192,165,214,.16),transparent 36%),linear-gradient(135deg,rgba(167,199,154,.14),transparent 44%);border-radius:20px}
+.admin-theme-preview__grid button[data-theme="memorial-day"]{--theme-a:#315c96;--theme-b:#b94b51;--theme-texture:linear-gradient(90deg,rgba(49,92,150,.18) 0 12%,transparent 12% 88%,rgba(185,75,81,.18) 88% 100%)}
+.admin-theme-preview__grid button[data-theme="summer"]{--theme-a:#39a8d6;--theme-b:#f0c45a;--theme-texture:radial-gradient(circle at 100% 0,rgba(240,196,90,.24),transparent 36%),linear-gradient(135deg,rgba(57,168,214,.12),transparent 42%)}
+.admin-theme-preview__grid button[data-theme="independence-day"]{--theme-a:#3871b8;--theme-b:#d3474f;--theme-texture:linear-gradient(90deg,rgba(56,113,184,.2) 0 16%,transparent 16% 84%,rgba(211,71,79,.2) 84% 100%),radial-gradient(circle at 14% 18%,rgba(255,255,255,.18) 0 2px,transparent 3px)}
+
+/* v1.1.19 — calendar-order theme tiles, static holiday icons, and special-day faith/gratitude previews. */
+.admin-theme-preview__grid button{grid-template-columns:minmax(0,1fr) auto 42px;grid-template-rows:auto auto;column-gap:.55rem}
+.admin-theme-preview__grid .admin-theme-preview__icon{grid-column:2;grid-row:1/3;align-self:center;justify-self:center;display:grid;place-items:center;min-width:30px;min-height:30px;color:#f6f1e7;font:900 1.35rem/1 var(--condensed);text-shadow:0 3px 14px rgba(0,0,0,.52);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--theme-a,#12aaf5) 34%,transparent))}
+.admin-theme-preview__grid button i{grid-column:3;grid-row:1/3}
+.admin-theme-preview__grid button[data-theme="easter"] .admin-theme-preview__icon{font-size:1.65rem;color:#f0dda0}
+.admin-theme-preview__grid button[data-theme="christmas-week"] .admin-theme-preview__icon{font-size:1.55rem}
+.admin-theme-preview__grid button[data-theme="valentine"] .admin-theme-preview__icon{color:#ffc0d4}
+.admin-theme-preview__grid button[data-theme="st-patrick"] .admin-theme-preview__icon{color:#7fec83}
+.admin-theme-preview__grid button[data-theme="new-year"] .admin-theme-preview__icon{color:#f4df97}
+
+/* Static mini strand on the Christmas Week picker tile — the live preview provides the animation. */
+.theme-mini-lights{position:absolute!important;z-index:2!important;left:9px;right:9px;top:5px;height:8px;display:flex;align-items:flex-start;justify-content:space-around;border-top:1px solid rgba(25,58,38,.9);pointer-events:none}
+.theme-mini-lights u{position:relative;top:-1px;width:5px;height:7px;border-radius:50% 50% 45% 45%;background:#ffe58a;box-shadow:0 0 5px rgba(255,229,138,.45);text-decoration:none}
+.theme-mini-lights u:nth-child(2),.theme-mini-lights u:nth-child(6){background:#ef6b68;box-shadow:0 0 5px rgba(239,107,104,.45)}
+.theme-mini-lights u:nth-child(3){background:#72d59a;box-shadow:0 0 5px rgba(114,213,154,.45)}
+.theme-mini-lights u:nth-child(4){background:#80c7ff;box-shadow:0 0 5px rgba(128,199,255,.45)}
+.theme-mini-lights u:nth-child(5){background:#f2d88f;box-shadow:0 0 5px rgba(242,216,143,.45)}
+
+.admin-observance-preview{margin:1.25rem 0 1rem;padding:1rem;border:1px solid #39444d;background:linear-gradient(145deg,#10161c,#080b0e)}
+.admin-observance-preview__heading{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:.85rem;padding-bottom:.7rem;border-bottom:1px solid #313b43}
+.admin-observance-preview__heading span,.admin-observance-preview__heading>strong{color:#d7bd72;font:900 .54rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.admin-observance-preview__heading h3{margin:.25rem 0 .3rem;font:900 1.35rem/1 var(--condensed);text-transform:uppercase}.admin-observance-preview__heading p{max-width:800px;margin:0;color:#95a0a7;font-size:.68rem;line-height:1.5}
+.admin-observance-preview__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}
+.admin-observance-preview__grid button{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto auto;gap:.2rem .65rem;min-height:82px;padding:.7rem;border:1px solid #3a444d;background:linear-gradient(145deg,#10161c,#090c0f);color:#eef2f4;text-align:left;cursor:pointer;overflow:hidden}
+.admin-observance-preview__grid button>span{grid-row:1/3;display:grid;place-items:center;width:38px;height:38px;align-self:center;border:1px solid #ffffff20;background:#080b0eaa;color:#e6cc7f;font:900 1.35rem/1 var(--condensed)}
+.admin-observance-preview__grid button>b{align-self:end;font:900 .78rem/1 var(--condensed);text-transform:uppercase}.admin-observance-preview__grid button>small{align-self:start;color:#97a2a9;font:700 .56rem/1.3 var(--mono)}
+.admin-observance-preview__grid button:hover,.admin-observance-preview__grid button:focus-visible{border-color:#d7bd72}.admin-observance-preview__grid button.is-active{border-color:var(--preview-primary,#d7bd72);box-shadow:inset 4px 0 var(--preview-primary,#d7bd72)}
+.admin-observance-preview__grid button[data-observance="good-friday"]{background:linear-gradient(145deg,#11100e,#050505)}
+.admin-observance-preview__grid button[data-observance="easter-sunday"]{background:radial-gradient(circle at 100% 0,rgba(241,215,123,.13),transparent 42%),linear-gradient(145deg,#252516,#10140d)}
+.admin-observance-preview__grid button[data-observance="thanksgiving"]{background:linear-gradient(145deg,#2d1c10,#0d0906)}
+.admin-observance-preview__grid button[data-observance="christmas-eve"]{background:radial-gradient(circle at 86% 10%,rgba(241,216,147,.12),transparent 35%),linear-gradient(145deg,#101b2b,#06090f)}
+.admin-observance-preview__grid button[data-observance="christmas-day"]{background:radial-gradient(circle at 86% 10%,rgba(244,215,131,.13),transparent 35%),linear-gradient(145deg,#173021,#16090b)}
+.admin-observance-preview__grid button[data-observance="new-years-day"]{background:linear-gradient(125deg,#171717,#332e19,#0b0c0e)}
+
+/* Admin preview observance overlays: these sit on top of the selected base season. */
+html[data-admin-observance="good-friday"]{--preview-primary:#d5bd7a;--preview-secondary:#6b7077;--preview-third:#b9b2a4;--preview-overlay:radial-gradient(circle at 50% 5%,rgba(213,189,122,.07),transparent 25%),linear-gradient(180deg,rgba(2,2,2,.86),rgba(2,2,2,.95));--preview-panel:linear-gradient(140deg,rgba(18,17,15,.97),rgba(5,5,5,.99));--preview-corner:2px}
+html[data-admin-observance="good-friday"] :is(.admin-overview,.content-editor,[data-panel],.admin-theme-preview,.admin-theme-stage__card,.admin-theme-stage__mini){filter:saturate(.72)}
+html[data-admin-observance="easter-sunday"]{--preview-primary:#f1d77b;--preview-secondary:#9fcf93;--preview-third:#f4e8bd;--preview-overlay:radial-gradient(circle at 50% 0,rgba(241,215,123,.2),transparent 32%),radial-gradient(circle at 82% 22%,rgba(159,207,147,.12),transparent 30%),linear-gradient(180deg,rgba(7,7,5,.66),rgba(5,6,5,.88));--preview-panel:linear-gradient(140deg,rgba(38,39,22,.96),rgba(14,19,11,.98))}
+html[data-admin-observance="thanksgiving"]{--preview-primary:#e2b35c;--preview-secondary:#9d5b32;--preview-third:#e7d0a1;--preview-overlay:radial-gradient(circle at 50% 6%,rgba(226,179,92,.15),transparent 30%),linear-gradient(180deg,rgba(8,6,4,.7),rgba(7,5,4,.91))}
+html[data-admin-observance="christmas-eve"]{--preview-primary:#f1d893;--preview-secondary:#6b8faa;--preview-third:#f4f2df;--preview-overlay:radial-gradient(circle at 52% 2%,rgba(241,216,147,.18),transparent 24%),linear-gradient(180deg,rgba(3,6,11,.71),rgba(3,6,9,.92))}
+html[data-admin-observance="christmas-day"]{--preview-primary:#f4d783;--preview-secondary:#3f8d65;--preview-third:#d95858;--preview-overlay:radial-gradient(circle at 50% 2%,rgba(244,215,131,.21),transparent 28%),radial-gradient(circle at 82% 18%,rgba(63,141,101,.12),transparent 28%),linear-gradient(180deg,rgba(3,7,7,.65),rgba(3,6,6,.9))}
+html[data-admin-observance="new-years-day"]{--preview-primary:#f0d784;--preview-secondary:#d9dde3;--preview-third:#fff;--preview-overlay:radial-gradient(circle at 50% 6%,rgba(240,215,132,.19),transparent 31%),linear-gradient(180deg,rgba(4,5,7,.69),rgba(4,5,7,.91))}
+html[data-admin-observance] .admin-observance-preview{border-color:color-mix(in srgb,var(--preview-primary) 45%,#39444d);box-shadow:inset 0 2px color-mix(in srgb,var(--preview-primary) 18%,transparent)}
+html[data-admin-observance] .admin-observance-preview__heading span,html[data-admin-observance] .admin-observance-preview__heading>strong{color:var(--preview-primary)}
+
+@media(max-width:900px){.admin-observance-preview__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.admin-theme-preview__grid button{grid-template-columns:minmax(0,1fr) auto 36px}.admin-theme-preview__grid .admin-theme-preview__icon{font-size:1.15rem}.admin-observance-preview__grid{grid-template-columns:1fr}.admin-observance-preview__heading{align-items:flex-start;flex-direction:column}}
