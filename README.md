@@ -139,3 +139,8 @@ Admin Theme Preview v1.1.23 keeps the full visual theme picker and restores a li
 The automatic Eastern-Time theme controller now treats Palm Sunday through Easter Sunday as Holy Week / Easter and includes richer faith-specific visual storytelling: palm shadows on Palm Sunday, a restrained crown-of-thorns treatment on Good Friday, an empty-tomb sunrise on Easter Sunday, wheat and warm harvest light on Thanksgiving, and a Bethlehem skyline / Star of Bethlehem treatment through the Christmas season. These overlays remain decorative and non-interactive so site content stays readable.
 
 Admin → Theme Preview includes all of these timed observances, plus a verse banner at the top whenever a faith-focused theme or observance is selected. Preview choices remain temporary and never publish site changes.
+
+
+## Seasonal preview background behavior
+
+Theme Preview now mirrors the public backdrop rules exactly. Transitional skins (Summer’s End, Halloween teaser, Christmas teaser, Valentine teaser, and late winter) retain the Aetherwing editorial art underneath their tint. Full seasonal takeovers replace that art with their own generated backdrop, including Halloween, fall, Christmas, winter, Valentine, spring, Easter, New Year, and Independence Day. Major public hero surfaces also inherit the active theme backdrop so the iframe preview does not misleadingly show the default image over a full takeover.

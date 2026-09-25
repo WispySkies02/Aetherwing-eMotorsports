@@ -37,3 +37,17 @@ if(!adminHtml.includes('data-theme-faith-banner')||!adminHtml.includes('data-obs
 if(!adminThemeSource.includes('faithBanner')||!adminThemeSource.includes('HOSANNA IN THE HIGHEST'))throw Error('Admin faith preview banner logic is missing.');
 if(existsSync('src/pages/schedule/share'))throw Error('Legacy share-only pages remain.');
 console.log('Fresh routes, existing data, background, and admin source verified.');
+
+// Full seasonal takeovers must replace the default Aetherwing editorial backdrop, including inside Theme Preview.
+const siteCss=readFileSync('src/styles/site.css','utf8');
+const adminCss=readFileSync('public/admin/fresh-admin.css','utf8');
+for(const theme of ['halloween','halloween-week','fall','christmas','christmas-week','calm-winter','clean-winter','valentine','spring','easter','new-year','independence-day']){
+  const publicRule=siteCss.match(new RegExp(`html\\[data-season=\\"${theme}\\"\\][^{]*\\{--site-bg-art:([^}]*)`))?.[1]||'';
+  const adminRule=adminCss.match(new RegExp(`html\\[data-admin-theme=\\"${theme}\\"\\][^{]*\\{--preview-bg-art:([^}]*)`))?.[1]||'';
+  if(!publicRule||publicRule.includes('aetherwing-editorial.webp'))throw Error(`Full takeover ${theme} must replace the public editorial background.`);
+  if(!adminRule||adminRule.includes('aetherwing-editorial.webp'))throw Error(`Theme Preview ${theme} must replace the admin editorial background.`);
+}
+for(const file of ['src/styles/home.css','src/styles/records.css','src/styles/race-calendar.css']){
+  const css=readFileSync(file,'utf8');
+  if(css.includes("url('/images/textures/aetherwing-editorial.webp')"))throw Error(`${file} still hard-codes the editorial image instead of using --site-bg-art.`);
+}
