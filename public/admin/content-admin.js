@@ -546,11 +546,16 @@
   function hidePaintPanels() {
     document.querySelectorAll('[data-panel]').forEach((panel)=>{panel.hidden=true;});
   }
+  function hideThemePreview() {
+    const panel=$('[data-admin-theme-preview]');
+    if(panel)panel.hidden=true;
+  }
   function showOverview() {
     if(dirty&&!confirm('Leave unsaved changes in this tab?'))return;
     $('[data-admin-overview]').hidden=false;
     $('[data-content-editor]').hidden=true;
     hidePaintPanels();
+    hideThemePreview();
     setActiveAdminTab('overview','overview');
     key='';data=null;dirty=false;
     window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
@@ -579,6 +584,7 @@
       if (!loaded) await load();
       $('[data-admin-overview]').hidden=true;
       hidePaintPanels();
+      hideThemePreview();
       $('[data-content-editor]').hidden=false;
       const select=$('[data-content-dataset]');
       select.innerHTML=Object.entries(datasetMeta).map(([id,meta])=>`<option value="${id}">${esc(meta.title)}</option>`).join('');
@@ -596,15 +602,28 @@
     dirty=false;
     $('[data-admin-overview]').hidden=true;
     $('[data-content-editor]').hidden=true;
+    hideThemePreview();
     const internal=document.querySelector(`[data-tab="${name}"]`);
     if(internal)internal.click();
     setActiveAdminTab('paint',name);
     document.querySelector(`[data-panel="${name}"]`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
+  function showThemePreview() {
+    if(dirty&&!confirm('Leave unsaved changes in this content tab?'))return;
+    dirty=false;key='';data=null;
+    $('[data-admin-overview]').hidden=true;
+    $('[data-content-editor]').hidden=true;
+    hidePaintPanels();
+    const panel=$('[data-admin-theme-preview]');
+    if(panel)panel.hidden=false;
+    setActiveAdminTab('theme','theme-preview');
+    panel?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }
   document.querySelectorAll('[data-content-module]').forEach((button)=>button.addEventListener('click',()=>openModule(button.dataset.contentModule)));
   document.querySelectorAll('[data-admin-dataset]').forEach((button)=>button.addEventListener('click',()=>openDatasetTab(button.dataset.adminDataset)));
   document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',()=>openPaintTab(button.dataset.adminPaintTab)));
   document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',showOverview);
+  document.querySelector('[data-admin-tab="theme-preview"]')?.addEventListener('click',showThemePreview);
   $('[data-content-dataset]').addEventListener('change',(event)=>{ if(dirty&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
   $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});

@@ -73,3 +73,12 @@ The supplied Aetherwing editorial reference image is now a single full-viewport,
 - Driver profiles now listen to the same live Driver Portfolios data used by the Partners page, preventing a profile from keeping an older sponsor list after a portfolio is published.
 - Charter Boards accept uploaded/pasted number art for unsigned full-time charters and for each flexible Open Charter number identity. That artwork is used on the public Driver Lineup.
 - The Driver Lineup includes affiliated StarClutch Racing Kmart and Sunoco rides alongside Aetherwing entries, with partner-team labeling kept distinct from Aetherwing-owned seats.
+
+
+## Automatic seasonal themes
+
+The public site now includes a permanent Eastern-Time seasonal controller at `public/seasonal-theme.js`. It automatically selects the active visual skin from the Aetherwing calendar without requiring a new deploy at each transition. The schedule covers clean winter, Valentine teaser/full Valentine, late winter, spring, St. Patrick’s Day, Easter week, Memorial Day weekend, summer, Independence Day, Summer’s End, Halloween teaser/full/Halloween week, fall through Thanksgiving, Christmas teaser/full/Christmas week, calm winter, and New Year. The 2026 Summer’s End window remains the special Sep. 20–24 launch window; later years use the established Aug. 25–Sep. 7 Summer’s End window. Holiday-dependent Easter, Memorial Day, and Thanksgiving windows are calculated for the current year.
+
+For private public-site testing, append `?season=<theme-id>` (for example `?season=halloween`) or `?season=off`. These URL previews do not change the live calendar for other visitors.
+
+Admin also includes tab **22 Theme Preview**. Its buttons restyle only the current Admin page in real time. Theme Preview never publishes, never writes to local storage, and resets to Default Aetherwing on reload.
