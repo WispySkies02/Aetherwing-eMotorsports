@@ -22,3 +22,22 @@
 @keyframes aw-bat{0%{transform:translate3d(-12vw,15vh,0) scale(.75);opacity:0}12%{opacity:.12}55%{transform:translate3d(52vw,45vh,0) scale(1)}100%{transform:translate3d(118vw,18vh,0) scale(.72);opacity:0}}
 @keyframes aw-burst{0%,72%{transform:scale(.08);opacity:0}76%{opacity:.7}87%{transform:scale(1);opacity:.52}100%{transform:scale(1.35);opacity:0}}
 @media (prefers-reduced-motion:reduce){.aw-season-atmosphere{display:none!important}}
+
+/* Christmas Week: a restrained string-light frame around the viewport/preview stage. */
+.aw-fx__lights{z-index:2;display:flex;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+.aw-fx__lights:before{content:'';position:absolute;background:rgba(18,30,22,.92);box-shadow:0 0 2px rgba(255,255,255,.12)}
+.aw-fx__lights b{position:relative;display:block;width:7px;height:11px;border-radius:55% 55% 48% 48%;background:#ffe58a;box-shadow:0 0 7px 2px rgba(255,229,138,.42);animation:aw-holiday-bulb 2.8s ease-in-out var(--light-delay,0s) infinite alternate}
+.aw-fx__lights b:before{content:'';position:absolute;left:2px;top:-4px;width:3px;height:4px;border-radius:1px;background:#203426}
+.aw-fx__lights b:nth-child(4n+2){background:#ef6b68;box-shadow:0 0 7px 2px rgba(239,107,104,.42)}
+.aw-fx__lights b:nth-child(4n+3){background:#72d59a;box-shadow:0 0 7px 2px rgba(114,213,154,.42)}
+.aw-fx__lights b:nth-child(4n+4){background:#80c7ff;box-shadow:0 0 7px 2px rgba(128,199,255,.42)}
+.aw-fx__lights--top{left:0;right:0;top:5px;height:30px;align-items:flex-start;justify-content:space-around;padding-inline:10px}
+.aw-fx__lights--top:before{left:0;right:0;top:1px;height:2px;transform:rotate(.15deg)}
+.aw-fx__lights--top b{margin-top:calc(4px + var(--light-lift,0px))}
+.aw-fx__lights--left,.aw-fx__lights--right{top:30px;bottom:0;width:28px;flex-direction:column;align-items:center;justify-content:space-around;padding-block:4px}
+.aw-fx__lights--left{left:5px}.aw-fx__lights--right{right:5px}
+.aw-fx__lights--left:before,.aw-fx__lights--right:before{top:0;bottom:0;left:13px;width:2px}
+.aw-fx__lights--left b,.aw-fx__lights--right b{transform:rotate(90deg)}
+@keyframes aw-holiday-bulb{0%,35%{opacity:.48;filter:saturate(.8) brightness(.8)}65%,100%{opacity:.98;filter:saturate(1.08) brightness(1.16)}}
+@media(max-width:700px){.aw-fx__lights--left,.aw-fx__lights--right{display:none}.aw-fx__lights--top b{width:6px;height:9px}}
+@media(prefers-reduced-motion:reduce){.aw-fx__lights b{animation:none!important;opacity:.8}}

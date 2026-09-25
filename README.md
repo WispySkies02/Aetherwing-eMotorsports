@@ -95,3 +95,7 @@ Seasonal themes now change the public site's UI language and ambient atmosphere,
 ## Admin seasonal preview visibility (v1.1.16)
 
 Theme Preview now includes a dedicated live UI + motion stage and stronger theme-specific component treatments so previews demonstrate shapes, panel textures, controls, borders, scrollbar styling, and ambient effects rather than only palette/glow changes. The full Admin page still adopts the selected preview skin. If the device requests Reduced Motion, Admin respects it by default and offers a temporary "Play Motion Anyway" control for previewing animations; the override is not persisted or published.
+## Christmas Week lights
+
+The Dec 18–25 Christmas Week theme now adds animated multicolor string lights around the viewport edges in addition to snowfall and holiday sparkle. The Admin Theme Preview renders the same light frame for Christmas Week, including inside the live experience preview. Side strands collapse on narrow mobile screens to keep the UI readable.
+

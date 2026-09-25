@@ -23,7 +23,7 @@
     fall:{window:'Nov 1–Thanksgiving',motion:'Sparse falling leaves',motionCopy:'A few slow leaves cross the background at different speeds.',ui:'Harvest UI',uiCopy:'Warm paper/metal panels, softer corners, rust accents, and amber dividers.',effect:'leaves',density:16},
     'christmas-teaser':{window:'Day after Thanksgiving–Nov 30',motion:'First-light twinkles',motionCopy:'Tiny warm points of light appear occasionally in the background.',ui:'First-lights UI',uiCopy:'Evergreen/red hints begin while the regular Aetherwing interface still dominates.',effect:'twinkle',density:12},
     christmas:{window:'Dec 1–17',motion:'Light snowfall',motionCopy:'Small flakes fall slowly behind the panels with frosted edges.',ui:'Christmas / winter UI',uiCopy:'Frosted top edges, evergreen/red details, cool glass panels, and warm gold accents.',effect:'snow',density:28},
-    'christmas-week':{window:'Dec 18–25',motion:'Snow + holiday sparkle',motionCopy:'Snow becomes a little fuller with occasional warm twinkles.',ui:'Merry & bright UI',uiCopy:'The holiday treatment gets brighter trim and subtle glow without obscuring data.',effect:'snow-twinkle',density:44},
+    'christmas-week':{window:'Dec 18–25',motion:'Snow + Christmas lights',motionCopy:'Fuller snowfall sits behind animated multicolor light strands around the page edges.',ui:'Merry & bright UI',uiCopy:'The holiday treatment gets brighter trim, frosted surfaces, and a Christmas-light frame without obscuring data.',effect:'snow-twinkle',density:44,lights:true},
     'calm-winter':{window:'Dec 26–30',motion:'Very light snowfall',motionCopy:'Only a few slow flakes remain after Christmas.',ui:'Quiet winter UI',uiCopy:'Blue-gray frosted panels and reduced holiday color make the site feel calmer.',effect:'snow',density:12},
     'new-year':{window:'Dec 31–Jan 1',motion:'Distant fireworks',motionCopy:'Small, occasional bursts appear high in the background instead of covering content.',ui:'Metallic event-night UI',uiCopy:'Gold/silver surfaces, crisp corners, and a slow metallic sheen on controls.',effect:'fireworks',density:5},
     'clean-winter':{window:'Jan 2–31',motion:'Sparse snowfall',motionCopy:'A few clean white flakes keep the winter atmosphere alive.',ui:'Clean frost UI',uiCopy:'Ice-blue dividers and glassy, restrained winter panels.',effect:'snow',density:9},
@@ -55,6 +55,10 @@
     else if(meta.effect==='glow')add('aw-fx__glow',density);
     else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
     else if(meta.effect==='fireworks'){for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i+(stageMode?19:0),8)*76}%;--y:${10+seeded(i+(stageMode?19:0),9)*52}%;--delay:-${(seeded(i+(stageMode?19:0),10)*12).toFixed(2)}s;--dur:${(6+seeded(i,11)*6).toFixed(2)}s`;layer.appendChild(el);}}
+    if(meta.lights){
+      const makeStrand=(position,count)=>{const strand=document.createElement('div');strand.className=`aw-fx__lights aw-fx__lights--${position}`;for(let i=0;i<count;i++){const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i+(stageMode?17:0),20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i+(stageMode?17:0),21)*8)}px`);strand.appendChild(bulb);}layer.appendChild(strand);};
+      makeStrand('top',stageMode?18:30);makeStrand('left',stageMode?10:18);makeStrand('right',stageMode?10:18);
+    }
     return layer;
   };
   const mountFx=(theme)=>{

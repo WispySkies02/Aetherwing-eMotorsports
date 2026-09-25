@@ -7,7 +7,7 @@
     'fall':{title:'FALL AT AETHERWING',subtitle:'COOL AIR · HOT LAPS',effect:'leaves',density:16,ui:'harvest'},
     'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS OF THE SEASON',effect:'twinkle',density:12,ui:'holiday-soft'},
     'christmas':{title:'CHRISTMAS / WINTER',subtitle:'RACE THROUGH THE HOLIDAYS',effect:'snow',density:28,ui:'holiday'},
-    'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'MERRY & BRIGHT · AETHERWING',effect:'snow-twinkle',density:44,ui:'holiday-max'},
+    'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'MERRY & BRIGHT · AETHERWING',effect:'snow-twinkle',density:44,ui:'holiday-max',lights:true},
     'calm-winter':{title:'WINTER RESET',subtitle:'QUIET DAYS · NEXT RACE AHEAD',effect:'snow',density:12,ui:'frost'},
     'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',effect:'fireworks',density:5,ui:'metallic'},
     'clean-winter':{title:'CLEAN WINTER',subtitle:'COLD AIR · CLEAR FOCUS',effect:'snow',density:9,ui:'frost'},
@@ -98,6 +98,16 @@
     else if(meta.effect==='twinkle'){add('aw-fx__twinkle',meta.density);}
     else if(meta.effect==='fireworks'){
       for(let i=0;i<meta.density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}
+    }
+    if(meta.lights){
+      const makeStrand=(position,count)=>{
+        const strand=document.createElement('div');strand.className=`aw-fx__lights aw-fx__lights--${position}`;
+        for(let i=0;i<count;i++){
+          const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i,20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i,21)*8)}px`);strand.appendChild(bulb);
+        }
+        layer.appendChild(strand);
+      };
+      makeStrand('top',30);makeStrand('left',18);makeStrand('right',18);
     }
     document.body.prepend(layer);mountedTheme=theme;
   }
