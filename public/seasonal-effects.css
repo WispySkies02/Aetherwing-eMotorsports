@@ -1,5 +1,5 @@
 /* Aetherwing seasonal atmosphere — decorative only, never blocks interaction. */
-.aw-season-atmosphere{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;user-select:none;contain:strict}
+.aw-season-atmosphere{position:fixed;inset:0;z-index:40;overflow:hidden;pointer-events:none;user-select:none;contain:strict}
 .aw-season-atmosphere>*{position:absolute;pointer-events:none}
 .aw-fx__haze{left:-15%;width:130%;height:38%;border-radius:50%;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--fx-primary,#fff) 17%,transparent),transparent 68%);filter:blur(42px);opacity:.24;animation:aw-haze 24s ease-in-out infinite alternate}
 .aw-fx__haze:nth-child(2){top:34%;animation-duration:31s;animation-direction:alternate-reverse;opacity:.18}.aw-fx__haze:nth-child(3){top:67%;animation-duration:37s;opacity:.14}
@@ -126,3 +126,12 @@
 
 @media(max-width:700px){.aw-faith-palm{opacity:.08}.aw-faith-scene--bethlehem .aw-bethlehem__skyline{width:80vw;opacity:.14}.aw-bethlehem__star{right:28px;top:55px}.aw-observance-motif--palms .aw-faith-palm{opacity:.15}.aw-observance-motif--thorns .aw-thorns__ring{right:-15px;top:19%;opacity:.18}.aw-tomb__hill{width:78vw}.aw-tomb__mouth{right:52px}.aw-tomb__stone{right:8px}.aw-wheat__stem{opacity:.18}}
 @media(prefers-reduced-motion:reduce){.aw-bethlehem__star,.aw-tomb__rays{animation:none!important}}
+
+
+/* v1.1.26 — this is the front-glass layer. Keep it visible but non-blocking and gentle over copy. */
+.aw-season-atmosphere{pointer-events:none!important}
+@media(max-width:700px){
+  .aw-observance-motif--wheat .aw-wheat__stem{opacity:.13}
+  .aw-observance-motif--empty-tomb{opacity:.72}
+  .aw-observance-motif--palms .aw-faith-palm{opacity:.11}
+}

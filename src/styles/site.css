@@ -19,7 +19,7 @@
 /* v1.1.13 — automatic seasonal skin system. Public themes are date-driven in Eastern Time and can be privately previewed with ?season=<theme>. */
 .aw-season-banner{display:none}
 html[data-season]{--season-primary:var(--gold);--season-secondary:var(--blue);--season-tertiary:#f5f5f5;--season-banner:linear-gradient(90deg,rgba(7,11,16,.98),rgba(35,35,35,.94),rgba(7,11,16,.98));--season-overlay:linear-gradient(180deg,rgba(4,6,9,.68),rgba(4,6,9,.8))}
-html[data-season] body:after{background:var(--season-overlay)}
+html[data-season] body:after{background:var(--season-overlay);opacity:.58}
 html[data-season] .aw-season-banner{display:flex;align-items:center;justify-content:center;gap:.75rem;min-height:31px;padding:.35rem var(--gutter);border-bottom:1px solid color-mix(in srgb,var(--season-primary) 38%,transparent);background:var(--season-banner);box-shadow:inset 0 2px 0 color-mix(in srgb,var(--season-primary) 55%,transparent);font:900 .58rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
 html[data-season] .aw-season-banner span{color:var(--season-primary)}html[data-season] .aw-season-banner b{color:#e4e8eb;font-weight:800}
 html[data-season] .site-header:after{background:linear-gradient(90deg,var(--season-secondary) 0 25%,var(--season-primary) 25% 52%,var(--season-tertiary) 52% 78%,#eee 78%)}
@@ -59,7 +59,8 @@ html::-webkit-scrollbar-corner,body::-webkit-scrollbar-corner{background:#06080b
 
 /* v1.1.15 — seasonal atmosphere + UI language. The calendar theme changes more than color: panels, chips, borders and micro-interactions shift with the season while keeping layout/data stable. */
 html[data-season]{--season-corner:2px;--season-panel:color-mix(in srgb,#0b0f13 92%,var(--season-primary) 8%);--season-border:color-mix(in srgb,var(--season-primary) 38%,#343b42);--season-shadow:0 12px 28px rgba(0,0,0,.28);--season-chip:color-mix(in srgb,#0a0d10 88%,var(--season-secondary) 12%);--season-hover:color-mix(in srgb,var(--season-primary) 9%,#0a0d10);--season-divider:linear-gradient(90deg,var(--season-secondary),var(--season-primary),transparent)}
-html[data-season] body>main,html[data-season] body>.site-footer,html[data-season] body>.aw-season-banner{position:relative;z-index:1}
+html[data-season] body>main,html[data-season] body>.site-footer{position:relative;z-index:1}
+html[data-season] body>.aw-season-banner{position:relative;z-index:50}
 html[data-season] :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,.profile-stat,.profile-assignment,.profile-partners,.home-after__card,.home-story__feature,.home-people__tile,.faith-signature__inner){border-color:var(--season-border)!important;border-radius:var(--season-corner);box-shadow:var(--season-shadow)}
 html[data-season] :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button){border-radius:var(--season-corner);transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
 html[data-season] :is(.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button):not([aria-pressed="true"]){background:var(--season-chip)!important;border-color:color-mix(in srgb,var(--season-secondary) 30%,#40474d)!important}
@@ -148,7 +149,7 @@ html[data-observance="good-friday"] .page-intro>*,html[data-observance="easter-s
    Full takeovers receive their own backdrop language instead of tinting the default grunge art. */
 :root{--site-bg-art:url('/images/textures/aetherwing-editorial.webp')}
 body:before{background-image:var(--site-bg-art)!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
-html[data-season] .page-intro{background-image:linear-gradient(90deg,rgba(6,8,11,.96),rgba(6,8,11,.7) 68%,rgba(6,8,11,.5)),var(--site-bg-art)!important;background-position:center!important;background-size:cover!important}
+html[data-season] .page-intro{background-image:linear-gradient(90deg,rgba(6,8,11,.76),rgba(6,8,11,.42) 68%,rgba(6,8,11,.24))!important;background-color:transparent!important;background-position:center!important;background-size:cover!important}
 
 /* Keep transitional themes close to the core Aetherwing art. */
 html[data-season="summer-end"]{--site-bg-art:radial-gradient(circle at 82% 18%,rgba(255,155,70,.23),transparent 28%),linear-gradient(160deg,rgba(33,15,8,.18),transparent 45%),url('/images/textures/aetherwing-editorial.webp')}
@@ -204,3 +205,15 @@ html[data-observance="thanksgiving"] .aw-season-banner{letter-spacing:.12em}
 
 /* Faith banners get a little extra breathing room because the verse/reference is the point of the observance. */
 html[data-observance="palm-sunday"] .aw-season-banner,html[data-observance="good-friday"] .aw-season-banner,html[data-observance="easter-sunday"] .aw-season-banner,html[data-observance="thanksgiving"] .aw-season-banner,html[data-observance="christmas-eve"] .aw-season-banner,html[data-observance="christmas-day"] .aw-season-banner,html[data-observance="new-years-day"] .aw-season-banner{min-height:37px;padding-block:.45rem}
+
+
+/* v1.1.26 — seasonal layers must read as the page atmosphere, not hide behind page-sized dark surfaces. */
+html[data-season] body{background:transparent}
+html[data-season] main{background:transparent}
+html[data-season] :is(.home-people,.home-story,.news-article){background-color:rgba(7,9,12,.72)!important}
+html[data-season] .site-footer{background-color:rgba(8,10,13,.9)!important}
+@media(max-width:640px){
+  html[data-season] .aw-season-banner{gap:.45rem;justify-content:flex-start;padding:.42rem .75rem;overflow:hidden}
+  html[data-season] .aw-season-banner span{flex:0 0 auto}
+  html[data-season] .aw-season-banner b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}

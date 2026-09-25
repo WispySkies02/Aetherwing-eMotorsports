@@ -9,3 +9,7 @@
 @media(max-width:760px){.aw-calendar__layout{grid-template-columns:1fr}.aw-calendar__hero{min-height:24rem}.aw-calendar__event{grid-template-columns:3.5rem 1fr auto;gap:.5rem}.aw-calendar__event strong{font-size:1.25rem}.aw-calendar__recent a{margin-left:0}}
 
 .aw-calendar__filters::-webkit-scrollbar{height:8px}.aw-calendar__filters::-webkit-scrollbar-track{background:#090b0e;border:1px solid #20262b}.aw-calendar__filters::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--aw-blue),var(--aw-gold));border:2px solid #090b0e;border-radius:999px}
+
+
+/* v1.1.26 — calendar sits over the shared seasonal scene instead of repainting it. */
+html[data-season] .aw-calendar{background-image:linear-gradient(130deg,rgba(0,166,255,.035),transparent 35%),linear-gradient(rgba(6,6,6,.78),rgba(2,2,2,.84))!important;background-color:transparent!important}

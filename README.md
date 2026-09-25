@@ -144,3 +144,8 @@ Admin → Theme Preview includes all of these timed observances, plus a verse ba
 ## Seasonal preview background behavior
 
 Theme Preview now mirrors the public backdrop rules exactly. Transitional skins (Summer’s End, Halloween teaser, Christmas teaser, Valentine teaser, and late winter) retain the Aetherwing editorial art underneath their tint. Full seasonal takeovers replace that art with their own generated backdrop, including Halloween, fall, Christmas, winter, Valentine, spring, Easter, New Year, and Independence Day. Major public hero surfaces also inherit the active theme backdrop so the iframe preview does not misleadingly show the default image over a full takeover.
+
+
+## Seasonal backdrop layering (v1.1.26)
+
+Seasonal background art now lives on the fixed viewport backdrop and the animated atmosphere is a pointer-transparent front-glass layer. Large page surfaces use translucent readability veils instead of repainting an opaque copy of the backdrop, so full seasonal takeovers remain visible on the real site and in Theme Preview. The mobile home hero also no longer reserves a large empty viewport-height block above its copy.
