@@ -84,11 +84,25 @@
 
       <section class="admin-theme-preview" data-admin-theme-preview hidden aria-labelledby="theme-preview-title">
         <div class="control-center__heading"><span>22</span><div><p class="admin-section-kicker">VISUAL SANDBOX</p><h2 id="theme-preview-title">Theme Preview</h2><p>Preview any seasonal Aetherwing skin on this Admin page only. Nothing here publishes or changes the public site, and a page reload always returns Admin to the normal Aetherwing look.</p></div></div>
-        <div class="admin-theme-preview__status" role="status" aria-live="polite"><span>Current preview</span><strong data-theme-preview-name>Default Aetherwing</strong><button type="button" data-theme-reset>Reset to Default</button></div>
+        <div class="admin-theme-preview__status" role="status" aria-live="polite"><span>Current preview</span><strong data-theme-preview-name>Default Aetherwing</strong><button type="button" data-theme-motion-toggle hidden>Play Motion Anyway</button><button type="button" data-theme-reset>Reset to Default</button></div>
         <section class="admin-season-experience" aria-label="Seasonal experience preview details">
           <article><span>Calendar window</span><strong data-theme-window>Always</strong><p>The public site switches automatically in Eastern Time.</p></article>
           <article><span>Ambient motion</span><strong data-theme-motion>None</strong><p data-theme-motion-copy>Default Aetherwing keeps the background still.</p></article>
           <article><span>UI treatment</span><strong data-theme-ui>Standard race UI</strong><p data-theme-ui-copy>Normal Aetherwing panels, filters, buttons, borders, and scrollbar.</p></article>
+        </section>
+        <section class="admin-theme-stage" data-theme-stage aria-label="Live seasonal UI and motion preview">
+          <div class="admin-theme-stage__chrome"><span>LIVE EXPERIENCE</span><strong data-theme-stage-name>Default Aetherwing</strong><small>UI + MOTION</small></div>
+          <div class="admin-theme-stage__scene">
+            <article class="admin-theme-stage__card">
+              <span class="admin-theme-stage__eyebrow">Race Control</span>
+              <h3>Seasonal UI Preview</h3>
+              <p>Cards, filters, controls, borders, textures, and ambient motion all change with the selected theme.</p>
+              <div class="admin-theme-stage__chips"><button type="button" class="is-active">Selected</button><button type="button">Filter</button><button type="button">Action ↗</button></div>
+            </article>
+            <aside class="admin-theme-stage__mini">
+              <span>LIVE CARD</span><strong>28</strong><small>AETHERWING</small>
+            </aside>
+          </div>
         </section>
         <div class="admin-theme-preview__grid" data-theme-grid>
           <button type="button" data-theme="default" class="is-active"><b>Default Aetherwing</b><small>Normal admin look</small><i style="--swatch-a:#12aaf5;--swatch-b:#f3b51d"></i></button>

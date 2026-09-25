@@ -8,6 +8,10 @@
   const motionCopy=document.querySelector('[data-theme-motion-copy]');
   const uiEl=document.querySelector('[data-theme-ui]');
   const uiCopy=document.querySelector('[data-theme-ui-copy]');
+  const stage=document.querySelector('[data-theme-stage]');
+  const stageName=document.querySelector('[data-theme-stage-name]');
+  const motionToggle=document.querySelector('[data-theme-motion-toggle]');
+  const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')||null;
   if(!grid||!name||!reset)return;
   const labels=Object.fromEntries([...grid.querySelectorAll('[data-theme]')].map((button)=>[button.dataset.theme,button.querySelector('b')?.textContent?.trim()||button.dataset.theme]));
   const META={
@@ -35,32 +39,40 @@
   };
   const seeded=(i,salt=1)=>{const x=Math.sin((i+1)*12.9898+salt*78.233)*43758.5453;return x-Math.floor(x);};
   const styleFor=(i)=>`--x:${Math.round(seeded(i,1)*100)}%;--delay:-${(seeded(i,2)*18).toFixed(2)}s;--dur:${(12+seeded(i,3)*18).toFixed(2)}s;--size:${(3+seeded(i,4)*7).toFixed(1)}px;--drift:${Math.round((seeded(i,5)-.5)*180)}px`;
-  const removeFx=()=>document.querySelector('.aw-season-atmosphere')?.remove();
-  const mountFx=(theme)=>{
-    removeFx();const meta=META[theme];if(!meta||meta.effect==='none')return;
-    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-season-atmosphere--${meta.effect}`;layer.setAttribute('aria-hidden','true');
+  const removeFx=()=>document.querySelectorAll('.aw-admin-season-fx').forEach((node)=>node.remove());
+  const buildFx=(theme,stageMode=false)=>{
+    const meta=META[theme];if(!meta||meta.effect==='none')return null;
+    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-admin-season-fx ${stageMode?'aw-admin-season-fx--stage':'aw-admin-season-fx--page'} aw-season-atmosphere--${meta.effect}`;layer.setAttribute('aria-hidden','true');
     const css=getComputedStyle(root);layer.style.setProperty('--fx-primary',css.getPropertyValue('--preview-primary').trim()||'#f3b51d');layer.style.setProperty('--fx-secondary',css.getPropertyValue('--preview-secondary').trim()||'#12aaf5');layer.style.setProperty('--fx-tertiary',css.getPropertyValue('--preview-third').trim()||'#fff');
-    const add=(cls,count)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i);layer.appendChild(el);}};
+    const density=stageMode?Math.max(meta.density,meta.effect==='haze'?3:12):meta.density;
+    const add=(cls,count)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+(stageMode?31:0));layer.appendChild(el);}};
     if(meta.effect==='haze')add('aw-fx__haze',3);
-    else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',meta.density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
-    else if(meta.effect==='leaves')add('aw-fx__leaf',meta.density);
-    else if(meta.effect==='snow')add('aw-fx__snow',meta.density);
-    else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',meta.density);add('aw-fx__twinkle',12);}
-    else if(meta.effect==='petals')add('aw-fx__petal',meta.density);
-    else if(meta.effect==='glow')add('aw-fx__glow',meta.density);
-    else if(meta.effect==='twinkle')add('aw-fx__twinkle',meta.density);
-    else if(meta.effect==='fireworks'){for(let i=0;i<meta.density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}}
-    document.body.prepend(layer);
+    else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
+    else if(meta.effect==='leaves')add('aw-fx__leaf',density);
+    else if(meta.effect==='snow')add('aw-fx__snow',density);
+    else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',12);}
+    else if(meta.effect==='petals')add('aw-fx__petal',density);
+    else if(meta.effect==='glow')add('aw-fx__glow',density);
+    else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
+    else if(meta.effect==='fireworks'){for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i+(stageMode?19:0),8)*76}%;--y:${10+seeded(i+(stageMode?19:0),9)*52}%;--delay:-${(seeded(i+(stageMode?19:0),10)*12).toFixed(2)}s;--dur:${(6+seeded(i,11)*6).toFixed(2)}s`;layer.appendChild(el);}}
+    return layer;
+  };
+  const mountFx=(theme)=>{
+    removeFx();
+    const pageLayer=buildFx(theme,false);if(pageLayer)document.body.prepend(pageLayer);
+    const stageLayer=buildFx(theme,true);if(stage&&stageLayer)stage.prepend(stageLayer);
   };
   const select=(theme='default')=>{
     if(theme==='default')delete root.dataset.adminTheme;else root.dataset.adminTheme=theme;
     grid.querySelectorAll('[data-theme]').forEach((button)=>{const active=button.dataset.theme===theme;button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));});
     const meta=META[theme]||META.default;
-    name.textContent=labels[theme]||'Default Aetherwing';
+    name.textContent=labels[theme]||'Default Aetherwing';if(stageName)stageName.textContent=labels[theme]||'Default Aetherwing';
+    if(motionToggle){const blocked=theme!=='default'&&reduceMotion?.matches&&root.dataset.adminForceMotion!=='true';motionToggle.hidden=!blocked;}
     if(windowEl)windowEl.textContent=meta.window;if(motionEl)motionEl.textContent=meta.motion;if(motionCopy)motionCopy.textContent=meta.motionCopy;if(uiEl)uiEl.textContent=meta.ui;if(uiCopy)uiCopy.textContent=meta.uiCopy;
     requestAnimationFrame(()=>mountFx(theme));
   };
   grid.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme]');if(button)select(button.dataset.theme);});
-  reset.addEventListener('click',()=>select('default'));
+  if(motionToggle)motionToggle.addEventListener('click',()=>{root.dataset.adminForceMotion='true';motionToggle.hidden=true;mountFx([...grid.querySelectorAll('[data-theme].is-active')][0]?.dataset.theme||'default');});
+  reset.addEventListener('click',()=>{delete root.dataset.adminForceMotion;select('default');});
   select('default');
 })();
