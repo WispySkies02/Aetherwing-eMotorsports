@@ -116,3 +116,11 @@ Admin → Theme Preview is ordered January through December, gives every theme a
 - Easter Sunday adds a brighter cross + sunrise treatment; Christmas Eve adds a star motif; Christmas Day adds cross + star over Christmas Week; Thanksgiving and New Year's Day get gratitude marks.
 - Christmas Week now includes a decorative lit Christmas tree in the seasonal layer and Admin preview.
 - Christmas light strands now render as visibly powered bulbs with stronger colored halos and staggered twinkling/chasing brightness instead of dim static dots.
+
+
+## v1.1.21 · Seasonal background art + home faith spacing
+
+- Tightens the home-page faith section so it reads as a major editorial section instead of a nearly empty full-screen hero.
+- Adds theme-specific full-page background art treatments for Halloween, Fall, Christmas/Winter, Valentine, Spring, Easter, New Year, Independence Day, and supporting transitional themes.
+- Uses the same background-art language inside Admin Theme Preview, so previewing a theme now includes its backdrop as well as UI, motion, icons, and observance overlays.
+- Keeps content readability protected with the existing dark overlay and opaque data panels.
