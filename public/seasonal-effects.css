@@ -74,3 +74,55 @@
 .aw-admin-season-fx--stage .aw-observance-motif{right:3%;top:12%;width:105px;height:145px;opacity:.48;transform:scale(.76);transform-origin:center}.aw-admin-season-fx--stage .aw-observance-motif>span{font-size:6.4rem}.aw-admin-season-fx--stage .aw-observance-motif>i{font-size:2.3rem}
 @media(max-width:700px){.aw-fx__tree{width:100px;height:145px;right:9px;bottom:14px;opacity:.46}.aw-fx__tree-tier--1{top:20px;width:54px;height:50px}.aw-fx__tree-tier--2{top:48px;width:77px;height:63px}.aw-fx__tree-tier--3{top:77px;width:98px;height:62px}.aw-fx__tree-trunk{height:22px;width:13px}.aw-fx__tree-star{font-size:19px}.aw-observance-motif{right:8px;top:20%;opacity:.14}.aw-observance-motif--easter-sunday,.aw-observance-motif--christmas-eve,.aw-observance-motif--christmas-day{opacity:.2}}
 @media(prefers-reduced-motion:reduce){.aw-fx__lights b,.aw-fx__lights b:after,.aw-fx__tree-star,.aw-fx__tree-lights b,.aw-observance-motif--easter-sunday:before{animation:none!important}.aw-fx__lights b{opacity:1!important;filter:saturate(1.2) brightness(1.12)!important}}
+
+/* v1.1.24 — faith observance art: story-driven motifs instead of generic cross glyphs. */
+.aw-faith-scene{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.aw-faith-scene--holy-week .aw-faith-dawn{position:absolute;right:-7%;top:-12%;width:min(56vw,760px);height:min(56vw,760px);border-radius:50%;background:radial-gradient(circle,rgba(247,216,126,.17) 0 10%,rgba(247,216,126,.07) 24%,transparent 66%);opacity:.7}
+.aw-faith-palm{position:absolute;width:clamp(105px,16vw,230px);height:clamp(250px,42vw,560px);opacity:.13;filter:drop-shadow(0 0 15px rgba(176,208,137,.1));transform-origin:50% 100%}
+.aw-faith-palm--left{left:-2.5%;bottom:-8%;transform:rotate(14deg)}.aw-faith-palm--right{right:-2%;top:-8%;transform:scaleX(-1) rotate(18deg)}
+.aw-faith-palm>b{position:absolute;left:50%;bottom:0;width:5px;height:94%;border-radius:99px;background:linear-gradient(180deg,rgba(196,217,155,.15),rgba(123,157,102,.8));transform:translateX(-50%) rotate(-7deg);transform-origin:bottom}
+.aw-faith-palm>i{--turn:calc((var(--leaf) - 4) * 8deg);position:absolute;left:50%;top:calc(6% + var(--leaf) * 9%);width:56%;height:12%;border-radius:100% 0 100% 0;background:linear-gradient(90deg,rgba(166,199,133,.86),rgba(91,132,79,.32));transform-origin:0 50%;transform:translateX(-1px) rotate(calc(-58deg + var(--turn)));clip-path:polygon(0 45%,100% 0,88% 55%,100% 100%,0 58%)}
+.aw-faith-palm>i:nth-of-type(even){transform:translateX(-1px) scaleY(-1) rotate(calc(55deg - var(--turn)));background:linear-gradient(90deg,rgba(166,199,133,.8),rgba(91,132,79,.26))}
+
+.aw-faith-scene--bethlehem{background:radial-gradient(circle at 78% 14%,rgba(244,218,141,.08),transparent 16%)}
+.aw-bethlehem__star{position:absolute;right:clamp(42px,10vw,150px);top:clamp(45px,8vh,100px);width:8px;height:8px;border-radius:50%;background:#fff2b5;box-shadow:0 0 7px #fff6cf,0 0 20px 5px rgba(244,216,147,.66),0 0 55px 13px rgba(244,216,147,.25);animation:aw-star-breathe 5s ease-in-out infinite}
+.aw-bethlehem__star:before,.aw-bethlehem__star:after{content:'';position:absolute;left:50%;top:50%;background:linear-gradient(90deg,transparent,#fff2b5,transparent);transform:translate(-50%,-50%)}
+.aw-bethlehem__star:before{width:74px;height:1px}.aw-bethlehem__star:after{width:1px;height:74px;background:linear-gradient(180deg,transparent,#fff2b5,transparent)}
+.aw-bethlehem__skyline{position:absolute;right:-1%;bottom:0;width:min(58vw,720px);height:18%;min-height:100px;opacity:.2;background:linear-gradient(180deg,transparent 0 44%,#050708 45% 100%);clip-path:polygon(0 69%,8% 63%,8% 51%,13% 51%,13% 65%,21% 58%,21% 43%,26% 43%,26% 62%,34% 55%,34% 70%,42% 63%,42% 49%,46% 49%,46% 65%,53% 58%,57% 47%,61% 58%,68% 65%,68% 54%,75% 54%,75% 68%,82% 60%,82% 40%,88% 40%,88% 61%,94% 56%,100% 63%,100% 100%,0 100%)}
+.aw-bethlehem__skyline i,.aw-bethlehem__skyline b,.aw-bethlehem__skyline em{position:absolute;bottom:35%;display:block;background:#050708}
+.aw-bethlehem__skyline i{right:31%;width:12%;height:24%;clip-path:polygon(0 32%,50% 0,100% 32%,100% 100%,0 100%)}
+.aw-bethlehem__skyline b{right:17%;width:5%;height:54%;clip-path:polygon(45% 0,55% 0,55% 13%,100% 13%,100% 100%,0 100%,0 13%,45% 13%)}
+.aw-bethlehem__skyline em{right:49%;width:16%;height:18%;clip-path:polygon(0 36%,50% 0,100% 36%,100% 100%,0 100%)}
+@keyframes aw-star-breathe{0%,100%{opacity:.72;transform:scale(.9)}50%{opacity:1;transform:scale(1.2)}}
+
+.aw-observance-motif{position:absolute;inset:0;z-index:3;width:auto;height:auto;opacity:1;filter:none;display:block;color:inherit}
+.aw-observance-motif--palms .aw-faith-palm{opacity:.26}.aw-observance-motif--palms .aw-faith-palm--left{left:1%;bottom:-4%;transform:rotate(23deg)}.aw-observance-motif--palms .aw-faith-palm--right{right:1%;top:-5%;transform:scaleX(-1) rotate(25deg)}
+
+.aw-observance-motif--thorns .aw-thorns__ring{position:absolute;right:clamp(22px,8vw,120px);top:16%;width:clamp(145px,20vw,270px);aspect-ratio:1;border-radius:50%;background:repeating-conic-gradient(from 4deg,rgba(205,181,118,.75) 0 3deg,transparent 3deg 14deg);-webkit-mask:radial-gradient(circle,transparent 0 53%,#000 54% 61%,transparent 62%);mask:radial-gradient(circle,transparent 0 53%,#000 54% 61%,transparent 62%);opacity:.27;transform:rotate(-12deg);filter:drop-shadow(0 0 12px rgba(205,181,118,.12))}
+.aw-observance-motif--thorns .aw-thorns__ring:before,.aw-observance-motif--thorns .aw-thorns__ring:after{content:'';position:absolute;inset:7%;border-radius:50%;border:2px dashed rgba(151,123,68,.32);transform:rotate(19deg)}
+.aw-observance-motif--thorns .aw-thorns__ring:after{inset:15%;border-width:1px;transform:rotate(-27deg)}
+.aw-observance-motif--thorns .aw-thorns__shadow{position:absolute;right:0;top:0;width:52%;height:100%;background:radial-gradient(ellipse at 72% 32%,rgba(107,26,20,.1),transparent 48%);opacity:.8}
+
+.aw-observance-motif--empty-tomb{overflow:hidden}
+.aw-tomb__sun{position:absolute;right:clamp(46px,11vw,170px);top:12%;width:clamp(100px,15vw,210px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff2b9 0 9%,rgba(244,211,115,.72) 10% 18%,rgba(244,211,115,.17) 38%,transparent 70%);opacity:.72;filter:blur(.2px)}
+.aw-tomb__rays{position:absolute;right:clamp(8px,6vw,90px);top:2%;width:clamp(180px,29vw,390px);aspect-ratio:1;border-radius:50%;background:repeating-conic-gradient(from -6deg,rgba(244,216,130,.14) 0 2deg,transparent 2deg 12deg);-webkit-mask:radial-gradient(circle,transparent 0 22%,#000 24% 100%);mask:radial-gradient(circle,transparent 0 22%,#000 24% 100%);opacity:.46;animation:aw-observance-sunrise 9s ease-in-out infinite alternate}
+.aw-tomb__hill{position:absolute;right:-5%;bottom:-10%;width:min(58vw,730px);height:42%;border-radius:65% 0 0 0;background:linear-gradient(150deg,rgba(30,33,24,.46),rgba(4,6,5,.88));opacity:.64}
+.aw-tomb__mouth{position:absolute;right:clamp(68px,13vw,205px);bottom:8%;width:clamp(92px,12vw,150px);height:clamp(92px,12vw,150px);border-radius:52% 52% 42% 45%;background:radial-gradient(circle at 54% 47%,#020303 0 47%,#12150f 49% 58%,rgba(44,47,34,.7) 59% 100%);box-shadow:inset -18px -10px 28px rgba(0,0,0,.74);opacity:.82}
+.aw-tomb__stone{position:absolute;right:clamp(16px,7vw,105px);bottom:7%;width:clamp(70px,9vw,115px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 36% 28%,rgba(132,132,111,.72),rgba(44,46,38,.88) 62%,#171915);box-shadow:-16px 15px 20px rgba(0,0,0,.45);opacity:.78}
+.aw-tomb__lily{position:absolute;bottom:8%;width:34px;height:34px;opacity:.25}.aw-tomb__lily:before{content:'';position:absolute;left:15px;bottom:-22px;width:2px;height:38px;background:#8dab79}.aw-tomb__lily:after{content:'✦';position:absolute;inset:0;color:#f3eee0;font:900 30px/1 Georgia,serif}.aw-tomb__lily--1{right:31%}.aw-tomb__lily--2{right:26%;transform:scale(.72) rotate(12deg)}
+
+.aw-observance-motif--wheat .aw-wheat__glow{position:absolute;left:-8%;bottom:-12%;width:52%;height:62%;background:radial-gradient(ellipse at 35% 65%,rgba(230,179,85,.14),transparent 67%)}
+.aw-wheat__stem{position:absolute;left:clamp(24px,7vw,110px);bottom:-3%;width:4px;height:clamp(180px,35vw,410px);border-radius:99px;background:linear-gradient(#d9a64d,#72502a);opacity:.28;transform-origin:bottom}
+.aw-wheat__stem:before,.aw-wheat__stem:after{content:'';position:absolute;left:50%;top:3%;width:46px;height:72%;background:repeating-linear-gradient(170deg,transparent 0 11px,rgba(226,180,89,.95) 12px 19px,transparent 20px 29px);clip-path:polygon(50% 0,100% 12%,58% 18%,100% 28%,58% 34%,100% 45%,58% 51%,100% 62%,57% 68%,100% 80%,55% 85%,50% 100%,45% 85%,0 80%,43% 68%,0 62%,42% 51%,0 45%,42% 34%,0 28%,42% 18%,0 12%);transform:translateX(-50%)}
+.aw-wheat__stem--1{transform:rotate(-15deg)}.aw-wheat__stem--2{left:clamp(72px,12vw,180px);transform:rotate(2deg);height:clamp(160px,31vw,360px)}.aw-wheat__stem--3{left:clamp(118px,17vw,250px);transform:rotate(18deg);height:clamp(145px,28vw,330px)}
+
+.aw-observance-motif--bethlehem .aw-bethlehem__star{opacity:1;right:clamp(40px,11vw,160px);top:9%}.aw-observance-motif--bethlehem .aw-bethlehem__skyline{opacity:.35;height:23%}
+.aw-observance-motif--gratitude .aw-gratitude__rays{position:absolute;right:3%;top:-12%;width:45%;height:68%;background:repeating-conic-gradient(from 0deg at 60% 20%,rgba(240,215,132,.08) 0 2deg,transparent 2deg 14deg);opacity:.5}
+
+.aw-admin-season-fx--stage .aw-faith-palm{transform-origin:bottom}.aw-admin-season-fx--stage .aw-faith-palm--left{transform:scale(.54) rotate(14deg);left:-8%;bottom:-24%}.aw-admin-season-fx--stage .aw-faith-palm--right{transform:scaleX(-1) scale(.54) rotate(18deg);right:-8%;top:-24%}
+.aw-admin-season-fx--stage .aw-bethlehem__skyline{height:28%;opacity:.34}.aw-admin-season-fx--stage .aw-bethlehem__star{right:9%;top:13%;transform:scale(.7)}
+.aw-admin-season-fx--stage .aw-observance-motif--thorns .aw-thorns__ring{right:6%;top:13%;transform:scale(.58) rotate(-12deg);transform-origin:top right;opacity:.48}
+.aw-admin-season-fx--stage .aw-observance-motif--empty-tomb{transform:scale(.63);transform-origin:bottom right}.aw-admin-season-fx--stage .aw-observance-motif--wheat{transform:scale(.62);transform-origin:bottom left}
+
+@media(max-width:700px){.aw-faith-palm{opacity:.08}.aw-faith-scene--bethlehem .aw-bethlehem__skyline{width:80vw;opacity:.14}.aw-bethlehem__star{right:28px;top:55px}.aw-observance-motif--palms .aw-faith-palm{opacity:.15}.aw-observance-motif--thorns .aw-thorns__ring{right:-15px;top:19%;opacity:.18}.aw-tomb__hill{width:78vw}.aw-tomb__mouth{right:52px}.aw-tomb__stone{right:8px}.aw-wheat__stem{opacity:.18}}
+@media(prefers-reduced-motion:reduce){.aw-bethlehem__star,.aw-tomb__rays{animation:none!important}}

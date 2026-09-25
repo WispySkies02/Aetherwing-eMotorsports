@@ -103,17 +103,17 @@ The Dec 18–25 Christmas Week theme now adds animated multicolor string lights 
 
 ## Seasonal calendar engine (v1.1.19)
 
-The public site now carries the complete January-to-December seasonal system in code and selects it automatically in America/New_York time. Fixed-date windows recur every year; Easter week, Good Friday, Easter Sunday, Memorial Day weekend, Thanksgiving, and the post-Thanksgiving Christmas teaser are calculated from the current year so the site can keep running without annual date edits. Summer’s End is Sep 20–24 every year, followed by the Halloween teaser Sep 25–30.
+The public site now carries the complete January-to-December seasonal system in code and selects it automatically in America/New_York time. Fixed-date windows recur every year; Palm Sunday through Easter Sunday, Good Friday, Easter Sunday, Memorial Day weekend, Thanksgiving, and the post-Thanksgiving Christmas teaser are calculated from the current year so the site can keep running without annual date edits. Summer’s End is Sep 20–24 every year, followed by the Halloween teaser Sep 25–30.
 
-One-day faith/gratitude overlays are layered over the normal season on New Year’s Day, Good Friday, Easter Sunday, Thanksgiving, Christmas Eve, and Christmas Day. Good Friday intentionally pauses the Easter motion; Easter Sunday uses a cross/sunrise treatment; Christmas Day keeps the Christmas Week lights and snow while changing the message to “Glory to God in the highest.”
+One-day faith/gratitude overlays are layered over the normal season on New Year’s Day, Palm Sunday, Good Friday, Easter Sunday, Thanksgiving, Christmas Eve, and Christmas Day. Palm Sunday adds edge-of-glass palm shadows; Good Friday intentionally pauses the Easter motion for a crown-of-thorns treatment; Easter Sunday uses an empty-tomb sunrise; Christmas keeps a Bethlehem-at-night scene and Star of Bethlehem while the one-day banners surface the matching Scripture reference.
 
 Admin → Theme Preview is ordered January through December, gives every theme a static icon, includes a miniature light strand + tree for Christmas Week, and includes a separate Faith & Gratitude Moments preview row. The preview remains session-only: it never publishes, never writes to local storage, and a reload resets it. Moving-holiday previews calculate the next real occurrence automatically.
 
 ## v1.1.20 seasonal overlay polish
 
 - One-day faith/gratitude observances now add visible decorative motifs to the actual public seasonal layer and to Admin Theme Preview, not only color changes and preview buttons.
-- Good Friday keeps motion quiet while still displaying a restrained cross motif.
-- Easter Sunday adds a brighter cross + sunrise treatment; Christmas Eve adds a star motif; Christmas Day adds cross + star over Christmas Week; Thanksgiving and New Year's Day get gratitude marks.
+- Good Friday keeps motion quiet while displaying a restrained crown-of-thorns silhouette.
+- Palm Sunday uses palm branches; Good Friday uses crown-of-thorns line art; Easter Sunday uses an empty tomb and sunrise; Thanksgiving uses wheat and warm harvest light; Christmas Eve/Day intensify the Bethlehem skyline and star; New Year’s Day gets a gratitude-light treatment.
 - Christmas Week now includes a decorative lit Christmas tree in the seasonal layer and Admin preview.
 - Christmas light strands now render as visibly powered bulbs with stronger colored halos and staggered twinkling/chasing brightness instead of dim static dots.
 
@@ -132,3 +132,10 @@ Race Weekend pages can now show who is actually expected to compete instead of a
 
 
 Admin Theme Preview v1.1.23 keeps the full visual theme picker and restores a live embedded public-page preview that updates as themes or pages are selected.
+
+
+## Faith-forward seasonal moments
+
+The automatic Eastern-Time theme controller now treats Palm Sunday through Easter Sunday as Holy Week / Easter and includes richer faith-specific visual storytelling: palm shadows on Palm Sunday, a restrained crown-of-thorns treatment on Good Friday, an empty-tomb sunrise on Easter Sunday, wheat and warm harvest light on Thanksgiving, and a Bethlehem skyline / Star of Bethlehem treatment through the Christmas season. These overlays remain decorative and non-interactive so site content stays readable.
+
+Admin → Theme Preview includes all of these timed observances, plus a verse banner at the top whenever a faith-focused theme or observance is selected. Preview choices remain temporary and never publish site changes.

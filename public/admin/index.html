@@ -84,6 +84,7 @@
 
       <section class="admin-theme-preview" data-admin-theme-preview hidden aria-labelledby="theme-preview-title">
         <div class="control-center__heading"><span>22</span><div><p class="admin-section-kicker">VISUAL SANDBOX</p><h2 id="theme-preview-title">Theme Preview</h2><p>Preview any seasonal Aetherwing skin on this Admin page only. Nothing here publishes or changes the public site, and a page reload always returns Admin to the normal Aetherwing look.</p></div></div>
+        <div class="admin-faith-preview-banner" data-theme-faith-banner hidden role="note" aria-live="polite"><span data-theme-faith-kicker>FAITH MOMENT</span><strong data-theme-faith-verse></strong><b data-theme-faith-reference></b></div>
         <div class="admin-theme-preview__status" role="status" aria-live="polite"><span>Current preview</span><strong data-theme-preview-name>Auto / current date</strong><button type="button" data-theme-auto>Auto / Current Date</button><button type="button" data-theme-motion-toggle hidden>Play Motion Anyway</button><button type="button" data-theme-reset>Plain Aetherwing</button></div>
         <section class="admin-public-preview" aria-labelledby="public-preview-title">
           <div class="admin-public-preview__heading">
@@ -125,7 +126,7 @@
           <button type="button" data-theme="late-winter"><span class="admin-theme-preview__icon" aria-hidden="true">❅</span><b>Late Winter</b><small>Muted thaw</small><i style="--swatch-a:#708797;--swatch-b:#9fc5d8"></i></button>
           <button type="button" data-theme="spring"><span class="admin-theme-preview__icon" aria-hidden="true">✿</span><b>Spring</b><small>Fresh green + teal</small><i style="--swatch-a:#72b6a1;--swatch-b:#9fd08c"></i></button>
           <button type="button" data-theme="st-patrick"><span class="admin-theme-preview__icon" aria-hidden="true">☘</span><b>St. Patrick’s Day</b><small>One-day green accent</small><i style="--swatch-a:#258b46;--swatch-b:#65d66f"></i></button>
-          <button type="button" data-theme="easter"><span class="admin-theme-preview__icon" aria-hidden="true">✝</span><b>Easter / Spring</b><small>Cross · renewal · sunrise</small><i style="--swatch-a:#a7c79a;--swatch-b:#c0a5d6"></i></button>
+          <button type="button" data-theme="easter"><span class="admin-theme-preview__icon" aria-hidden="true">☀</span><b>Holy Week / Easter</b><small>Palms · dawn · empty tomb</small><i style="--swatch-a:#a7c79a;--swatch-b:#e4d48f"></i></button>
           <button type="button" data-theme="memorial-day"><span class="admin-theme-preview__icon" aria-hidden="true">★</span><b>Memorial Day</b><small>Respectful red / white / blue</small><i style="--swatch-a:#315c96;--swatch-b:#b94b51"></i></button>
           <button type="button" data-theme="summer"><span class="admin-theme-preview__icon" aria-hidden="true">☀</span><b>Summer</b><small>Sun gold + sky blue</small><i style="--swatch-a:#39a8d6;--swatch-b:#f0c45a"></i></button>
           <button type="button" data-theme="independence-day"><span class="admin-theme-preview__icon" aria-hidden="true">✹</span><b>Independence Day</b><small>Red / white / blue</small><i style="--swatch-a:#3871b8;--swatch-b:#d3474f"></i></button>
@@ -135,19 +136,20 @@
           <button type="button" data-theme="halloween-week"><span class="admin-theme-preview__icon" aria-hidden="true">🦇</span><b>Halloween Week</b><small>Intensified spooky</small><i style="--swatch-a:#ff6a00;--swatch-b:#a75cff"></i></button>
           <button type="button" data-theme="fall"><span class="admin-theme-preview__icon" aria-hidden="true">🍂</span><b>Fall</b><small>Rust + harvest gold</small><i style="--swatch-a:#a84f2a;--swatch-b:#d99a3e"></i></button>
           <button type="button" data-theme="christmas-teaser"><span class="admin-theme-preview__icon" aria-hidden="true">💡</span><b>Christmas Teaser</b><small>First lights</small><i style="--swatch-a:#6d9b82;--swatch-b:#a84c4c"></i></button>
-          <button type="button" data-theme="christmas"><span class="admin-theme-preview__icon" aria-hidden="true">❄</span><b>Christmas / Winter</b><small>Evergreen + red + gold</small><i style="--swatch-a:#3f8d65;--swatch-b:#b94747"></i></button>
-          <button type="button" data-theme="christmas-week"><span class="theme-mini-lights" aria-hidden="true"><u></u><u></u><u></u><u></u><u></u><u></u></span><span class="admin-theme-preview__icon" aria-hidden="true">🎄</span><b>Christmas Week</b><small>Lights + snow + tree</small><i style="--swatch-a:#40a46c;--swatch-b:#e05252"></i></button>
+          <button type="button" data-theme="christmas"><span class="admin-theme-preview__icon" aria-hidden="true">★</span><b>Christmas / Winter</b><small>Bethlehem night · star · snow</small><i style="--swatch-a:#4b7f9e;--swatch-b:#f2d88f"></i></button>
+          <button type="button" data-theme="christmas-week"><span class="theme-mini-lights" aria-hidden="true"><u></u><u></u><u></u><u></u><u></u><u></u></span><span class="admin-theme-preview__icon" aria-hidden="true">★</span><b>Christmas Week</b><small>Bethlehem · lights · snow · tree</small><i style="--swatch-a:#4b7f9e;--swatch-b:#ffe39b"></i></button>
           <button type="button" data-theme="calm-winter"><span class="admin-theme-preview__icon" aria-hidden="true">❅</span><b>Calm Winter</b><small>Quiet blue-gray</small><i style="--swatch-a:#6f8ca5;--swatch-b:#b9d7ea"></i></button>
         </div>
         <section class="admin-observance-preview" aria-labelledby="observance-preview-title">
           <div class="admin-observance-preview__heading"><div><span>ONE-DAY OVERLAYS</span><h3 id="observance-preview-title">Faith & Gratitude Moments</h3><p>These sit on top of the normal seasonal theme only on the matching day. Selecting one here previews the full combination without publishing anything.</p></div><strong>AUTO · EASTERN TIME</strong></div>
           <div class="admin-observance-preview__grid" data-observance-grid>
-            <button type="button" data-observance="new-years-day" data-base-theme="new-year"><span aria-hidden="true">✦</span><b>New Year’s Day</b><small data-observance-next>Gratitude for the year ahead</small></button>
-            <button type="button" data-observance="good-friday" data-base-theme="easter"><span aria-hidden="true">✝</span><b>Good Friday</b><small data-observance-next>It is finished · John 19:30</small></button>
-            <button type="button" data-observance="easter-sunday" data-base-theme="easter"><span aria-hidden="true">✝</span><b>Easter Sunday</b><small data-observance-next>He is risen · Matthew 28:6</small></button>
-            <button type="button" data-observance="thanksgiving" data-base-theme="fall"><span aria-hidden="true">✦</span><b>Thanksgiving</b><small data-observance-next>In everything give thanks</small></button>
-            <button type="button" data-observance="christmas-eve" data-base-theme="christmas-week"><span aria-hidden="true">★</span><b>Christmas Eve</b><small data-observance-next>Good tidings of great joy</small></button>
-            <button type="button" data-observance="christmas-day" data-base-theme="christmas-week"><span aria-hidden="true">✝</span><b>Christmas Day</b><small data-observance-next>Glory to God in the highest</small></button>
+            <button type="button" data-observance="new-years-day" data-base-theme="new-year"><span aria-hidden="true">✦</span><b>New Year’s Day</b><small data-observance-next>Thank God for the year ahead</small></button>
+            <button type="button" data-observance="palm-sunday" data-base-theme="easter"><span aria-hidden="true">❧</span><b>Palm Sunday</b><small data-observance-next>Hosanna in the highest · Matthew 21:9</small></button>
+            <button type="button" data-observance="good-friday" data-base-theme="easter"><span aria-hidden="true">◌</span><b>Good Friday</b><small data-observance-next>Crown of thorns · John 19:30</small></button>
+            <button type="button" data-observance="easter-sunday" data-base-theme="easter"><span aria-hidden="true">☀</span><b>Easter Sunday</b><small data-observance-next>Empty tomb · Matthew 28:6</small></button>
+            <button type="button" data-observance="thanksgiving" data-base-theme="fall"><span aria-hidden="true">❧</span><b>Thanksgiving</b><small data-observance-next>Wheat · warm light · gratitude</small></button>
+            <button type="button" data-observance="christmas-eve" data-base-theme="christmas-week"><span aria-hidden="true">★</span><b>Christmas Eve</b><small data-observance-next>Bethlehem night · Luke 2:10–11</small></button>
+            <button type="button" data-observance="christmas-day" data-base-theme="christmas-week"><span aria-hidden="true">★</span><b>Christmas Day</b><small data-observance-next>Star of Bethlehem · Luke 2:14</small></button>
           </div>
         </section>
         <aside class="admin-theme-preview__note"><strong>Preview only.</strong><p>This changes only the appearance of the Admin page in this browser tab. It is never saved to local storage, never published, and never changes the public site. Reload this page to return to Default Aetherwing.</p></aside>

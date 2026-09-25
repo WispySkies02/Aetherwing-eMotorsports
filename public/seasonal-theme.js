@@ -1,34 +1,35 @@
 (()=>{
   const THEMES={
-    'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',icon:'✨',effect:'fireworks',density:5,ui:'metallic'},
+    'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',icon:'✦',effect:'fireworks',density:5,ui:'metallic'},
     'clean-winter':{title:'CLEAN WINTER',subtitle:'COLD AIR · CLEAR FOCUS',icon:'❄',effect:'snow',density:9,ui:'frost'},
     'valentine-teaser':{title:'VALENTINE TEASER',subtitle:'A LITTLE HEART IN THE GARAGE',icon:'♡',effect:'petals',density:8,ui:'rose-soft'},
     valentine:{title:"VALENTINE'S WEEK",subtitle:'LOVE THE RACE · LOVE THE TEAM',icon:'♥',effect:'petals',density:16,ui:'rose'},
     'late-winter':{title:'LATE WINTER',subtitle:'THE THAW IS COMING',icon:'❅',effect:'snow',density:6,ui:'thaw'},
     spring:{title:'SPRING',subtitle:'FRESH SEASON · FRESH START',icon:'✿',effect:'petals',density:14,ui:'spring'},
     'st-patrick':{title:"ST. PATRICK'S DAY",subtitle:'A FLASH OF GREEN',icon:'☘',effect:'twinkle',density:12,ui:'green'},
-    easter:{title:'EASTER / SPRING',subtitle:'HOPE · RENEWAL · NEW BEGINNINGS',icon:'✝',effect:'petals',density:18,ui:'easter'},
+    easter:{title:'HOLY WEEK / EASTER',subtitle:'I AM THE RESURRECTION AND THE LIFE · JOHN 11:25',icon:'☀',effect:'petals',density:15,ui:'easter',faith:true,verse:'I AM THE RESURRECTION AND THE LIFE',reference:'JOHN 11:25',scene:'holy-week'},
     'memorial-day':{title:'MEMORIAL DAY',subtitle:'REMEMBER & HONOR',icon:'★',effect:'twinkle',density:7,ui:'memorial'},
     summer:{title:'SUMMER',subtitle:'LONG DAYS · FAST LAPS',icon:'☀',effect:'glow',density:18,ui:'summer'},
     'independence-day':{title:'INDEPENDENCE DAY',subtitle:'RED · WHITE · BLUE',icon:'✹',effect:'fireworks',density:6,ui:'patriotic'},
     'summer-end':{title:"SUMMER'S END",subtitle:'LAST LIGHT OF THE SEASON',icon:'◒',effect:'glow',density:14,ui:'sunset'},
     'halloween-teaser':{title:'HALLOWEEN IS CREEPING IN',subtitle:'SUBTLE SPOOKY SEASON',icon:'☾',effect:'haze',density:3,ui:'spooky-soft'},
-    halloween:{title:'SPOOKY SEASON',subtitle:'AETHERWING AFTER DARK',icon:'🎃',effect:'halloween',density:18,ui:'spooky'},
-    'halloween-week':{title:'HALLOWEEN WEEK',subtitle:'FULL SEND · FULL SPOOKY',icon:'🦇',effect:'halloween',density:28,ui:'spooky-max'},
-    fall:{title:'FALL AT AETHERWING',subtitle:'COOL AIR · HOT LAPS',icon:'🍂',effect:'leaves',density:16,ui:'harvest'},
-    'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS OF THE SEASON',icon:'💡',effect:'twinkle',density:12,ui:'holiday-soft'},
-    christmas:{title:'CHRISTMAS / WINTER',subtitle:'RACE THROUGH THE HOLIDAYS',icon:'❄',effect:'snow',density:28,ui:'holiday'},
-    'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'MERRY & BRIGHT · AETHERWING',icon:'🎄',effect:'snow-twinkle',density:44,ui:'holiday-max',lights:true},
+    halloween:{title:'SPOOKY SEASON',subtitle:'AETHERWING AFTER DARK',icon:'◐',effect:'halloween',density:18,ui:'spooky'},
+    'halloween-week':{title:'HALLOWEEN WEEK',subtitle:'FULL SEND · FULL SPOOKY',icon:'◆',effect:'halloween',density:28,ui:'spooky-max'},
+    fall:{title:'FALL AT AETHERWING',subtitle:'COOL AIR · HOT LAPS',icon:'❧',effect:'leaves',density:16,ui:'harvest'},
+    'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS OF THE SEASON',icon:'✦',effect:'twinkle',density:12,ui:'holiday-soft'},
+    christmas:{title:'CHRISTMAS / WINTER',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow',density:24,ui:'holiday',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
+    'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow-twinkle',density:38,ui:'holiday-max',lights:true,faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
     'calm-winter':{title:'WINTER RESET',subtitle:'QUIET DAYS · NEXT RACE AHEAD',icon:'❅',effect:'snow',density:12,ui:'frost'},
   };
 
   const OBSERVANCES={
-    'new-years-day':{title:"NEW YEAR'S DAY",subtitle:'THANK GOD FOR THE YEAR AHEAD · PSALM 118:24',icon:'✦',ui:'gratitude',add:'twinkle'},
-    'good-friday':{title:'GOOD FRIDAY',subtitle:'IT IS FINISHED · JOHN 19:30',icon:'✝',ui:'solemn',suppress:true},
-    'easter-sunday':{title:'EASTER SUNDAY',subtitle:'HE IS RISEN · MATTHEW 28:6',icon:'✝',ui:'resurrection',add:'sunrise'},
-    thanksgiving:{title:'THANKSGIVING',subtitle:'IN EVERYTHING GIVE THANKS · 1 THESSALONIANS 5:18',icon:'✦',ui:'gratitude',add:'glow'},
-    'christmas-eve':{title:'CHRISTMAS EVE',subtitle:'GOOD TIDINGS OF GREAT JOY · LUKE 2:10–11',icon:'★',ui:'holy-night',add:'twinkle'},
-    'christmas-day':{title:'CHRISTMAS DAY',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'✝',ui:'nativity',add:'twinkle'},
+    'new-years-day':{title:"NEW YEAR'S DAY",subtitle:'THIS IS THE DAY THE LORD HAS MADE · PSALM 118:24',icon:'✦',ui:'gratitude',add:'twinkle',faith:true,verse:'THIS IS THE DAY THE LORD HAS MADE',reference:'PSALM 118:24',motif:'gratitude'},
+    'palm-sunday':{title:'PALM SUNDAY',subtitle:'HOSANNA IN THE HIGHEST · MATTHEW 21:9',icon:'❧',ui:'palm-sunday',faith:true,verse:'HOSANNA IN THE HIGHEST',reference:'MATTHEW 21:9',motif:'palms'},
+    'good-friday':{title:'GOOD FRIDAY',subtitle:'IT IS FINISHED · JOHN 19:30',icon:'◌',ui:'solemn',suppress:true,faith:true,verse:'IT IS FINISHED',reference:'JOHN 19:30',motif:'thorns'},
+    'easter-sunday':{title:'EASTER SUNDAY',subtitle:'HE IS RISEN · MATTHEW 28:6',icon:'☀',ui:'resurrection',add:'sunrise',faith:true,verse:'HE IS RISEN',reference:'MATTHEW 28:6',motif:'empty-tomb'},
+    thanksgiving:{title:'THANKSGIVING',subtitle:'IN EVERYTHING GIVE THANKS · 1 THESSALONIANS 5:18',icon:'❧',ui:'gratitude',add:'glow',faith:true,verse:'IN EVERYTHING GIVE THANKS',reference:'1 THESSALONIANS 5:18',motif:'wheat'},
+    'christmas-eve':{title:'CHRISTMAS EVE',subtitle:'GOOD TIDINGS OF GREAT JOY · LUKE 2:10–11',icon:'★',ui:'holy-night',add:'twinkle',faith:true,verse:'GOOD TIDINGS OF GREAT JOY',reference:'LUKE 2:10–11',motif:'bethlehem'},
+    'christmas-day':{title:'CHRISTMAS DAY',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',ui:'nativity',add:'twinkle',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',motif:'bethlehem'},
   };
 
   const pad=(value)=>String(value).padStart(2,'0');
@@ -56,7 +57,7 @@
     if(month===2)return 'late-winter';
     if(month===3&&day===17)return 'st-patrick';
 
-    const easter=easterSunday(year),easterStart=addDays(easter,-6);
+    const easter=easterSunday(year),easterStart=addDays(easter,-7);
     if(between(key,iso(easterStart),iso(easter)))return 'easter';
 
     const memorial=memorialDay(year),memorialStart=addDays(memorial,-3);
@@ -85,6 +86,7 @@
     const key=dateKey(year,month,day);
     if(month===1&&day===1)return 'new-years-day';
     const easter=easterSunday(year);
+    if(key===iso(addDays(easter,-7)))return 'palm-sunday';
     if(key===iso(addDays(easter,-2)))return 'good-friday';
     if(key===iso(easter))return 'easter-sunday';
     if(key===iso(thanksgiving(year)))return 'thanksgiving';
@@ -121,20 +123,35 @@
     points.forEach(([x,y],i)=>{const bulb=document.createElement('b');bulb.style.cssText=`--tree-x:${x}%;--tree-y:${y}%;--tree-delay:-${(seeded(i,31)*2.4).toFixed(2)}s`;lights.appendChild(bulb);});
     return tree;
   };
-  const addObservanceMotif=(layer,observance)=>{
-    if(!observance)return;
-    const spec={
-      'new-years-day':['✦','✝'],
-      'good-friday':['✝',''],
-      'easter-sunday':['✝','☀'],
-      thanksgiving:['✦','✝'],
-      'christmas-eve':['★',''],
-      'christmas-day':['✝','★']
-    }[observance];
-    if(!spec)return;
-    const motif=document.createElement('div');motif.className=`aw-observance-motif aw-observance-motif--${observance}`;motif.setAttribute('aria-hidden','true');
-    motif.innerHTML=`<span>${spec[0]}</span>${spec[1]?`<i>${spec[1]}</i>`:''}`;layer.appendChild(motif);
+  const buildPalm=(side='left')=>{
+    const palm=document.createElement('div');palm.className=`aw-faith-palm aw-faith-palm--${side}`;
+    palm.innerHTML='<b></b>'+Array.from({length:9},(_,i)=>`<i style="--leaf:${i}"></i>`).join('');
+    return palm;
   };
+  const buildFaithScene=(theme)=>{
+    const scene=THEMES[theme]?.scene;if(!scene)return null;
+    const wrap=document.createElement('div');wrap.className=`aw-faith-scene aw-faith-scene--${scene}`;wrap.setAttribute('aria-hidden','true');
+    if(scene==='holy-week'){
+      wrap.appendChild(buildPalm('left'));wrap.appendChild(buildPalm('right'));
+      const dawn=document.createElement('span');dawn.className='aw-faith-dawn';wrap.appendChild(dawn);
+    }
+    if(scene==='bethlehem'){
+      wrap.innerHTML='<span class="aw-bethlehem__star"></span><span class="aw-bethlehem__skyline"><i></i><b></b><em></em></span>';
+    }
+    return wrap;
+  };
+  const buildObservanceMotif=(observance)=>{
+    const obs=OBSERVANCES[observance];if(!obs?.motif)return null;
+    const motif=document.createElement('div');motif.className=`aw-observance-motif aw-observance-motif--${observance} aw-observance-motif--${obs.motif}`;motif.setAttribute('aria-hidden','true');
+    if(obs.motif==='palms'){motif.appendChild(buildPalm('left'));motif.appendChild(buildPalm('right'));}
+    else if(obs.motif==='thorns')motif.innerHTML='<span class="aw-thorns__ring"></span><span class="aw-thorns__shadow"></span>';
+    else if(obs.motif==='empty-tomb')motif.innerHTML='<span class="aw-tomb__sun"></span><span class="aw-tomb__rays"></span><span class="aw-tomb__hill"></span><span class="aw-tomb__mouth"></span><span class="aw-tomb__stone"></span><span class="aw-tomb__lily aw-tomb__lily--1"></span><span class="aw-tomb__lily aw-tomb__lily--2"></span>';
+    else if(obs.motif==='wheat')motif.innerHTML='<span class="aw-wheat__glow"></span><span class="aw-wheat__stem aw-wheat__stem--1"></span><span class="aw-wheat__stem aw-wheat__stem--2"></span><span class="aw-wheat__stem aw-wheat__stem--3"></span>';
+    else if(obs.motif==='bethlehem')motif.innerHTML='<span class="aw-bethlehem__star"></span><span class="aw-bethlehem__skyline"><i></i><b></b><em></em></span>';
+    else motif.innerHTML='<span class="aw-gratitude__rays"></span>';
+    return motif;
+  };
+
   let mountedKey='';
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
   function mountAtmosphere(theme,observance){
@@ -173,7 +190,8 @@
       makeStrand('top',30);makeStrand('left',18);makeStrand('right',18);
     }
     if(theme==='christmas-week')layer.appendChild(buildHolidayTree());
-    addObservanceMotif(layer,observance);
+    const faithScene=buildFaithScene(theme);if(faithScene)layer.appendChild(faithScene);
+    const motif=buildObservanceMotif(observance);if(motif)layer.appendChild(motif);
     document.body.prepend(layer);mountedKey=key;
   }
 

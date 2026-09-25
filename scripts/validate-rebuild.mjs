@@ -30,5 +30,10 @@ for(const id of ['summer-end','halloween-teaser','halloween','halloween-week','f
 if(!baseSource.includes('/seasonal-theme.js')||!baseSource.includes('data-season-banner'))throw Error('Base layout must load the automatic seasonal controller and shared banner.');
 if(!adminHtml.includes('data-admin-tab="theme-preview"')||!adminHtml.includes('data-admin-theme-preview')||!adminHtml.includes('/admin/theme-preview.js'))throw Error('Admin Theme Preview tab must remain available.');
 if(!adminThemeSource.includes('dataset.adminTheme')||adminThemeSource.includes('localStorage'))throw Error('Admin Theme Preview must remain temporary and must not persist to local storage.');
+
+for(const id of ['palm-sunday','good-friday','easter-sunday','thanksgiving','christmas-eve','christmas-day'])if(!seasonSource.includes(`'${id}'`))throw Error(`Faith observance missing from seasonal controller: ${id}`);
+if(!seasonSource.includes("motif:'thorns'")||!seasonSource.includes("motif:'empty-tomb'")||!seasonSource.includes("motif:'wheat'")||!seasonSource.includes("scene:'bethlehem'"))throw Error('Faith observances must retain story-driven visual motifs.');
+if(!adminHtml.includes('data-theme-faith-banner')||!adminHtml.includes('data-observance="palm-sunday"'))throw Error('Admin Theme Preview must retain the faith verse banner and Palm Sunday preview.');
+if(!adminThemeSource.includes('faithBanner')||!adminThemeSource.includes('HOSANNA IN THE HIGHEST'))throw Error('Admin faith preview banner logic is missing.');
 if(existsSync('src/pages/schedule/share'))throw Error('Legacy share-only pages remain.');
 console.log('Fresh routes, existing data, background, and admin source verified.');

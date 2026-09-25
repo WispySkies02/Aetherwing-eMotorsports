@@ -16,6 +16,10 @@
   const pageSelect=document.querySelector('[data-theme-preview-page]');
   const publicFrame=document.querySelector('[data-theme-public-frame]');
   const openPreview=document.querySelector('[data-theme-open-preview]');
+  const faithBanner=document.querySelector('[data-theme-faith-banner]');
+  const faithKicker=document.querySelector('[data-theme-faith-kicker]');
+  const faithVerse=document.querySelector('[data-theme-faith-verse]');
+  const faithReference=document.querySelector('[data-theme-faith-reference]');
   const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')||null;
   let previewMode='auto';
   let selectedTheme='default';
@@ -34,7 +38,7 @@
     'late-winter':{window:'Feb 15–end of February',motion:'Last snow flurries',motionCopy:'A few fading flakes bridge winter into spring.',ui:'Thaw UI',uiCopy:'Muted blue-gray surfaces soften as the season transitions.',effect:'snow',density:6},
     spring:{window:'Mar 1–Memorial Day weekend (except accents)',motion:'Drifting petals',motionCopy:'Soft petals float behind the UI to make the page feel airy and alive.',ui:'Fresh spring UI',uiCopy:'Rounder cards, green/teal edge work, airier highlights, and softer controls.',effect:'petals',density:14},
     'st-patrick':{window:'Mar 17',motion:'Green shimmer',motionCopy:'Small green/gold twinkles add a one-day accent.',ui:'Green accent UI',uiCopy:'A focused emerald edge treatment without rebuilding the whole interface.',effect:'twinkle',density:12},
-    easter:{window:'Monday before Easter–Easter Sunday',motion:'Spring petals',motionCopy:'Soft petals drift behind a renewal/sunrise-inspired Easter UI.',ui:'Easter / renewal UI',uiCopy:'A cross-led Easter identity with gentle spring colors and warm sunrise accents.',effect:'petals',density:18},
+    easter:{window:'Palm Sunday–Easter Sunday',motion:'Palms + spring air',motionCopy:'Soft petals and palm shadows build toward Easter while sunrise light stays at the edge of the glass.',ui:'Holy Week / Easter UI',uiCopy:'Palm shadows, sunrise warmth, and an empty-tomb Easter finale create a more cinematic Holy Week treatment.',effect:'petals',density:15,faith:true,verse:'I AM THE RESURRECTION AND THE LIFE',reference:'JOHN 11:25',scene:'holy-week'},
     'memorial-day':{window:'Friday–Memorial Day Monday',motion:'Very subtle star glints',motionCopy:'Motion stays intentionally restrained for a respectful presentation.',ui:'Memorial UI',uiCopy:'Clean red/white/blue lines and sober panel treatment; no celebratory fireworks.',effect:'twinkle',density:7},
     summer:{window:'After Memorial Day–Sep 19 (except Jul 4 window)',motion:'Warm firefly lights',motionCopy:'Slow glowing specks create a late-evening summer atmosphere.',ui:'Summer race UI',uiCopy:'Sky-blue/gold accents, energetic hovers, and brighter race-day panels.',effect:'glow',density:18},
     'independence-day':{window:'Jun 28–Jul 4',motion:'Distant fireworks',motionCopy:'Occasional small fireworks burst behind the site instead of over the content.',ui:'Patriotic race UI',uiCopy:'Red/white/blue stripe language, crisp cards, and event-style accents.',effect:'fireworks',density:6},
@@ -44,18 +48,19 @@
     'halloween-week':{window:'Oct 25–31',motion:'Denser spooky atmosphere',motionCopy:'More embers and a few more distant bats, still kept behind all content.',ui:'Intensified Halloween UI',uiCopy:'The Halloween treatment gets brighter accent edges and more aggressive control highlights.',effect:'halloween',density:28},
     fall:{window:'Nov 1–Thanksgiving',motion:'Sparse falling leaves',motionCopy:'A few slow leaves cross the background at different speeds.',ui:'Harvest UI',uiCopy:'Warm paper/metal panels, softer corners, rust accents, and amber dividers.',effect:'leaves',density:16},
     'christmas-teaser':{window:'Day after Thanksgiving–Nov 30',motion:'First-light twinkles',motionCopy:'Tiny warm points of light appear occasionally in the background.',ui:'First-lights UI',uiCopy:'Evergreen/red hints begin while the regular Aetherwing interface still dominates.',effect:'twinkle',density:12},
-    christmas:{window:'Dec 1–17',motion:'Light snowfall',motionCopy:'Small flakes fall slowly behind the panels with frosted edges.',ui:'Christmas / winter UI',uiCopy:'Frosted top edges, evergreen/red details, cool glass panels, and warm gold accents.',effect:'snow',density:28},
-    'christmas-week':{window:'Dec 18–25',motion:'Snow + Christmas lights',motionCopy:'Fuller snowfall sits behind animated multicolor light strands around the page edges.',ui:'Merry & bright UI',uiCopy:'Bright trim, frosted surfaces, Christmas lights, and a tree cue without obscuring data.',effect:'snow-twinkle',density:44,lights:true},
+    christmas:{window:'Dec 1–17',motion:'Light snowfall + Bethlehem star',motionCopy:'Small flakes fall behind a deep-blue Bethlehem horizon while the star stays high at the edge of the viewport.',ui:'Christmas / Bethlehem UI',uiCopy:'Deep navy, warm gold, evergreen details, and a Bethlehem-at-night silhouette keep Christmas explicitly faith-forward.',effect:'snow',density:24,faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
+    'christmas-week':{window:'Dec 18–25',motion:'Snow + lights + Bethlehem star',motionCopy:'Fuller snowfall and Christmas lights frame the page while the Bethlehem skyline and star stay visible at the edge.',ui:'Christmas Week / Bethlehem UI',uiCopy:'The brighter Christmas treatment keeps the Star of Bethlehem as the visual anchor rather than relying on generic holiday symbols.',effect:'snow-twinkle',density:38,lights:true,faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
     'calm-winter':{window:'Dec 26–30',motion:'Very light snowfall',motionCopy:'Only a few slow flakes remain after Christmas.',ui:'Quiet winter UI',uiCopy:'Blue-gray frosted panels and reduced holiday color make the site feel calmer.',effect:'snow',density:12},
   };
 
   const OBS={
-    'new-years-day':{base:'new-year',motion:'Fireworks + gratitude twinkles',motionCopy:'The New Year atmosphere stays celebratory while the message shifts to thanking God for the year ahead.',ui:'Gratitude overlay',uiCopy:'Gold event-night UI with a faith-forward New Year message.',effectAdd:'twinkle'},
-    'good-friday':{base:'easter',motion:'Still / intentionally quiet',motionCopy:'The normal Easter petals pause for a restrained, solemn Good Friday presentation.',ui:'Solemn cross overlay',uiCopy:'Darkened Easter UI, muted color, a cross motif, and “It is finished · John 19:30.”',suppress:true},
-    'easter-sunday':{base:'easter',motion:'Petals + sunrise glow',motionCopy:'Spring petals continue with brighter sunrise light and gentle twinkles.',ui:'Resurrection overlay',uiCopy:'The cross becomes the focus with “He is risen · Matthew 28:6” and brighter renewal tones.',effectAdd:'sunrise'},
-    thanksgiving:{base:'fall',motion:'Leaves + warm glow',motionCopy:'The fall atmosphere gains a soft warm glow for a gratitude-focused Thanksgiving.',ui:'Thanksgiving gratitude overlay',uiCopy:'Harvest UI with “In everything give thanks · 1 Thessalonians 5:18.”',effectAdd:'glow'},
-    'christmas-eve':{base:'christmas-week',motion:'Snow + lights + star twinkles',motionCopy:'Christmas lights and snow stay, with a quieter star-lit Christmas Eve tone.',ui:'Holy Night overlay',uiCopy:'Deep blue/gold Christmas styling with “Good tidings of great joy · Luke 2:10–11.”',effectAdd:'twinkle'},
-    'christmas-day':{base:'christmas-week',motion:'Snow + lights + warm twinkles',motionCopy:'The full Christmas Week atmosphere stays active while the day becomes explicitly faith-forward.',ui:'Christmas Day faith overlay',uiCopy:'Tree/lights remain, with a cross motif and “Glory to God in the highest · Luke 2:14.”',effectAdd:'twinkle'},
+    'new-years-day':{base:'new-year',motion:'Fireworks + gratitude twinkles',motionCopy:'The New Year atmosphere stays celebratory while the message shifts to thanking God for the year ahead.',ui:'Gratitude overlay',uiCopy:'Gold event-night UI with a faith-forward New Year message.',effectAdd:'twinkle',faith:true,verse:'THIS IS THE DAY THE LORD HAS MADE',reference:'PSALM 118:24',motif:'gratitude'},
+    'palm-sunday':{base:'easter',motion:'Palm shadows + soft spring air',motionCopy:'Large palm fronds sit at the outer glass edges while the spring atmosphere stays subtle behind the content.',ui:'Palm Sunday overlay',uiCopy:'Olive/palm greens and warm gold frame “Hosanna in the highest · Matthew 21:9.”',faith:true,verse:'HOSANNA IN THE HIGHEST',reference:'MATTHEW 21:9',motif:'palms'},
+    'good-friday':{base:'easter',motion:'Still / intentionally quiet',motionCopy:'The normal Easter petals pause. A restrained crown-of-thorns silhouette and deep shadow replace celebratory motion.',ui:'Solemn Good Friday overlay',uiCopy:'Darkened Holy Week UI with crown-of-thorns art and “It is finished · John 19:30.”',suppress:true,faith:true,verse:'IT IS FINISHED',reference:'JOHN 19:30',motif:'thorns'},
+    'easter-sunday':{base:'easter',motion:'Sunrise glow + gentle petals',motionCopy:'Dawn light rises behind an empty-tomb silhouette while soft spring petals stay at the edges.',ui:'Resurrection / empty-tomb overlay',uiCopy:'Warm sunrise, rolled stone, lilies, and “He is risen · Matthew 28:6” become the Easter focal point.',effectAdd:'sunrise',faith:true,verse:'HE IS RISEN',reference:'MATTHEW 28:6',motif:'empty-tomb'},
+    thanksgiving:{base:'fall',motion:'Leaves + warm harvest glow',motionCopy:'Fall leaves continue with soft candle-warm light and wheat silhouettes at the lower edge.',ui:'Thanksgiving gratitude overlay',uiCopy:'Harvest warmth and wheat frame “In everything give thanks · 1 Thessalonians 5:18.”',effectAdd:'glow',faith:true,verse:'IN EVERYTHING GIVE THANKS',reference:'1 THESSALONIANS 5:18',motif:'wheat'},
+    'christmas-eve':{base:'christmas-week',motion:'Snow + lights + Bethlehem star',motionCopy:'Christmas lights and snow stay, but the Bethlehem skyline and star become the visual focus.',ui:'Holy Night / Bethlehem overlay',uiCopy:'Deep blue and gold frame “Good tidings of great joy · Luke 2:10–11.”',effectAdd:'twinkle',faith:true,verse:'GOOD TIDINGS OF GREAT JOY',reference:'LUKE 2:10–11',motif:'bethlehem'},
+    'christmas-day':{base:'christmas-week',motion:'Snow + lights + Bethlehem glow',motionCopy:'The full Christmas Week atmosphere stays active while the Star of Bethlehem and warm horizon light intensify.',ui:'Christmas Day / Bethlehem overlay',uiCopy:'Bethlehem remains the focal point with “Glory to God in the highest · Luke 2:14.”',effectAdd:'twinkle',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',motif:'bethlehem'},
   };
 
   const pad=(n)=>String(n).padStart(2,'0');
@@ -71,7 +76,7 @@
     const now=easternToday(),year=now.getUTCFullYear();
     for(let y=year;y<=year+3;y++){
       let start,end;
-      if(kind==='easter'){end=easterSunday(y);start=addDays(end,-6);}
+      if(kind==='easter'){end=easterSunday(y);start=addDays(end,-7);}
       if(kind==='memorial-day'){end=memorialDay(y);start=addDays(end,-3);}
       if(kind==='fall'){start=new Date(Date.UTC(y,10,1));end=thanksgiving(y);}
       if(kind==='christmas-teaser'){start=addDays(thanksgiving(y),1);end=new Date(Date.UTC(y,10,30));}
@@ -84,6 +89,7 @@
     for(let y=year;y<=year+3;y++){
       let date;
       if(id==='new-years-day')date=new Date(Date.UTC(y,0,1));
+      if(id==='palm-sunday')date=addDays(easterSunday(y),-7);
       if(id==='good-friday')date=addDays(easterSunday(y),-2);
       if(id==='easter-sunday')date=easterSunday(y);
       if(id==='thanksgiving')date=thanksgiving(y);
@@ -103,7 +109,7 @@
     if(m===2&&d<=14)return 'valentine';
     if(m===2)return 'late-winter';
     if(m===3&&d===17)return 'st-patrick';
-    const easter=easterSunday(y),easterStart=addDays(easter,-6);
+    const easter=easterSunday(y),easterStart=addDays(easter,-7);
     if(today>=key(easterStart)&&today<=key(easter))return 'easter';
     const memorial=memorialDay(y),memorialStart=addDays(memorial,-3);
     if(today>=key(memorialStart)&&today<=key(memorial))return 'memorial-day';
@@ -127,6 +133,7 @@
   const automaticObservanceForDate=(date=easternToday())=>{
     const y=date.getUTCFullYear(),m=date.getUTCMonth()+1,d=date.getUTCDate(),today=key(date),easter=easterSunday(y);
     if(m===1&&d===1)return 'new-years-day';
+    if(today===key(addDays(easter,-7)))return 'palm-sunday';
     if(today===key(addDays(easter,-2)))return 'good-friday';
     if(today===key(easter))return 'easter-sunday';
     if(today===key(thanksgiving(y)))return 'thanksgiving';
@@ -154,19 +161,24 @@
     points.forEach(([x,y],i)=>{const bulb=document.createElement('b');bulb.style.cssText=`--tree-x:${x}%;--tree-y:${y}%;--tree-delay:-${(seeded(i+(stageMode?41:0),31)*2.4).toFixed(2)}s`;lights.appendChild(bulb);});
     return tree;
   };
-  const addObservanceMotif=(layer,observance,stageMode=false)=>{
-    if(!observance)return;
-    const spec={
-      'new-years-day':['✦','✝'],
-      'good-friday':['✝',''],
-      'easter-sunday':['✝','☀'],
-      thanksgiving:['✦','✝'],
-      'christmas-eve':['★',''],
-      'christmas-day':['✝','★']
-    }[observance];
-    if(!spec)return;
-    const motif=document.createElement('div');motif.className=`aw-observance-motif aw-observance-motif--${observance}`;if(stageMode)motif.classList.add('aw-observance-motif--stage');motif.setAttribute('aria-hidden','true');
-    motif.innerHTML=`<span>${spec[0]}</span>${spec[1]?`<i>${spec[1]}</i>`:''}`;layer.appendChild(motif);
+  const buildPalm=(side='left')=>{const palm=document.createElement('div');palm.className=`aw-faith-palm aw-faith-palm--${side}`;palm.innerHTML='<b></b>'+Array.from({length:9},(_,i)=>`<i style="--leaf:${i}"></i>`).join('');return palm;};
+  const buildFaithScene=(theme,stageMode=false)=>{
+    const scene=META[theme]?.scene;if(!scene)return null;
+    const wrap=document.createElement('div');wrap.className=`aw-faith-scene aw-faith-scene--${scene}`;if(stageMode)wrap.classList.add('aw-faith-scene--stage');wrap.setAttribute('aria-hidden','true');
+    if(scene==='holy-week'){wrap.appendChild(buildPalm('left'));wrap.appendChild(buildPalm('right'));const dawn=document.createElement('span');dawn.className='aw-faith-dawn';wrap.appendChild(dawn);}
+    if(scene==='bethlehem')wrap.innerHTML='<span class="aw-bethlehem__star"></span><span class="aw-bethlehem__skyline"><i></i><b></b><em></em></span>';
+    return wrap;
+  };
+  const buildObservanceMotif=(observance,stageMode=false)=>{
+    const obs=OBS[observance];if(!obs?.motif)return null;
+    const motif=document.createElement('div');motif.className=`aw-observance-motif aw-observance-motif--${observance} aw-observance-motif--${obs.motif}`;if(stageMode)motif.classList.add('aw-observance-motif--stage');motif.setAttribute('aria-hidden','true');
+    if(obs.motif==='palms'){motif.appendChild(buildPalm('left'));motif.appendChild(buildPalm('right'));}
+    else if(obs.motif==='thorns')motif.innerHTML='<span class="aw-thorns__ring"></span><span class="aw-thorns__shadow"></span>';
+    else if(obs.motif==='empty-tomb')motif.innerHTML='<span class="aw-tomb__sun"></span><span class="aw-tomb__rays"></span><span class="aw-tomb__hill"></span><span class="aw-tomb__mouth"></span><span class="aw-tomb__stone"></span><span class="aw-tomb__lily aw-tomb__lily--1"></span><span class="aw-tomb__lily aw-tomb__lily--2"></span>';
+    else if(obs.motif==='wheat')motif.innerHTML='<span class="aw-wheat__glow"></span><span class="aw-wheat__stem aw-wheat__stem--1"></span><span class="aw-wheat__stem aw-wheat__stem--2"></span><span class="aw-wheat__stem aw-wheat__stem--3"></span>';
+    else if(obs.motif==='bethlehem')motif.innerHTML='<span class="aw-bethlehem__star"></span><span class="aw-bethlehem__skyline"><i></i><b></b><em></em></span>';
+    else motif.innerHTML='<span class="aw-gratitude__rays"></span>';
+    return motif;
   };
   const removeFx=()=>document.querySelectorAll('.aw-admin-season-fx').forEach((node)=>node.remove());
   const buildFx=(theme,observance='',stageMode=false)=>{
@@ -194,7 +206,8 @@
       makeStrand('top',stageMode?18:30);makeStrand('left',stageMode?10:18);makeStrand('right',stageMode?10:18);
     }
     if(theme==='christmas-week')layer.appendChild(buildHolidayTree(stageMode));
-    addObservanceMotif(layer,observance,stageMode);
+    const faithScene=buildFaithScene(theme,stageMode);if(faithScene)layer.appendChild(faithScene);
+    const motif=buildObservanceMotif(observance,stageMode);if(motif)layer.appendChild(motif);
     return layer;
   };
   const mountFx=(theme,observance='')=>{
@@ -224,6 +237,8 @@
     if(windowEl){const date=observance?nextObservance(observance):null;windowEl.textContent=observance&&date?`Next · ${fmt(date)}`:windowText(theme);}
     if(motionEl)motionEl.textContent=obs?.motion||meta.motion;if(motionCopy)motionCopy.textContent=obs?.motionCopy||meta.motionCopy;
     if(uiEl)uiEl.textContent=obs?.ui||meta.ui;if(uiCopy)uiCopy.textContent=obs?.uiCopy||meta.uiCopy;
+    const faith=obs?.faith?obs:(meta?.faith?meta:null);
+    if(faithBanner){faithBanner.hidden=!faith;if(faith){if(faithKicker)faithKicker.textContent=obs?.faith?(obs.title||'FAITH MOMENT'):(meta.title||'FAITH THEME');if(faithVerse)faithVerse.textContent=faith.verse||'';if(faithReference)faithReference.textContent=faith.reference||'';}}
     requestAnimationFrame(()=>mountFx(theme,observance));
     refreshPublicPreview();
   };

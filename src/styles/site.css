@@ -140,10 +140,8 @@ html[data-observance="new-years-day"]{--season-primary:#f0d784;--season-secondar
 /* Christmas Week gets a small tree cue in the seasonal strip in addition to the viewport light strands. */
 html[data-season="christmas-week"] .aw-season-banner__icon{font-size:1.05rem;filter:drop-shadow(0 0 9px rgba(255,227,155,.36))}
 
-/* Religious observance marks stay decorative and behind page-intro copy. */
+/* Faith observance marks stay decorative and behind page-intro copy. */
 html[data-observance="good-friday"] .page-intro,html[data-observance="easter-sunday"] .page-intro{position:relative;overflow:hidden}
-html[data-observance="good-friday"] .page-intro:after,html[data-observance="easter-sunday"] .page-intro:after{content:'✝';position:absolute;right:clamp(1rem,7vw,7rem);top:50%;transform:translateY(-50%);color:var(--season-primary);font:900 clamp(8rem,22vw,18rem)/1 Georgia,serif;opacity:.055;pointer-events:none;filter:drop-shadow(0 0 24px color-mix(in srgb,var(--season-primary) 22%,transparent))}
-html[data-observance="easter-sunday"] .page-intro:after{opacity:.09}
 html[data-observance="good-friday"] .page-intro>*,html[data-observance="easter-sunday"] .page-intro>*{position:relative;z-index:1}
 
 /* v1.1.21 — full seasonal background-art system.
@@ -177,7 +175,7 @@ html[data-season="valentine"]{--site-bg-art:radial-gradient(circle at 82% 12%,rg
 /* Spring: brighter air and fresh green/teal depth while staying dark enough for motorsports content. */
 html[data-season="spring"]{--site-bg-art:radial-gradient(circle at 84% 13%,rgba(170,218,139,.2),transparent 31%),radial-gradient(circle at 12% 79%,rgba(91,184,157,.2),transparent 35%),radial-gradient(circle at 50% 8%,rgba(226,216,131,.08),transparent 25%),linear-gradient(145deg,#07130d 0%,#10231a 36%,#07100e 68%,#10170b 100%),url('/images/textures/aetherwing-editorial.webp')}
 
-/* Easter: sunrise / renewal backdrop. The cross remains an observance layer above this art. */
+/* Easter: sunrise / renewal backdrop; specific Holy Week days add their own environmental motifs. */
 html[data-season="easter"]{--site-bg-art:radial-gradient(ellipse at 50% 4%,rgba(248,218,120,.38),transparent 27%),radial-gradient(circle at 80% 30%,rgba(184,160,215,.2),transparent 31%),radial-gradient(circle at 14% 77%,rgba(151,201,140,.24),transparent 34%),linear-gradient(180deg,#19170e 0%,#232315 26%,#101713 53%,#080c0a 100%),url('/images/textures/aetherwing-editorial.webp')}
 
 /* New Year / Independence Day: night-event backdrops built for fireworks. */
@@ -187,3 +185,22 @@ html[data-season="independence-day"]{--site-bg-art:radial-gradient(circle at 82%
 /* Easter / Christmas Day observances can brighten the themed art without replacing it. */
 html[data-observance="easter-sunday"] body:before{filter:saturate(1.04) brightness(1.08)}
 html[data-observance="christmas-eve"] body:before,html[data-observance="christmas-day"] body:before{filter:saturate(1.04) brightness(.96)}
+
+/* v1.1.24 — faith observances use environmental storytelling rather than cross glyphs. */
+html[data-observance="palm-sunday"]{--season-primary:#dcc777;--season-secondary:#88a86d;--season-tertiary:#efe5bb;--season-banner:linear-gradient(90deg,#0d1009,#334023 45%,#5b4b1d 67%,#0d1009);--season-overlay:radial-gradient(circle at 50% 3%,rgba(220,199,119,.13),transparent 28%),linear-gradient(180deg,rgba(6,8,5,.69),rgba(5,7,5,.88))}
+html[data-observance="palm-sunday"] .page-intro{box-shadow:inset 0 -38px 76px rgba(136,168,109,.08)}
+
+/* Remove the old giant cross silhouette. Good Friday gets thorn-ring shadows; Easter Sunday gets dawn/tomb art from the viewport layer. */
+html[data-observance="good-friday"] .page-intro:after,html[data-observance="easter-sunday"] .page-intro:after{content:'';font-size:0;right:clamp(1rem,7vw,7rem);width:clamp(9rem,19vw,16rem);height:clamp(9rem,19vw,16rem);border-radius:50%;opacity:.1;filter:none}
+html[data-observance="good-friday"] .page-intro:after{background:repeating-conic-gradient(from 5deg,rgba(213,189,122,.7) 0 3deg,transparent 3deg 16deg);-webkit-mask:radial-gradient(circle,transparent 0 53%,#000 54% 61%,transparent 62%);mask:radial-gradient(circle,transparent 0 53%,#000 54% 61%,transparent 62%);transform:translateY(-50%) rotate(-11deg)}
+html[data-observance="easter-sunday"] .page-intro:after{background:radial-gradient(circle,#f6e7a8 0 9%,rgba(241,215,123,.42) 10% 23%,rgba(241,215,123,.08) 46%,transparent 70%);opacity:.22}
+
+/* Christmas is explicitly Bethlehem-at-night rather than only snow/evergreen. */
+html[data-season="christmas"],html[data-season="christmas-week"]{--season-banner:linear-gradient(90deg,#030816,#12283d 38%,#4b3b16 62%,#07100b);--season-primary:#f2d88f;--season-secondary:#4b7f9e;--season-tertiary:#d8eee1}
+html[data-season="christmas"] .page-intro,html[data-season="christmas-week"] .page-intro{box-shadow:inset 0 -42px 82px rgba(242,216,143,.055)}
+
+/* Thanksgiving keeps the fall shell but turns the day toward warmth and gratitude. */
+html[data-observance="thanksgiving"] .aw-season-banner{letter-spacing:.12em}
+
+/* Faith banners get a little extra breathing room because the verse/reference is the point of the observance. */
+html[data-observance="palm-sunday"] .aw-season-banner,html[data-observance="good-friday"] .aw-season-banner,html[data-observance="easter-sunday"] .aw-season-banner,html[data-observance="thanksgiving"] .aw-season-banner,html[data-observance="christmas-eve"] .aw-season-banner,html[data-observance="christmas-day"] .aw-season-banner,html[data-observance="new-years-day"] .aw-season-banner{min-height:37px;padding-block:.45rem}
