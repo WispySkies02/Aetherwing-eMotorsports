@@ -90,29 +90,55 @@
 
   const seeded=(i,salt=1)=>{const x=Math.sin((i+1)*12.9898+salt*78.233)*43758.5453;return x-Math.floor(x);};
   const styleFor=(i)=>`--x:${Math.round(seeded(i,1)*100)}%;--delay:-${(seeded(i,2)*18).toFixed(2)}s;--dur:${(12+seeded(i,3)*18).toFixed(2)}s;--size:${(3+seeded(i,4)*7).toFixed(1)}px;--drift:${Math.round((seeded(i,5)-.5)*180)}px`;
+  const buildHolidayTree=(stageMode=false)=>{
+    const tree=document.createElement('div');tree.className='aw-fx__tree';tree.setAttribute('aria-hidden','true');if(stageMode)tree.classList.add('aw-fx__tree--stage');
+    tree.innerHTML='<i class="aw-fx__tree-star">★</i><span class="aw-fx__tree-tier aw-fx__tree-tier--1"></span><span class="aw-fx__tree-tier aw-fx__tree-tier--2"></span><span class="aw-fx__tree-tier aw-fx__tree-tier--3"></span><span class="aw-fx__tree-trunk"></span><span class="aw-fx__tree-lights"></span>';
+    const lights=tree.querySelector('.aw-fx__tree-lights');
+    const points=[[50,20],[38,34],[62,35],[28,49],[49,49],[72,50],[20,65],[39,66],[60,65],[80,66],[31,80],[52,79],[71,80]];
+    points.forEach(([x,y],i)=>{const bulb=document.createElement('b');bulb.style.cssText=`--tree-x:${x}%;--tree-y:${y}%;--tree-delay:-${(seeded(i+(stageMode?41:0),31)*2.4).toFixed(2)}s`;lights.appendChild(bulb);});
+    return tree;
+  };
+  const addObservanceMotif=(layer,observance,stageMode=false)=>{
+    if(!observance)return;
+    const spec={
+      'new-years-day':['✦','✝'],
+      'good-friday':['✝',''],
+      'easter-sunday':['✝','☀'],
+      thanksgiving:['✦','✝'],
+      'christmas-eve':['★',''],
+      'christmas-day':['✝','★']
+    }[observance];
+    if(!spec)return;
+    const motif=document.createElement('div');motif.className=`aw-observance-motif aw-observance-motif--${observance}`;if(stageMode)motif.classList.add('aw-observance-motif--stage');motif.setAttribute('aria-hidden','true');
+    motif.innerHTML=`<span>${spec[0]}</span>${spec[1]?`<i>${spec[1]}</i>`:''}`;layer.appendChild(motif);
+  };
   const removeFx=()=>document.querySelectorAll('.aw-admin-season-fx').forEach((node)=>node.remove());
   const buildFx=(theme,observance='',stageMode=false)=>{
-    const meta=META[theme],obs=OBS[observance];if(!meta||meta.effect==='none'||obs?.suppress)return null;
+    const meta=META[theme],obs=OBS[observance];if(!meta)return null;if(meta.effect==='none'&&!observance)return null;
     const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-admin-season-fx ${stageMode?'aw-admin-season-fx--stage':'aw-admin-season-fx--page'} aw-season-atmosphere--${meta.effect}`;layer.setAttribute('aria-hidden','true');
     const css=getComputedStyle(root);layer.style.setProperty('--fx-primary',css.getPropertyValue('--preview-primary').trim()||'#f3b51d');layer.style.setProperty('--fx-secondary',css.getPropertyValue('--preview-secondary').trim()||'#12aaf5');layer.style.setProperty('--fx-tertiary',css.getPropertyValue('--preview-third').trim()||'#fff');
     const density=stageMode?Math.max(meta.density,meta.effect==='haze'?3:12):meta.density;
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset+(stageMode?31:0));layer.appendChild(el);}};
-    if(meta.effect==='haze')add('aw-fx__haze',3);
-    else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
-    else if(meta.effect==='leaves')add('aw-fx__leaf',density);
-    else if(meta.effect==='snow')add('aw-fx__snow',density);
-    else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',12);}
-    else if(meta.effect==='petals')add('aw-fx__petal',density);
-    else if(meta.effect==='glow')add('aw-fx__glow',density);
-    else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
-    else if(meta.effect==='fireworks'){for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i+(stageMode?19:0),8)*76}%;--y:${10+seeded(i+(stageMode?19:0),9)*52}%;--delay:-${(seeded(i+(stageMode?19:0),10)*12).toFixed(2)}s;--dur:${(6+seeded(i,11)*6).toFixed(2)}s`;layer.appendChild(el);}}
-    if(obs?.effectAdd==='twinkle')add('aw-fx__twinkle',10,80);
-    if(obs?.effectAdd==='glow')add('aw-fx__glow',8,90);
-    if(obs?.effectAdd==='sunrise'){add('aw-fx__glow',12,100);add('aw-fx__twinkle',7,120);}
+    if(!obs?.suppress){
+      if(meta.effect==='haze')add('aw-fx__haze',3);
+      else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
+      else if(meta.effect==='leaves')add('aw-fx__leaf',density);
+      else if(meta.effect==='snow')add('aw-fx__snow',density);
+      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',12);}
+      else if(meta.effect==='petals')add('aw-fx__petal',density);
+      else if(meta.effect==='glow')add('aw-fx__glow',density);
+      else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
+      else if(meta.effect==='fireworks'){for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i+(stageMode?19:0),8)*76}%;--y:${10+seeded(i+(stageMode?19:0),9)*52}%;--delay:-${(seeded(i+(stageMode?19:0),10)*12).toFixed(2)}s;--dur:${(6+seeded(i,11)*6).toFixed(2)}s`;layer.appendChild(el);}}
+      if(obs?.effectAdd==='twinkle')add('aw-fx__twinkle',10,80);
+      if(obs?.effectAdd==='glow')add('aw-fx__glow',8,90);
+      if(obs?.effectAdd==='sunrise'){add('aw-fx__glow',12,100);add('aw-fx__twinkle',7,120);}
+    }
     if(meta.lights){
       const makeStrand=(position,count)=>{const strand=document.createElement('div');strand.className=`aw-fx__lights aw-fx__lights--${position}`;for(let i=0;i<count;i++){const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i+(stageMode?17:0),20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i+(stageMode?17:0),21)*8)}px`);strand.appendChild(bulb);}layer.appendChild(strand);};
       makeStrand('top',stageMode?18:30);makeStrand('left',stageMode?10:18);makeStrand('right',stageMode?10:18);
     }
+    if(theme==='christmas-week')layer.appendChild(buildHolidayTree(stageMode));
+    addObservanceMotif(layer,observance,stageMode);
     return layer;
   };
   const mountFx=(theme,observance='')=>{

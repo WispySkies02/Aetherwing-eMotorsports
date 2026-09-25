@@ -108,3 +108,11 @@ The public site now carries the complete January-to-December seasonal system in 
 One-day faith/gratitude overlays are layered over the normal season on New Year’s Day, Good Friday, Easter Sunday, Thanksgiving, Christmas Eve, and Christmas Day. Good Friday intentionally pauses the Easter motion; Easter Sunday uses a cross/sunrise treatment; Christmas Day keeps the Christmas Week lights and snow while changing the message to “Glory to God in the highest.”
 
 Admin → Theme Preview is ordered January through December, gives every theme a static icon, includes a miniature light strand + tree for Christmas Week, and includes a separate Faith & Gratitude Moments preview row. The preview remains session-only: it never publishes, never writes to local storage, and a reload resets it. Moving-holiday previews calculate the next real occurrence automatically.
+
+## v1.1.20 seasonal overlay polish
+
+- One-day faith/gratitude observances now add visible decorative motifs to the actual public seasonal layer and to Admin Theme Preview, not only color changes and preview buttons.
+- Good Friday keeps motion quiet while still displaying a restrained cross motif.
+- Easter Sunday adds a brighter cross + sunrise treatment; Christmas Eve adds a star motif; Christmas Day adds cross + star over Christmas Week; Thanksgiving and New Year's Day get gratitude marks.
+- Christmas Week now includes a decorative lit Christmas tree in the seasonal layer and Admin preview.
+- Christmas light strands now render as visibly powered bulbs with stronger colored halos and staggered twinkling/chasing brightness instead of dim static dots.

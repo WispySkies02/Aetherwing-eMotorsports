@@ -113,6 +113,28 @@
   };
   const seeded=(i,salt=1)=>{const x=Math.sin((i+1)*12.9898+salt*78.233)*43758.5453;return x-Math.floor(x);};
   const styleFor=(i)=>`--x:${Math.round(seeded(i,1)*100)}%;--delay:-${(seeded(i,2)*18).toFixed(2)}s;--dur:${(12+seeded(i,3)*18).toFixed(2)}s;--size:${(3+seeded(i,4)*7).toFixed(1)}px;--drift:${Math.round((seeded(i,5)-.5)*180)}px`;
+  const buildHolidayTree=()=>{
+    const tree=document.createElement('div');tree.className='aw-fx__tree';tree.setAttribute('aria-hidden','true');
+    tree.innerHTML='<i class="aw-fx__tree-star">★</i><span class="aw-fx__tree-tier aw-fx__tree-tier--1"></span><span class="aw-fx__tree-tier aw-fx__tree-tier--2"></span><span class="aw-fx__tree-tier aw-fx__tree-tier--3"></span><span class="aw-fx__tree-trunk"></span><span class="aw-fx__tree-lights"></span>';
+    const lights=tree.querySelector('.aw-fx__tree-lights');
+    const points=[[50,20],[38,34],[62,35],[28,49],[49,49],[72,50],[20,65],[39,66],[60,65],[80,66],[31,80],[52,79],[71,80]];
+    points.forEach(([x,y],i)=>{const bulb=document.createElement('b');bulb.style.cssText=`--tree-x:${x}%;--tree-y:${y}%;--tree-delay:-${(seeded(i,31)*2.4).toFixed(2)}s`;lights.appendChild(bulb);});
+    return tree;
+  };
+  const addObservanceMotif=(layer,observance)=>{
+    if(!observance)return;
+    const spec={
+      'new-years-day':['✦','✝'],
+      'good-friday':['✝',''],
+      'easter-sunday':['✝','☀'],
+      thanksgiving:['✦','✝'],
+      'christmas-eve':['★',''],
+      'christmas-day':['✝','★']
+    }[observance];
+    if(!spec)return;
+    const motif=document.createElement('div');motif.className=`aw-observance-motif aw-observance-motif--${observance}`;motif.setAttribute('aria-hidden','true');
+    motif.innerHTML=`<span>${spec[0]}</span>${spec[1]?`<i>${spec[1]}</i>`:''}`;layer.appendChild(motif);
+  };
   let mountedKey='';
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
   function mountAtmosphere(theme,observance){
@@ -121,27 +143,26 @@
     const meta=THEMES[theme],obs=OBSERVANCES[observance];
     if(!meta||mountedKey===key)return;
     removeAtmosphere();
-    if(obs?.suppress){mountedKey=key;return;}
-
     const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-season-atmosphere--${meta.effect}`;layer.setAttribute('aria-hidden','true');
     const colors=palette();layer.style.setProperty('--fx-primary',colors.primary);layer.style.setProperty('--fx-secondary',colors.secondary);layer.style.setProperty('--fx-tertiary',colors.tertiary);
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset);layer.appendChild(el);}};
 
-    if(meta.effect==='haze')add('aw-fx__haze',3);
-    else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',meta.density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
-    else if(meta.effect==='leaves')add('aw-fx__leaf',meta.density);
-    else if(meta.effect==='snow')add('aw-fx__snow',meta.density);
-    else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',meta.density);add('aw-fx__twinkle',12);}
-    else if(meta.effect==='petals')add('aw-fx__petal',meta.density);
-    else if(meta.effect==='glow')add('aw-fx__glow',meta.density);
-    else if(meta.effect==='twinkle')add('aw-fx__twinkle',meta.density);
-    else if(meta.effect==='fireworks'){
-      for(let i=0;i<meta.density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}
+    if(!obs?.suppress){
+      if(meta.effect==='haze')add('aw-fx__haze',3);
+      else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',meta.density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
+      else if(meta.effect==='leaves')add('aw-fx__leaf',meta.density);
+      else if(meta.effect==='snow')add('aw-fx__snow',meta.density);
+      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',meta.density);add('aw-fx__twinkle',12);}
+      else if(meta.effect==='petals')add('aw-fx__petal',meta.density);
+      else if(meta.effect==='glow')add('aw-fx__glow',meta.density);
+      else if(meta.effect==='twinkle')add('aw-fx__twinkle',meta.density);
+      else if(meta.effect==='fireworks'){
+        for(let i=0;i<meta.density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}
+      }
+      if(obs?.add==='twinkle')add('aw-fx__twinkle',10,71);
+      if(obs?.add==='glow')add('aw-fx__glow',8,83);
+      if(obs?.add==='sunrise'){add('aw-fx__glow',12,101);add('aw-fx__twinkle',7,121);}
     }
-
-    if(obs?.add==='twinkle')add('aw-fx__twinkle',10,71);
-    if(obs?.add==='glow')add('aw-fx__glow',8,83);
-    if(obs?.add==='sunrise'){add('aw-fx__glow',12,101);add('aw-fx__twinkle',7,121);}
 
     if(meta.lights){
       const makeStrand=(position,count)=>{
@@ -151,6 +172,8 @@
       };
       makeStrand('top',30);makeStrand('left',18);makeStrand('right',18);
     }
+    if(theme==='christmas-week')layer.appendChild(buildHolidayTree());
+    addObservanceMotif(layer,observance);
     document.body.prepend(layer);mountedKey=key;
   }
 
