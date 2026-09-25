@@ -79,3 +79,8 @@ The supplied Aetherwing editorial reference image is now a single full-viewport,
 The public site now selects a seasonal presentation automatically in America/New_York on every page load. The schedule covers Summer’s End, the Sep. 25–30 Halloween teaser, full Halloween, Halloween week, fall, winter/Christmas phases, New Year, winter, Valentine, spring, St. Patrick’s Day, Easter, Memorial Day, summer, and Independence Day accents. The themes include a fixed pointer-events-none “front glass” layer for fog, frost, snow, leaf flecks, grime, cobwebs, sparkles, and other restrained screen-level effects without blocking interaction. `prefers-reduced-motion` disables moving particles. Admin itself never receives the decorative glass layer.
 
 Use `?season=<theme-id>` on any public URL to preview a specific theme, `?season=off` for plain Aetherwing, or `?season=auto` to follow the calendar. Admin tab **22 Theme Lab** provides the same controls in a live iframe and shows the full automatic theme calendar.
+
+
+## Seasonal theme system
+
+The public seasonal theme controller is served from `public/seasonal-theme.js`. `src/layouts/Base.astro` references it with Astro's `is:inline` directive so the public asset is emitted as-is instead of being passed through the Vite bundler.

@@ -22,6 +22,7 @@ const seasonal=readFileSync('public/seasonal-theme.js','utf8');
 for(const id of ['summer-end','halloween-teaser','halloween','halloween-week','fall','christmas-teaser','christmas','christmas-week','calm-winter','new-year','clean-winter','valentine-teaser','valentine','late-winter','spring','st-patrick','easter','memorial','summer','independence'])if(!seasonal.includes(`'${id}'`))throw Error(`Missing seasonal theme: ${id}`);
 const baseLayout=readFileSync('src/layouts/Base.astro','utf8');
 if(!baseLayout.includes('aw-season-glass')||!baseLayout.includes('/seasonal-theme.js'))throw Error('Public layout must retain the seasonal front-glass system.');
+if(!baseLayout.includes('<script is:inline src="/seasonal-theme.js"></script>'))throw Error('Seasonal public script must use Astro is:inline so Vite does not bundle the public asset.');
 const adminHtml=readFileSync('public/admin/index.html','utf8');
 if(!adminHtml.includes('data-theme-lab')||!adminHtml.includes('data-admin-tab="themes"')||!existsSync('public/admin/theme-lab.js'))throw Error('Admin Theme Lab must remain available.');
 
