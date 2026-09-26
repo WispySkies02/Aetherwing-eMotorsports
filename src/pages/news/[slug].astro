@@ -1,8 +1,0 @@
----
-import Base from '../../layouts/Base.astro';
-import { news } from '../../lib/site-content.mjs';
-import '../../styles/records.css';
-export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
-const {story}=Astro.props;
----
-<Base title={story.title} description={story.summary}><article class="news-article"><div class="wrap"><a href="/news/">← Team Newsroom</a><p class="eyebrow">{story.category} · {story.date}</p><h1>{story.title}</h1><p class="news-article__summary">{story.summary}</p><div class="news-article__body">{story.metrics?.length>0&&<div class="news-metrics">{story.metrics.map(m=><div><b>{m.value}</b><small>{m.label}</small></div>)}</div>}{story.sections?.map(section=><section><h2>{section.heading}</h2>{section.paragraphs?.map(paragraph=><p>{paragraph}</p>)}</section>)}{story.quote?.text&&<blockquote>“{story.quote.text}”<cite>{story.quote.attribution}</cite></blockquote>}</div></div></article></Base>

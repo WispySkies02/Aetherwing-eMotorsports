@@ -106,3 +106,6 @@ const currentNumbers={
   nrrs:new Set(drivers.filter((d)=>d.competitionId==='nrrs').map((d)=>String(d.number)))
 };
 if(currentNumbers['uarl-d1'].has('42')||currentNumbers['uarl-d1'].has('46')||currentNumbers['uarl-d1'].has('56')||currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season #42/#46/#56 numbers must stay out of the current roster until the season changes.');
+
+// v1.1.31 — selected-board standings PNG export.
+if(!adminContentSource.includes('data-standings-export')||!adminContentSource.includes('createStandingsPng')||!adminContentSource.includes('Save PNG')||!adminContentSource.includes('Open full size'))throw Error('Admin Standings must retain full selected-board PNG generation, preview, and save controls.');

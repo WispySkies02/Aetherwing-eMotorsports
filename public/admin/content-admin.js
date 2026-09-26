@@ -300,14 +300,113 @@
     let matched=0;for(const race of results){for(const entry of race.entries||[]){const row=matchedStanding(board,entry);if(row&&Number.isFinite(Number(entry.racePoints))){row.points=Number(row.points||0)+Number(entry.racePoints||0);matched++;}}recalcStandingBoard(board);board.lastResultDate=race.date||board.lastResultDate||'';board.lastResultScheduleId=race.scheduleId||'';board.autoUpdateNote=`Applied ${race.title||race.track||'published result'} · ${race.date||''}`;}
     dirty=true;render();status(`${results.length} published result${results.length===1?'':'s'} applied (${matched} driver point updates). Review, then publish Standings.`);
   }
+  const standingsLogoMap={
+    nrrs:'/images/schedule-logos/nrrs.png',
+    kmart:'/images/schedule-logos/kmart-regular.jpg',
+    sunoco:'/images/schedule-logos/sunoco.png',
+    uarl:'/images/schedule-logos/uarl-d1.png',
+    'uarl-d1':'/images/schedule-logos/uarl-d1.png',
+    'uarl-open':'/images/schedule-logos/open.png',
+    iracing:'/images/schedule-logos/iracing.png',
+    'iracing-factory':'/images/schedule-logos/iracing.png'
+  };
+  let standingsExportObjectUrl='';
+  const safeExportName=(value='standings')=>String(value||'standings').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'standings';
+  const loadCanvasImage=(src)=>new Promise((resolve)=>{if(!src)return resolve(null);const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>resolve(null);image.src=src;});
+  function drawContained(ctx,image,x,y,width,height){
+    if(!image?.naturalWidth||!image?.naturalHeight)return;
+    const scale=Math.min(width/image.naturalWidth,height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;
+    ctx.drawImage(image,x+(width-w)/2,y+(height-h)/2,w,h);
+  }
+  function drawCover(ctx,image,width,height){
+    if(!image?.naturalWidth||!image?.naturalHeight)return;
+    const scale=Math.max(width/image.naturalWidth,height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;
+    ctx.drawImage(image,(width-w)/2,(height-h)/2,w,h);
+  }
+  function fitCanvasText(ctx,text,maxWidth,size,weight='900',family='Arial Narrow, Arial, sans-serif',minSize=20){
+    let px=size;ctx.font=`${weight} ${px}px ${family}`;
+    while(px>minSize&&ctx.measureText(String(text||'')).width>maxWidth){px-=2;ctx.font=`${weight} ${px}px ${family}`;}
+    return px;
+  }
+  function roundedRect(ctx,x,y,w,h,r=12){
+    const radius=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+radius,y);ctx.arcTo(x+w,y,x+w,y+h,radius);ctx.arcTo(x+w,y+h,x,y+h,radius);ctx.arcTo(x,y+h,x,y,radius);ctx.arcTo(x,y,x+w,y,radius);ctx.closePath();
+  }
+  function paintStandingRow(ctx,row,x,y,w,h,index,board){
+    const highlighted=Boolean(row.highlight),outsideCut=Number(board.cutoffAfter)>0&&index>=Number(board.cutoffAfter);
+    ctx.save();roundedRect(ctx,x,y,w,h-6,8);ctx.fillStyle=highlighted?'rgba(35,67,83,.94)':outsideCut?'rgba(10,12,14,.90)':'rgba(15,19,23,.92)';ctx.fill();
+    if(highlighted){ctx.fillStyle='#e0c891';ctx.fillRect(x,y,7,h-6);}else if(row.chaseEligible===true){ctx.fillStyle='#6dc8ff';ctx.fillRect(x,y,4,h-6);}
+    const pad=22,posX=x+pad,numX=x+112,nameX=x+205,pointsX=x+w-190,deltaX=x+w-24;
+    ctx.textBaseline='middle';ctx.fillStyle=highlighted?'#f6f8fa':'#aeb9bf';ctx.font='900 24px Arial Narrow, Arial, sans-serif';ctx.textAlign='left';ctx.fillText(String(row.position||`P${index+1}`),posX,y+(h-6)/2);
+    ctx.fillStyle='#e0c891';ctx.font='900 25px Arial Narrow, Arial, sans-serif';ctx.fillText(row.number?`#${row.number}`:'—',numX,y+(h-6)/2);
+    const status=row.chaseStatus||row.note||'';const driver=String(row.driver||'—');fitCanvasText(ctx,driver,Math.max(180,pointsX-nameX-28),31,'900','Arial Narrow, Arial, sans-serif',22);ctx.fillStyle='#f6f8fa';ctx.fillText(driver.toUpperCase(),nameX,y+(h-6)/2-(status?8:0));
+    if(status){ctx.fillStyle='#7f8b92';ctx.font='800 13px Arial, sans-serif';ctx.fillText(String(status).toUpperCase(),nameX,y+(h-6)/2+15);}
+    ctx.textAlign='right';ctx.fillStyle='#f6f8fa';ctx.font='900 27px Arial Narrow, Arial, sans-serif';ctx.fillText(Number(row.points||0).toLocaleString('en-US'),pointsX,y+(h-6)/2);
+    ctx.fillStyle=row.delta==='LEADER'?'#6dc8ff':'#9ba6ac';ctx.font='900 18px Arial, sans-serif';ctx.fillText(String(row.delta||'—'),deltaX,y+(h-6)/2);
+    ctx.restore();
+  }
+  async function createStandingsPng(board){
+    const rows=Array.isArray(board?.rows)?board.rows:[];if(!rows.length)throw new Error('This standings board has no rows to export.');
+    const width=1800,margin=72,headerHeight=250,rowHeight=70,columnGap=28,columns=rows.length>16?2:1,rowsPerColumn=Math.ceil(rows.length/columns),bodyHeight=rowsPerColumn*rowHeight;
+    const ptDrivers=Array.isArray(board.ptEntry?.drivers)?board.ptEntry.drivers:[],ptHeight=ptDrivers.length?170:0,footerHeight=92,height=margin+headerHeight+bodyHeight+ptHeight+footerHeight+margin;
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas export is not available in this browser.');
+    const [texture,aetherLogo,leagueLogo]=await Promise.all([loadCanvasImage('/images/textures/aetherwing-editorial.webp'),loadCanvasImage('/images/brand/aetherwing-logo.png'),loadCanvasImage(standingsLogoMap[board.league]||'')]);
+    ctx.fillStyle='#05070a';ctx.fillRect(0,0,width,height);if(texture){ctx.save();ctx.globalAlpha=.34;drawCover(ctx,texture,width,height);ctx.restore();}
+    const wash=ctx.createLinearGradient(0,0,width,height);wash.addColorStop(0,'rgba(4,7,10,.88)');wash.addColorStop(.55,'rgba(5,8,11,.95)');wash.addColorStop(1,'rgba(2,4,6,.98)');ctx.fillStyle=wash;ctx.fillRect(0,0,width,height);
+    const accent=ctx.createLinearGradient(margin,0,width-margin,0);accent.addColorStop(0,'#6dc8ff');accent.addColorStop(.55,'#e0c891');accent.addColorStop(1,'#3e7e84');ctx.fillStyle=accent;ctx.fillRect(0,0,width,12);
+    if(aetherLogo)drawContained(ctx,aetherLogo,margin,margin+18,120,120);
+    const titleX=margin+(aetherLogo?150:0),titleMax=width-titleX-margin-(leagueLogo?180:0);ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle='#6dc8ff';ctx.font='900 18px Arial, sans-serif';ctx.fillText('AETHERWING eMOTORSPORTS · STANDINGS',titleX,margin+48);
+    fitCanvasText(ctx,board.title||'Standings',titleMax,58,'900','Arial Narrow, Arial, sans-serif',32);ctx.fillStyle='#f6f8fa';ctx.fillText(String(board.title||'STANDINGS').toUpperCase(),titleX,margin+112);
+    fitCanvasText(ctx,board.subtitle||'',titleMax,25,'700','Arial, sans-serif',17);ctx.fillStyle='#a8b1b7';ctx.fillText(String(board.subtitle||''),titleX,margin+151);
+    const meta=[board.status,board.pointsContext].filter(Boolean).join(' · ');if(meta){ctx.fillStyle='#e0c891';ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(meta).toUpperCase(),titleX,margin+184);}
+    if(leagueLogo){roundedRect(ctx,width-margin-150,margin+24,150,130,12);ctx.fillStyle='rgba(255,255,255,.06)';ctx.fill();drawContained(ctx,leagueLogo,width-margin-136,margin+35,122,108);}
+    const bodyY=margin+headerHeight,colWidth=(width-margin*2-columnGap*(columns-1))/columns;
+    for(let col=0;col<columns;col++){
+      const x=margin+col*(colWidth+columnGap),start=col*rowsPerColumn,end=Math.min(rows.length,start+rowsPerColumn);
+      for(let i=start;i<end;i++){
+        const local=i-start,y=bodyY+local*rowHeight;
+        if(Number(board.cutoffAfter)>0&&i===Number(board.cutoffAfter)){
+          ctx.save();ctx.strokeStyle='#e0c891';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-4);ctx.lineTo(x+colWidth,y-4);ctx.stroke();ctx.fillStyle='#e0c891';ctx.font='900 13px Arial, sans-serif';ctx.textAlign='right';ctx.fillText(String(board.cutoffLabel||'CHASE CUTOFF').toUpperCase(),x+colWidth,y-11);ctx.restore();
+        }
+        paintStandingRow(ctx,rows[i],x,y,colWidth,rowHeight,i,board);
+      }
+    }
+    let cursorY=bodyY+bodyHeight+18;
+    if(ptDrivers.length){
+      roundedRect(ctx,margin,cursorY,width-margin*2,ptHeight-18,12);ctx.fillStyle='rgba(17,20,23,.95)';ctx.fill();ctx.strokeStyle='rgba(224,200,145,.42)';ctx.lineWidth=2;ctx.stroke();
+      ctx.textAlign='left';ctx.fillStyle='#e0c891';ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(board.ptEntry.title||'PART-TIME ENTRIES').toUpperCase(),margin+24,cursorY+34);ctx.fillStyle='#8f999f';ctx.font='800 14px Arial, sans-serif';ctx.fillText(String(board.ptEntry.status||'').toUpperCase(),margin+24,cursorY+59);
+      const cardGap=14,cardY=cursorY+78,cardW=(width-margin*2-48-(ptDrivers.length-1)*cardGap)/Math.max(1,ptDrivers.length);ptDrivers.forEach((driver,i)=>{const cardX=margin+24+i*(cardW+cardGap);ctx.fillStyle='rgba(5,7,9,.92)';ctx.fillRect(cardX,cardY,cardW,62);ctx.fillStyle='#f6f8fa';ctx.font='900 20px Arial Narrow, Arial, sans-serif';ctx.fillText(`${board.ptEntry.number?'#'+board.ptEntry.number+' · ':''}${String(driver.driver||'').toUpperCase()}`,cardX+16,cardY+26);ctx.fillStyle='#a9b2b7';ctx.font='900 15px Arial, sans-serif';ctx.fillText(`${Number(driver.points||0).toLocaleString('en-US')} PTS`,cardX+16,cardY+49);});
+      cursorY+=ptHeight;
+    }
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,cursorY+18);ctx.lineTo(width-margin,cursorY+18);ctx.stroke();ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle='#7f8a91';ctx.font='800 14px Arial, sans-serif';ctx.fillText('AETHERWING eMOTORSPORTS · ADMIN STANDINGS EXPORT',margin,cursorY+53);ctx.textAlign='right';ctx.fillText(`GENERATED ${new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'})}`,width-margin,cursorY+53);
+    const blob=await new Promise((resolve,reject)=>canvas.toBlob((value)=>value?resolve(value):reject(new Error('PNG encoding failed.')),'image/png',1));
+    return {blob,fileName:`${safeExportName(board.title||board.id)}-standings.png`,width,height};
+  }
+  async function saveStandingsPng(blob,fileName){
+    if('showSaveFilePicker' in window){
+      try{const handle=await window.showSaveFilePicker({suggestedName:fileName,types:[{description:'PNG image',accept:{'image/png':['.png']}}]});const writable=await handle.createWritable();await writable.write(blob);await writable.close();status(`${fileName} saved.`);return;}catch(error){if(error?.name==='AbortError')return;}
+    }
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);status(`${fileName} download started.`);
+  }
+  async function exportStandingsGraphic(panel){
+    if(key!=='standings')return;commit();const board=current();const button=panel.querySelector('[data-standings-export]');if(button){button.disabled=true;button.textContent='Generating PNG…';}status(`Generating full ${board?.title||'standings'} graphic…`);
+    try{
+      const graphic=await createStandingsPng(board);if(standingsExportObjectUrl)URL.revokeObjectURL(standingsExportObjectUrl);standingsExportObjectUrl=URL.createObjectURL(graphic.blob);
+      const box=panel.querySelector('[data-standings-export-preview]');box.innerHTML=`<div class="standings-export-head"><div><strong>STANDINGS GRAPHIC READY</strong><span>${graphic.width.toLocaleString('en-US')} × ${graphic.height.toLocaleString('en-US')} PNG · ${esc(graphic.fileName)}</span></div><div><button type="button" data-standings-export-save>Save PNG</button><button type="button" data-standings-export-open>Open full size</button></div></div><img src="${standingsExportObjectUrl}" alt="Preview of ${esc(board.title||'selected league')} full standings graphic">`;
+      box.querySelector('[data-standings-export-save]').addEventListener('click',()=>saveStandingsPng(graphic.blob,graphic.fileName));
+      box.querySelector('[data-standings-export-open]').addEventListener('click',()=>window.open(standingsExportObjectUrl,'_blank','noopener'));
+      status(`Full ${board.title||'standings'} PNG generated. Preview it below or save it to your device.`);
+    }catch(error){status(error?.message||'Could not generate the standings PNG.');}
+    finally{if(button){button.disabled=false;button.textContent='Generate standings PNG';}}
+  }
   function renderStandingsImportTool(){
     const host=$('[data-content-fields]'),board=current();if(!host||!board)return;
-    const panel=document.createElement('section');panel.className='standings-import-tool';panel.innerHTML=`<div class="standings-import-head"><div><span>AUTOMATED STANDINGS</span><h3>Import / advance ${esc(board.title||board.id)}</h3><p>Paste a league table from Discord, Google Sheets, or Excel. CSV/TSV and simple position-driver-points lines are detected automatically.</p></div><strong>${board.autoPoints?'AUTO POINTS ON':'MANUAL ONLY'}</strong></div><div class="standings-import-controls"><textarea data-standings-import-text rows="6" placeholder="P1  #34  Jaxon  267  +147\nP2  #24  Will  244  +124\n…"></textarea><div class="standings-import-actions"><label>Upload CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-standings-import-file></label><button type="button" data-standings-import-preview-button>Preview import</button><button type="button" data-standings-import-apply>Apply preview</button><button type="button" data-standings-apply-results>Apply waiting race points</button><button type="button" data-standings-recalc>Recalculate order + gaps</button></div></div><div data-standings-import-preview></div><p class="standings-import-foot">Last applied result: ${esc(board.lastResultDate||'none')} ${board.lastResultScheduleId?`· ${esc(board.lastResultScheduleId)}`:''}. Publishing Race Results automatically advances boards with Auto Points enabled.</p>`;
+    const panel=document.createElement('section');panel.className='standings-import-tool';panel.innerHTML=`<div class="standings-import-head"><div><span>AUTOMATED STANDINGS</span><h3>Import / advance ${esc(board.title||board.id)}</h3><p>Paste a league table from Discord, Google Sheets, or Excel. CSV/TSV and simple position-driver-points lines are detected automatically.</p></div><strong>${board.autoPoints?'AUTO POINTS ON':'MANUAL ONLY'}</strong></div><div class="standings-import-controls"><textarea data-standings-import-text rows="6" placeholder="P1  #34  Jaxon  267  +147\nP2  #24  Will  244  +124\n…"></textarea><div class="standings-import-actions"><label>Upload CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-standings-import-file></label><button type="button" data-standings-import-preview-button>Preview import</button><button type="button" data-standings-import-apply>Apply preview</button><button type="button" data-standings-apply-results>Apply waiting race points</button><button type="button" data-standings-recalc>Recalculate order + gaps</button><button type="button" data-standings-export>Generate standings PNG</button></div></div><div data-standings-import-preview></div><div class="standings-export-preview" data-standings-export-preview></div><p class="standings-import-foot">Last applied result: ${esc(board.lastResultDate||'none')} ${board.lastResultScheduleId?`· ${esc(board.lastResultScheduleId)}`:''}. Publishing Race Results automatically advances boards with Auto Points enabled.</p>`;
     host.prepend(panel);drawStandingsImportPreview(standingsImportPreview);
     panel.querySelector('[data-standings-import-preview-button]').addEventListener('click',()=>{standingsImportPreview=parseStandingsImport(panel.querySelector('[data-standings-import-text]').value);drawStandingsImportPreview(standingsImportPreview);status(standingsImportPreview.length?`${standingsImportPreview.length} standings rows parsed. Review the matches, then Apply preview.`:'No standings rows could be parsed. Try CSV with Position, Number, Driver, Points, Gap headers.');});
     panel.querySelector('[data-standings-import-apply]').addEventListener('click',applyStandingsImport);
     panel.querySelector('[data-standings-apply-results]').addEventListener('click',applyPublishedResultsToStanding);
     panel.querySelector('[data-standings-recalc]').addEventListener('click',()=>{commit();recalcStandingBoard(board);dirty=true;render();status('Standings order, positions, movement, and gaps recalculated. Review, then publish.');});
+    panel.querySelector('[data-standings-export]').addEventListener('click',()=>exportStandingsGraphic(panel));
     panel.querySelector('[data-standings-import-file]').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;panel.querySelector('[data-standings-import-text]').value=await file.text();status(`${file.name} loaded. Choose Preview import.`);});
   }
   function updateControlCenterStatus(publication=null) {

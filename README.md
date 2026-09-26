@@ -181,3 +181,8 @@ On phones, the seasonal banner is now a slim two-line ribbon: the theme/observan
 ### v1.1.30 public partner live-sync addendum
 - Team-partner edits now re-render live on both the Partners page and homepage partner strip after Admin publish, including uploaded/data-image logo sources and external HTTPS destinations.
 - Validation now protects the current-season roster from next-season #42/#46/#56 leakage and locks #62 PT / #82 Development as two identities of one shared open charter with no permanent driver assignment.
+
+
+## v1.1.31 · Standings PNG export
+
+Admin → Standings now includes **Generate standings PNG** for the currently selected standings board. The exporter uses the current in-editor draft (including unsaved manual corrections), renders the full standings field into a branded high-resolution image, preserves Chase/cutoff context and highlighted rows, includes Kmart shared part-time standings when present, and provides an in-admin preview with **Save PNG** and **Open full size** actions. On browsers that support the File System Access API, Save PNG opens a native file picker; other browsers fall back to a normal PNG download.
