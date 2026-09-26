@@ -207,3 +207,12 @@ The custom validation script now resolves and switches to the repository root fr
 - Manufacturer identity still follows the driver’s latest result when available, preserving multi-team/PT cases such as Matty.
 - Chase highlighting remains the only driver highlight and appears only when the selected league has `chaseActive: true`.
 
+
+
+## v1.1.35 · Kmart full-standings export recovery
+
+- Fixes a legacy live-admin override where the Kmart standings dataset can contain only StarClutch Racing rows even though the bundled Kmart points board contains the full field.
+- When that specific legacy SCR-only partial board is detected, Admin rehydrates the missing Kmart full-time rows from the bundled standings baseline before rendering or exporting the standings graphic.
+- Any current SCR-row values in the live override are preserved, then the repaired full field is re-ranked and gaps are recalculated.
+- The recovery is intentionally narrow: it only triggers for an incomplete Kmart board made entirely of SCR car numbers (#15/#24/#29/#34), so normal standings imports or deliberate edits are not broadly overridden.
+- Manufacturer icons and the Chase-only highlighting rule remain unchanged.

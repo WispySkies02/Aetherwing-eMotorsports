@@ -545,6 +545,28 @@
   function valueAt(root, path) { return path.reduce((v,k)=>v?.[k],root); }
   function assign(root,path,value) { let obj=root; for(const k of path.slice(0,-1)) obj=obj[k]; obj[path.at(-1)]=value; }
   const current = () => Array.isArray(data)?data[index]:data;
+  function repairLegacyPartialStandings(value) {
+    if(!Array.isArray(value)||!Array.isArray(seeds.standings))return value;
+    const scrKmartNumbers=new Set(['15','24','29','34']);
+    return value.map((board)=>{
+      if(board?.league!=='kmart'&&board?.id!=='kmart')return board;
+      const seedBoard=seeds.standings.find((candidate)=>candidate?.id===board?.id||candidate?.league===board?.league);
+      const liveRows=Array.isArray(board?.rows)?board.rows:[],seedRows=Array.isArray(seedBoard?.rows)?seedBoard.rows:[];
+      const legacyScrOnly=liveRows.length>0&&seedRows.length>=10&&liveRows.length<seedRows.length&&liveRows.every((row)=>scrKmartNumbers.has(String(row?.number||'').trim()));
+      if(!legacyScrOnly)return board;
+      const liveByKey=new Map(liveRows.map((row)=>[`${standingName(row?.driver)}|${String(row?.number||'').trim()}`,row]));
+      const liveByNumber=new Map(liveRows.map((row)=>[String(row?.number||'').trim(),row]));
+      const mergedRows=seedRows.map((seedRow)=>{
+        const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`;
+        const live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());
+        return live?{...seedRow,...live}:{...seedRow};
+      });
+      const repaired={...seedBoard,...board,rows:mergedRows,ptEntry:board?.ptEntry||seedBoard?.ptEntry};
+      recalcStandingBoard(repaired);
+      return repaired;
+    });
+  }
+
   function migrateCharters(value) {
     if(!Array.isArray(value))return value;
     return value.map((board)=>{
@@ -877,7 +899,7 @@
     window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   }
   function chooseDataset(name) {
-    key=name; standingsImportPreview=[]; data=structuredClone(base(key)); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
+    key=name; standingsImportPreview=[]; data=structuredClone(base(key)); if(key==='standings')data=repairLegacyPartialStandings(data); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
     if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
     if(key==='results'){data=migrateResults(data).sort(compareResults);data=data.map((race,i)=>({...race,featured:i===0}));}
     if(key==='drivers')data=data.map((row)=>({numberImage:'',...row}));
