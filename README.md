@@ -199,3 +199,11 @@ The custom validation script now resolves and switches to the repository root fr
 - NRRS and Kmart manufacturer mappings are available in the standings export. The exporter prefers each driver's most recent result entry, so part-time drivers can change manufacturer automatically when they race a different entry.
 - Chase highlighting is now controlled by each standings board's `chaseActive` flag. Only Chase drivers are highlighted, and only after that league has actually entered its Chase/playoff period. Kmart is currently marked as Chase Bubble (not active), while NRRS and Sunoco are active.
 - Sunoco manufacturer roster mapping remains intentionally open for a later update.
+## v1.1.34 · Manufacturer icon standings exports
+
+- Standings PNG exports now render manufacturer logos instead of manufacturer text.
+- Chevrolet, Ford, Toyota, Cadillac, and Honda use the approved supplied icon assets.
+- Dodge is league-specific: Kmart uses the modern DODGE wordmark; Sunoco uses the RAM wordmark.
+- Manufacturer identity still follows the driver’s latest result when available, preserving multi-team/PT cases such as Matty.
+- Chase highlighting remains the only driver highlight and appears only when the selected league has `chaseActive: true`.
+
