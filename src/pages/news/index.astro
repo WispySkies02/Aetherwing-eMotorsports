@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import { news } from '../../lib/site-content.mjs';
+import '../../styles/records.css';
+const stories=[...news].sort((a,b)=>String(b.dateIso).localeCompare(String(a.dateIso)));
+---
+<Base title="Team Newsroom" description="Race reports, team updates and stories from the Aetherwing garage."><PageIntro eyebrow="The team wire" title="Newsroom" description="Race reports, announcements, paint reveals, and the stories behind the team."/><section class="section"><div class="wrap"><div class="news-grid" data-news-list>{stories.map((story,i)=><a href={`/news/${story.slug}/`} class:list={['news-tile',{'is-lead':i===0}]}><span>{story.category} · {story.date}</span><h2>{story.title}</h2><p>{story.summary}</p><b>Read story ↗</b></a>)}</div></div></section></Base>
+<script>
+  window.addEventListener('aetherwing:content',({detail:d})=>{if(!Array.isArray(d.news))return;const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));document.querySelector('[data-news-list]').innerHTML=[...d.news].sort((a,b)=>String(b.dateIso).localeCompare(String(a.dateIso))).map((s,i)=>`<a href="/news/${encodeURIComponent(s.slug)}/" class="news-tile ${i===0?'is-lead':''}"><span>${esc(s.category)} · ${esc(s.date)}</span><h2>${esc(s.title)}</h2><p>${esc(s.summary)}</p><b>Read story ↗</b></a>`).join('');});
+</script>

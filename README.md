@@ -186,3 +186,8 @@ On phones, the seasonal banner is now a slim two-line ribbon: the theme/observan
 ## v1.1.31 · Standings PNG export
 
 Admin → Standings now includes **Generate standings PNG** for the currently selected standings board. The exporter uses the current in-editor draft (including unsaved manual corrections), renders the full standings field into a branded high-resolution image, preserves Chase/cutoff context and highlighted rows, includes Kmart shared part-time standings when present, and provides an in-admin preview with **Save PNG** and **Open full size** actions. On browsers that support the File System Access API, Save PNG opens a native file picker; other browsers fall back to a normal PNG download.
+
+
+## v1.1.32 Netlify validation root fix
+
+The custom validation script now resolves and switches to the repository root from its own file location before checking required assets. This prevents Netlify working-directory differences from falsely reporting `src/pages/index.astro` (or other required files) as missing.

@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import paints from '../../data/paints.json';
+import '../../styles/paint-gallery.css';
+---
+<Base title="Paint Booth" description="Explore Aetherwing race paints and copy scheme IDs with one tap.">
+  <PageIntro eyebrow="Aetherwing Showroom" title="Paint Booth" description="Browse the collection and copy a scheme ID in one tap."/>
+  <section class="section aw-paint-gallery" data-paint-gallery><div class="shell">
+    <div class="aw-paint-gallery__top"><div><p class="eyebrow">From the garage</p><h2 class="section-title">Featured Scheme</h2></div><a class="btn btn--ghost" href="https://paint.aetherwing.net/">Full scene viewer ↗</a></div>
+    <div class="aw-paint-gallery__hero" data-paint-feature></div>
+    <div class="aw-paint-gallery__controls"><div class="aw-paint-gallery__leagues" data-paint-leagues role="group" aria-label="Filter by league"></div><label>SEARCH PAINTS<input type="search" data-paint-search placeholder="Sponsor, driver, number…" /></label></div>
+    <div class="aw-paint-gallery__count" role="status" data-paint-count></div><div class="aw-paint-gallery__grid" data-paint-grid></div>
+  </div></section>
+</Base>
+<script define:vars={{ paints }}>
+(() => {
+  const root=document.querySelector('[data-paint-gallery]');if(!root)return;
+  if(location.hash.startsWith('#paint-')){const slug=decodeURIComponent(location.hash.slice(7));if(/^[a-z0-9-]+$/i.test(slug)){location.replace(`https://paint.aetherwing.net/${encodeURIComponent(slug)}/`);return;}}
+  let collection=paints,filter='all',query='',featured=[];
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const league=e=>(e.leagues||[])[0]||'other';
+  const galleryUrl=e=>`https://paint.aetherwing.net/${encodeURIComponent(e.slug)}/`;
+  const tile=e=>`<article class="aw-paint-gallery__tile"><a href="${galleryUrl(e)}" aria-label="Open ${esc(e.sponsor)} in full viewer"><img src="${esc(e.image)}" alt="${esc(e.sponsor)} paint, number ${esc(e.number)}" loading="lazy"><span>${esc(league(e))}</span></a><div class="aw-paint-gallery__info"><div><h3>#${esc(e.number)} · ${esc(e.sponsor)}</h3><p>${esc(e.driver)} · ${esc((e.special||[]).join(' / ')||e.manufacturer||'PAINT')}</p></div>${e.schemeId?`<button type="button" data-copy="${esc(e.schemeId)}" aria-label="Copy scheme ID ${esc(e.schemeId)}">ID ${esc(e.schemeId)} <b>COPY ↗</b></button>`:'<span>Custom livery</span>'}</div></article>`;
+  const feature=()=>{let candidates=featured.map(slug=>collection.find(e=>e.slug===slug)).filter(Boolean);if(!candidates.length)candidates=collection.filter(e=>e.image);if(!candidates.length)return;const paint=candidates[Math.floor(Math.random()*candidates.length)];root.querySelector('[data-paint-feature]').innerHTML=`<div class="aw-paint-gallery__visual"><img src="${esc(paint.image)}" alt="${esc(paint.sponsor)} paint" /></div><div class="aw-paint-gallery__feature-copy"><small>FEATURED PAINT · ${esc(league(paint))}</small><h3>#${esc(paint.number)}<br>${esc(paint.sponsor)}</h3><p>${esc(paint.driver)} · ${esc(paint.manufacturer||'Aetherwing')}</p>${paint.schemeId?`<button type="button" data-copy="${esc(paint.schemeId)}">SCHEME ID ${esc(paint.schemeId)} · COPY</button>`:''}<a href="${galleryUrl(paint)}">View full paint →</a><button type="button" data-random>🎲 Show another</button></div>`;root.querySelector('[data-random]').addEventListener('click',feature);};
+  function render(){const leagues=[...new Set(collection.flatMap(e=>e.leagues||[]))];root.querySelector('[data-paint-leagues]').innerHTML=['all',...leagues].map(k=>`<button type="button" data-league="${esc(k)}" aria-pressed="${filter===k}">${esc(k.toUpperCase())}</button>`).join('');root.querySelectorAll('[data-league]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.league;render();}));const shown=collection.filter(e=>(filter==='all'||(e.leagues||[]).includes(filter))&&`${e.sponsor} ${e.driver} ${e.number} ${(e.special||[]).join(' ')}`.toLowerCase().includes(query));root.querySelector('[data-paint-count]').textContent=`${shown.length} PAINT${shown.length===1?'':'S'}`;root.querySelector('[data-paint-grid]').innerHTML=shown.map(tile).join('')||'<p>No paints match this search.</p>';}
+  root.querySelector('[data-paint-search]').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();render();});
+  root.addEventListener('click',async e=>{const button=e.target.closest('[data-copy]');if(!button)return;const id=button.dataset.copy;try{await navigator.clipboard.writeText(id);const old=button.innerHTML;button.textContent='✓ SCHEME ID COPIED';setTimeout(()=>{button.innerHTML=old;},2000);}catch{button.textContent='COPY FAILED · TAP AGAIN';}});
+  fetch('/api/paints',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(Array.isArray(data?.paints)){collection=data.paints;featured=Array.isArray(data.feature?.slugs)?data.feature.slugs:data.feature?.slug?[data.feature.slug]:[];render();feature();}}).catch(()=>{});
+  render();feature();
+})();
+</script>

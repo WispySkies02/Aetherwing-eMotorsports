@@ -1,0 +1,6 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import { competitions } from '../../lib/site-content.mjs';
+---
+<Base title="Racing Programs" description="Explore the Aetherwing racing programs and alliance series."><PageIntro eyebrow="Across every discipline" title="Programs" description="Each championship has its own garage, schedule and story."/><section class="section"><div class="wrap story-grid">{competitions.map(c=><article class="story-panel"><p class="eyebrow">{c.label}</p><h3>{c.name}</h3><p>{c.machine} · {c.platform}</p><p>{c.schedule}</p><a href={`/programs/${c.id}/`}>Open program →</a></article>)}</div></section></Base>
