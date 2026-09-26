@@ -86,6 +86,19 @@ const numberArtDrivers=structuredClone(seeds.drivers);numberArtDrivers[0].number
 assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept HTTPS number artwork');
 numberArtDrivers[0].numberImage='data:image/webp;base64,UklGRg==';assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept uploaded WebP artwork');
 numberArtDrivers[0].numberImage='javascript:alert(1)';assert.notEqual(content.validate('drivers',numberArtDrivers),'','Driver number artwork must reject unsafe URLs');
+// Known scoring systems must include stage points automatically instead of relying on a hand-entered total.
+const nrrsScored=content.scoreKnownRace({league:'nrrs',entries:[{driver:'Fixture',finish:5,stage1Finish:2,stage2Finish:4,bonusPoints:0,pointsEligible:true}]});
+assert.deepEqual([nrrsScored.entries[0].finishPoints,nrrsScored.entries[0].stage1Points,nrrsScored.entries[0].stage2Points,nrrsScored.entries[0].racePoints],[32,9,7,48],'NRRS total must include finish + both stage awards');
+const uarlScored=content.scoreKnownRace({league:'uarl-d1',entries:[{driver:'Taylor',finish:3,stage1Finish:1,stage2Finish:1,bonusPoints:3,pointsEligible:true},{driver:'Substitute',finish:1,stage1Finish:1,stage2Finish:1,bonusPoints:0,pointsEligible:false}]});
+assert.deepEqual([uarlScored.entries[0].finishPoints,uarlScored.entries[0].stage1Points,uarlScored.entries[0].stage2Points,uarlScored.entries[0].racePoints],[42,5,5,55],'UARL D1 scoring must include stage points and official bonus/adjustment points');
+assert.equal(uarlScored.entries[1].racePoints,0,'Ineligible UARL entries must not receive championship points');
+// Regression fixtures for adding/editing UARL identities: usernames are ordinary editable profile data, not a hard-coded roster whitelist.
+const identityProfiles=structuredClone(seeds['roster-profiles']);
+for(const [slug,name,user] of [['jayden-fixture','Jayden','@Kanevme'],['hayden-fixture','Hayden','@fixture_hayden'],['max-fixture','Max','@fixture_max']]) identityProfiles.push({...structuredClone(seeds['roster-profiles'][0]),slug,name,handle:user,robloxDisplayName:name,robloxUsername:user,numbers:'11',programs:['UARL D1']});
+assert.equal(content.validate('roster-profiles',identityProfiles),'','Roster editor must accept newly added drivers and Roblox usernames');
+const portfolioFixture=structuredClone(seeds['driver-portfolios']);portfolioFixture.push({id:'jayden-fixture',profile:'jayden-fixture',name:'Jayden',handle:'@Kanevme',label:'Driver Brand / Livery Portfolio',order:99,brands:[{name:'Fixture Brand',logo:'https://example.test/fixture.png',order:1}]});
+assert.equal(content.validate('driver-portfolios',portfolioFixture),'','Newly added drivers must support published personal-partner portfolios');
+const partnerFixture=structuredClone(seeds.partners);partnerFixture[0].logo='data:image/webp;base64,UklGRg==';assert.equal(content.validate('partners',partnerFixture),'','Team partner logo uploads must validate through the publication API');
 let revision=response.body.registry.revision;
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.
 const directSchedule=structuredClone(seeds['schedule-events']);

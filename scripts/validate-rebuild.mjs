@@ -51,3 +51,58 @@ for(const file of ['src/styles/home.css','src/styles/records.css','src/styles/ra
   const css=readFileSync(file,'utf8');
   if(css.includes("url('/images/textures/aetherwing-editorial.webp')"))throw Error(`${file} still hard-codes the editorial image instead of using --site-bg-art.`);
 }
+
+// v1.1.29 — results/standings automation regressions.
+const scheduleEvents=JSON.parse(readFileSync('src/data/schedule-events.json','utf8'));
+const r21=scheduleEvents.find((event)=>event.league==='nrrs'&&event.date==='2026-09-22');
+if(!r21||r21.track!=='North Wilkesboro Speedway'||!/North Wilkesboro/i.test(r21.title))throw Error('NRRS Race 21 must remain North Wilkesboro on Sep 22, 2026.');
+if(scheduleEvents.some((event)=>event.league==='uarl-d2'))throw Error('Closed UARL D2 must stay off the active schedule.');
+const results=JSON.parse(readFileSync('src/data/results.json','utf8'));
+const northWilkesboro=results.find((race)=>race.league==='nrrs'&&race.date==='2026-09-22');
+if(!northWilkesboro||northWilkesboro.entries?.length<7||Number(northWilkesboro.entries.find((e)=>e.driver==='Trent')?.racePoints)!==58)throw Error('Corrected North Wilkesboro Race 21 result is missing.');
+if(!results.some((race)=>race.league==='uarl-d2'&&race.date==='2026-09-12'))throw Error('Closed UARL D2 Daytona result must remain in History data.');
+if(results[0]?.featured!==true||results.slice(1).some((race)=>race.featured))throw Error('Latest Result must be automatic: newest result only.');
+const nrrs=standings.find((board)=>board.id==='nrrs');
+if(!nrrs||nrrs.autoPoints!==true||nrrs.lastResultDate!=='2026-09-22')throw Error('NRRS standings must retain automatic result-point advancement metadata.');
+if(nrrs.rows?.[0]?.driver!=='Will'||Number(nrrs.rows?.[0]?.points)!==2195)throw Error('Corrected Race 21 NRRS leader must be Will with 2,195 points.');
+const hailey=nrrs.rows?.find((row)=>row.driver==='Hailey');
+if(!hailey||Number(hailey.points)!==2087||hailey.delta!=='-108')throw Error('Hailey Race 21 standings must be P6, 2,087 points, -108.');
+if(!adminContentSource.includes('data-standings-import-text')||!adminContentSource.includes('Apply waiting race points')||!adminContentSource.includes('External / unrostered participant'))throw Error('Admin must retain standings import, automatic result points, and external result participants.');
+if(!profileSource.includes('data-profile-identity')||!profileSource.includes("d['roster-profiles']")||!profileSource.includes("d['driver-profiles']"))throw Error('Driver profile identity/stat edits must stay live-synced.');
+if(!adminContentSource.includes('data-partner-logo-upload'))throw Error('Team partner logo uploads must remain available in Admin.');
+
+// v1.1.30 — Sep. 25 review closeout guards.
+const raceCalendarSource=readFileSync('src/components/RaceCalendar.astro','utf8');
+if(!raceCalendarSource.includes('const resultFor=')||!raceCalendarSource.includes('const completed=')||!raceCalendarSource.includes('!completed(e,now)'))throw Error('Race Calendar must treat a published result as completed immediately and roll to the next event.');
+const contentStoreSource=readFileSync('netlify/lib/_content.cjs','utf8');
+if(!contentStoreSource.includes('function scoreKnownRace')||!contentStoreSource.includes("league==='uarl-d1'")||!contentStoreSource.includes('stage1Points:stage1'))throw Error('Known NRRS/UARL D1 scoring must retain automatic stage-point calculation.');
+if(!adminContentSource.includes('scoreKnownResult')||!adminContentSource.includes('Bonus / adjustment points')||!adminContentSource.includes('Championship points eligible'))throw Error('Results Admin must expose the automatic scoring controls for known points systems.');
+const driverProfiles=JSON.parse(readFileSync('src/data/driver-profiles.json','utf8'));
+const haileyProfile=driverProfiles.find((profile)=>profile.slug==='wispy');
+const statMap=new Map((haileyProfile?.stats||[]).map((item)=>[item.label,item.value]));
+if(statMap.get('iRacing Starts')!=='409'||statMap.get('Wins')!=='59'||statMap.get('Top Fives')!=='121'||statMap.get('Poles')!=='52'||statMap.get('Formula Win Rate')!=='14.1%')throw Error('Published iRacing figures changed from the reviewed 409/59/121/52/14.1% baseline.');
+if(haileyProfile?.iracingName!=='Hailey Bell'||haileyProfile?.historicalIRacingName!=='Nicholas Waggoner')throw Error('Hailey Bell must remain the current iRacing identity with Nicholas Waggoner retained as the historical name.');
+const wins=JSON.parse(readFileSync('src/data/wins.json','utf8'));if(wins.length!==27)throw Error('Verified History win count must remain 27 unless an actual qualifying win is added.');
+const news=JSON.parse(readFileSync('src/data/news.json','utf8'));if(!news.some((story)=>story.dateIso==='2026-09-24'&&/North Wilkesboro/i.test(story.title)))throw Error('North Wilkesboro Chase Race 2 article is missing from Team Wire.');
+const scheduleMeta=JSON.parse(readFileSync('src/data/schedule.json','utf8'));if(scheduleMeta.find((row)=>row.id==='uarl-d1')?.time!=='20:30')throw Error('UARL D1 weekly time must remain Sundays at 8:30 PM ET.');
+if(!seasonSource.includes("'halloween-teaser'")||!seasonSource.includes('IN EVERY THING GIVE THANKS')||!seasonSource.includes('THIS IS THE DAY WHICH THE LORD HATH MADE')||!seasonSource.includes('HE IS NOT HERE: FOR HE IS RISEN'))throw Error('Seasonal controller must retain the Sep 25–30 Halloween teaser and reviewed KJV faith-banner wording.');
+if(!raceCalendarSource.includes("e.detail?.['schedule-events']")||!raceCalendarSource.includes('setInterval(tick,1000)'))throw Error('Public/Home Race Calendar must consume live Admin schedule edits and keep countdown rollover active.');
+const siteAdminSource=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+if(!siteAdminSource.includes('priorResults=[]')||!siteAdminSource.includes('apply only the point delta')||!siteAdminSource.includes('Corrected ${next.title'))throw Error('Republishing the latest result must adjust standings by the corrected point delta instead of double-counting or ignoring it.');
+const partnersPageSource=readFileSync('src/pages/partners/index.astro','utf8');
+const homeSource=readFileSync('src/pages/index.astro','utf8');
+if(!partnersPageSource.includes('Array.isArray(d.partners)')||!partnersPageSource.includes('renderTeamPartners'))throw Error('Team partner edits must live-sync to the public Partners page without waiting for a rebuild.');
+if(!homeSource.includes('data-home-partners')||!homeSource.includes('Array.isArray(d.partners)'))throw Error('Team partner edits must live-sync to the homepage partner strip.');
+for(const boardId of ['nrrs','uarl-d1']){
+  const board=charters.find((item)=>item.id===boardId);
+  const shared=(board?.openCharters||[]).find((item)=>item.active!==false);
+  const uses=(shared?.uses||[]).filter((item)=>item.active!==false);
+  if(!shared||uses.length!==2||!['62','82'].every((number)=>uses.some((use)=>String(use.number)===number)))throw Error(`${boardId} must preserve #62 PT and #82 Development as two identities of one shared open charter.`);
+  if(uses.some((use)=>Object.hasOwn(use,'driver')&&String(use.driver||'').trim()))throw Error(`${boardId} shared #62/#82 charter identities must not carry permanent driver assignments.`);
+}
+if(drivers.some((driver)=>driver.competitionId==='uarl-d2')||scheduleEvents.some((event)=>event.league==='uarl-d2'))throw Error('Closed UARL D2 must not reappear in active driver or schedule filters.');
+const currentNumbers={
+  'uarl-d1':new Set(drivers.filter((d)=>d.competitionId==='uarl-d1').map((d)=>String(d.number))),
+  nrrs:new Set(drivers.filter((d)=>d.competitionId==='nrrs').map((d)=>String(d.number)))
+};
+if(currentNumbers['uarl-d1'].has('42')||currentNumbers['uarl-d1'].has('46')||currentNumbers['uarl-d1'].has('56')||currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season #42/#46/#56 numbers must stay out of the current roster until the season changes.');

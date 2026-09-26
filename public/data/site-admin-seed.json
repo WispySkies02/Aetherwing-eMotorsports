@@ -797,8 +797,8 @@
       "league": "nrrs",
       "leagueName": "NRRS",
       "status": "The Chase",
-      "title": "Verizon 400",
-      "track": "Richmond Raceway",
+      "title": "North Wilkesboro Speedway (Chase Race 2)",
+      "track": "North Wilkesboro Speedway",
       "time": "7:30 PM ET",
       "round": "ROUND 21"
     },
@@ -1389,6 +1389,114 @@
   ],
   "results": [
     {
+      "scheduleId": "2026-09-22-nrrs-north-wilkesboro-speedway-chase-race-2",
+      "league": "nrrs",
+      "leagueName": "NRRS",
+      "title": "North Wilkesboro Speedway (Chase Race 2)",
+      "track": "North Wilkesboro Speedway",
+      "date": "2026-09-22",
+      "round": "ROUND 21",
+      "status": "The Chase",
+      "specialTag": "CHASE RACE 2",
+      "featured": true,
+      "headline": "CHASE RACE 2",
+      "headlineAccent": "NORTH WILKESBORO",
+      "summary": "Official Race 21 result and stage scoring. Standings now advance from the published result instead of requiring a separate manual points update.",
+      "entries": [
+        {
+          "assignmentId": "",
+          "driver": "Trent",
+          "number": "45",
+          "start": 0,
+          "stage1Finish": 3,
+          "stage1Points": 8,
+          "stage2Finish": 1,
+          "stage2Points": 10,
+          "finish": 1,
+          "racePoints": 58,
+          "featuredDriver": true
+        },
+        {
+          "assignmentId": "",
+          "driver": "Jaxon",
+          "number": "77",
+          "start": 0,
+          "stage1Finish": 5,
+          "stage1Points": 6,
+          "stage2Finish": 0,
+          "stage2Points": 0,
+          "finish": 2,
+          "racePoints": 41,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Clutch",
+          "number": "9",
+          "start": 0,
+          "stage1Finish": 4,
+          "stage1Points": 7,
+          "stage2Finish": 3,
+          "stage2Points": 8,
+          "finish": 3,
+          "racePoints": 49,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Outlaw",
+          "number": "21",
+          "start": 0,
+          "stage1Finish": 0,
+          "stage1Points": 0,
+          "stage2Finish": 4,
+          "stage2Points": 7,
+          "finish": 4,
+          "racePoints": 40,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Will",
+          "number": "94",
+          "start": 0,
+          "stage1Finish": 2,
+          "stage1Points": 9,
+          "stage2Finish": 2,
+          "stage2Points": 9,
+          "finish": 5,
+          "racePoints": 50,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Max Verstappen",
+          "number": "1",
+          "start": 0,
+          "stage1Finish": 1,
+          "stage1Points": 10,
+          "stage2Finish": 5,
+          "stage2Points": 6,
+          "finish": 6,
+          "racePoints": 47,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Matty",
+          "number": "3",
+          "start": 0,
+          "stage1Finish": 0,
+          "stage1Points": 0,
+          "stage2Finish": 0,
+          "stage2Points": 0,
+          "finish": 7,
+          "racePoints": 30,
+          "featuredDriver": false
+        }
+      ]
+    },
+    {
       "scheduleId": "2026-09-15-nrrs-southern-500",
       "league": "nrrs",
       "leagueName": "NRRS Town Fair Tire Cup Series",
@@ -1398,7 +1506,7 @@
       "round": "ROUND 20",
       "status": "The Chase",
       "specialTag": "Chase Race 1",
-      "featured": true,
+      "featured": false,
       "headline": "P5 AT DARLINGTON KEEPS HAILEY",
       "headlineAccent": "IN THE CHASE",
       "summary": "Hailey qualified ninth, scored no stage points, and finished P5 in the Southern 500 at Darlington.",
@@ -1415,6 +1523,75 @@
           "finish": 5,
           "racePoints": 0,
           "featuredDriver": true
+        }
+      ]
+    },
+    {
+      "scheduleId": "2026-09-12-uarl-d2-daytona-division-2-final",
+      "league": "uarl-d2",
+      "leagueName": "NFFF Grand National Series",
+      "title": "Daytona · Division 2 Final",
+      "track": "Daytona International Speedway",
+      "date": "2026-09-12",
+      "round": "FINAL EVENT",
+      "status": "Division Closed",
+      "specialTag": "HISTORICAL RESULT",
+      "featured": false,
+      "headline": "D2 FINALE",
+      "headlineAccent": "DAYTONA",
+      "summary": "Preserved historical result from the closed UARL Division 2 program.",
+      "entries": [
+        {
+          "assignmentId": "",
+          "driver": "Rocky",
+          "number": "19",
+          "start": 2,
+          "stage1Finish": 2,
+          "stage1Points": 0,
+          "stage2Finish": 2,
+          "stage2Points": 0,
+          "finish": 1,
+          "racePoints": 0,
+          "featuredDriver": true
+        },
+        {
+          "assignmentId": "",
+          "driver": "Dale",
+          "number": "54",
+          "start": 1,
+          "stage1Finish": 3,
+          "stage1Points": 0,
+          "stage2Finish": 3,
+          "stage2Points": 0,
+          "finish": 2,
+          "racePoints": 0,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Taylor",
+          "number": "24",
+          "start": 3,
+          "stage1Finish": 1,
+          "stage1Points": 0,
+          "stage2Finish": 1,
+          "stage2Points": 0,
+          "finish": 3,
+          "racePoints": 55,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "",
+          "driver": "Wispy",
+          "number": "62",
+          "start": 4,
+          "stage1Finish": 4,
+          "stage1Points": 0,
+          "stage2Finish": 4,
+          "stage2Points": 0,
+          "finish": 4,
+          "racePoints": 0,
+          "featuredDriver": false
         }
       ]
     }
@@ -1593,9 +1770,9 @@
       "rows": [
         {
           "position": "P1",
-          "number": "45",
-          "driver": "Trent",
-          "points": 2197,
+          "number": "94",
+          "driver": "Will",
+          "points": 2195,
           "delta": "LEADER",
           "positionChange": "▲1",
           "chaseEligible": true,
@@ -1603,10 +1780,10 @@
         },
         {
           "position": "P2",
-          "number": "94",
-          "driver": "Will",
-          "points": 2195,
-          "delta": "-2",
+          "number": "45",
+          "driver": "Trent",
+          "points": 2182,
+          "delta": "-13",
           "positionChange": "▼1",
           "chaseEligible": true,
           "highlight": false
@@ -1616,7 +1793,7 @@
           "number": "9",
           "driver": "Clutch",
           "points": 2173,
-          "delta": "-24",
+          "delta": "-22",
           "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
@@ -1626,7 +1803,7 @@
           "number": "77",
           "driver": "Jaxon",
           "points": 2130,
-          "delta": "-67",
+          "delta": "-65",
           "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
@@ -1636,7 +1813,7 @@
           "number": "21",
           "driver": "Outlaw",
           "points": 2128,
-          "delta": "-69",
+          "delta": "-67",
           "positionChange": "—",
           "chaseEligible": true,
           "highlight": false
@@ -1646,7 +1823,7 @@
           "number": "32",
           "driver": "Hailey",
           "points": 2087,
-          "delta": "-110",
+          "delta": "-108",
           "positionChange": "—",
           "chaseEligible": true,
           "highlight": true,
@@ -1874,7 +2051,11 @@
       ],
       "cutoffAfter": 6,
       "cutoffLabel": "Chase cutoff · Top 6",
-      "pointsContext": "Chase gaps are measured from the championship leader."
+      "pointsContext": "Chase gaps are measured from the championship leader. Published race points can advance this board automatically.",
+      "autoPoints": true,
+      "gapMode": "leader",
+      "lastResultDate": "2026-09-22",
+      "lastResultScheduleId": "2026-09-22-nrrs-north-wilkesboro-speedway-chase-race-2"
     },
     {
       "id": "kmart",
@@ -2059,7 +2240,11 @@
       },
       "cutoffAfter": 6,
       "cutoffLabel": "Chase cutoff · Top 6 full-time drivers",
-      "pointsContext": "Gap is measured from the Chase cutoff, not the points leader."
+      "pointsContext": "Gap is measured from the Chase cutoff. Imported or published race points can advance this board automatically.",
+      "autoPoints": true,
+      "gapMode": "cutoff",
+      "lastResultDate": "2026-09-21",
+      "lastResultScheduleId": ""
     },
     {
       "id": "sunoco",
@@ -2104,7 +2289,11 @@
           "chaseStatus": "NOT IN CHASE",
           "highlight": true
         }
-      ]
+      ],
+      "autoPoints": false,
+      "gapMode": "leader",
+      "lastResultDate": "",
+      "lastResultScheduleId": ""
     },
     {
       "id": "uarl",
@@ -2113,7 +2302,11 @@
       "league": "uarl",
       "status": "D1 POSTPONED",
       "emptyMessage": "No official UARL standings snapshot published yet",
-      "rows": []
+      "rows": [],
+      "autoPoints": false,
+      "gapMode": "leader",
+      "lastResultDate": "",
+      "lastResultScheduleId": ""
     }
   ],
   "milestones": [
@@ -3064,6 +3257,80 @@
   ],
   "news": [
     {
+      "slug": "north-wilkesboro-chase-race-2-points-update",
+      "legacyRoute": "/north-wilkesboro-chase-race-2-points-update",
+      "category": "Race & Competition",
+      "date": "September 24, 2026",
+      "dateIso": "2026-09-24",
+      "context": "NRRS Town Fair Tire Cup Series",
+      "kicker": "Chase Race 2",
+      "title": "North Wilkesboro Reshapes the NRRS Chase Picture",
+      "summary": "Trent won Race 21 at North Wilkesboro, while Will moved to the championship lead. Hailey remains sixth in the Chase with 2,087 points, 108 behind the leader.",
+      "tags": [
+        "NRRS",
+        "North Wilkesboro",
+        "Chase Race 2",
+        "Championship"
+      ],
+      "featured": true,
+      "heroGhost": "CHASE R2",
+      "headlineMark": {
+        "eyebrow": "CHASE R2",
+        "value": "P6",
+        "detail": "HAILEY · 2,087 PTS · -108"
+      },
+      "byline": "Aetherwing eMotorsports",
+      "metrics": [
+        {
+          "label": "Race Winner",
+          "value": "Trent"
+        },
+        {
+          "label": "Points Leader",
+          "value": "Will"
+        },
+        {
+          "label": "Hailey",
+          "value": "P6"
+        },
+        {
+          "label": "Points",
+          "value": "2,087"
+        },
+        {
+          "label": "Leader Gap",
+          "value": "-108"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "Race 21 at North Wilkesboro",
+          "paragraphs": [
+            "Trent won the second race of the NRRS Chase at North Wilkesboro Speedway. The corrected race payout credited Trent with 58 points, including eight Stage 1 points and 10 Stage 2 points.",
+            "Jaxon finished second, followed by Clutch, Outlaw, Will, Max Verstappen, and Matty among the confirmed finishers in the published result."
+          ]
+        },
+        {
+          "heading": "The Chase After Race 21",
+          "paragraphs": [
+            "Will leaves North Wilkesboro as the championship leader with 2,195 points. Trent is second with 2,182, followed by Clutch at 2,173, Jaxon at 2,130, and Outlaw at 2,128.",
+            "Hailey remains sixth with 2,087 points, 108 behind the leader. The updated board replaces the earlier 110-point display and keeps the public championship panel aligned with the corrected Race 21 standings."
+          ]
+        },
+        {
+          "heading": "One Source of Truth",
+          "paragraphs": [
+            "Aetherwing now treats the published race result as the source for Latest Result and can advance standings boards automatically when Auto Points is enabled. That reduces the need to enter the same race data again in a separate standings editor."
+          ]
+        }
+      ],
+      "callout": {
+        "label": "Next step",
+        "title": "Keep the data moving",
+        "text": "Future completed results can advance the standings directly, while the standings importer remains available for external leagues that publish their own tables."
+      }
+    },
+    {
       "slug": "wispy-southern-500-darlington-top-five",
       "legacyRoute": "/wispy-southern-500-darlington-top-five",
       "category": "Race & Competition",
@@ -3080,7 +3347,7 @@
         "Top Five",
         "Chase Race 1"
       ],
-      "featured": true,
+      "featured": false,
       "heroGhost": "TOP FIVE",
       "headlineMark": {
         "eyebrow": "CHASE R1",
@@ -3344,7 +3611,8 @@
         "label": "Milestone File",
         "title": "100 Starts · 50 Points",
         "text": "Stage 1 win, runner-up finish, and a move to fourth in the NRRS standings in Wispy's 100th recorded RoRacing start."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "waggoner-sweeps-michigan-double",
@@ -3413,7 +3681,8 @@
         "label": "Record Book",
         "title": "Victory No. 25",
         "text": "The June 7 Michigan truck win completed a two-race weekend sweep and became Aetherwing's 25th recorded team victory."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "waggoner-michigan-nis-win",
@@ -3482,7 +3751,8 @@
         "label": "Finish Margin",
         "title": "0.029 Seconds",
         "text": "The #28 Cheddar's Scratch Kitchen Toyota won the NASCAR iRacing Series race at Michigan in a photo finish."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "waggoner-wins-iracing-indianapolis-500",
@@ -3550,7 +3820,8 @@
         "label": "Milestone",
         "title": "First iRacing Crown Jewel",
         "text": "The May 15 Indianapolis 500 victory is recorded as Aetherwing's first iRacing crown-jewel win."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "aetherwing-sweeps-clashes",
@@ -3618,7 +3889,8 @@
         "label": "Opening Statement",
         "title": "Two Clashes · Two Wins",
         "text": "Jaxon won the NRRS Clash at Target Speedway and Jayden completed the sweep with a UARL Clash victory."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "aetherwing-ngm-driver-development",
@@ -3697,7 +3969,8 @@
         "label": "Evaluation Focus",
         "title": "Consistency · Availability · Attitude",
         "text": "Race craft, preparation, communication and long-term team fit were part of the development review alongside outright speed."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "aetherwing-launch-new-era",
@@ -3776,7 +4049,8 @@
         "label": "Identity File",
         "title": "BellSouth → Aetherwing",
         "text": "A new name and visual direction carried the existing modern team history forward into the 2026 Aetherwing era."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "wispy-wins-nrrs-all-star",
@@ -3844,7 +4118,8 @@
         "label": "Career First",
         "title": "Victory Lane · Dec 2, 2025",
         "text": "The #28 Aetherwing entry won the NRRS Season 2 All-Star Race for Wispy's first recorded career RoRacing victory."
-      }
+      },
+      "featured": false
     },
     {
       "slug": "kmart-cup-daytona500-one-two-finish",
@@ -3919,7 +4194,8 @@
         "label": "Historic Finish",
         "title": "Aetherwing 1–2 at Daytona",
         "text": "Flamingo won the Daytona 500 with teammate Will second, delivering the team's first points-paying victory and a crown-jewel sweep of the top two positions."
-      }
+      },
+      "featured": false
     }
   ]
 }

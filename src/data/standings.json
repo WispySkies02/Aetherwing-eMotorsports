@@ -1,28 +1,28 @@
 [
   {
     "id": "nrrs",
-    "title": "NRRS Championship · Chase for the Cup",
-    "subtitle": "Town Fair Cup · Season 3 · After R21/25 · North Wilkesboro · Chase Race 2 · Sep 22, 2026",
+    "title": "NRRS Championship \u00b7 Chase for the Cup",
+    "subtitle": "Town Fair Cup \u00b7 Season 3 \u00b7 After R21/25 \u00b7 North Wilkesboro \u00b7 Chase Race 2 \u00b7 Sep 22, 2026",
     "league": "nrrs",
     "status": "THE CHASE",
     "rows": [
       {
         "position": "P1",
-        "number": "45",
-        "driver": "Trent",
-        "points": 2197,
+        "number": "94",
+        "driver": "Will",
+        "points": 2195,
         "delta": "LEADER",
-        "positionChange": "▲1",
+        "positionChange": "\u25b21",
         "chaseEligible": true,
         "highlight": false
       },
       {
         "position": "P2",
-        "number": "94",
-        "driver": "Will",
-        "points": 2195,
-        "delta": "-2",
-        "positionChange": "▼1",
+        "number": "45",
+        "driver": "Trent",
+        "points": 2182,
+        "delta": "-13",
+        "positionChange": "\u25bc1",
         "chaseEligible": true,
         "highlight": false
       },
@@ -31,8 +31,8 @@
         "number": "9",
         "driver": "Clutch",
         "points": 2173,
-        "delta": "-24",
-        "positionChange": "—",
+        "delta": "-22",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": false
       },
@@ -41,8 +41,8 @@
         "number": "77",
         "driver": "Jaxon",
         "points": 2130,
-        "delta": "-67",
-        "positionChange": "—",
+        "delta": "-65",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": false
       },
@@ -51,8 +51,8 @@
         "number": "21",
         "driver": "Outlaw",
         "points": 2128,
-        "delta": "-69",
-        "positionChange": "—",
+        "delta": "-67",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": false
       },
@@ -61,8 +61,8 @@
         "number": "32",
         "driver": "Hailey",
         "points": 2087,
-        "delta": "-110",
-        "positionChange": "—",
+        "delta": "-108",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": true,
         "note": "Listed as Wispy in league standings"
@@ -113,7 +113,7 @@
         "driver": "Matty",
         "points": 231,
         "delta": null,
-        "positionChange": "▲1",
+        "positionChange": "\u25b21",
         "chaseEligible": false,
         "highlight": false
       },
@@ -123,7 +123,7 @@
         "driver": "Eazy",
         "points": 227,
         "delta": null,
-        "positionChange": "▼1",
+        "positionChange": "\u25bc1",
         "chaseEligible": false,
         "highlight": false
       },
@@ -148,7 +148,7 @@
         "highlight": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "20",
         "driver": "Cod",
         "points": 121,
@@ -159,7 +159,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "",
         "driver": "Ryan",
         "points": 114,
@@ -170,7 +170,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "99",
         "driver": "AJ",
         "points": 61,
@@ -181,7 +181,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "15",
         "driver": "Kentong",
         "points": 59,
@@ -202,7 +202,7 @@
         "highlight": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "1",
         "driver": "Max Verstappen",
         "points": 47,
@@ -213,7 +213,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "",
         "driver": "chanler",
         "points": 36,
@@ -225,7 +225,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "07",
         "driver": "Jaykay",
         "points": 35,
@@ -266,7 +266,7 @@
         "highlight": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "",
         "driver": "Butters",
         "points": 26,
@@ -288,13 +288,17 @@
       }
     ],
     "cutoffAfter": 6,
-    "cutoffLabel": "Chase cutoff · Top 6",
-    "pointsContext": "Chase gaps are measured from the championship leader."
+    "cutoffLabel": "Chase cutoff \u00b7 Top 6",
+    "pointsContext": "Chase gaps are measured from the championship leader. Published race points can advance this board automatically.",
+    "autoPoints": true,
+    "gapMode": "leader",
+    "lastResultDate": "2026-09-22",
+    "lastResultScheduleId": "2026-09-22-nrrs-north-wilkesboro-speedway-chase-race-2"
   },
   {
     "id": "kmart",
     "title": "Kmart Cup Driver Standings",
-    "subtitle": "Updated Chase Bubble · Sep 21, 2026 · Full-time drivers",
+    "subtitle": "Updated Chase Bubble \u00b7 Sep 21, 2026 \u00b7 Full-time drivers",
     "league": "kmart",
     "status": "CHASE BUBBLE",
     "rows": [
@@ -455,7 +459,7 @@
     ],
     "ptEntry": {
       "number": "29",
-      "title": "Part-time drivers · Shared #29",
+      "title": "Part-time drivers \u00b7 Shared #29",
       "status": "NOT CHASE ELIGIBLE",
       "drivers": [
         {
@@ -473,13 +477,17 @@
       ]
     },
     "cutoffAfter": 6,
-    "cutoffLabel": "Chase cutoff · Top 6 full-time drivers",
-    "pointsContext": "Gap is measured from the Chase cutoff, not the points leader."
+    "cutoffLabel": "Chase cutoff \u00b7 Top 6 full-time drivers",
+    "pointsContext": "Gap is measured from the Chase cutoff. Imported or published race points can advance this board automatically.",
+    "autoPoints": true,
+    "gapMode": "cutoff",
+    "lastResultDate": "2026-09-21",
+    "lastResultScheduleId": ""
   },
   {
     "id": "sunoco",
     "title": "Sunoco Truck Series Chase",
-    "subtitle": "After Round 18 of 25 · After Chase Race 3 of 10",
+    "subtitle": "After Round 18 of 25 \u00b7 After Chase Race 3 of 10",
     "league": "sunoco",
     "status": "CHASE ACTIVE",
     "rows": [
@@ -519,15 +527,23 @@
         "chaseStatus": "NOT IN CHASE",
         "highlight": true
       }
-    ]
+    ],
+    "autoPoints": false,
+    "gapMode": "leader",
+    "lastResultDate": "",
+    "lastResultScheduleId": ""
   },
   {
     "id": "uarl",
-    "title": "UARL · Division 1 + Open",
-    "subtitle": "Season 6 · D2 Closed",
+    "title": "UARL \u00b7 Division 1 + Open",
+    "subtitle": "Season 6 \u00b7 D2 Closed",
     "league": "uarl",
     "status": "D1 POSTPONED",
     "emptyMessage": "No official UARL standings snapshot published yet",
-    "rows": []
+    "rows": [],
+    "autoPoints": false,
+    "gapMode": "leader",
+    "lastResultDate": "",
+    "lastResultScheduleId": ""
   }
 ]

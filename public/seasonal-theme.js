@@ -7,7 +7,7 @@
     'late-winter':{title:'LATE WINTER',subtitle:'THE THAW IS COMING',icon:'❅',effect:'snow',density:6,ui:'thaw'},
     spring:{title:'SPRING',subtitle:'FRESH SEASON · FRESH START',icon:'✿',effect:'petals',density:14,ui:'spring'},
     'st-patrick':{title:"ST. PATRICK'S DAY",subtitle:'A FLASH OF GREEN',icon:'☘',effect:'twinkle',density:12,ui:'green'},
-    easter:{title:'HOLY WEEK / EASTER',subtitle:'I AM THE RESURRECTION AND THE LIFE · JOHN 11:25',icon:'☀',effect:'petals',density:15,ui:'easter',faith:true,verse:'I AM THE RESURRECTION AND THE LIFE',reference:'JOHN 11:25',scene:'holy-week'},
+    easter:{title:'HOLY WEEK / EASTER',subtitle:'I AM THE RESURRECTION, AND THE LIFE · JOHN 11:25',icon:'☀',effect:'petals',density:15,ui:'easter',faith:true,verse:'I AM THE RESURRECTION, AND THE LIFE',reference:'JOHN 11:25',scene:'holy-week'},
     'memorial-day':{title:'MEMORIAL DAY',subtitle:'REMEMBER & HONOR',icon:'★',effect:'twinkle',density:7,ui:'memorial'},
     summer:{title:'SUMMER',subtitle:'LONG DAYS · FAST LAPS',icon:'☀',effect:'glow',density:18,ui:'summer'},
     'independence-day':{title:'INDEPENDENCE DAY',subtitle:'RED · WHITE · BLUE',icon:'✹',effect:'fireworks',density:6,ui:'patriotic'},
@@ -23,11 +23,11 @@
   };
 
   const OBSERVANCES={
-    'new-years-day':{title:"NEW YEAR'S DAY",subtitle:'THIS IS THE DAY THE LORD HAS MADE · PSALM 118:24',icon:'✦',ui:'gratitude',add:'twinkle',faith:true,verse:'THIS IS THE DAY THE LORD HAS MADE',reference:'PSALM 118:24',motif:'gratitude'},
+    'new-years-day':{title:"NEW YEAR'S DAY",subtitle:'THIS IS THE DAY WHICH THE LORD HATH MADE · PSALM 118:24',icon:'✦',ui:'gratitude',add:'twinkle',faith:true,verse:'THIS IS THE DAY WHICH THE LORD HATH MADE',reference:'PSALM 118:24',motif:'gratitude'},
     'palm-sunday':{title:'PALM SUNDAY',subtitle:'HOSANNA IN THE HIGHEST · MATTHEW 21:9',icon:'❧',ui:'palm-sunday',faith:true,verse:'HOSANNA IN THE HIGHEST',reference:'MATTHEW 21:9',motif:'palms'},
     'good-friday':{title:'GOOD FRIDAY',subtitle:'IT IS FINISHED · JOHN 19:30',icon:'◌',ui:'solemn',suppress:true,faith:true,verse:'IT IS FINISHED',reference:'JOHN 19:30',motif:'thorns'},
-    'easter-sunday':{title:'EASTER SUNDAY',subtitle:'HE IS RISEN · MATTHEW 28:6',icon:'☀',ui:'resurrection',add:'sunrise',faith:true,verse:'HE IS RISEN',reference:'MATTHEW 28:6',motif:'empty-tomb'},
-    thanksgiving:{title:'THANKSGIVING',subtitle:'IN EVERYTHING GIVE THANKS · 1 THESSALONIANS 5:18',icon:'❧',ui:'gratitude',add:'glow',faith:true,verse:'IN EVERYTHING GIVE THANKS',reference:'1 THESSALONIANS 5:18',motif:'wheat'},
+    'easter-sunday':{title:'EASTER SUNDAY',subtitle:'HE IS NOT HERE: FOR HE IS RISEN · MATTHEW 28:6',icon:'☀',ui:'resurrection',add:'sunrise',faith:true,verse:'HE IS NOT HERE: FOR HE IS RISEN',reference:'MATTHEW 28:6',motif:'empty-tomb'},
+    thanksgiving:{title:'THANKSGIVING',subtitle:'IN EVERY THING GIVE THANKS · 1 THESSALONIANS 5:18',icon:'❧',ui:'gratitude',add:'glow',faith:true,verse:'IN EVERY THING GIVE THANKS',reference:'1 THESSALONIANS 5:18',motif:'wheat'},
     'christmas-eve':{title:'CHRISTMAS EVE',subtitle:'GOOD TIDINGS OF GREAT JOY · LUKE 2:10–11',icon:'★',ui:'holy-night',add:'twinkle',faith:true,verse:'GOOD TIDINGS OF GREAT JOY',reference:'LUKE 2:10–11',motif:'bethlehem'},
     'christmas-day':{title:'CHRISTMAS DAY',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',ui:'nativity',add:'twinkle',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',motif:'bethlehem'},
   };

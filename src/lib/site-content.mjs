@@ -38,7 +38,8 @@ const normalizeLegacyKmartResult = (result) => ({...result, entries:(result.entr
   }
   return entry;
 })});
-export const scheduleEvents = choose('schedule-events', scheduleSeed);
+const publishedSchedule = choose('schedule-events', scheduleSeed);
+export const scheduleEvents = (Array.isArray(publishedSchedule)?publishedSchedule:scheduleSeed).filter((event)=>event?.league!=='uarl-d2').map((event)=>event?.league==='nrrs'&&event?.date==='2026-09-22'?{...event,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'}:event);
 export const siteSettings = choose('site', siteSeed);
 const publishedNavigation = choose('navigation', navigationSeed);
 const obsoleteNavigation = Array.isArray(publishedNavigation) && (
@@ -59,15 +60,29 @@ const normalizeResults=(value)=>{
   const event=scheduleEvents.find((item)=>item.league==='nrrs'&&(item.title===old.title||item.track===old.track)&&(!date||item.date===date));
   return [{scheduleId:event?scheduleResultId(event):`${date||'tbd'}-nrrs-${resultSlug(old.title)}`,league:event?.league||'nrrs',leagueName:event?.leagueName||old.series||'NRRS',title:event?.title||old.title||'',track:event?.track||old.track||'',date:event?.date||date,round:event?.round||old.round||'',status:event?.status||'',specialTag:event?.specialTag||old.specialTag||'',featured:true,headline:old.headline||'',headlineAccent:old.headlineAccent||'',summary:old.summary||'',entries:[{driver:old.driver||'',number:String(old.number||''),start:Number(old.start||0),stage1Finish:0,stage1Points:0,stage2Finish:0,stage2Points:Number(old.stagePoints||0),finish:Number(old.finish||0),racePoints:Number(old.pointsChange||0),featuredDriver:true}]}];
 };
-export const results = normalizeResults(choose('results', resultsSeed)).map(normalizeLegacyKmartResult).map((result)=>{
+const publicUarlFinishPoints=[0,50,45,42,40,38,36,34,32,30,28,27,26,25,24,23,22];
+const scorePublishedRace=(race)=>{
+  if(!race||!['nrrs','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
+  const stage=(finish)=>{const pos=Number(finish||0);if(race.league==='nrrs')return pos>=1&&pos<=5?11-pos:0;return pos>=1&&pos<=5?6-pos:0;};
+  const finishPoints=(finish)=>{const pos=Number(finish||0);if(pos<1)return 0;if(race.league==='nrrs')return pos===1?40:Math.max(1,37-pos);return publicUarlFinishPoints[pos]||0;};
+  return {...race,entries:race.entries.map((entry)=>{const stage1Points=stage(entry.stage1Finish),stage2Points=stage(entry.stage2Finish),base=finishPoints(entry.finish),bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;return {...entry,stage1Points,stage2Points,finishPoints:base,bonusPoints,pointsEligible,racePoints:pointsEligible?base+stage1Points+stage2Points+bonusPoints:0};})};
+};
+const canonicalResults=resultsSeed.filter((result)=>(result.league==='nrrs'&&result.date==='2026-09-22')||(result.league==='uarl-d2'&&result.date==='2026-09-12'));
+const mergedResults=normalizeResults(choose('results', resultsSeed));
+for(const official of canonicalResults){
+  const i=mergedResults.findIndex((result)=>result?.league===official.league&&result?.date===official.date);
+  if(i===-1)mergedResults.push(official);
+  else if(official.league==='nrrs')mergedResults[i]={...mergedResults[i],title:official.title,track:official.track,round:official.round,status:official.status,specialTag:official.specialTag,entries:mergedResults[i].entries?.length?mergedResults[i].entries:official.entries};
+}
+export const results = mergedResults.map(normalizeLegacyKmartResult).map(scorePublishedRace).map((result)=>{
   const event=scheduleEvents.find((item)=>scheduleResultId(item)===result.scheduleId);
   return event?{...result,league:event.league,leagueName:event.leagueName,title:event.title,track:event.track,date:event.date,round:event.round||'',status:event.status||'',specialTag:event.specialTag||''}:result;
-}).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+}).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map((result,index)=>({...result,featured:index===0}));
 export const wins = choose('wins', winsSeed);
 const publishedStandings = choose('standings', standingsSeed);
 const standingsSeedById = new Map(standingsSeed.map((board) => [board.id, board]));
 const supersededSnapshot = (board) => {
-  if (board?.id === 'nrrs') return /After Race 20 of 25/.test(board.subtitle || '');
+  if (board?.id === 'nrrs') { const last=String(board.lastResultDate||''); return /After Race 20 of 25/.test(board.subtitle||'') || /After R20\/25/.test(board.subtitle||'') || (!last&&/After R21\/25/.test(board.subtitle||'')) || (last==='2026-09-22'&&board.rows?.some((row)=>row.driver==='Trent'&&Number(row.points)===2197)); }
   if (board?.id !== 'kmart') return false;
   const fresh = standingsSeedById.get('kmart');
   const publishedRows = Array.isArray(board.rows) ? board.rows.length : 0;

@@ -10,6 +10,28 @@ const portfolios=[...driverPortfolios].sort((a,b)=>(a.order||0)-(b.order||0));
   <section class="section partner-personal"><div class="wrap" data-personal-partners><div class="section-head"><div><p class="eyebrow">Behind each number</p><h2 class="section-title">Driver Partners</h2></div><p class="lede">Select a driver to see their own livery and partner identity.</p></div><div class="partner-select" role="group" aria-label="Choose driver" data-portfolio-tabs>{portfolios.map((p,i)=><button type="button" data-portfolio={p.id} aria-pressed={i===0?'true':'false'}>{p.name}</button>)}</div><div data-portfolio-body></div></div></section>
 </Base>
 <script define:vars={{ portfolios }}>
-(() => {const root=document.querySelector('[data-personal-partners]');if(!root)return;let records=portfolios,selected=records[0]?.id;const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));function render(){const tabs=root.querySelector('[data-portfolio-tabs]');tabs.innerHTML=records.map(p=>`<button type="button" data-portfolio="${esc(p.id)}" aria-pressed="${p.id===selected}">${esc(p.name)}</button>`).join('');tabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.portfolio;render();}));const p=records.find(r=>r.id===selected);root.querySelector('[data-portfolio-body]').innerHTML=p?`<div class="partner-personal__intro"><span>PERSONAL PORTFOLIO</span><h3>${esc(p.name)}</h3><small>${esc(p.handle||'')}</small></div><div class="partner-logos">${(p.brands||[]).sort((a,b)=>(a.order||0)-(b.order||0)).map(b=>`<article>${b.logo?`<img src="${esc(b.logo)}" alt="${esc(b.name)}" loading="lazy" onerror="this.replaceWith(document.createTextNode(this.alt))">`:`<strong>${esc(b.name)}</strong>`}<span>${esc(b.name)}</span></article>`).join('')}</div>`:'<p>No driver portfolios have been published yet.</p>';}
-window.addEventListener('aetherwing:content',({detail:d})=>{if(Array.isArray(d['driver-portfolios'])){records=d['driver-portfolios'];if(!records.some(p=>p.id===selected))selected=records[0]?.id;render();}});render();})();
+(() => {
+  const root=document.querySelector('[data-personal-partners]');
+  const teamRoot=document.querySelector('[data-team-partners]');
+  if(!root)return;
+  let records=portfolios,selected=records[0]?.id;
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safeUrl=value=>/^https:\/\//i.test(String(value||''))?String(value):'#';
+  function renderTeamPartners(items){
+    if(!teamRoot||!Array.isArray(items))return;
+    teamRoot.innerHTML=items.map((p,i)=>`<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer" class="team-partner${i===0?' is-featured':''}"><div>${p.logo?`<img src="${esc(p.logo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.replaceWith(document.createTextNode(this.alt))">`:`<strong>${esc(p.name)}</strong>`}</div><span>${esc(p.role)}</span><h3>${esc(p.name)}</h3><p>${esc(p.description)}</p><b>Visit partner ↗</b></a>`).join('');
+  }
+  function render(){
+    const tabs=root.querySelector('[data-portfolio-tabs]');
+    tabs.innerHTML=records.map(p=>`<button type="button" data-portfolio="${esc(p.id)}" aria-pressed="${p.id===selected}">${esc(p.name)}</button>`).join('');
+    tabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.portfolio;render();}));
+    const p=records.find(r=>r.id===selected);
+    root.querySelector('[data-portfolio-body]').innerHTML=p?`<div class="partner-personal__intro"><span>PERSONAL PORTFOLIO</span><h3>${esc(p.name)}</h3><small>${esc(p.handle||'')}</small></div><div class="partner-logos">${(p.brands||[]).sort((a,b)=>(a.order||0)-(b.order||0)).map(b=>`<article>${b.logo?`<img src="${esc(b.logo)}" alt="${esc(b.name)}" loading="lazy" onerror="this.replaceWith(document.createTextNode(this.alt))">`:`<strong>${esc(b.name)}</strong>`}<span>${esc(b.name)}</span></article>`).join('')}</div>`:'<p>No driver portfolios have been published yet.</p>';
+  }
+  window.addEventListener('aetherwing:content',({detail:d})=>{
+    if(Array.isArray(d.partners))renderTeamPartners(d.partners);
+    if(Array.isArray(d['driver-portfolios'])){records=d['driver-portfolios'];if(!records.some(p=>p.id===selected))selected=records[0]?.id;render();}
+  });
+  render();
+})();
 </script>

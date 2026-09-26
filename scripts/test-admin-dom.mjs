@@ -48,6 +48,11 @@ click('[data-admin-dataset="standings"]');await tick();
 assert.ok($('[data-standing-drag]'),'Standings rows should be draggable');
 const firstHighlight=$('[data-standing-highlight]');assert.ok(firstHighlight);firstHighlight.click();await tick();
 assert.ok($('[data-standing-highlight]'),'Highlight control should survive rerender');
+// Standings import supports pasted CSV as an alternative to manual row editing.
+const importBox=$('[data-standings-import-text]');assert.ok(importBox,'Standings editor needs a paste/upload import box');
+importBox.value='Position,Number,Driver,Points,Gap\n1,94,Will,2195,LEADER\n2,45,Trent,2182,-13\n6,32,Hailey,2087,-108';
+click('[data-standings-import-preview-button]');assert.match($('[data-standings-import-preview]').textContent,/3 ROWS READY/);
+click('[data-standings-import-apply]');assert.match($('[data-content-fields]').textContent,/Will/);
 // Empty standings rows must support adding a proper row rather than a raw-text list.
 click('[data-entry="3"]');
 const addRows=Array.from(window.document.querySelectorAll('[data-array-add]')).find((b)=>b.dataset.arrayAdd==='["rows"]');assert.ok(addRows);addRows.click();input(['rows',0,'points'],12);

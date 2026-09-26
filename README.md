@@ -157,3 +157,27 @@ The public seasonal/observance strip now reflows into a compact two-line plaque 
 ## v1.1.28 mobile seasonal banner
 
 On phones, the seasonal banner is now a slim two-line ribbon: the theme/observance name occupies the first line and the message or Scripture reference occupies the second line. Padding, icon size, type size, and row gap were reduced so the banner does not consume valuable viewport height.
+
+## v1.1.29 results + standings workflow
+
+- Standings Admin now accepts pasted Discord/Sheets tables or CSV/TSV uploads, previews driver matches, and can replace the current board after review.
+- Boards can enable `autoPoints`; newly published results then advance matching standings rows using each driver's `racePoints`, recalculate order/movement/gaps, and remember the last applied result to avoid double-counting.
+- Race Results now allow external/unrostered league competitors while keeping Aetherwing/partner roster assignments selectable and synchronized.
+- Latest Result is automatic: the newest completed result across all programs is featured.
+- NRRS Race 21 is corrected to North Wilkesboro Speedway, Sep. 22, 2026. The corrected standings lead is Will (2,195), with Hailey P6 on 2,087 points, 108 back.
+- The closed UARL D2 program remains absent from active schedules/filters while its Sep. 12 Daytona result remains in History.
+- Driver profile identity/stat data and partner portfolios listen to published Admin data; team-partner logo file uploads are supported too.
+
+
+## v1.1.30 · September 25 review closeout
+
+- Rechecked the Sep. 22 NRRS North Wilkesboro Race 21 result and corrected Chase standings. Hailey remains P6 with 2,087 points; the corrected official gap is 108 points to leader Will, not the earlier 110-point figure.
+- Race Calendar completion is now result-aware: publishing a result immediately marks that event completed and rolls the shared Home/Schedule next-event UI forward, even if the normal race-time window has not yet expired.
+- Results Admin now automatically calculates NRRS and UARL D1 stage points and total race points from recorded finish/stage positions. UARL D1 supports a separate bonus/adjustment field and championship-eligibility toggle so stage awards cannot silently disappear.
+- Standings retains pasted-table/CSV/TSV import alongside manual editing and automatic advancement from published race points.
+- Added regression guards for roster identity/usernames, driver portfolios, partner logo uploads, current iRacing figures/identity, 27-win History count, UARL D1 8:30 PM ET schedule, latest-result automation, and closed UARL D2 handling.
+- Faith observance banner snippets now use the reviewed KJV wording while keeping the compact mobile banner.
+
+### v1.1.30 public partner live-sync addendum
+- Team-partner edits now re-render live on both the Partners page and homepage partner strip after Admin publish, including uploaded/data-image logo sources and external HTTPS destinations.
+- Validation now protects the current-season roster from next-season #42/#46/#56 leakage and locks #62 PT / #82 Development as two identities of one shared open charter with no permanent driver assignment.

@@ -31,10 +31,31 @@ function compareScheduleEvents(a,b) {
   const rank=(league)=>{const index=SCHEDULE_LEAGUE_ORDER.indexOf(league);return index===-1?SCHEDULE_LEAGUE_ORDER.length:index;};
   return rank(a?.league)-rank(b?.league)||String(a?.title||'').localeCompare(String(b?.title||''));
 }
+const UARL_FINISH_POINTS=[0,50,45,42,40,38,36,34,32,30,28,27,26,25,24,23,22];
+function stagePointsFor(league,finish) {
+  const pos=Number(finish||0);
+  if(league==='nrrs')return pos>=1&&pos<=5?11-pos:0;
+  if(league==='uarl-d1')return pos>=1&&pos<=5?6-pos:0;
+  return null;
+}
+function finishPointsFor(league,finish) {
+  const pos=Number(finish||0);if(pos<1)return 0;
+  if(league==='nrrs')return pos===1?40:Math.max(1,37-pos);
+  if(league==='uarl-d1')return UARL_FINISH_POINTS[pos]||0;
+  return null;
+}
+function scoreKnownRace(race={}) {
+  if(!['nrrs','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
+  return {...race,entries:race.entries.map((entry)=>{
+    const stage1=stagePointsFor(race.league,entry.stage1Finish),stage2=stagePointsFor(race.league,entry.stage2Finish),finishPoints=finishPointsFor(race.league,entry.finish);
+    const bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;
+    return {...entry,stage1Points:stage1,stage2Points:stage2,finishPoints,bonusPoints,pointsEligible,racePoints:pointsEligible?finishPoints+stage1+stage2+bonusPoints:0};
+  })};
+}
 function normalize(key,data) {
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
-  if(key==='results'&&Array.isArray(data))return [...data].sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));
+  if(key==='results'&&Array.isArray(data)){const sorted=[...data].map(scoreKnownRace).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));return sorted.map((race,index)=>({...race,featured:index===0}));}
   return data;
 }
 function seeds() {
@@ -123,9 +144,10 @@ function validate(key, data, registry={}) {
       const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seeds().drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
       const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
       for(const entry of row.entries){
-        const assignment=eligible.get(entry.assignmentId);
-        if(!assignment)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
-        if(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||''))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
+        const assignment=entry.assignmentId?eligible.get(entry.assignmentId):null;
+        if(entry.assignmentId&&!assignment)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
+        if(assignment&&(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||'')))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
+        if(!assignment&&(!String(entry.driver||'').trim()||!String(entry.number||'').trim()))return `Result ${index+1}: external race participants need a driver name and car number.`;
         for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!Number.isFinite(entry[field])||entry[field]<0)return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
       }
       if(new Set(row.entries.map((entry)=>entry.driver)).size!==row.entries.length)return `Result ${index+1}: each driver can appear only once.`;
@@ -145,7 +167,7 @@ function validate(key, data, registry={}) {
       }
     }
     if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
-    if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^https:\/\//.test(row.logo))) return 'Partners need HTTPS website/logo URLs and a tags list.';
+    if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^(https:\/\/|\/|data:image\/(?:png|jpeg|webp);base64,)/.test(row.logo))) return 'Partners need an HTTPS website URL, an uploaded/HTTPS/site-relative logo, and a tags list.';
     if (key === 'driver-portfolios') {
       if (!Array.isArray(row.brands) || !row.brands.length) return `Driver portfolio ${index + 1}: add at least one brand.`;
       if (row.brands.some((brand) => !String(brand?.name || '').trim() || !Number.isFinite(brand?.order))) return `Driver portfolio ${index + 1}: every brand needs a name and numeric display order.`;
@@ -168,7 +190,7 @@ function validate(key, data, registry={}) {
   if (key === 'news' && rows.filter((r) => r.featured).length !== 1) return 'Choose exactly one featured Team Wire story.';
   if(key==='results'){
     if(!data.length)return 'Keep at least one race result.';
-    if(data.filter((race)=>race.featured).length!==1)return 'Choose exactly one race as the current latest result.';
+    if(data.filter((race)=>race.featured).length!==1)return 'The newest completed race must be the automatic Latest Result.';
     if(new Set(data.map((race)=>race.scheduleId)).size!==data.length)return 'Each scheduled race can have only one result record.';
   }
   if(key==='site'&&(!data.name||!/^https:\/\//.test(data.url)||!/^https:\/\//.test(data.discordUrl)))return 'Site Settings needs a name, HTTPS site URL, and HTTPS Discord URL.';
@@ -176,4 +198,4 @@ function validate(key, data, registry={}) {
   return '';
 }
 function json(statusCode, data) { return { statusCode, headers: { 'content-type':'application/json; charset=utf-8', 'cache-control':'no-store', 'x-content-type-options':'nosniff' }, body:JSON.stringify(data) }; }
-module.exports = { FILES, seeds, read, write, validate, normalize, normalizeDriverAssignments, compareScheduleEvents, json };
+module.exports = { FILES, seeds, read, write, validate, normalize, normalizeDriverAssignments, compareScheduleEvents, scoreKnownRace, json };
