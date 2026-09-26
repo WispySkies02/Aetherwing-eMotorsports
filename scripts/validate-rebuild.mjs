@@ -116,3 +116,12 @@ if(currentNumbers['uarl-d1'].has('42')||currentNumbers['uarl-d1'].has('46')||cur
 
 // v1.1.31 — selected-board standings PNG export.
 if(!adminContentSource.includes('data-standings-export')||!adminContentSource.includes('createStandingsPng')||!adminContentSource.includes('Save PNG')||!adminContentSource.includes('Open full size'))throw Error('Admin Standings must retain full selected-board PNG generation, preview, and save controls.');
+
+// v1.1.33 — league-branded standings graphics + manufacturer / Chase logic.
+if(!adminContentSource.includes('NRRS TOWN FAIR TIRE CUP SERIES')||!adminContentSource.includes('NASCAR KMART AUTO PARTS SERIES')||!adminContentSource.includes('NASCAR SUNOCO TRUCK SERIES')||!adminContentSource.includes('UARL L.L. BEAN CUP SERIES')||!adminContentSource.includes('UARL BANGOR SAVINGS BANK LATE MODEL SERIES'))throw Error('Standings PNG league title branding is incomplete.');
+if(!adminContentSource.includes('standingsManufacturerByNumber')||!adminContentSource.includes('latestStandingResultEntry')||!adminContentSource.includes('standingManufacturer'))throw Error('Standings PNG manufacturer mapping/latest-result logic is missing.');
+if(!adminContentSource.includes('board?.chaseActive!==true')||adminContentSource.includes('const highlighted=Boolean(row.highlight)'))throw Error('Standings PNG must highlight Chase drivers only when the board is actively in the Chase.');
+if(adminContentSource.includes('AETHERWING eMOTORSPORTS · STANDINGS')||adminContentSource.includes('AETHERWING eMOTORSPORTS · ADMIN STANDINGS EXPORT'))throw Error('Standings PNG must remain league-branded rather than Aetherwing-branded.');
+const chaseFlags=Object.fromEntries(standings.map((board)=>[board.id,board.chaseActive]));
+if(chaseFlags.nrrs!==true||chaseFlags.kmart!==false||chaseFlags.sunoco!==true||chaseFlags.uarl!==false)throw Error('Standings Chase-active flags do not match the current league states.');
+

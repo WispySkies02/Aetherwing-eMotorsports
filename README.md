@@ -191,3 +191,11 @@ Admin → Standings now includes **Generate standings PNG** for the currently se
 ## v1.1.32 Netlify validation root fix
 
 The custom validation script now resolves and switches to the repository root from its own file location before checking required assets. This prevents Netlify working-directory differences from falsely reporting `src/pages/index.astro` (or other required files) as missing.
+
+## v1.1.33 · League-branded standings exports
+
+- Standings PNGs are now branded for the selected league/series rather than Aetherwing.
+- Current export titles include NRRS Town Fair Tire Cup, NASCAR Kmart Auto Parts, NASCAR Sunoco Truck, and UARL L.L. Bean/Bangor Savings Bank identities.
+- NRRS and Kmart manufacturer mappings are available in the standings export. The exporter prefers each driver's most recent result entry, so part-time drivers can change manufacturer automatically when they race a different entry.
+- Chase highlighting is now controlled by each standings board's `chaseActive` flag. Only Chase drivers are highlighted, and only after that league has actually entered its Chase/playoff period. Kmart is currently marked as Chase Bubble (not active), while NRRS and Sunoco are active.
+- Sunoco manufacturer roster mapping remains intentionally open for a later update.

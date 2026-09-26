@@ -293,7 +293,8 @@
     "autoPoints": true,
     "gapMode": "leader",
     "lastResultDate": "2026-09-22",
-    "lastResultScheduleId": "2026-09-22-nrrs-north-wilkesboro-speedway-chase-race-2"
+    "lastResultScheduleId": "2026-09-22-nrrs-north-wilkesboro-speedway-chase-race-2",
+    "chaseActive": true
   },
   {
     "id": "kmart",
@@ -482,7 +483,8 @@
     "autoPoints": true,
     "gapMode": "cutoff",
     "lastResultDate": "2026-09-21",
-    "lastResultScheduleId": ""
+    "lastResultScheduleId": "",
+    "chaseActive": false
   },
   {
     "id": "sunoco",
@@ -531,7 +533,8 @@
     "autoPoints": false,
     "gapMode": "leader",
     "lastResultDate": "",
-    "lastResultScheduleId": ""
+    "lastResultScheduleId": "",
+    "chaseActive": true
   },
   {
     "id": "uarl",
@@ -544,6 +547,7 @@
     "autoPoints": false,
     "gapMode": "leader",
     "lastResultDate": "",
-    "lastResultScheduleId": ""
+    "lastResultScheduleId": "",
+    "chaseActive": false
   }
 ]

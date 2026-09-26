@@ -39,7 +39,7 @@
     'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD',entryListMode:'Event entry list mode',entries:'Event entry list',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',entryStatus:'Entry note / status'},
     results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Automatic Latest Result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',finishPoints:'Finish points',bonusPoints:'Bonus / adjustment points',pointsEligible:'Championship points eligible',racePoints:'Total race points',featuredDriver:'Featured driver'},
     wins:{assignmentId:'Linked driver assignment',league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
-    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
+    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Competing organization',car:'Car / body',identityNote:'Identity note'},
     'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
@@ -89,7 +89,8 @@
     quote:'Optional pull quote with text and attribution.',
     openCharters:'Each item is ONE actual Open Charter slot. Add or remove Open Charter items to change the actual charter count.',
     uses:'Possible identities/usages for this one Open Charter. One use = one number. Multiple uses still count as one actual charter slot and are not simultaneous.',
-    highlight:'Adds Aetherwing visual emphasis to this driver on the public standings cards.',
+    highlight:'Adds Aetherwing visual emphasis to this driver on the public standings cards. Standings PNG exports ignore this flag and only highlight Chase drivers when League is currently in the Chase is enabled.',
+    chaseActive:'Controls Chase highlighting in exported standings graphics. Turn this on only after the league has actually entered its Chase/playoff period.',
     slotLabel:'Optional public slot label such as “4TH CHARTER” or “OPEN CHARTER 2”.',
     active:'Turn this charter or number identity on/off without deleting it.',
     brands:'Add, remove, rename, reorder, or attach an optional logo to every individual driver brand.',
@@ -310,18 +311,65 @@
     iracing:'/images/schedule-logos/iracing.png',
     'iracing-factory':'/images/schedule-logos/iracing.png'
   };
+  const standingsSeriesTitleMap={
+    nrrs:'NRRS TOWN FAIR TIRE CUP SERIES',
+    kmart:'NASCAR KMART AUTO PARTS SERIES',
+    sunoco:'NASCAR SUNOCO TRUCK SERIES',
+    uarl:'UARL L.L. BEAN CUP SERIES',
+    'uarl-d1':'UARL L.L. BEAN CUP SERIES',
+    'uarl-open':'UARL BANGOR SAVINGS BANK LATE MODEL SERIES'
+  };
+  const standingsAccentMap={
+    nrrs:'#d8b968',kmart:'#df2638',sunoco:'#f0c928',uarl:'#6f8f73','uarl-d1':'#6f8f73','uarl-open':'#bd9b57'
+  };
+  const standingsManufacturerByNumber={
+    nrrs:{
+      '1':'Chevrolet','01':'Chevrolet','3':'Chevrolet','6':'Ford','7':'Chevrolet','07':'Chevrolet','8':'Chevrolet','9':'Cadillac','10':'Chevrolet','11':'Ford','13':'Toyota','14':'Ford','15':'Honda','16':'Chevrolet','17':'Ford','18':'Toyota','20':'Chevrolet','21':'Chevrolet','22':'Ford','27':'Ford','32':'Toyota','33':'Chevrolet','41':'Honda','43':'Toyota','45':'Ford','58':'Ford','60':'Ford','61':'Chevrolet','62':'Toyota','67':'Ford','71':'Chevrolet','77':'Chevrolet','94':'Chevrolet','99':'Ford'
+    },
+    kmart:{
+      '0':'Chevrolet','05':'Chevrolet','1':'Chevrolet','5':'Chevrolet','9':'Chevrolet','10':'Chevrolet','13':'Toyota','15':'Dodge','16':'Chevrolet','18':'Toyota','20':'Toyota','21':'Chevrolet','24':'Dodge','26':'Chevrolet','29':'Dodge','34':'Dodge','45':'Chevrolet','48':'Chevrolet','50':'Toyota','51':'Toyota','54':'Toyota','55':'Toyota','56':'Toyota','61':'Chevrolet','88':'Chevrolet','91':'Chevrolet','97':'Chevrolet'
+    }
+  };
+  const standingsDriverAliases={
+    wispy:'hailey',aokikoto:'hailey',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',matts1964:'matt',tnfanracing:'tnfan'
+  };
   let standingsExportObjectUrl='';
   const safeExportName=(value='standings')=>String(value||'standings').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'standings';
   const loadCanvasImage=(src)=>new Promise((resolve)=>{if(!src)return resolve(null);const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>resolve(null);image.src=src;});
+  const standingsSeriesTitle=(board)=>standingsSeriesTitleMap[board?.league]||standingsSeriesTitleMap[board?.id]||String(board?.title||'Standings').toUpperCase();
+  const normalizeStandingDriver=(value='')=>{
+    const raw=String(value||'').toLowerCase().replace(/^@/,'').replace(/[^a-z0-9]/g,'');
+    return standingsDriverAliases[raw]||raw;
+  };
+  const standingsLeagueMatches=(resultLeague,boardLeague)=>resultLeague===boardLeague||(boardLeague==='uarl'&&resultLeague==='uarl-d1');
+  function latestStandingResultEntry(board,row){
+    const driverKey=normalizeStandingDriver(row?.driver||row?.displayName||'');if(!driverKey)return null;
+    const races=[...(base('results')||[])].filter((race)=>standingsLeagueMatches(race?.league,board?.league)).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||'')));
+    for(const race of races){
+      const entry=(race.entries||[]).find((candidate)=>normalizeStandingDriver(candidate?.driver||candidate?.displayName||'')===driverKey);
+      if(entry)return entry;
+    }
+    return null;
+  }
+  function standingManufacturer(board,row,fallbackNumber=''){
+    const latest=latestStandingResultEntry(board,row);
+    if(String(latest?.manufacturer||'').trim())return String(latest.manufacturer).trim();
+    const map=standingsManufacturerByNumber[board?.league]||standingsManufacturerByNumber[board?.id]||{};
+    const latestNumber=String(latest?.number||'').trim();if(latestNumber&&map[latestNumber])return map[latestNumber];
+    if(String(row?.manufacturer||'').trim())return String(row.manufacturer).trim();
+    const number=String(row?.number||fallbackNumber||'').trim();return map[number]||'';
+  }
+  function isChaseDriver(board,row,index){
+    if(board?.chaseActive!==true)return false;
+    const explicit=String(row?.chaseStatus||'').trim().toUpperCase();
+    if(explicit==='CHASE')return true;
+    if(explicit.includes('NOT IN CHASE')||explicit.includes('ELIMINATED'))return false;
+    const cutoff=Number(board?.cutoffAfter||0);return cutoff>0&&index<cutoff&&row?.chaseEligible!==false;
+  }
   function drawContained(ctx,image,x,y,width,height){
     if(!image?.naturalWidth||!image?.naturalHeight)return;
     const scale=Math.min(width/image.naturalWidth,height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;
     ctx.drawImage(image,x+(width-w)/2,y+(height-h)/2,w,h);
-  }
-  function drawCover(ctx,image,width,height){
-    if(!image?.naturalWidth||!image?.naturalHeight)return;
-    const scale=Math.max(width/image.naturalWidth,height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;
-    ctx.drawImage(image,(width-w)/2,(height-h)/2,w,h);
   }
   function fitCanvasText(ctx,text,maxWidth,size,weight='900',family='Arial Narrow, Arial, sans-serif',minSize=20){
     let px=size;ctx.font=`${weight} ${px}px ${family}`;
@@ -332,16 +380,16 @@
     const radius=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+radius,y);ctx.arcTo(x+w,y,x+w,y+h,radius);ctx.arcTo(x+w,y+h,x,y+h,radius);ctx.arcTo(x,y+h,x,y,radius);ctx.arcTo(x,y,x+w,y,radius);ctx.closePath();
   }
   function paintStandingRow(ctx,row,x,y,w,h,index,board){
-    const highlighted=Boolean(row.highlight),outsideCut=Number(board.cutoffAfter)>0&&index>=Number(board.cutoffAfter);
-    ctx.save();roundedRect(ctx,x,y,w,h-6,8);ctx.fillStyle=highlighted?'rgba(35,67,83,.94)':outsideCut?'rgba(10,12,14,.90)':'rgba(15,19,23,.92)';ctx.fill();
-    if(highlighted){ctx.fillStyle='#e0c891';ctx.fillRect(x,y,7,h-6);}else if(row.chaseEligible===true){ctx.fillStyle='#6dc8ff';ctx.fillRect(x,y,4,h-6);}
+    const chaseDriver=isChaseDriver(board,row,index),outsideCut=Number(board.cutoffAfter)>0&&index>=Number(board.cutoffAfter),manufacturer=standingManufacturer(board,row);
+    ctx.save();roundedRect(ctx,x,y,w,h-6,8);ctx.fillStyle=chaseDriver?'rgba(65,54,27,.96)':outsideCut?'rgba(10,12,14,.92)':'rgba(15,19,23,.94)';ctx.fill();
+    if(chaseDriver){ctx.fillStyle='#e0c891';ctx.fillRect(x,y,7,h-6);ctx.strokeStyle='rgba(224,200,145,.48)';ctx.lineWidth=1.5;roundedRect(ctx,x+.75,y+.75,w-1.5,h-7.5,8);ctx.stroke();}
     const pad=22,posX=x+pad,numX=x+112,nameX=x+205,pointsX=x+w-190,deltaX=x+w-24;
-    ctx.textBaseline='middle';ctx.fillStyle=highlighted?'#f6f8fa':'#aeb9bf';ctx.font='900 24px Arial Narrow, Arial, sans-serif';ctx.textAlign='left';ctx.fillText(String(row.position||`P${index+1}`),posX,y+(h-6)/2);
+    ctx.textBaseline='middle';ctx.fillStyle=chaseDriver?'#f6f8fa':'#aeb9bf';ctx.font='900 24px Arial Narrow, Arial, sans-serif';ctx.textAlign='left';ctx.fillText(String(row.position||`P${index+1}`),posX,y+(h-6)/2);
     ctx.fillStyle='#e0c891';ctx.font='900 25px Arial Narrow, Arial, sans-serif';ctx.fillText(row.number?`#${row.number}`:'—',numX,y+(h-6)/2);
-    const status=row.chaseStatus||row.note||'';const driver=String(row.driver||'—');fitCanvasText(ctx,driver,Math.max(180,pointsX-nameX-28),31,'900','Arial Narrow, Arial, sans-serif',22);ctx.fillStyle='#f6f8fa';ctx.fillText(driver.toUpperCase(),nameX,y+(h-6)/2-(status?8:0));
-    if(status){ctx.fillStyle='#7f8b92';ctx.font='800 13px Arial, sans-serif';ctx.fillText(String(status).toUpperCase(),nameX,y+(h-6)/2+15);}
+    const detail=[manufacturer,chaseDriver?'CHASE':'',row.note&&!/listed as wispy/i.test(String(row.note||''))?row.note:''].filter(Boolean).join(' · '),driver=String(row.driver||'—');fitCanvasText(ctx,driver,Math.max(180,pointsX-nameX-28),31,'900','Arial Narrow, Arial, sans-serif',22);ctx.fillStyle='#f6f8fa';ctx.fillText(driver.toUpperCase(),nameX,y+(h-6)/2-(detail?8:0));
+    if(detail){ctx.fillStyle=chaseDriver?'#e0c891':'#7f8b92';ctx.font='800 13px Arial, sans-serif';ctx.fillText(String(detail).toUpperCase(),nameX,y+(h-6)/2+15);}
     ctx.textAlign='right';ctx.fillStyle='#f6f8fa';ctx.font='900 27px Arial Narrow, Arial, sans-serif';ctx.fillText(Number(row.points||0).toLocaleString('en-US'),pointsX,y+(h-6)/2);
-    ctx.fillStyle=row.delta==='LEADER'?'#6dc8ff':'#9ba6ac';ctx.font='900 18px Arial, sans-serif';ctx.fillText(String(row.delta||'—'),deltaX,y+(h-6)/2);
+    ctx.fillStyle=row.delta==='LEADER'?'#e0c891':'#9ba6ac';ctx.font='900 18px Arial, sans-serif';ctx.fillText(String(row.delta||'—'),deltaX,y+(h-6)/2);
     ctx.restore();
   }
   async function createStandingsPng(board){
@@ -349,37 +397,38 @@
     const width=1800,margin=72,headerHeight=250,rowHeight=70,columnGap=28,columns=rows.length>16?2:1,rowsPerColumn=Math.ceil(rows.length/columns),bodyHeight=rowsPerColumn*rowHeight;
     const ptDrivers=Array.isArray(board.ptEntry?.drivers)?board.ptEntry.drivers:[],ptHeight=ptDrivers.length?170:0,footerHeight=92,height=margin+headerHeight+bodyHeight+ptHeight+footerHeight+margin;
     const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas export is not available in this browser.');
-    const [texture,aetherLogo,leagueLogo]=await Promise.all([loadCanvasImage('/images/textures/aetherwing-editorial.webp'),loadCanvasImage('/images/brand/aetherwing-logo.png'),loadCanvasImage(standingsLogoMap[board.league]||'')]);
-    ctx.fillStyle='#05070a';ctx.fillRect(0,0,width,height);if(texture){ctx.save();ctx.globalAlpha=.34;drawCover(ctx,texture,width,height);ctx.restore();}
-    const wash=ctx.createLinearGradient(0,0,width,height);wash.addColorStop(0,'rgba(4,7,10,.88)');wash.addColorStop(.55,'rgba(5,8,11,.95)');wash.addColorStop(1,'rgba(2,4,6,.98)');ctx.fillStyle=wash;ctx.fillRect(0,0,width,height);
-    const accent=ctx.createLinearGradient(margin,0,width-margin,0);accent.addColorStop(0,'#6dc8ff');accent.addColorStop(.55,'#e0c891');accent.addColorStop(1,'#3e7e84');ctx.fillStyle=accent;ctx.fillRect(0,0,width,12);
-    if(aetherLogo)drawContained(ctx,aetherLogo,margin,margin+18,120,120);
-    const titleX=margin+(aetherLogo?150:0),titleMax=width-titleX-margin-(leagueLogo?180:0);ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle='#6dc8ff';ctx.font='900 18px Arial, sans-serif';ctx.fillText('AETHERWING eMOTORSPORTS · STANDINGS',titleX,margin+48);
-    fitCanvasText(ctx,board.title||'Standings',titleMax,58,'900','Arial Narrow, Arial, sans-serif',32);ctx.fillStyle='#f6f8fa';ctx.fillText(String(board.title||'STANDINGS').toUpperCase(),titleX,margin+112);
+    const leagueLogo=await loadCanvasImage(standingsLogoMap[board.league]||standingsLogoMap[board.id]||'');
+    const accentColor=standingsAccentMap[board.league]||standingsAccentMap[board.id]||'#e0c891',seriesTitle=standingsSeriesTitle(board);
+    ctx.fillStyle='#05070a';ctx.fillRect(0,0,width,height);
+    const wash=ctx.createLinearGradient(0,0,width,height);wash.addColorStop(0,'#11161b');wash.addColorStop(.5,'#080b0e');wash.addColorStop(1,'#020405');ctx.fillStyle=wash;ctx.fillRect(0,0,width,height);
+    ctx.save();ctx.globalAlpha=.025;ctx.fillStyle='#ffffff';const grid=92;for(let gy=0;gy<height;gy+=grid){for(let gx=0;gx<width;gx+=grid){if(((gx/grid)+(gy/grid))%2===0)ctx.fillRect(gx,gy,grid,grid);}}ctx.restore();
+    ctx.fillStyle=accentColor;ctx.fillRect(0,0,width,12);
+    if(leagueLogo){roundedRect(ctx,margin,margin+22,148,132,12);ctx.fillStyle='rgba(255,255,255,.07)';ctx.fill();drawContained(ctx,leagueLogo,margin+13,margin+33,122,110);}
+    const titleX=margin+(leagueLogo?178:0),titleMax=width-titleX-margin;ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle=accentColor;ctx.font='900 18px Arial, sans-serif';ctx.fillText('OFFICIAL DRIVER STANDINGS',titleX,margin+48);
+    fitCanvasText(ctx,seriesTitle,titleMax,58,'900','Arial Narrow, Arial, sans-serif',30);ctx.fillStyle='#f6f8fa';ctx.fillText(seriesTitle,titleX,margin+112);
     fitCanvasText(ctx,board.subtitle||'',titleMax,25,'700','Arial, sans-serif',17);ctx.fillStyle='#a8b1b7';ctx.fillText(String(board.subtitle||''),titleX,margin+151);
-    const meta=[board.status,board.pointsContext].filter(Boolean).join(' · ');if(meta){ctx.fillStyle='#e0c891';ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(meta).toUpperCase(),titleX,margin+184);}
-    if(leagueLogo){roundedRect(ctx,width-margin-150,margin+24,150,130,12);ctx.fillStyle='rgba(255,255,255,.06)';ctx.fill();drawContained(ctx,leagueLogo,width-margin-136,margin+35,122,108);}
+    const meta=[board.status,board.chaseActive===true?'CHASE ACTIVE':''].filter(Boolean).join(' · ');if(meta){ctx.fillStyle=accentColor;ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(meta).toUpperCase(),titleX,margin+184);}
     const bodyY=margin+headerHeight,colWidth=(width-margin*2-columnGap*(columns-1))/columns;
     for(let col=0;col<columns;col++){
       const x=margin+col*(colWidth+columnGap),start=col*rowsPerColumn,end=Math.min(rows.length,start+rowsPerColumn);
       for(let i=start;i<end;i++){
         const local=i-start,y=bodyY+local*rowHeight;
         if(Number(board.cutoffAfter)>0&&i===Number(board.cutoffAfter)){
-          ctx.save();ctx.strokeStyle='#e0c891';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-4);ctx.lineTo(x+colWidth,y-4);ctx.stroke();ctx.fillStyle='#e0c891';ctx.font='900 13px Arial, sans-serif';ctx.textAlign='right';ctx.fillText(String(board.cutoffLabel||'CHASE CUTOFF').toUpperCase(),x+colWidth,y-11);ctx.restore();
+          ctx.save();ctx.strokeStyle=accentColor;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-4);ctx.lineTo(x+colWidth,y-4);ctx.stroke();ctx.fillStyle=accentColor;ctx.font='900 13px Arial, sans-serif';ctx.textAlign='right';ctx.fillText(String(board.cutoffLabel||'CHASE CUTOFF').toUpperCase(),x+colWidth,y-11);ctx.restore();
         }
         paintStandingRow(ctx,rows[i],x,y,colWidth,rowHeight,i,board);
       }
     }
     let cursorY=bodyY+bodyHeight+18;
     if(ptDrivers.length){
-      roundedRect(ctx,margin,cursorY,width-margin*2,ptHeight-18,12);ctx.fillStyle='rgba(17,20,23,.95)';ctx.fill();ctx.strokeStyle='rgba(224,200,145,.42)';ctx.lineWidth=2;ctx.stroke();
-      ctx.textAlign='left';ctx.fillStyle='#e0c891';ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(board.ptEntry.title||'PART-TIME ENTRIES').toUpperCase(),margin+24,cursorY+34);ctx.fillStyle='#8f999f';ctx.font='800 14px Arial, sans-serif';ctx.fillText(String(board.ptEntry.status||'').toUpperCase(),margin+24,cursorY+59);
-      const cardGap=14,cardY=cursorY+78,cardW=(width-margin*2-48-(ptDrivers.length-1)*cardGap)/Math.max(1,ptDrivers.length);ptDrivers.forEach((driver,i)=>{const cardX=margin+24+i*(cardW+cardGap);ctx.fillStyle='rgba(5,7,9,.92)';ctx.fillRect(cardX,cardY,cardW,62);ctx.fillStyle='#f6f8fa';ctx.font='900 20px Arial Narrow, Arial, sans-serif';ctx.fillText(`${board.ptEntry.number?'#'+board.ptEntry.number+' · ':''}${String(driver.driver||'').toUpperCase()}`,cardX+16,cardY+26);ctx.fillStyle='#a9b2b7';ctx.font='900 15px Arial, sans-serif';ctx.fillText(`${Number(driver.points||0).toLocaleString('en-US')} PTS`,cardX+16,cardY+49);});
+      roundedRect(ctx,margin,cursorY,width-margin*2,ptHeight-18,12);ctx.fillStyle='rgba(17,20,23,.95)';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=2;ctx.stroke();
+      ctx.textAlign='left';ctx.fillStyle=accentColor;ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(board.ptEntry.title||'PART-TIME ENTRIES').toUpperCase(),margin+24,cursorY+34);ctx.fillStyle='#8f999f';ctx.font='800 14px Arial, sans-serif';ctx.fillText(String(board.ptEntry.status||'').toUpperCase(),margin+24,cursorY+59);
+      const cardGap=14,cardY=cursorY+78,cardW=(width-margin*2-48-(ptDrivers.length-1)*cardGap)/Math.max(1,ptDrivers.length);ptDrivers.forEach((driver,i)=>{const cardX=margin+24+i*(cardW+cardGap),manufacturer=standingManufacturer(board,driver,board.ptEntry.number);ctx.fillStyle='rgba(5,7,9,.92)';ctx.fillRect(cardX,cardY,cardW,62);ctx.fillStyle='#f6f8fa';ctx.font='900 20px Arial Narrow, Arial, sans-serif';ctx.fillText(`${board.ptEntry.number?'#'+board.ptEntry.number+' · ':''}${String(driver.driver||'').toUpperCase()}`,cardX+16,cardY+24);ctx.fillStyle='#a9b2b7';ctx.font='900 13px Arial, sans-serif';ctx.fillText([manufacturer,`${Number(driver.points||0).toLocaleString('en-US')} PTS`].filter(Boolean).join(' · ').toUpperCase(),cardX+16,cardY+48);});
       cursorY+=ptHeight;
     }
-    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,cursorY+18);ctx.lineTo(width-margin,cursorY+18);ctx.stroke();ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle='#7f8a91';ctx.font='800 14px Arial, sans-serif';ctx.fillText('AETHERWING eMOTORSPORTS · ADMIN STANDINGS EXPORT',margin,cursorY+53);ctx.textAlign='right';ctx.fillText(`GENERATED ${new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'})}`,width-margin,cursorY+53);
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,cursorY+18);ctx.lineTo(width-margin,cursorY+18);ctx.stroke();ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle='#7f8a91';ctx.font='800 14px Arial, sans-serif';ctx.fillText(`${seriesTitle} · STANDINGS`,margin,cursorY+53);ctx.textAlign='right';ctx.fillText(`GENERATED ${new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'})}`,width-margin,cursorY+53);
     const blob=await new Promise((resolve,reject)=>canvas.toBlob((value)=>value?resolve(value):reject(new Error('PNG encoding failed.')),'image/png',1));
-    return {blob,fileName:`${safeExportName(board.title||board.id)}-standings.png`,width,height};
+    return {blob,fileName:`${safeExportName(seriesTitle)}-standings.png`,width,height};
   }
   async function saveStandingsPng(blob,fileName){
     if('showSaveFilePicker' in window){
