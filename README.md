@@ -216,3 +216,12 @@ The custom validation script now resolves and switches to the repository root fr
 - Any current SCR-row values in the live override are preserved, then the repaired full field is re-ranked and gaps are recalculated.
 - The recovery is intentionally narrow: it only triggers for an incomplete Kmart board made entirely of SCR car numbers (#15/#24/#29/#34), so normal standings imports or deliberate edits are not broadly overridden.
 - Manufacturer icons and the Chase-only highlighting rule remain unchanged.
+
+## v1.1.37 · Sunoco dual points + championship filters
+
+- Sunoco now carries the full 17-driver active roster with the mapped public display names and RAM/Chevrolet/Ford manufacturer identities supplied for the series. Drivers whose current regular-season total has not yet been imported are shown as pending rather than being assigned a fake zero-point total.
+- Admin → Standings gives Sunoco two independent CSV/TSV paste/upload workflows: **Regular Points** and **Chase-only Points**. Importing one no longer overwrites the other, and Chase membership on the regular table syncs from the Chase-only list once that list exists.
+- The Sunoco generated standings PNG is a dual-panel graphic with **Regular Points** and **Chase Points** side by side. Manufacturer icons remain enabled and the PNG still uses Chase-only driver highlighting rather than Aetherwing/SCR team highlighting.
+- Kmart standings PNG metadata is now derived from the actual Kmart schedule, so the header shows current round information (for the bundled board: Round 7 of 23 at Rockingham) instead of allowing a legacy `SCR Drivers` label to leak into the export.
+- The public Championships page now has a sticky **All / NRRS / Kmart / Sunoco / UARL** league filter so visitors can open one points battle at a time. Sunoco also exposes its separate Chase-only table on the public page after those points are published.
+- Older live Sunoco standings payloads are expanded against the bundled 17-driver roster at both the public-content and Admin migration layers, preventing the old partial four-row board from replacing the full roster after a deploy.

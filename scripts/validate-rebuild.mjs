@@ -125,3 +125,13 @@ if(adminContentSource.includes('AETHERWING eMOTORSPORTS · STANDINGS')||adminCon
 const chaseFlags=Object.fromEntries(standings.map((board)=>[board.id,board.chaseActive]));
 if(chaseFlags.nrrs!==true||chaseFlags.kmart!==false||chaseFlags.sunoco!==true||chaseFlags.uarl!==false)throw Error('Standings Chase-active flags do not match the current league states.');
 
+
+// v1.1.37 — Sunoco dual points workflow + championship filters + Kmart round metadata.
+const sunoco=standings.find((board)=>board.id==='sunoco');
+if(!sunoco||!Array.isArray(sunoco.rows)||sunoco.rows.length<17)throw Error('Sunoco standings must include the full 17-driver active roster.');
+if(!Array.isArray(sunoco.chaseRows))throw Error('Sunoco standings must keep Chase-only points as a separate dataset.');
+if(!adminContentSource.includes('data-sunoco-chase-import-text')||!adminContentSource.includes('applySunocoChaseImport')||!adminContentSource.includes('createSunocoStandingsPng'))throw Error('Sunoco Admin must retain separate Regular/Chase CSV import boxes and dual-panel PNG export.');
+if(!adminContentSource.includes('standingsRoundSummary')||!adminContentSource.includes("league!=='kmart'")||!adminContentSource.includes('standingsExportStatus'))throw Error('Kmart standings PNG must derive round metadata instead of team-specific header text.');
+const championshipsSource=readFileSync('src/pages/championships/index.astro','utf8');
+for(const value of ['all','nrrs','kmart','sunoco','uarl'])if(!championshipsSource.includes(`data-championship-filter-value=\"${value}\"`))throw Error(`Championship page filter is missing ${value}.`);
+if(!championshipsSource.includes('repairSunoco')||!championshipsSource.includes('standings-chase-panel'))throw Error('Public Championship page must retain full Sunoco roster repair and Chase-only panel rendering.');

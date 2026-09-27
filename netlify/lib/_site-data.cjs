@@ -18,13 +18,12 @@ function mergeCanonical(datasets){
     datasets.results=normalize('results',live);
   }
   if(Array.isArray(datasets.standings)){
-    const official=(seed.standings||[]).find(b=>b.id==='nrrs');
+    const official=(seed.standings||[]).find(b=>b.id==='nrrs'),sunocoSeed=(seed.standings||[]).find(b=>b.id==='sunoco'),kmartSeed=(seed.standings||[]).find(b=>b.id==='kmart');
     datasets.standings=datasets.standings.map(board=>{
-      if(board?.id!=='nrrs'||!official)return board;
-      const last=String(board.lastResultDate||'');
-      const looksOld=(!last&&/After R(?:20|21)\/25/i.test(board.subtitle||''))||last<'2026-09-22';
-      const staleR21=last==='2026-09-22'&&board.rows?.some(r=>r.driver==='Trent'&&Number(r.points)===2197);
-      return looksOld||staleR21?official:board;
+      if(board?.id==='nrrs'&&official){const last=String(board.lastResultDate||''),looksOld=(!last&&/After R(?:20|21)\/25/i.test(board.subtitle||''))||last<'2026-09-22',staleR21=last==='2026-09-22'&&board.rows?.some(r=>r.driver==='Trent'&&Number(r.points)===2197);return looksOld||staleR21?official:board;}
+      if(board?.id==='sunoco'&&sunocoSeed){const liveRows=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(liveRows.map(row=>[String(row?.number||''),row])),rows=(sunocoSeed.rows||[]).map(seedRow=>{const live=byNumber.get(String(seedRow.number||''));return live?{...seedRow,...live,team:seedRow.team||live.team,manufacturer:seedRow.manufacturer||live.manufacturer}:{...seedRow};});return {...sunocoSeed,...board,title:board.title==='Sunoco Truck Series Chase'?sunocoSeed.title:board.title||sunocoSeed.title,rows,chaseRows:Array.isArray(board.chaseRows)?board.chaseRows:(sunocoSeed.chaseRows||[]),chaseActive:true};}
+      if(board?.id==='kmart'&&kmartSeed&&/SCR\s*Drivers/i.test(`${board.title||''} ${board.subtitle||''} ${board.status||''}`))return {...board,title:kmartSeed.title,subtitle:kmartSeed.subtitle,status:kmartSeed.status,chaseActive:false};
+      return board;
     });
   }
   return datasets;

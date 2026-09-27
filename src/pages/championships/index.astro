@@ -10,7 +10,8 @@ const manufacturerByNumber={
   },
   kmart:{
     '0':'Chevrolet','05':'Chevrolet','1':'Chevrolet','5':'Chevrolet','9':'Chevrolet','10':'Chevrolet','13':'Toyota','15':'Dodge','16':'Chevrolet','18':'Toyota','20':'Toyota','21':'Chevrolet','24':'Dodge','26':'Chevrolet','29':'Dodge','34':'Dodge','45':'Chevrolet','48':'Chevrolet','50':'Toyota','51':'Toyota','54':'Toyota','55':'Toyota','56':'Toyota','61':'Chevrolet','88':'Chevrolet','91':'Chevrolet','97':'Chevrolet'
-  }
+  },
+  sunoco:{'54':'RAM','42':'RAM','46':'RAM','27':'RAM','61':'Chevrolet','3':'Chevrolet','13':'Chevrolet','18':'Chevrolet','21':'Chevrolet','51':'Chevrolet','77':'Chevrolet','67':'Chevrolet','22':'RAM','7':'Ford','69':'Ford','31':'Chevrolet','41':'Chevrolet'}
 };
 const manufacturerIconPaths={
   chevrolet:'/images/manufacturers/chevrolet.png',ford:'/images/manufacturers/ford.png',toyota:'/images/manufacturers/toyota.png',
@@ -53,11 +54,49 @@ const manufacturerFor=(board,row,fallbackNumber='')=>{
 };
 const manufacturerKey=(board,value='')=>{const v=String(value||'').toLowerCase();if(v.includes('chev'))return'chevrolet';if(v.includes('ford'))return'ford';if(v.includes('toyota'))return'toyota';if(v.includes('cadillac'))return'cadillac';if(v.includes('honda'))return'honda';if(v.includes('ram')||v.includes('dodge'))return (board?.league||board?.id)==='sunoco'?'ram-sunoco':'dodge-kmart';return'';};
 const manufacturerIcon=(board,row,fallbackNumber='')=>manufacturerIconPaths[manufacturerKey(board,manufacturerFor(board,row,fallbackNumber))]||'';
+
+const sunocoRoster=[
+  {number:'54',driver:'Hailey',team:'Starclutch Racing',manufacturer:'RAM'},
+  {number:'42',driver:'Will',team:'Starclutch Racing',manufacturer:'RAM'},
+  {number:'46',driver:'Clutch',team:'Starclutch Racing',manufacturer:'RAM'},
+  {number:'27',driver:'Eazy',team:'Starclutch Racing',manufacturer:'RAM'},
+  {number:'61',driver:'Carl',team:'Sky Motorsports',manufacturer:'Chevrolet'},
+  {number:'3',driver:'Cod',team:'Sky Motorsports',manufacturer:'Chevrolet'},
+  {number:'13',driver:'Stampy',team:'Team Hog Racing',manufacturer:'Chevrolet'},
+  {number:'18',driver:'Nico',team:'Team Hog Racing',manufacturer:'Chevrolet'},
+  {number:'21',driver:'Outlaw',team:'Team Hog Racing',manufacturer:'Chevrolet'},
+  {number:'51',driver:'Matty',team:'Campbell Garage',manufacturer:'Chevrolet'},
+  {number:'77',driver:'Jaxon',team:'Spire Motorsports',manufacturer:'Chevrolet'},
+  {number:'67',driver:'Ryan',team:'Sunset Motorsports',manufacturer:'Chevrolet'},
+  {number:'22',driver:'Flamingo',team:'Facemob Racing',manufacturer:'RAM'},
+  {number:'7',driver:'Trent',team:'Big D Motorsports',manufacturer:'Ford'},
+  {number:'69',driver:'AJ',team:'Big D Motorsports',manufacturer:'Ford'},
+  {number:'31',driver:'Hotline',team:'Vice Motorsports',manufacturer:'Chevrolet'},
+  {number:'41',driver:'Tnfan',team:'Vice Motorsports',manufacturer:'Chevrolet'}
+];
+const repairSunocoBoard=(board)=>{
+  if((board?.league||board?.id)!=='sunoco')return board;
+  const existing=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(existing.map(row=>[String(row.number||''),row]));
+  const knownNumbers=new Set(sunocoRoster.map(item=>item.number)),extras=existing.filter(row=>!knownNumbers.has(String(row.number||'')));
+  const rows=sunocoRoster.map((roster,index)=>{const live=byNumber.get(roster.number);if(live)return {...roster,...live,driver:live.driver||roster.driver,team:live.team||roster.team,manufacturer:live.manufacturer||roster.manufacturer};return {...roster,position:'—',points:null,delta:'—',highlight:false,chaseStatus:'',chaseEligible:false,pointsPending:true,unranked:true};});
+  return {...board,title:board.title==='Sunoco Truck Series Chase'?'Sunoco Truck Series Standings':board.title,rows:[...rows,...extras],chaseRows:Array.isArray(board.chaseRows)?board.chaseRows:[],chaseActive:true};
+};
+const displayStandings=standings.map(repairSunocoBoard);
+const standingsGroup=(board)=>{const key=board?.league||board?.id||'';return key.startsWith('uarl')||key==='open'?'uarl':key;};
+const pointsText=(row)=>row?.pointsPending||row?.points==null?'— PTS':`${Number(row.points||0).toLocaleString('en-US')} PTS`;
 ---
 <Base title="Championship Battles" description="Current standings and title fights across Aetherwing programs.">
   <PageIntro eyebrow="The points picture" title="Championship Battles" description="Where the team stands and what remains on the line."/>
-  <section class="section"><div class="wrap" data-standings-root>
-    {standings.map(board=><article class="standings-board" data-board={board.id}>
+  <section class="section"><div class="wrap">
+    <nav class="championship-filter" aria-label="Championship league filter" data-championship-filter>
+      <button type="button" class="is-active" data-championship-filter-value="all">All</button>
+      <button type="button" data-championship-filter-value="nrrs">NRRS</button>
+      <button type="button" data-championship-filter-value="kmart">Kmart</button>
+      <button type="button" data-championship-filter-value="sunoco">Sunoco</button>
+      <button type="button" data-championship-filter-value="uarl">UARL</button>
+    </nav>
+    <div data-standings-root>
+    {displayStandings.map(board=><article class="standings-board" data-board={board.id} data-board-group={standingsGroup(board)}>
       <header><span>{board.status||board.league}</span><h2>{board.title}</h2><p>{board.subtitle}</p>{board.pointsContext&&<p class="standings-context">{board.pointsContext}</p>}</header>
       <div class="standings-board__rows">
         {(board.rows||[]).length ? board.rows.map((row,index)=>{
@@ -66,28 +105,42 @@ const manufacturerIcon=(board,row,fallbackNumber='')=>manufacturerIconPaths[manu
             {board.cutoffAfter===index&&<div class="standings-cutoff">{board.cutoffLabel||'Chase cutoff'}</div>}
             <div class:list={['standing-row',{'is-team':isPublicTeamDriver(board,row),'is-unranked':row.unranked}]}> 
               <b>{row.position}</b><strong>{row.number?`#${row.number} · `:''}{row.driver}{row.note&&<em>{row.note}</em>}</strong>
-              <span>{Number(row.points||0).toLocaleString('en-US')} PTS</span>
+              <span>{pointsText(row)}</span>
               <small>{row.delta||'—'}{row.positionChange&&row.positionChange!=='—'?` · ${row.positionChange}`:''}</small>
               <span class="standing-row__make">{icon&&<img src={icon} alt={manufacturerFor(board,row)} loading="lazy" />}</span>
             </div>
           </>;
         }) : <p class="no-records">{board.emptyMessage||'Standings will appear after official results are published.'}</p>}
       </div>
+      {board.league==='sunoco'&&<div class="standings-chase-panel">
+        <div class="standings-chase-panel__head"><span>CHASE-ONLY POINTS</span><h3>{board.chaseTitle||'Chase Points'}</h3><p>{board.chaseSubtitle||'Separate Chase points standings'}</p></div>
+        <div class="standings-board__rows">
+          {(board.chaseRows||[]).length ? board.chaseRows.map((row,index)=>{
+            const icon=manufacturerIcon(board,row);
+            return <div class:list={['standing-row',{'is-team':isPublicTeamDriver(board,row)}]}>
+              <b>{row.position||`P${index+1}`}</b><strong>{row.number?`#${row.number} · `:''}{row.driver}</strong><span>{pointsText(row)}</span><small>{row.delta||'—'}</small><span class="standing-row__make">{icon&&<img src={icon} alt={manufacturerFor(board,row)} loading="lazy" />}</span>
+            </div>;
+          }) : <p class="no-records">{board.chaseEmptyMessage||'Chase-only points will appear after they are published.'}</p>}
+        </div>
+      </div>}
       {board.ptEntry?.drivers?.length>0&&<div class="standings-pt"><h3>{board.ptEntry.title||'Part-time drivers'}</h3><p>{board.ptEntry.status||'NOT CHASE ELIGIBLE'}</p><div>{board.ptEntry.drivers.map(entry=>{
         const icon=manufacturerIcon(board,entry,board.ptEntry.number);
         return <span class:list={['standings-pt__driver',{'is-team':isPublicTeamDriver(board,entry)}]}>{entry.driver} · {Number(entry.points||0).toLocaleString('en-US')} PTS{icon&&<img src={icon} alt={manufacturerFor(board,entry,board.ptEntry.number)} loading="lazy" />}</span>;
       })}</div></div>}
     </article>)}
+    </div>
   </div></section>
 </Base>
 <script>
   const manufacturerByNumber={
     nrrs:{'1':'Chevrolet','01':'Chevrolet','3':'Chevrolet','6':'Ford','7':'Chevrolet','07':'Chevrolet','8':'Chevrolet','9':'Cadillac','10':'Chevrolet','11':'Ford','13':'Toyota','14':'Ford','15':'Honda','16':'Chevrolet','17':'Ford','18':'Toyota','20':'Chevrolet','21':'Chevrolet','22':'Ford','27':'Ford','32':'Toyota','33':'Chevrolet','41':'Honda','43':'Toyota','45':'Ford','58':'Ford','60':'Ford','61':'Chevrolet','62':'Toyota','67':'Ford','71':'Chevrolet','77':'Chevrolet','94':'Chevrolet','99':'Ford'},
-    kmart:{'0':'Chevrolet','05':'Chevrolet','1':'Chevrolet','5':'Chevrolet','9':'Chevrolet','10':'Chevrolet','13':'Toyota','15':'Dodge','16':'Chevrolet','18':'Toyota','20':'Toyota','21':'Chevrolet','24':'Dodge','26':'Chevrolet','29':'Dodge','34':'Dodge','45':'Chevrolet','48':'Chevrolet','50':'Toyota','51':'Toyota','54':'Toyota','55':'Toyota','56':'Toyota','61':'Chevrolet','88':'Chevrolet','91':'Chevrolet','97':'Chevrolet'}
+    kmart:{'0':'Chevrolet','05':'Chevrolet','1':'Chevrolet','5':'Chevrolet','9':'Chevrolet','10':'Chevrolet','13':'Toyota','15':'Dodge','16':'Chevrolet','18':'Toyota','20':'Toyota','21':'Chevrolet','24':'Dodge','26':'Chevrolet','29':'Dodge','34':'Dodge','45':'Chevrolet','48':'Chevrolet','50':'Toyota','51':'Toyota','54':'Toyota','55':'Toyota','56':'Toyota','61':'Chevrolet','88':'Chevrolet','91':'Chevrolet','97':'Chevrolet'},
+    sunoco:{'54':'RAM','42':'RAM','46':'RAM','27':'RAM','61':'Chevrolet','3':'Chevrolet','13':'Chevrolet','18':'Chevrolet','21':'Chevrolet','51':'Chevrolet','77':'Chevrolet','67':'Chevrolet','22':'RAM','7':'Ford','69':'Ford','31':'Chevrolet','41':'Chevrolet'}
   };
   const manufacturerIconPaths={chevrolet:'/images/manufacturers/chevrolet.png',ford:'/images/manufacturers/ford.png',toyota:'/images/manufacturers/toyota.png','dodge-kmart':'/images/manufacturers/dodge-kmart.png','ram-sunoco':'/images/manufacturers/ram-sunoco.png',cadillac:'/images/manufacturers/cadillac.png',honda:'/images/manufacturers/honda.png'};
   const publicTeamHighlights={nrrs:['hailey','plarker'],kmart:['will','jaxon','wispy','eazy','clutch','matty'],sunoco:['wispy','clutch','will','eazy'],uarl:['rocky','wispy','burgertown','gk3r'],'uarl-d1':['rocky','wispy','burgertown','gk3r'],'uarl-open':['rocky','wispy','burgertown','gk3r']};
-  const norm=(value='',league='')=>{let raw=String(value||'').toLowerCase().replace(/^@/,'').replace(/[^a-z0-9]/g,'');const aliases={aokikoto:'wispy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',uhhbzb:'burgertown',sealsntags:'gk3r'};raw=aliases[raw]||raw;if(['kmart','sunoco','uarl','uarl-d1','uarl-open'].includes(league)&&raw==='hailey')return'wispy';if(league==='nrrs'&&raw==='wispy')return'hailey';if(raw.startsWith('burgertown'))return'burgertown';return raw;};
+  const sunocoRoster=[['54','Hailey','Starclutch Racing','RAM'],['42','Will','Starclutch Racing','RAM'],['46','Clutch','Starclutch Racing','RAM'],['27','Eazy','Starclutch Racing','RAM'],['61','Carl','Sky Motorsports','Chevrolet'],['3','Cod','Sky Motorsports','Chevrolet'],['13','Stampy','Team Hog Racing','Chevrolet'],['18','Nico','Team Hog Racing','Chevrolet'],['21','Outlaw','Team Hog Racing','Chevrolet'],['51','Matty','Campbell Garage','Chevrolet'],['77','Jaxon','Spire Motorsports','Chevrolet'],['67','Ryan','Sunset Motorsports','Chevrolet'],['22','Flamingo','Facemob Racing','RAM'],['7','Trent','Big D Motorsports','Ford'],['69','AJ','Big D Motorsports','Ford'],['31','Hotline','Vice Motorsports','Chevrolet'],['41','Tnfan','Vice Motorsports','Chevrolet']].map(([number,driver,team,manufacturer])=>({number,driver,team,manufacturer}));
+  const norm=(value='',league='')=>{let raw=String(value||'').toLowerCase().replace(/^@/,'').replace(/[^a-z0-9]/g,'');const aliases={aokikoto:'wispy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',player13:'carl',player138164:'carl',sbnjc:'nico',sbnjco:'nico',evilcharms:'ryan',emoflamingo:'flamingo',tnfanracing:'tnfan',uhhbzb:'burgertown',sealsntags:'gk3r'};raw=aliases[raw]||raw;if(['kmart','sunoco','uarl','uarl-d1','uarl-open'].includes(league)&&raw==='hailey')return'wispy';if(league==='nrrs'&&raw==='wispy')return'hailey';if(raw.startsWith('burgertown'))return'burgertown';return raw;};
   const teamDriver=(board,row)=>{const league=board?.league||board?.id||'',set=publicTeamHighlights[league]||[];return set.includes(norm(row?.driver||row?.displayName||'',league));};
   const leagueMatch=(resultLeague,boardLeague)=>resultLeague===boardLeague||(boardLeague==='uarl'&&resultLeague==='uarl-d1');
   const latestEntry=(results,board,row)=>{const league=board?.league||board?.id||'',key=norm(row?.driver||row?.displayName||'',league);for(const race of [...(results||[])].filter(r=>leagueMatch(r?.league,league)).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||'')))){const entry=(race.entries||[]).find(c=>norm(c?.driver||c?.displayName||'',league)===key);if(entry)return entry;}return null;};
@@ -95,15 +148,17 @@ const manufacturerIcon=(board,row,fallbackNumber='')=>manufacturerIconPaths[manu
   const makeKey=(board,value='')=>{const v=String(value||'').toLowerCase();if(v.includes('chev'))return'chevrolet';if(v.includes('ford'))return'ford';if(v.includes('toyota'))return'toyota';if(v.includes('cadillac'))return'cadillac';if(v.includes('honda'))return'honda';if(v.includes('ram')||v.includes('dodge'))return (board?.league||board?.id)==='sunoco'?'ram-sunoco':'dodge-kmart';return'';};
   const makeIcon=(results,board,row,fallbackNumber='')=>{const make=makeFor(results,board,row,fallbackNumber),src=manufacturerIconPaths[makeKey(board,make)]||'';return src?`<span class="standing-row__make"><img src="${src}" alt="${esc(make)}" loading="lazy"></span>`:'<span class="standing-row__make"></span>';};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  window.addEventListener('aetherwing:content',({detail:d})=>{
-    if(!Array.isArray(d.standings))return;
-    const root=document.querySelector('[data-standings-root]');if(!root)return;
-    root.innerHTML=d.standings.map(board=>`<article class="standings-board" data-board="${esc(board.id)}">
-      <header><span>${esc(board.status||board.league)}</span><h2>${esc(board.title)}</h2><p>${esc(board.subtitle)}</p>${board.pointsContext?`<p class="standings-context">${esc(board.pointsContext)}</p>`:''}</header>
-      <div class="standings-board__rows">${(board.rows||[]).length?board.rows.map((row,index)=>`
-        ${board.cutoffAfter===index?`<div class="standings-cutoff">${esc(board.cutoffLabel||'Chase cutoff')}</div>`:''}
-        <div class="standing-row ${teamDriver(board,row)?'is-team':''} ${row.unranked?'is-unranked':''}"><b>${esc(row.position)}</b><strong>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}${row.note?`<em>${esc(row.note)}</em>`:''}</strong><span>${Number(row.points||0).toLocaleString('en-US')} PTS</span><small>${esc(row.delta||'—')}${row.positionChange&&row.positionChange!=='—'?` · ${esc(row.positionChange)}`:''}</small>${makeIcon(d.results||[],board,row)}</div>`).join(''):`<p class="no-records">${esc(board.emptyMessage||'Standings will appear after official results are published.')}</p>`}</div>
-      ${board.ptEntry?.drivers?.length?`<div class="standings-pt"><h3>${esc(board.ptEntry.title||'Part-time drivers')}</h3><p>${esc(board.ptEntry.status||'NOT CHASE ELIGIBLE')}</p><div>${board.ptEntry.drivers.map(entry=>{const make=makeFor(d.results||[],board,entry,board.ptEntry.number),src=manufacturerIconPaths[makeKey(board,make)]||'';return `<span class="standings-pt__driver ${teamDriver(board,entry)?'is-team':''}">${esc(entry.driver)} · ${Number(entry.points||0).toLocaleString('en-US')} PTS${src?`<img src="${src}" alt="${esc(make)}" loading="lazy">`:''}</span>`;}).join('')}</div></div>`:''}
-    </article>`).join('');
-  });
+  const boardGroup=board=>{const key=board?.league||board?.id||'';return key.startsWith('uarl')||key==='open'?'uarl':key;};
+  const pointsText=row=>row?.pointsPending||row?.points==null?'— PTS':`${Number(row.points||0).toLocaleString('en-US')} PTS`;
+  const repairSunoco=board=>{if((board?.league||board?.id)!=='sunoco')return board;const existing=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(existing.map(row=>[String(row.number||''),row])),known=new Set(sunocoRoster.map(item=>item.number)),extras=existing.filter(row=>!known.has(String(row.number||''))),rows=sunocoRoster.map(roster=>{const live=byNumber.get(roster.number);return live?{...roster,...live,driver:live.driver||roster.driver,team:live.team||roster.team,manufacturer:live.manufacturer||roster.manufacturer}:{...roster,position:'—',points:null,delta:'—',highlight:false,chaseStatus:'',chaseEligible:false,pointsPending:true,unranked:true};});return {...board,title:board.title==='Sunoco Truck Series Chase'?'Sunoco Truck Series Standings':board.title,rows:[...rows,...extras],chaseRows:Array.isArray(board.chaseRows)?board.chaseRows:[],chaseActive:true};};
+  let activeChampionshipFilter='all';
+  function applyChampionshipFilter(value=activeChampionshipFilter){activeChampionshipFilter=value;document.querySelectorAll('[data-championship-filter-value]').forEach(button=>button.classList.toggle('is-active',button.dataset.championshipFilterValue===value));document.querySelectorAll('[data-standings-root] .standings-board').forEach(board=>{board.hidden=value!=='all'&&board.dataset.boardGroup!==value;});}
+  document.querySelector('[data-championship-filter]')?.addEventListener('click',event=>{const button=event.target.closest('[data-championship-filter-value]');if(!button)return;applyChampionshipFilter(button.dataset.championshipFilterValue||'all');});
+  function renderBoard(board,results=[]){
+    const chasePanel=(board.league==='sunoco'||board.id==='sunoco')?`<div class="standings-chase-panel"><div class="standings-chase-panel__head"><span>CHASE-ONLY POINTS</span><h3>${esc(board.chaseTitle||'Chase Points')}</h3><p>${esc(board.chaseSubtitle||'Separate Chase points standings')}</p></div><div class="standings-board__rows">${(board.chaseRows||[]).length?(board.chaseRows||[]).map((row,index)=>`<div class="standing-row ${teamDriver(board,row)?'is-team':''}"><b>${esc(row.position||`P${index+1}`)}</b><strong>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}</strong><span>${esc(pointsText(row))}</span><small>${esc(row.delta||'—')}</small>${makeIcon(results,board,row)}</div>`).join(''):`<p class="no-records">${esc(board.chaseEmptyMessage||'Chase-only points will appear after they are published.')}</p>`}</div></div>`:'';
+    const pt=board.ptEntry?.drivers?.length?`<div class="standings-pt"><h3>${esc(board.ptEntry.title||'Part-time drivers')}</h3><p>${esc(board.ptEntry.status||'NOT CHASE ELIGIBLE')}</p><div>${board.ptEntry.drivers.map(entry=>{const make=makeFor(results,board,entry,board.ptEntry.number),src=manufacturerIconPaths[makeKey(board,make)]||'';return `<span class="standings-pt__driver ${teamDriver(board,entry)?'is-team':''}">${esc(entry.driver)} · ${Number(entry.points||0).toLocaleString('en-US')} PTS${src?`<img src="${src}" alt="${esc(make)}" loading="lazy">`:''}</span>`;}).join('')}</div></div>`:'';
+    return `<article class="standings-board" data-board="${esc(board.id)}" data-board-group="${esc(boardGroup(board))}"><header><span>${esc(board.status||board.league)}</span><h2>${esc(board.title)}</h2><p>${esc(board.subtitle)}</p>${board.pointsContext?`<p class="standings-context">${esc(board.pointsContext)}</p>`:''}</header><div class="standings-board__rows">${(board.rows||[]).length?board.rows.map((row,index)=>`${board.cutoffAfter===index?`<div class="standings-cutoff">${esc(board.cutoffLabel||'Chase cutoff')}</div>`:''}<div class="standing-row ${teamDriver(board,row)?'is-team':''} ${row.unranked?'is-unranked':''}"><b>${esc(row.position)}</b><strong>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}${row.note?`<em>${esc(row.note)}</em>`:''}</strong><span>${esc(pointsText(row))}</span><small>${esc(row.delta||'—')}${row.positionChange&&row.positionChange!=='—'?` · ${esc(row.positionChange)}`:''}</small>${makeIcon(results,board,row)}</div>`).join(''):`<p class="no-records">${esc(board.emptyMessage||'Standings will appear after official results are published.')}</p>`}</div>${chasePanel}${pt}</article>`;
+  }
+  window.addEventListener('aetherwing:content',({detail:d})=>{if(!Array.isArray(d.standings))return;const root=document.querySelector('[data-standings-root]');if(!root)return;root.innerHTML=d.standings.map(repairSunoco).map(board=>renderBoard(board,d.results||[])).join('');applyChampionshipFilter(activeChampionshipFilter);});
+  applyChampionshipFilter('all');
 </script>

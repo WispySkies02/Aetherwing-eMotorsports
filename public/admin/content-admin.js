@@ -276,23 +276,40 @@
     }).filter(Boolean);
   }
   function standingAliasMap(){
-    const map=new Map();for(const profile of base('roster-profiles')||[]){const canonical=profile.name||profile.slug;for(const value of [profile.name,profile.handle,profile.robloxDisplayName,profile.robloxUsername,profile.historicalRobloxDisplayName,profile.iracingName,profile.historicalIRacingName])if(value)map.set(standingName(value),standingName(canonical));}return map;
+    const map=new Map();for(const profile of base('roster-profiles')||[]){const canonical=profile.name||profile.slug;for(const value of [profile.name,profile.handle,profile.robloxDisplayName,profile.robloxUsername,profile.historicalRobloxDisplayName,profile.iracingName,profile.historicalIRacingName])if(value)map.set(standingName(value),standingName(canonical));}
+    if(typeof standingsDriverAliases!=='undefined')for(const [alias,canonical] of Object.entries(standingsDriverAliases))map.set(standingName(alias),standingName(canonical));return map;
   }
-  function matchedStanding(board,row){
-    const aliases=standingAliasMap(),target=aliases.get(standingName(row.driver))||standingName(row.driver);
-    return (board.rows||[]).find(item=>row.number&&String(item.number||'')===String(row.number)&&(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||(board.rows||[]).find(item=>(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||(board.rows||[]).find(item=>row.number&&String(item.number||'')===String(row.number));
+  function matchedStanding(board,row,sourceRows=null){
+    const aliases=standingAliasMap(),target=aliases.get(standingName(row.driver))||standingName(row.driver),rows=sourceRows||board.rows||[];
+    return rows.find(item=>row.number&&String(item.number||'')===String(row.number)&&(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||rows.find(item=>(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||rows.find(item=>row.number&&String(item.number||'')===String(row.number));
   }
-  let standingsImportPreview=[];
-  function drawStandingsImportPreview(rows=[]){
-    const box=$('[data-standings-import-preview]');if(!box)return;
-    const board=current();box.innerHTML=rows.length?`<div class="standings-import-summary"><strong>${rows.length} ROWS READY</strong><span>Review before replacing ${board?.rows?.length||0} current rows.</span></div><div class="standings-import-grid">${rows.map(row=>{const match=matchedStanding(board,row);return `<div class="${match?'is-matched':'is-new'}"><b>${esc(row.position)}</b><span>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}</span><strong>${Number(row.points).toLocaleString('en-US')} PTS</strong><small>${match?'MATCHED'+(match.driver!==row.driver?' → '+esc(match.driver):''):'NEW / REVIEW'}${row.delta?' · '+esc(row.delta):''}</small></div>`;}).join('')}</div>`:'<p>Paste standings or upload a CSV, then choose Preview import.</p>';
+  const standingRowKey=(row)=>`${standingName(row?.driver||'')}|${String(row?.number||'').trim()}`;
+  function recalcStandaloneRows(rows=[]){
+    const ranked=[...rows].sort((a,b)=>Number(b.points||0)-Number(a.points||0)||String(a.driver||'').localeCompare(String(b.driver||'')));
+    const leader=Number(ranked[0]?.points||0);ranked.forEach((row,index)=>{row.position=`P${index+1}`;row.delta=index===0?'LEADER':`${Number(row.points||0)-leader}`;row.positionChange=row.positionChange||'—';});return ranked;
+  }
+  function syncSunocoChaseStatus(board){
+    if(board?.league!=='sunoco'||!(board.chaseRows||[]).length)return;const chaseKeys=new Set((board.chaseRows||[]).map(standingRowKey));const chaseNumbers=new Set((board.chaseRows||[]).map(row=>String(row.number||'')).filter(Boolean));
+    for(const row of board.rows||[]){const inChase=chaseKeys.has(standingRowKey(row))||chaseNumbers.has(String(row.number||''));row.chaseStatus=inChase?'CHASE':'NOT IN CHASE';row.chaseEligible=inChase;}
+  }
+  let standingsImportPreview=[],sunocoChaseImportPreview=[];
+  function drawStandingsImportPreview(rows=[],options={}){
+    const selector=options.selector||'[data-standings-import-preview]',box=$(selector);if(!box)return;
+    const board=current(),sourceRows=options.sourceRows||board?.rows||[],label=options.label||'current rows';box.innerHTML=rows.length?`<div class="standings-import-summary"><strong>${rows.length} ROWS READY</strong><span>Review before replacing ${sourceRows.length||0} ${esc(label)}.</span></div><div class="standings-import-grid">${rows.map(row=>{const match=matchedStanding(board,row,sourceRows.length?sourceRows:(board?.rows||[]));return `<div class="${match?'is-matched':'is-new'}"><b>${esc(row.position)}</b><span>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}</span><strong>${Number(row.points).toLocaleString('en-US')} PTS</strong><small>${match?'MATCHED'+(match.driver!==row.driver?' → '+esc(match.driver):''):'NEW / REVIEW'}${row.delta?' · '+esc(row.delta):''}</small></div>`;}).join('')}</div>`:'<p>Paste standings or upload a CSV, then choose Preview import.</p>';
   }
   function applyStandingsImport(){
     if(key!=='standings'||!standingsImportPreview.length)return status('Preview a standings import first.');
     commit();const board=current(),old=board.rows||[];
-    board.rows=standingsImportPreview.map((row,index)=>{const match=matchedStanding({...board,rows:old},row)||{};return {...match,position:row.position||`P${index+1}`,number:row.number||match.number||'',driver:row.driver||match.driver||'',points:Number(row.points||0),delta:row.delta||match.delta||'',positionChange:match.positionChange||'—',chaseEligible:typeof match.chaseEligible==='boolean'?match.chaseEligible:index<Number(board.cutoffAfter||0),highlight:Boolean(match.highlight),...(match.note?{note:match.note}:{})};});
-    if(!standingsImportPreview.some(row=>row.delta))recalcStandingBoard(board);
-    dirty=true;standingsImportPreview=[];render();status(`${board.rows.length} standings rows imported. Review the board, then Publish Standings.`);
+    board.rows=standingsImportPreview.map((row,index)=>{const match=matchedStanding({...board,rows:old},row,old)||{};const next={...match,position:row.position||`P${index+1}`,number:row.number||match.number||'',driver:match.driver||row.driver||'',points:Number(row.points||0),delta:row.delta||match.delta||'',positionChange:match.positionChange||'—',chaseEligible:typeof match.chaseEligible==='boolean'?match.chaseEligible:index<Number(board.cutoffAfter||0),highlight:Boolean(match.highlight),...(match.note?{note:match.note}:{})};delete next.pointsPending;delete next.unranked;return next;});
+    if(!standingsImportPreview.some(row=>row.delta))recalcStandingBoard(board);syncSunocoChaseStatus(board);
+    dirty=true;standingsImportPreview=[];render();status(`${board.rows.length} regular standings rows imported. Review the board, then Publish Standings.`);
+  }
+  function applySunocoChaseImport(){
+    if(key!=='standings'||current()?.league!=='sunoco'||!sunocoChaseImportPreview.length)return status('Preview the Sunoco Chase points import first.');
+    commit();const board=current(),regular=board.rows||[],old=board.chaseRows||[];
+    board.chaseRows=sunocoChaseImportPreview.map((row,index)=>{const regularMatch=matchedStanding(board,row,regular)||{},oldMatch=matchedStanding(board,row,old)||{},next={...regularMatch,...oldMatch,position:row.position||`P${index+1}`,number:row.number||regularMatch.number||oldMatch.number||'',driver:regularMatch.driver||oldMatch.driver||row.driver||'',points:Number(row.points||0),delta:row.delta||oldMatch.delta||'',positionChange:oldMatch.positionChange||'—',chaseStatus:'CHASE',chaseEligible:true,highlight:false};delete next.pointsPending;delete next.unranked;return next;});
+    if(!sunocoChaseImportPreview.some(row=>row.delta))board.chaseRows=recalcStandaloneRows(board.chaseRows);syncSunocoChaseStatus(board);
+    dirty=true;sunocoChaseImportPreview=[];render();status(`${board.chaseRows.length} Sunoco Chase-only rows imported. Review, then Publish Standings.`);
   }
   function applyPublishedResultsToStanding(){
     if(key!=='standings')return;commit();const board=current();if(board.autoPoints!==true)return status('Turn Auto Points on for this standings board first.');
@@ -328,10 +345,13 @@
     },
     kmart:{
       '0':'Chevrolet','05':'Chevrolet','1':'Chevrolet','5':'Chevrolet','9':'Chevrolet','10':'Chevrolet','13':'Toyota','15':'Dodge','16':'Chevrolet','18':'Toyota','20':'Toyota','21':'Chevrolet','24':'Dodge','26':'Chevrolet','29':'Dodge','34':'Dodge','45':'Chevrolet','48':'Chevrolet','50':'Toyota','51':'Toyota','54':'Toyota','55':'Toyota','56':'Toyota','61':'Chevrolet','88':'Chevrolet','91':'Chevrolet','97':'Chevrolet'
+    },
+    sunoco:{
+      '54':'RAM','42':'RAM','46':'RAM','27':'RAM','61':'Chevrolet','3':'Chevrolet','13':'Chevrolet','18':'Chevrolet','21':'Chevrolet','51':'Chevrolet','77':'Chevrolet','67':'Chevrolet','22':'RAM','7':'Ford','69':'Ford','31':'Chevrolet','41':'Chevrolet'
     }
   };
   const standingsDriverAliases={
-    wispy:'hailey',aokikoto:'hailey',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',matts1964:'matt',tnfanracing:'tnfan'
+    wispy:'hailey',aokikoto:'hailey',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',player13:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',sbnjco:'nico',sbnjc:'nico',matts1964:'matt',tnfanracing:'tnfan',evilcharms:'ryan',emoflamingo:'flamingo',hotline:'hotline'
   };
   const standingsManufacturerIconPaths={
     chevrolet:'/images/manufacturers/chevrolet.png',
@@ -346,6 +366,19 @@
   const safeExportName=(value='standings')=>String(value||'standings').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'standings';
   const loadCanvasImage=(src)=>new Promise((resolve)=>{if(!src)return resolve(null);const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>resolve(null);image.src=src;});
   const standingsSeriesTitle=(board)=>standingsSeriesTitleMap[board?.league]||standingsSeriesTitleMap[board?.id]||String(board?.title||'Standings').toUpperCase();
+  const standingsLeagueKey=(board)=>board?.league||board?.id||'';
+  function standingsRoundSummary(board){
+    const league=standingsLeagueKey(board);if(league!=='kmart')return String(board?.subtitle||'');
+    const events=(base('schedule-events')||[]).filter(event=>event?.league==='kmart'&&/^ROUND\s+\d+/i.test(String(event?.round||'')));
+    if(!events.length)return String(board?.subtitle||'');
+    const anchor=String(board?.lastResultDate||new Date().toISOString().slice(0,10)),past=events.filter(event=>String(event?.date||'')<=anchor).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))),event=past[0]||events[0];
+    const roundNumber=Number(String(event?.round||'').match(/\d+/)?.[0]||0),total=Math.max(...events.map(item=>Number(String(item?.round||'').match(/\d+/)?.[0]||0)).filter(Boolean));
+    const date=event?.date?new Date(`${event.date}T12:00:00Z`).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}):'';
+    return [`After Round ${roundNumber}${total?` of ${total}`:''}`,event?.track,date].filter(Boolean).join(' · ');
+  }
+  function standingsExportStatus(board){
+    const league=standingsLeagueKey(board);if(league==='kmart')return board?.chaseActive===true?'THE CHASE':'CHASE BUBBLE';if(league==='sunoco')return board?.chaseActive===true?'CHASE ACTIVE':'REGULAR SEASON';if(league==='nrrs'&&board?.chaseActive===true)return'THE CHASE';return String(board?.status||'');
+  }
   const normalizeStandingDriver=(value='')=>{
     const raw=String(value||'').toLowerCase().replace(/^@/,'').replace(/[^a-z0-9]/g,'');
     return standingsDriverAliases[raw]||raw;
@@ -412,11 +445,31 @@
     if(manufacturerImage){ctx.save();ctx.globalAlpha=.98;roundedRect(ctx,iconX-4,midY-iconH/2-2,iconW+8,iconH+4,7);ctx.fillStyle='rgba(255,255,255,.035)';ctx.fill();drawContained(ctx,manufacturerImage,iconX,midY-iconH/2,iconW,iconH);ctx.restore();}
     const detail=[chaseDriver?'CHASE':'',row.note&&!/listed as wispy/i.test(String(row.note||''))?row.note:''].filter(Boolean).join(' · '),driver=String(row.driver||'—');fitCanvasText(ctx,driver,Math.max(150,pointsX-nameX-28),31,'900','Arial Narrow, Arial, sans-serif',20);ctx.fillStyle='#f6f8fa';ctx.fillText(driver.toUpperCase(),nameX,midY-(detail?8:0));
     if(detail){ctx.fillStyle=chaseDriver?'#e0c891':'#7f8b92';ctx.font='800 13px Arial, sans-serif';ctx.fillText(String(detail).toUpperCase(),nameX,midY+15);}
-    ctx.textAlign='right';ctx.fillStyle='#f6f8fa';ctx.font='900 27px Arial Narrow, Arial, sans-serif';ctx.fillText(Number(row.points||0).toLocaleString('en-US'),pointsX,midY);
+    ctx.textAlign='right';ctx.fillStyle='#f6f8fa';ctx.font='900 27px Arial Narrow, Arial, sans-serif';ctx.fillText(row?.pointsPending||row?.points==null?'—':Number(row.points||0).toLocaleString('en-US'),pointsX,midY);
     ctx.fillStyle=row.delta==='LEADER'?'#e0c891':'#9ba6ac';ctx.font='900 18px Arial, sans-serif';ctx.fillText(String(row.delta||'—'),deltaX,midY);
     ctx.restore();
   }
+  async function createSunocoStandingsPng(board){
+    const regularRows=Array.isArray(board?.rows)?board.rows:[],chaseRows=Array.isArray(board?.chaseRows)?board.chaseRows:[];if(!regularRows.length)throw new Error('The Sunoco regular standings have no rows to export.');
+    const width=1800,margin=72,headerHeight=250,panelGap=26,panelHeader=92,rowHeight=62,footerHeight=92,panelRows=Math.max(regularRows.length,chaseRows.length||1),panelHeight=panelHeader+panelRows*rowHeight+30,height=margin+headerHeight+panelHeight+footerHeight+margin;
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas export is not available in this browser.');
+    const leagueLogo=await loadCanvasImage(standingsLogoMap.sunoco||''),manufacturerIcons=await loadStandingManufacturerIcons(),accentColor=standingsAccentMap.sunoco||'#f0c928',seriesTitle=standingsSeriesTitle(board);
+    ctx.fillStyle='#05070a';ctx.fillRect(0,0,width,height);const wash=ctx.createLinearGradient(0,0,width,height);wash.addColorStop(0,'#11161b');wash.addColorStop(.5,'#080b0e');wash.addColorStop(1,'#020405');ctx.fillStyle=wash;ctx.fillRect(0,0,width,height);ctx.fillStyle=accentColor;ctx.fillRect(0,0,width,12);
+    if(leagueLogo){roundedRect(ctx,margin,margin+22,148,132,12);ctx.fillStyle='rgba(255,255,255,.07)';ctx.fill();drawContained(ctx,leagueLogo,margin+13,margin+33,122,110);}
+    const titleX=margin+(leagueLogo?178:0),titleMax=width-titleX-margin;ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle=accentColor;ctx.font='900 18px Arial, sans-serif';ctx.fillText('OFFICIAL DRIVER STANDINGS',titleX,margin+48);fitCanvasText(ctx,seriesTitle,titleMax,58,'900','Arial Narrow, Arial, sans-serif',30);ctx.fillStyle='#f6f8fa';ctx.fillText(seriesTitle,titleX,margin+112);fitCanvasText(ctx,String(board.subtitle||''),titleMax,25,'700','Arial, sans-serif',17);ctx.fillStyle='#a8b1b7';ctx.fillText(String(board.subtitle||''),titleX,margin+151);ctx.fillStyle=accentColor;ctx.font='900 16px Arial, sans-serif';ctx.fillText('CHASE ACTIVE · REGULAR + CHASE-ONLY POINTS',titleX,margin+184);
+    const bodyY=margin+headerHeight,panelW=(width-margin*2-panelGap)/2;
+    const drawPanel=(x,label,subtitle,rows,emptyMessage)=>{
+      roundedRect(ctx,x,bodyY,panelW,panelHeight,14);ctx.fillStyle='rgba(9,12,15,.94)';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle=accentColor;ctx.fillRect(x,bodyY,8,panelHeight);
+      ctx.textAlign='left';ctx.fillStyle='#f6f8fa';ctx.font='900 28px Arial Narrow, Arial, sans-serif';ctx.fillText(label.toUpperCase(),x+26,bodyY+38);ctx.fillStyle='#8f999f';ctx.font='800 13px Arial, sans-serif';fitCanvasText(ctx,subtitle||'',panelW-52,13,'800','Arial, sans-serif',11);ctx.fillText(String(subtitle||''),x+26,bodyY+65);
+      if(!rows.length){ctx.fillStyle='#849097';ctx.font='800 18px Arial, sans-serif';ctx.fillText(String(emptyMessage||'NO POINTS PUBLISHED YET').toUpperCase(),x+26,bodyY+130);return;}
+      rows.forEach((row,index)=>paintStandingRow(ctx,row,x+18,bodyY+panelHeader+index*rowHeight,panelW-36,rowHeight,index,board,manufacturerIcons));
+    };
+    drawPanel(margin,'Regular Points',board.subtitle||'Full-season points',regularRows,'No regular points published yet');drawPanel(margin+panelW+panelGap,board.chaseTitle||'Chase Points',board.chaseSubtitle||'Chase-only points',chaseRows,board.chaseEmptyMessage||'No Chase-only points published yet');
+    const footerY=bodyY+panelHeight;ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,footerY+18);ctx.lineTo(width-margin,footerY+18);ctx.stroke();ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle='#7f8a91';ctx.font='800 14px Arial, sans-serif';ctx.fillText(`${seriesTitle} · REGULAR + CHASE POINTS`,margin,footerY+53);ctx.textAlign='right';ctx.fillText(`GENERATED ${new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'})}`,width-margin,footerY+53);
+    const blob=await new Promise((resolve,reject)=>canvas.toBlob((value)=>value?resolve(value):reject(new Error('PNG encoding failed.')),'image/png',1));return {blob,fileName:`${safeExportName(seriesTitle)}-standings.png`,width,height};
+  }
   async function createStandingsPng(board){
+    if(standingsLeagueKey(board)==='sunoco')return createSunocoStandingsPng(board);
     const rows=Array.isArray(board?.rows)?board.rows:[];if(!rows.length)throw new Error('This standings board has no rows to export.');
     const width=1800,margin=72,headerHeight=250,rowHeight=70,columnGap=28,columns=rows.length>16?2:1,rowsPerColumn=Math.ceil(rows.length/columns),bodyHeight=rowsPerColumn*rowHeight;
     const ptDrivers=Array.isArray(board.ptEntry?.drivers)?board.ptEntry.drivers:[],ptHeight=ptDrivers.length?170:0,footerHeight=92,height=margin+headerHeight+bodyHeight+ptHeight+footerHeight+margin;
@@ -431,8 +484,8 @@
     if(leagueLogo){roundedRect(ctx,margin,margin+22,148,132,12);ctx.fillStyle='rgba(255,255,255,.07)';ctx.fill();drawContained(ctx,leagueLogo,margin+13,margin+33,122,110);}
     const titleX=margin+(leagueLogo?178:0),titleMax=width-titleX-margin;ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle=accentColor;ctx.font='900 18px Arial, sans-serif';ctx.fillText('OFFICIAL DRIVER STANDINGS',titleX,margin+48);
     fitCanvasText(ctx,seriesTitle,titleMax,58,'900','Arial Narrow, Arial, sans-serif',30);ctx.fillStyle='#f6f8fa';ctx.fillText(seriesTitle,titleX,margin+112);
-    fitCanvasText(ctx,board.subtitle||'',titleMax,25,'700','Arial, sans-serif',17);ctx.fillStyle='#a8b1b7';ctx.fillText(String(board.subtitle||''),titleX,margin+151);
-    const meta=[board.status,board.chaseActive===true?'CHASE ACTIVE':''].filter(Boolean).join(' · ');if(meta){ctx.fillStyle=accentColor;ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(meta).toUpperCase(),titleX,margin+184);}
+    const roundSummary=standingsRoundSummary(board);fitCanvasText(ctx,roundSummary,titleMax,25,'700','Arial, sans-serif',17);ctx.fillStyle='#a8b1b7';ctx.fillText(String(roundSummary),titleX,margin+151);
+    const meta=standingsExportStatus(board);if(meta){ctx.fillStyle=accentColor;ctx.font='900 16px Arial, sans-serif';ctx.fillText(String(meta).toUpperCase(),titleX,margin+184);}
     const bodyY=margin+headerHeight,colWidth=(width-margin*2-columnGap*(columns-1))/columns;
     for(let col=0;col<columns;col++){
       const x=margin+col*(colWidth+columnGap),start=col*rowsPerColumn,end=Math.min(rows.length,start+rowsPerColumn);
@@ -473,15 +526,24 @@
     finally{if(button){button.disabled=false;button.textContent='Generate standings PNG';}}
   }
   function renderStandingsImportTool(){
-    const host=$('[data-content-fields]'),board=current();if(!host||!board)return;
-    const panel=document.createElement('section');panel.className='standings-import-tool';panel.innerHTML=`<div class="standings-import-head"><div><span>AUTOMATED STANDINGS</span><h3>Import / advance ${esc(board.title||board.id)}</h3><p>Paste a league table from Discord, Google Sheets, or Excel. CSV/TSV and simple position-driver-points lines are detected automatically.</p></div><strong>${board.autoPoints?'AUTO POINTS ON':'MANUAL ONLY'}</strong></div><div class="standings-import-controls"><textarea data-standings-import-text rows="6" placeholder="P1  #34  Jaxon  267  +147\nP2  #24  Will  244  +124\n…"></textarea><div class="standings-import-actions"><label>Upload CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-standings-import-file></label><button type="button" data-standings-import-preview-button>Preview import</button><button type="button" data-standings-import-apply>Apply preview</button><button type="button" data-standings-apply-results>Apply waiting race points</button><button type="button" data-standings-recalc>Recalculate order + gaps</button><button type="button" data-standings-export>Generate standings PNG</button></div></div><div data-standings-import-preview></div><div class="standings-export-preview" data-standings-export-preview></div><p class="standings-import-foot">Last applied result: ${esc(board.lastResultDate||'none')} ${board.lastResultScheduleId?`· ${esc(board.lastResultScheduleId)}`:''}. Publishing Race Results automatically advances boards with Auto Points enabled.</p>`;
-    host.prepend(panel);drawStandingsImportPreview(standingsImportPreview);
-    panel.querySelector('[data-standings-import-preview-button]').addEventListener('click',()=>{standingsImportPreview=parseStandingsImport(panel.querySelector('[data-standings-import-text]').value);drawStandingsImportPreview(standingsImportPreview);status(standingsImportPreview.length?`${standingsImportPreview.length} standings rows parsed. Review the matches, then Apply preview.`:'No standings rows could be parsed. Try CSV with Position, Number, Driver, Points, Gap headers.');});
-    panel.querySelector('[data-standings-import-apply]').addEventListener('click',applyStandingsImport);
-    panel.querySelector('[data-standings-apply-results]').addEventListener('click',applyPublishedResultsToStanding);
-    panel.querySelector('[data-standings-recalc]').addEventListener('click',()=>{commit();recalcStandingBoard(board);dirty=true;render();status('Standings order, positions, movement, and gaps recalculated. Review, then publish.');});
-    panel.querySelector('[data-standings-export]').addEventListener('click',()=>exportStandingsGraphic(panel));
-    panel.querySelector('[data-standings-import-file]').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;panel.querySelector('[data-standings-import-text]').value=await file.text();status(`${file.name} loaded. Choose Preview import.`);});
+    const host=$('[data-content-fields]'),board=current();if(!host||!board)return;const isSunoco=board.league==='sunoco'||board.id==='sunoco';
+    const panel=document.createElement('section');panel.className=`standings-import-tool ${isSunoco?'is-sunoco-dual':''}`;
+    const regularBox=`<div class="standings-import-split"><div class="standings-import-split__head"><span>${isSunoco?'REGULAR POINTS CSV':'STANDINGS CSV'}</span><strong>${isSunoco?'FULL ROSTER / SEASON TOTAL':'CURRENT BOARD'}</strong></div><div class="standings-import-controls"><textarea data-standings-import-text rows="6" placeholder="Position,Number,Driver,Points,Gap\nP1,42,Will,881,LEADER\nP2,46,Clutch,725,-156\n…"></textarea><div class="standings-import-actions"><label>Upload CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-standings-import-file></label><button type="button" data-standings-import-preview-button>Preview ${isSunoco?'regular ':''}import</button><button type="button" data-standings-import-apply>Apply ${isSunoco?'regular ':''}preview</button>${!isSunoco?'<button type="button" data-standings-apply-results>Apply waiting race points</button><button type="button" data-standings-recalc>Recalculate order + gaps</button><button type="button" data-standings-export>Generate standings PNG</button>':''}</div></div><div data-standings-import-preview></div></div>`;
+    const chaseBox=isSunoco?`<div class="standings-import-split is-chase"><div class="standings-import-split__head"><span>CHASE-ONLY POINTS CSV</span><strong>SEPARATE FROM REGULAR POINTS</strong></div><div class="standings-import-controls"><textarea data-sunoco-chase-import-text rows="6" placeholder="Position,Number,Driver,Points,Gap\nP1,42,Will,120,LEADER\nP2,46,Clutch,111,-9\n…"></textarea><div class="standings-import-actions"><label>Upload Chase CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-sunoco-chase-import-file></label><button type="button" data-sunoco-chase-import-preview-button>Preview Chase import</button><button type="button" data-sunoco-chase-import-apply>Apply Chase preview</button><button type="button" data-sunoco-chase-recalc>Recalculate Chase order + gaps</button></div></div><div data-sunoco-chase-import-preview></div></div>`:'';
+    panel.innerHTML=`<div class="standings-import-head"><div><span>${isSunoco?'DUAL SUNOCO POINTS':'AUTOMATED STANDINGS'}</span><h3>Import / advance ${esc(board.title||board.id)}</h3><p>${isSunoco?'Regular points and Chase-only points are independent datasets. Paste each CSV into its own box; publishing keeps both and the generated PNG shows them side by side.':'Paste a league table from Discord, Google Sheets, or Excel. CSV/TSV and simple position-driver-points lines are detected automatically.'}</p></div><strong>${board.autoPoints?'AUTO POINTS ON':'MANUAL ONLY'}</strong></div>${isSunoco?`<div class="standings-import-dual">${regularBox}${chaseBox}</div><div class="standings-import-shared-actions"><button type="button" data-standings-apply-results>Apply waiting race points</button><button type="button" data-standings-recalc>Recalculate regular order + gaps</button><button type="button" data-standings-export>Generate dual standings PNG</button></div>`:regularBox}<div class="standings-export-preview" data-standings-export-preview></div><p class="standings-import-foot">Last applied result: ${esc(board.lastResultDate||'none')} ${board.lastResultScheduleId?`· ${esc(board.lastResultScheduleId)}`:''}.${isSunoco?' Regular and Chase points publish together but remain separate.':' Publishing Race Results automatically advances boards with Auto Points enabled.'}</p>`;
+    host.prepend(panel);drawStandingsImportPreview(standingsImportPreview);if(isSunoco)drawStandingsImportPreview(sunocoChaseImportPreview,{selector:'[data-sunoco-chase-import-preview]',sourceRows:board.chaseRows||[],label:'Chase-only rows'});
+    panel.querySelector('[data-standings-import-preview-button]')?.addEventListener('click',()=>{standingsImportPreview=parseStandingsImport(panel.querySelector('[data-standings-import-text]').value);drawStandingsImportPreview(standingsImportPreview);status(standingsImportPreview.length?`${standingsImportPreview.length} regular standings rows parsed. Review the matches, then Apply preview.`:'No standings rows could be parsed. Try CSV with Position, Number, Driver, Points, Gap headers.');});
+    panel.querySelector('[data-standings-import-apply]')?.addEventListener('click',applyStandingsImport);
+    panel.querySelector('[data-standings-apply-results]')?.addEventListener('click',applyPublishedResultsToStanding);
+    panel.querySelector('[data-standings-recalc]')?.addEventListener('click',()=>{commit();recalcStandingBoard(board);syncSunocoChaseStatus(board);dirty=true;render();status('Regular standings order, positions, movement, and gaps recalculated. Review, then publish.');});
+    panel.querySelector('[data-standings-export]')?.addEventListener('click',()=>exportStandingsGraphic(panel));
+    panel.querySelector('[data-standings-import-file]')?.addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;panel.querySelector('[data-standings-import-text]').value=await file.text();status(`${file.name} loaded into ${isSunoco?'Regular Points':'Standings'}. Choose Preview import.`);});
+    if(isSunoco){
+      panel.querySelector('[data-sunoco-chase-import-preview-button]')?.addEventListener('click',()=>{sunocoChaseImportPreview=parseStandingsImport(panel.querySelector('[data-sunoco-chase-import-text]').value);drawStandingsImportPreview(sunocoChaseImportPreview,{selector:'[data-sunoco-chase-import-preview]',sourceRows:board.chaseRows||[],label:'Chase-only rows'});status(sunocoChaseImportPreview.length?`${sunocoChaseImportPreview.length} Chase-only rows parsed. Review the matches, then Apply Chase preview.`:'No Chase rows could be parsed. Try CSV with Position, Number, Driver, Points, Gap headers.');});
+      panel.querySelector('[data-sunoco-chase-import-apply]')?.addEventListener('click',applySunocoChaseImport);
+      panel.querySelector('[data-sunoco-chase-recalc]')?.addEventListener('click',()=>{commit();board.chaseRows=recalcStandaloneRows(board.chaseRows||[]);syncSunocoChaseStatus(board);dirty=true;render();status('Sunoco Chase-only order and leader gaps recalculated. Review, then publish.');});
+      panel.querySelector('[data-sunoco-chase-import-file]')?.addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;panel.querySelector('[data-sunoco-chase-import-text]').value=await file.text();status(`${file.name} loaded into Chase-only Points. Choose Preview Chase import.`);});
+    }
   }
   function updateControlCenterStatus(publication=null) {
     const drafts=Object.keys(registry.drafts||{}),published=Object.keys(registry.published||{});
@@ -549,21 +611,19 @@
     if(!Array.isArray(value)||!Array.isArray(seeds.standings))return value;
     const scrKmartNumbers=new Set(['15','24','29','34']);
     return value.map((board)=>{
-      if(board?.league!=='kmart'&&board?.id!=='kmart')return board;
-      const seedBoard=seeds.standings.find((candidate)=>candidate?.id===board?.id||candidate?.league===board?.league);
+      const league=board?.league||board?.id||'',seedBoard=seeds.standings.find((candidate)=>candidate?.id===board?.id||candidate?.league===board?.league);if(!seedBoard)return board;
       const liveRows=Array.isArray(board?.rows)?board.rows:[],seedRows=Array.isArray(seedBoard?.rows)?seedBoard.rows:[];
-      const legacyScrOnly=liveRows.length>0&&seedRows.length>=10&&liveRows.length<seedRows.length&&liveRows.every((row)=>scrKmartNumbers.has(String(row?.number||'').trim()));
-      if(!legacyScrOnly)return board;
-      const liveByKey=new Map(liveRows.map((row)=>[`${standingName(row?.driver)}|${String(row?.number||'').trim()}`,row]));
-      const liveByNumber=new Map(liveRows.map((row)=>[String(row?.number||'').trim(),row]));
-      const mergedRows=seedRows.map((seedRow)=>{
-        const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`;
-        const live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());
-        return live?{...seedRow,...live}:{...seedRow};
-      });
-      const repaired={...seedBoard,...board,rows:mergedRows,ptEntry:board?.ptEntry||seedBoard?.ptEntry};
-      recalcStandingBoard(repaired);
-      return repaired;
+      if(league==='kmart'){
+        const legacyScrOnly=liveRows.length>0&&seedRows.length>=10&&liveRows.length<seedRows.length&&liveRows.every((row)=>scrKmartNumbers.has(String(row?.number||'').trim()));if(!legacyScrOnly)return board;
+        const liveByKey=new Map(liveRows.map((row)=>[`${standingName(row?.driver)}|${String(row?.number||'').trim()}`,row])),liveByNumber=new Map(liveRows.map((row)=>[String(row?.number||'').trim(),row]));
+        const mergedRows=seedRows.map((seedRow)=>{const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`,live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());return live?{...seedRow,...live}:{...seedRow};});const repaired={...seedBoard,...board,rows:mergedRows,ptEntry:board?.ptEntry||seedBoard?.ptEntry,chaseActive:false};recalcStandingBoard(repaired);return repaired;
+      }
+      if(league==='sunoco'){
+        const liveByKey=new Map(liveRows.map((row)=>[`${standingName(row?.driver)}|${String(row?.number||'').trim()}`,row])),liveByNumber=new Map(liveRows.map((row)=>[String(row?.number||'').trim(),row]));
+        const shouldExpand=seedRows.length>liveRows.length,mergedRows=shouldExpand?seedRows.map((seedRow)=>{const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`,live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());return live?{...seedRow,...live,team:seedRow.team||live.team,manufacturer:seedRow.manufacturer||live.manufacturer}:{...seedRow};}):liveRows;
+        const repaired={...seedBoard,...board,title:board?.title==='Sunoco Truck Series Chase'?seedBoard.title:board?.title||seedBoard.title,subtitle:shouldExpand?seedBoard.subtitle:(board?.subtitle||seedBoard.subtitle),rows:mergedRows,chaseRows:Array.isArray(board?.chaseRows)?board.chaseRows:(seedBoard.chaseRows||[]),chaseTitle:board?.chaseTitle||seedBoard.chaseTitle,chaseSubtitle:board?.chaseSubtitle||seedBoard.chaseSubtitle,chaseEmptyMessage:board?.chaseEmptyMessage||seedBoard.chaseEmptyMessage,chaseActive:true};syncSunocoChaseStatus(repaired);return repaired;
+      }
+      return board;
     });
   }
 
@@ -606,6 +666,7 @@
       if (key==='standings' && k==='highlight') {
         return shell(pretty,`<input type="text" readonly value="${v?'Highlighted':'Not highlighted'}">`,'Use the ☆ Highlight Driver / ★ Highlighted button above this standings row.','is-readonly');
       }
+      if (key==='standings' && k==='chaseRows' && current()?.league==='sunoco') return '';
       if (key==='roster-profiles' && (k==='programs' || k==='numbers')) {
         const shown=Array.isArray(v)?v.join(' · '):String(v||'');
         return shell(pretty,`<input type="text" readonly value="${esc(shown)}">`,'Automatically generated from Driver League Assignments when the site builds.','is-readonly');
@@ -899,7 +960,7 @@
     window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   }
   function chooseDataset(name) {
-    key=name; standingsImportPreview=[]; data=structuredClone(base(key)); if(key==='standings')data=repairLegacyPartialStandings(data); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
+    key=name; standingsImportPreview=[]; sunocoChaseImportPreview=[]; data=structuredClone(base(key)); if(key==='standings')data=repairLegacyPartialStandings(data); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
     if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
     if(key==='results'){data=migrateResults(data).sort(compareResults);data=data.map((race,i)=>({...race,featured:i===0}));}
     if(key==='drivers')data=data.map((row)=>({numberImage:'',...row}));
