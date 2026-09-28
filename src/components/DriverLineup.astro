@@ -20,7 +20,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   let assignments=entries,profiles=people,charters=boards,series='all';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const programOrder={kmart:1,sunoco:2,nrrs:3,'uarl-d1':4,'uarl-open':5};
-  const dualProfiles=new Set(['clutch','eazy','will']);
+  const randomArtByDriver=new Map();
   const artCorrections={
     'rocky:92':{desktop:1.16,mobile:1.1},
     'jaxon:34':{desktop:.9,mobile:.9},
@@ -55,7 +55,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     img.style.maxHeight='none';
   };
   root.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__signature'))tightenSignature(image);if(image.closest('.aw-lineup__number')){tightenNumber(image);requestAnimationFrame(()=>fitNumberVisual(image));}},true);
-  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className=image.closest('.aw-lineup__dual-slot')?'':'aw-lineup__number-fallback is-single';fallback.textContent=`#${image.closest('.aw-lineup__dual-slot')?.dataset.dualNumber||image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
+  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className=image.closest('.aw-lineup__dual-slot')?'':'aw-lineup__number-fallback is-single';fallback.textContent=`#${image.alt.replace('Number ','')||image.closest('[data-number]')?.dataset.number||''}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
   const shortProgram=(id,name='')=>({nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[id]||name||id);
   function render(){
@@ -99,28 +99,44 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const rides=(e.rides||[]);
       const stacked=(e.numberImages||[]);
       const rideNumbers=[...new Set(rides.map(ride=>String(ride.number||'')).filter(Boolean))];
-      const dualSummary=Boolean(e.summary&&dualProfiles.has(String(e.profile||''))&&rideNumbers.length===2);
-      const dualRides=dualSummary?rides.filter(ride=>ride.number).sort((a,b)=>(programOrder[a.competitionId]||99)-(programOrder[b.competitionId]||99)||Number(a.number)-Number(b.number)):[];
-      const primaryNumber=String((dualSummary?dualRides[0]?.number:(e.number||rideNumbers[0]||'')).split(' / ')[0]||'');
+      const uploadedByNumber=[];
+      const seenUploadedNumbers=new Set();
+      for(const ride of rides){
+        const number=String(ride.number||'');
+        const legacyUpload=String(ride.numberImage||'').startsWith('data:image/')?ride.numberImage:'';
+        const src=ride.numberImageBackup||legacyUpload||'';
+        if(!number||!src||seenUploadedNumbers.has(number))continue;
+        seenUploadedNumbers.add(number);
+        const secondary=ride.numberImageBackup&&ride.numberImage&&ride.numberImage!==ride.numberImageBackup?ride.numberImage:'';
+        uploadedByNumber.push({number,src,backup:secondary});
+      }
+      const randomKey=e.profile||`${e.displayName||'driver'}::${e.affiliation||''}`;
+      let chosenArt=null;
+      if(e.summary&&uploadedByNumber.length){
+        const prior=randomArtByDriver.get(randomKey);
+        chosenArt=uploadedByNumber.find(item=>item.number===prior?.number&&item.src===prior?.src)||null;
+        if(!chosenArt){
+          chosenArt=uploadedByNumber[Math.floor(Math.random()*uploadedByNumber.length)];
+          randomArtByDriver.set(randomKey,chosenArt);
+        }
+      }
+      const primaryNumber=String(e.summary?(chosenArt?.number||rideNumbers[0]||''):(e.number||'')).split(' / ')[0]||'';
       const correction=correctionFor(e.profile,primaryNumber);
       const artAttrs=` data-scale-desktop="${esc(correction.desktop??1)}" data-scale-mobile="${esc(correction.mobile??correction.desktop??1)}"`;
-      const artSrc=e.numberImageBackup||e.numberImage||'';
-      const backupSrc=e.numberImageBackup?e.numberImage||'':'';
-      const renderDualSlot=(ride)=>{const src=ride?.numberImageBackup||ride?.numberImage||'',fallback=ride?.numberImageBackup?ride?.numberImage||'':'';return `<span class="aw-lineup__dual-slot" data-dual-number="${esc(ride?.number||'')}">${src?`<img src="${esc(src)}" alt="Number ${esc(ride?.number||'')}" loading="lazy"${fallback?` data-backup-src="${esc(fallback)}"`:''}>`:`<b>#${esc(ride?.number||'')}</b>`}</span>`;};
-      const image=dualSummary
-        ? `<div class="aw-lineup__dual-art" aria-label="${esc(dualRides.map(ride=>`${shortProgram(ride.competitionId,ride.program)} #${ride.number}`).join(' / '))}">${renderDualSlot(dualRides[0])}<i>/</i>${renderDualSlot(dualRides[1])}</div>`
-        : stacked.length
-          ? `<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" loading="lazy"${artAttrs}>`:`<b class="aw-lineup__number-fallback is-single">#${esc(item.number)}</b>`).join('')}</div>`
-          : artSrc
-            ? `<img src="${esc(artSrc)}" alt="Number ${esc(primaryNumber||e.number)}" loading="lazy"${artAttrs}${backupSrc?` data-backup-src="${esc(backupSrc)}"`:''}>`
-            : `<b class="aw-lineup__number-fallback is-single">#${esc(primaryNumber||e.number)}</b>`;
+      const artSrc=e.summary?(chosenArt?.src||''):(e.numberImageBackup||e.numberImage||'');
+      const backupSrc=e.summary?(chosenArt?.backup||''):(e.numberImageBackup?e.numberImage||'':'');
+      const image=stacked.length
+        ? `<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" loading="lazy"${artAttrs}>`:`<b class="aw-lineup__number-fallback is-single">#${esc(item.number)}</b>`).join('')}</div>`
+        : artSrc
+          ? `<img src="${esc(artSrc)}" alt="Number ${esc(primaryNumber||e.number)}" loading="lazy"${artAttrs}${backupSrc?` data-backup-src="${esc(backupSrc)}"`:''}>`
+          : `<b class="aw-lineup__number-fallback is-single">#${esc(primaryNumber||e.number)}</b>`;
       const signature=person?.signatureLogo&&!open?`<div class="aw-lineup__signature" data-signature-driver="${esc(person.slug||'')}" aria-hidden="true"><img src="${esc(person.signatureLogo)}" alt="" loading="lazy"></div>`:'';
       const profile=person&&!open&&profileSlugs.includes(person.slug)?`<a href="/drivers/${encodeURIComponent(person.slug)}/" aria-label="View ${esc(person.name||e.displayName)} profile">View profile ↗</a>`:`<span>${open?'Program entry':'Driver profile coming soon'}</span>`;
       const summary=e.summary?`<div class="aw-lineup__summary-rides" aria-label="Current racing programs">${(rides||[]).map(ride=>`<span><b data-short="${esc(shortProgram(ride.competitionId,ride.program))}">${esc(ride.program)}</b>${ride.number?` <em>#${esc(ride.number)}</em>`:''}</span>`).join('')}</div>`:'';
       const topLine=e.summary?`${e.programCount||0} ACTIVE PROGRAM${e.programCount===1?'':'S'}`:`${programs.get(e.competitionId)||label(e)} · ${e.status||'ACTIVE'}`;
       const teamLabel=e.summary&&e.mixedAffiliation?'AETHERWING + STARCLUTCH':(alliance?'STARCLUTCH RACING':'AETHERWING');
-      const artMode=dualSummary?'dual':(stacked.length?'stack':(artSrc?'single':'fallback'));
-      return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''} ${signature?'has-signature':''} ${e.summary?'is-driver-summary':''} ${dualSummary?'has-dual-art':''}" data-number="${esc(e.number)}" data-primary-number="${esc(primaryNumber)}" data-team-label="${teamLabel}"><div class="aw-lineup__number" data-art-mode="${artMode}">${image}</div><div class="aw-lineup__plate">${signature}<small>${esc(topLine)}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${summary}${profile}</div></article>`;
+      const artMode=stacked.length?'stack':(artSrc?'single':'fallback');
+      return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''} ${signature?'has-signature':''} ${e.summary?'is-driver-summary':''}" data-number="${esc(primaryNumber||e.number)}" data-primary-number="${esc(primaryNumber)}" data-team-label="${teamLabel}"><div class="aw-lineup__number" data-art-mode="${artMode}">${image}</div><div class="aw-lineup__plate">${signature}<small>${esc(topLine)}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${summary}${profile}</div></article>`;
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
     queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);requestAnimationFrame(()=>fitNumberVisual(img));}}));
   }

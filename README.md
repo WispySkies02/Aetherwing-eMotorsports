@@ -1,3 +1,10 @@
+## v1.1.48 — Random single-number art on ALL driver cards
+- ALL-tab driver cards now show one number visual at a time, matching the clean Hailey-card treatment.
+- Drivers with multiple different numbers randomly select one uploaded number image at page load/reload. The random pool only includes Admin-uploaded artwork (including legacy uploaded data images), never missing-number text or URL-only artwork.
+- Drivers with only one uploaded number image always show that image; missing #42 / #46 / #27 art no longer creates giant dual-number text beside Kmart #29.
+- Program badges still list every current program and car number, so roster information is unchanged.
+- League-specific tabs still show that assignment's own number art or normal single-number fallback.
+
 ## v1.1.47 — public number-art delivery fix
 - Uploaded driver number files now take precedence over pasted URLs on the public site.
 - Kmart #29 is treated as one shared number-art identity across Clutch, Eazy, and Matty.
