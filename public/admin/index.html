@@ -258,6 +258,21 @@
             </div>
             <label><span>Render image URL</span><input type="url" name="image" required placeholder="https://i.ibb.co/.../paint.png"><small class="field-help">Use the full hosted PNG or WebP URL. This keeps original-resolution renders out of the admin upload limit.</small></label>
             <label><span>Description</span><textarea name="note" rows="4" maxlength="500" placeholder="Race, inspiration, special meaning, or history."></textarea></label>
+            <fieldset class="paint-classifications roblox-asset-tracking">
+              <legend>Roblox asset tracking · internal only</legend>
+              <div class="field-row thirds">
+                <label><span>Roblox Asset ID</span><input name="robloxAssetId" inputmode="numeric" placeholder="1234567890"></label>
+                <label><span>Uploader Account</span><input name="robloxUploaderAccount" placeholder="@account or Roblox username"></label>
+                <label><span>Upload Date</span><input type="date" name="robloxUploadDate"></label>
+              </div>
+              <div class="field-row">
+                <label><span>Moderation Status</span><select name="robloxModerationStatus"><option value="">Not tracked</option><option>Approved</option><option>Pending</option><option>Moderated</option><option>Rejected</option><option>Replaced</option><option>Archived</option></select></label>
+                <label><span>Replacement Asset ID</span><input name="robloxReplacementAssetId" inputmode="numeric" placeholder="Optional replacement ID"></label>
+              </div>
+              <label><span>Source File / Backup</span><input name="robloxSourceBackup" placeholder="Drive path, backup URL, filename, or archive note"></label>
+              <label><span>Internal Notes</span><textarea name="robloxAssetNotes" rows="3" maxlength="800" placeholder="Moderation details, replacement history, source notes…"></textarea></label>
+              <small class="field-help">Stored in Paint Admin only. These fields are stripped from the public Paint Booth API and are never shown as public moderation warnings.</small>
+            </fieldset>
             <div class="field-row">
               <label><span>Tags</span><input name="tags" placeholder="throwback, patriotic, racewinner"></label>
               <label><span>Debut race</span><input name="debutRace" placeholder="NRRS Richmond — Sep. 20, 2026"></label>

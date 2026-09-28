@@ -6,7 +6,7 @@ import { dirname,resolve } from 'node:path';
 // from a different working directory.
 const projectRoot=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 process.chdir(projectRoot);
-const needed=['src/pages/index.astro','src/pages/schedule/index.astro','src/pages/drivers/index.astro','src/pages/championships/index.astro','src/pages/paint-booth/index.astro','src/pages/partners/index.astro','src/pages/news/index.astro','src/pages/history/index.astro','src/pages/event/[slug].astro','src/pages/programs/index.astro','public/images/textures/aetherwing-editorial.webp','public/seasonal-theme.js','public/admin/index.html','public/admin/theme-preview.js'];
+const needed=['src/pages/mission-values/index.astro','src/pages/team-handbook/index.astro','src/pages/index.astro','src/pages/schedule/index.astro','src/pages/drivers/index.astro','src/pages/championships/index.astro','src/pages/paint-booth/index.astro','src/pages/partners/index.astro','src/pages/news/index.astro','src/pages/history/index.astro','src/pages/event/[slug].astro','src/pages/programs/index.astro','public/images/textures/aetherwing-editorial.webp','public/seasonal-theme.js','public/admin/index.html','public/admin/theme-preview.js'];
 for(const file of needed)if(!existsSync(file))throw Error(`Missing site asset: ${file}`);
 for(const name of ['schedule-events','drivers','charters','results','standings','driver-portfolios','partners','paints','news']){const content=JSON.parse(readFileSync(`src/data/${name}.json`,'utf8'));if(!Array.isArray(content)||!content.length)throw Error(`Empty or invalid ${name} dataset`);}
 const standings=JSON.parse(readFileSync('src/data/standings.json','utf8'));
@@ -25,6 +25,7 @@ if(!profileSource.includes("d['driver-portfolios']")||!profileSource.includes('d
 const lineupSource=readFileSync('src/components/DriverLineup.astro','utf8');
 if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.includes('STARCLUTCH RACING'))throw Error('Driver Lineup must retain partner-team roster support.');
 if(!lineupSource.includes('const groupedDrivers=')||!lineupSource.includes('ONE CARD EACH')||!lineupSource.includes('aw-lineup__summary-rides'))throw Error('Driver Lineup ALL filter must group league assignments into one card per driver.');
+if(!lineupSource.includes('aw-lineup__dual-art')||!lineupSource.includes('dualProfiles')||!lineupSource.includes('artCorrections'))throw Error('Driver Lineup card art normalization and dual-number composition are missing.');
 const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
 if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))'))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
@@ -140,3 +141,22 @@ if(!adminContentSource.includes('standingsRoundSummary')||!adminContentSource.in
 const championshipsSource=readFileSync('src/pages/championships/index.astro','utf8');
 for(const value of ['all','nrrs','kmart','sunoco','uarl'])if(!championshipsSource.includes(`data-championship-filter-value=\"${value}\"`))throw Error(`Championship page filter is missing ${value}.`);
 if(!championshipsSource.includes('repairSunoco')||!championshipsSource.includes('standings-chase-panel'))throw Error('Public Championship page must retain full Sunoco roster repair and Chase-only panel rendering.');
+
+
+// v1.1.43 — current Mission/Handbook operations + private Roblox asset tracking.
+const competitions=JSON.parse(readFileSync('src/data/competitions.json','utf8'));
+const missionSource=readFileSync('src/pages/mission-values/index.astro','utf8');
+const handbookSource=readFileSync('src/pages/team-handbook/index.astro','utf8');
+if(!missionSource.includes('aetherwing.length')||!missionSource.includes('alliance.length')||!missionSource.includes('active.length'))throw Error('Mission & Values counters must be derived from active competition data.');
+if(!missionSource.includes('Former program / historical archive')||!handbookSource.includes('UARL D2 is closed'))throw Error('Closed UARL D2 must be historical-only on Mission and Handbook pages.');
+if(!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#32 BurgerTown2Good')||!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#52 Gk3r'))throw Error('UARL D1 current roster is incomplete.');
+if(competitions.some((item)=>item.id==='uarl-d2'))throw Error('UARL D2 must stay out of active competitions.');
+if(competitions.find((item)=>item.id==='uarl-d1')?.schedule!=='Sundays · 8:30 PM ET')throw Error('UARL D1 must race Sundays at 8:30 PM ET.');
+if(!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Hailey')||!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Plarker'))throw Error('NRRS active roster must use Hailey and Plarker identities.');
+if(JSON.stringify(competitions.find((item)=>item.id==='iracing-factory')?.roster||[]).includes('Nicholas Waggoner'))throw Error('Current iRacing Factory roster must use Hailey Bell rather than Nicholas Waggoner.');
+if(!JSON.stringify(JSON.parse(readFileSync('src/data/leadership.json','utf8'))[0]).includes('Hailey / @Aokikoto'))throw Error('Current leadership owner identity must use Hailey / @Aokikoto.');
+if(!adminHtml.includes('Roblox asset tracking · internal only')||!adminHtml.includes('name="robloxModerationStatus"'))throw Error('Paint Admin Roblox asset tracking fields are missing.');
+const paintRegistrySource=readFileSync('netlify/lib/_registry.cjs','utf8');
+if(!paintRegistrySource.includes('robloxAssetId')||!paintRegistrySource.includes('...publicPaint'))throw Error('Roblox tracking must save privately and be stripped from the public paint API.');
+if(!raceCalendarSource.includes('Boolean(resultFor(e))||end(e)<now')||!raceCalendarSource.includes('setInterval(tick,1000)'))throw Error('Homepage next-event rollover protection is missing.');
+console.log('v1.1.43 verified: active-program pages, current identities, private Roblox asset tracking, and next-event rollover are intact.');

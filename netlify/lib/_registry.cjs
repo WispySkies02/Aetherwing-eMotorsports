@@ -93,7 +93,11 @@ function publicRegistry(registry) {
   const now = Date.now();
   const feature = registry.feature && (!registry.feature.expiresAt || Date.parse(registry.feature.expiresAt) > now)
     ? registry.feature : null;
-  return { version: 1, paints: mergedPublishedPaints(registry), feature };
+  const paints=mergedPublishedPaints(registry).map((paint)=>{
+    const {robloxAssetId,robloxUploaderAccount,robloxUploadDate,robloxModerationStatus,robloxReplacementAssetId,robloxSourceBackup,robloxAssetNotes,...publicPaint}=paint;
+    return publicPaint;
+  });
+  return { version: 1, paints, feature };
 }
 
 function json(statusCode, body, headers = {}) {
@@ -162,7 +166,14 @@ function sanitizePaint(input) {
     chase,
     throwback,
     specialPaint,
-    debutRace: text(input?.debutRace, 160)
+    debutRace: text(input?.debutRace, 160),
+    robloxAssetId: text(input?.robloxAssetId, 40).replace(/[^0-9]/g, ''),
+    robloxUploaderAccount: text(input?.robloxUploaderAccount, 100),
+    robloxUploadDate: /^\d{4}-\d{2}-\d{2}$/.test(text(input?.robloxUploadDate, 10)) ? text(input.robloxUploadDate, 10) : '',
+    robloxModerationStatus: ['Approved','Pending','Moderated','Rejected','Replaced','Archived'].includes(text(input?.robloxModerationStatus, 20)) ? text(input.robloxModerationStatus, 20) : '',
+    robloxReplacementAssetId: text(input?.robloxReplacementAssetId, 40).replace(/[^0-9]/g, ''),
+    robloxSourceBackup: text(input?.robloxSourceBackup, 500),
+    robloxAssetNotes: text(input?.robloxAssetNotes, 800)
   };
 }
 

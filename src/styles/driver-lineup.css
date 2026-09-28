@@ -32,3 +32,29 @@
 
 
 /* v1.1.42 — visible-area number normalization + calmer mobile number stage. */
+
+/* v1.1.44 — deliberate driver card art normalization and dual-number composition */
+.aw-lineup__number{inset:2.35rem 1rem 7.05rem;display:flex;align-items:flex-end;justify-content:center;padding:.25rem .8rem 1.1rem}
+.aw-lineup__number img{display:block;width:auto;height:auto;max-width:none;max-height:none;object-fit:contain;object-position:center bottom;filter:drop-shadow(12px 16px 0 rgba(0,0,0,.6))}
+.aw-lineup__poster:hover .aw-lineup__number{transform:scale(1.02)}
+.aw-lineup__number-stack{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:.45rem;padding-bottom:.55rem}
+.aw-lineup__number-stack img{width:auto;max-height:none;object-fit:contain;object-position:center bottom}
+.aw-lineup__number-fallback,.aw-lineup__number b{font:400 clamp(4.85rem,9.8vw,8.9rem)/.88 var(--font-number);color:#e5ebef;text-shadow:4px 5px #000}
+.aw-lineup__dual-art{display:flex;align-items:flex-end;justify-content:center;gap:clamp(.42rem,.85vw,.78rem);padding:0 1rem .35rem;font:400 clamp(4.8rem,8.5vw,7rem)/.88 var(--font-number);color:#e5ebef;text-shadow:4px 5px #000;letter-spacing:-.025em;white-space:nowrap}
+.aw-lineup__dual-art i{font-style:normal;font-size:.46em;line-height:1;color:#c3ccd3;transform:translateY(-.12em)}
+.aw-lineup__poster.has-dual-art .aw-lineup__number{padding-bottom:.95rem}
+.aw-lineup__poster.has-dual-art .aw-lineup__plate{padding-top:1.35rem}
+.aw-lineup__signature[data-signature-driver="matty"]{width:min(58%,250px);height:72px;right:1.3rem;transform:translateY(-82%)}
+.aw-lineup__signature[data-signature-driver="matty"] img{max-height:62px;filter:brightness(1.16) contrast(1.12) drop-shadow(0 8px 10px rgba(0,0,0,.8))}
+.aw-lineup__poster.has-signature .aw-lineup__number{bottom:9.85rem;padding-right:1.1rem}
+.aw-lineup__poster.has-signature[data-primary-number="15"] .aw-lineup__number{padding-right:4.6rem;padding-left:1rem}
+
+@media(max-width:600px){
+  .aw-lineup__number,.aw-lineup__poster.has-signature .aw-lineup__number{position:relative;inset:auto;bottom:auto;left:auto;right:auto;top:auto;width:100%;height:220px;padding:2.7rem .95rem .7rem;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;transform:none!important;z-index:1}
+  .aw-lineup__number img,.aw-lineup__poster.is-driver-summary .aw-lineup__number img{display:block;width:auto;height:auto;object-fit:contain;object-position:center bottom}
+  .aw-lineup__number-fallback,.aw-lineup__number b{font-size:6.25rem}
+  .aw-lineup__dual-art{font-size:4.9rem;gap:.38rem;padding:0 .55rem .2rem}
+  .aw-lineup__dual-art i{font-size:.42em}
+  .aw-lineup__signature[data-signature-driver="matty"]{width:min(56%,190px);height:52px;right:1rem;transform:translateY(-72%)}
+  .aw-lineup__signature[data-signature-driver="matty"] img{max-height:46px}
+}

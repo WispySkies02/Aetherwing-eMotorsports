@@ -43,8 +43,8 @@ export const scheduleEvents = (Array.isArray(publishedSchedule)?publishedSchedul
 export const siteSettings = choose('site', siteSeed);
 const publishedNavigation = choose('navigation', navigationSeed);
 const obsoleteNavigation = Array.isArray(publishedNavigation) && (
-  publishedNavigation.some((item) => ['/mission-values/','/team-handbook/','/contact/','/wins-history/'].includes(item.href)) ||
-  ['/programs/','/championships/','/history/'].some((href) => !publishedNavigation.some((item) => item.href === href))
+  publishedNavigation.some((item) => ['/contact/','/wins-history/'].includes(item.href)) ||
+  ['/programs/','/championships/','/history/','/mission-values/','/team-handbook/'].some((href) => !publishedNavigation.some((item) => item.href === href))
 );
 export const navigation = obsoleteNavigation ? navigationSeed : publishedNavigation;
 export const liveryBrands = choose('livery-brands', liveryBrandsSeed);
@@ -124,6 +124,21 @@ const normalizeCharters = (boards) => (boards ?? []).map((board) => {
 export const charters = normalizeCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 export const news = choose('news', newsSeed);
-export const competitions = choose('competitions', competitionsSeed);
-export const leadership = choose('leadership', leadershipSeed);
+const publishedCompetitions = choose('competitions', competitionsSeed);
+const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
+const staleCompetition = (item={}) => {
+  if(item.id==='uarl-d2') return true;
+  if(item.id==='uarl-d1') return /Saturday/i.test(item.schedule||'') || !['#28 Hailey','#32 BurgerTown2Good','#52 Gk3r','#92 Rocky'].every((entry)=>(item.roster||[]).includes(entry));
+  if(item.id==='nrrs') return (item.roster||[]).some((entry)=>/#32\s+Wispy|#43\s+Parker/i.test(entry));
+  if(item.id==='iracing-factory') return (item.roster||[]).some((entry)=>/Nicholas Waggoner/i.test(entry));
+  return false;
+};
+export const competitions = (Array.isArray(publishedCompetitions)?publishedCompetitions:competitionsSeed)
+  .filter((item)=>item?.id!=='uarl-d2')
+  .map((item)=>staleCompetition(item)?competitionSeedById.get(item.id)||item:item);
+const publishedLeadership = choose('leadership', leadershipSeed);
+export const leadership = (Array.isArray(publishedLeadership)?publishedLeadership:leadershipSeed).map((entry,index)=>{
+  if(index===0 && /^(Wispy|WispySkies02|Hailey)$/i.test(String(entry?.name||''))) return leadershipSeed[0];
+  return entry;
+});
 export const partners = choose('partners', partnersSeed);

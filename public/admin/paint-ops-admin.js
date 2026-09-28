@@ -251,7 +251,14 @@
       chase,
       throwback,
       specialPaint,
-      debutRace: String(data.get('debutRace') || '').trim()
+      debutRace: String(data.get('debutRace') || '').trim(),
+      robloxAssetId: String(data.get('robloxAssetId') || '').trim(),
+      robloxUploaderAccount: String(data.get('robloxUploaderAccount') || '').trim(),
+      robloxUploadDate: String(data.get('robloxUploadDate') || '').trim(),
+      robloxModerationStatus: String(data.get('robloxModerationStatus') || '').trim(),
+      robloxReplacementAssetId: String(data.get('robloxReplacementAssetId') || '').trim(),
+      robloxSourceBackup: String(data.get('robloxSourceBackup') || '').trim(),
+      robloxAssetNotes: String(data.get('robloxAssetNotes') || '').trim()
     };
   }
 
@@ -355,7 +362,8 @@
       const chase = paint.chase || paint.special?.includes('chase');
       const throwback = paint.throwback || paint.special?.includes('throwback');
       const specialPaint = paint.specialPaint || paint.special?.includes('special');
-      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}${dash4Cash ? ' <span class="status dash4cash">DASH4CASH</span>' : ''}${chase ? ' <span class="status chase">CHASE</span>' : ''}${throwback ? ' <span class="status throwback">THROWBACK</span>' : ''}${specialPaint ? ' <span class="status special-paint">SPECIAL PAINT</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
+      const robloxStatus=paint.robloxModerationStatus?` <span class="status source">ROBLOX ${esc(paint.robloxModerationStatus).toUpperCase()}</span>`:'';
+      return `<article class="library-row" data-library-slug="${esc(paint.slug)}"><img src="${esc(paint.image)}" alt="" loading="lazy"><div><h3>${esc(paint.sponsor)} <span class="status ${esc(paint.status)}">${esc(paint.status)}</span> <span class="status source">${sourceLabel}</span>${robloxStatus}${affiliate ? ' <span class="status scr-affiliate">SCR AFFILIATE</span>' : ''}${dash4Cash ? ' <span class="status dash4cash">DASH4CASH</span>' : ''}${chase ? ' <span class="status chase">CHASE</span>' : ''}${throwback ? ' <span class="status throwback">THROWBACK</span>' : ''}${specialPaint ? ' <span class="status special-paint">SPECIAL PAINT</span>' : ''}</h3><p>${esc(paint.leagueName || paint.leagues?.[0] || '')} ${paint.number ? '· #' + esc(paint.number) : ''} · /${esc(paint.slug)}/${paint.robloxAssetId?` · Asset ${esc(paint.robloxAssetId)}`:''}</p></div><div class="library-row__actions"><button type="button" data-edit-paint="${esc(paint.slug)}">Edit</button>${publishAction}${archiveAction}</div></article>`;
     }).join('');
   }
 

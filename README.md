@@ -1,3 +1,16 @@
+## v1.1.44 — Drivers card art normalization
+- Normalized single-number driver artwork by visible bounds with small targeted corrections for the current #32 / #52 / #43 / #92 / #34 set.
+- Added a dedicated dual-number layout for Clutch, Eazy, and Will so both numbers remain fully visible on desktop and mobile.
+- Preserved Hailey and Matty signature artwork while giving each signature a clearer pocket above the info divider.
+- Kept the existing card style, grid, typography, badges, and profile-link arrangement intact.
+
+## v1.1.43 — Current Programs + Private Roblox Asset Tracking
+- Restores Mission & Values and Team Handbook as current data-driven routes.
+- Active counters are 4 Aetherwing Programs, 2 Alliance Series, and 6 Competition Relationships.
+- UARL D2 is historical-only; current UARL D1, NRRS, iRacing, and leadership identities are normalized against stale published overlays.
+- Paint Admin adds private Roblox asset/moderation tracking fields; those fields are stripped from the public Paint Booth API.
+- Homepage Race Calendar rollover logic was verified: published results or elapsed event windows immediately advance the next event.
+
 ## v1.1.42 — Visible-Area Number Normalization
 - Driver number artwork now fits by visible artwork area after transparent padding is trimmed, reducing size differences between tall/narrow and wide number logos.
 - Mobile number stage is shorter and uses a calmer target scale while preserving the separate opaque info panel.

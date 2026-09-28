@@ -48,6 +48,16 @@
       "group": "Team"
     },
     {
+      "label": "Mission & Values",
+      "href": "/mission-values/",
+      "group": "Team"
+    },
+    {
+      "label": "Team Handbook",
+      "href": "/team-handbook/",
+      "group": "Team"
+    },
+    {
       "label": "Schedule",
       "href": "/schedule/",
       "group": "Race"
@@ -2584,6 +2594,7 @@
         "Sunoco"
       ],
       "feature": "Multi-program",
+      "signatureLogo": "",
       "bio": "Aetherwing founder and multi-program RoRacing driver. Current Roblox display name: Hailey; username: @Aokikoto. Current iRacing name: Hailey Bell.",
       "iracingName": "Hailey Bell",
       "historicalIRacingName": "Nicholas Waggoner",
@@ -2602,6 +2613,7 @@
         "NRRS"
       ],
       "feature": "NRRS",
+      "signatureLogo": "",
       "bio": "Aetherwing NRRS driver in the #43 entry."
     },
     {
@@ -2615,6 +2627,7 @@
         "UARL D1"
       ],
       "feature": "UARL D1",
+      "signatureLogo": "",
       "bio": "Full-time Aetherwing UARL Division 1 driver in the #92."
     },
     {
@@ -2628,6 +2641,7 @@
         "UARL D1"
       ],
       "feature": "UARL D1",
+      "signatureLogo": "",
       "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
     },
     {
@@ -2641,6 +2655,7 @@
         "UARL D1"
       ],
       "feature": "UARL D1",
+      "signatureLogo": "",
       "bio": "Full-time Aetherwing UARL Division 1 driver in the #52."
     },
     {
@@ -2655,11 +2670,13 @@
         "Sunoco"
       ],
       "feature": "StarClutch Alliance",
+      "signatureLogo": "",
       "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor."
     },
     {
       "slug": "jaxon",
       "name": "Jaxon",
+      "handle": "@Arctic_Blitzzzz",
       "role": "Media Specialist / Driver",
       "affiliation": "alliance",
       "numbers": "34",
@@ -2667,8 +2684,8 @@
         "Kmart"
       ],
       "feature": "StarClutch Alliance",
-      "bio": "Aetherwing Media Specialist and #34 Kmart alliance competitor.",
-      "handle": "@Arctic_Blitzzzz"
+      "signatureLogo": "",
+      "bio": "Aetherwing Media Specialist and #34 Kmart alliance competitor."
     },
     {
       "slug": "clutch",
@@ -2682,6 +2699,7 @@
         "Sunoco"
       ],
       "feature": "StarClutch Alliance",
+      "signatureLogo": "",
       "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46."
     },
     {
@@ -2696,6 +2714,7 @@
         "Sunoco"
       ],
       "feature": "StarClutch Alliance",
+      "signatureLogo": "",
       "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM."
     },
     {
@@ -2709,6 +2728,7 @@
         "Kmart"
       ],
       "feature": "Part-Time Entry",
+      "signatureLogo": "",
       "bio": "StarClutch Racing alliance driver sharing the part-time Kmart #29 entry."
     }
   ],
@@ -3214,7 +3234,7 @@
   ],
   "leadership": [
     {
-      "name": "Hailey",
+      "name": "Hailey / @Aokikoto",
       "roles": [
         "Founder",
         "Team Owner",

@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import { competitions, drivers, leadership } from '../../lib/site-content.mjs';
+import '../../styles/mission-handbook.css';
+const active=competitions.filter(item=>item.id!=='uarl-d2');
+const roster=(id)=>drivers.filter(driver=>driver.competitionId===id&&driver.displayName&&!/^open$/i.test(driver.displayName));
+---
+<Base title="Team Handbook" description="Current Aetherwing eMotorsports operating handbook for active programs and race-week responsibilities.">
+  <PageIntro eyebrow="Team operations" title="Team Handbook" description="The current operating guide for active Aetherwing programs and alliance series."/>
+  <section class="section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Current scope</p><h2 class="section-title">Active Operations</h2></div><p class="lede">This handbook tracks active programs only. Closed series are historical records, not current race-week responsibilities.</p></div>
+    <div class="story-grid handbook-programs">{active.map(program=><article class="story-panel"><p class="eyebrow">{program.label}</p><h3>{program.name}</h3><p><b>Schedule:</b> {program.schedule}</p><div class="mission-roster">{roster(program.id).map(driver=><span>#{driver.number} {driver.displayName}</span>)}</div></article>)}</div>
+  </div></section>
+  <section class="section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Race week</p><h2 class="section-title">Operating Checklist</h2></div></div><div class="story-grid">
+    <article class="story-panel"><p class="eyebrow">01 / BEFORE RACE</p><h3>Confirm the entry</h3><p>Verify the scheduled event, expected drivers, car numbers, paint assignments, and any race-specific partner or graphic requirements.</p></article>
+    <article class="story-panel"><p class="eyebrow">02 / RACE DAY</p><h3>Keep Race Control current</h3><p>Use the event-specific entry list when needed, keep the next-event information accurate, and publish race-day changes through Admin.</p></article>
+    <article class="story-panel"><p class="eyebrow">03 / AFTER RACE</p><h3>Close the loop</h3><p>Publish the official result, update standings where applicable, preserve the correct historical driver identity, and let the calendar roll forward to the next event.</p></article>
+  </div></div></section>
+  <section class="section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Leadership responsibilities</p><h2 class="section-title">Who Owns What</h2></div></div><div class="story-grid">{leadership.map(person=><article class="story-panel"><h3>{person.name}</h3><div class="mission-roster">{(person.roles||[]).map(role=><span>{role}</span>)}</div></article>)}</div></div></section>
+  <section class="section former-program"><div class="wrap"><article class="story-panel"><p class="eyebrow">Former program</p><h3>UARL Division 2</h3><p>UARL D2 is closed and has no current entry-tracking or race-week responsibilities. Historical D2 results remain preserved in the team record book.</p><a href="/history/">Historical results →</a></article></div></section>
+</Base>

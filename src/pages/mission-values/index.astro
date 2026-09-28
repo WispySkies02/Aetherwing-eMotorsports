@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import FaithSignature from '../../components/FaithSignature.astro';
+import { competitions, drivers, leadership } from '../../lib/site-content.mjs';
+import '../../styles/mission-handbook.css';
+const active=competitions.filter(item=>item.id!=='uarl-d2');
+const aetherwing=active.filter(item=>item.type==='aetherwing');
+const alliance=active.filter(item=>item.type==='alliance');
+const assignments=(id)=>drivers.filter(driver=>driver.competitionId===id&&driver.displayName&&!/^open$/i.test(driver.displayName));
+const owner=leadership[0];
+---
+<Base title="Mission & Values" description="Aetherwing eMotorsports mission, values, active programs, and current leadership.">
+  <PageIntro eyebrow="Why we race" title="Mission & Values" description="Competition first. Teamwork always. Faith, preparation, and respect guide how Aetherwing shows up on and off the track."/>
+  <FaithSignature field="faithMissionLine" label="Our foundation"/>
+  <section class="section"><div class="wrap">
+    <div class="section-head"><div><p class="eyebrow">Current operation</p><h2 class="section-title">At a Glance</h2></div><p class="lede">Only active programs and competition relationships are counted here.</p></div>
+    <div class="mission-counts">
+      <article class="story-panel"><strong>{aetherwing.length}</strong><span>Aetherwing Programs</span></article>
+      <article class="story-panel"><strong>{alliance.length}</strong><span>Alliance Series</span></article>
+      <article class="story-panel"><strong>{active.length}</strong><span>Competition Relationships</span></article>
+    </div>
+  </div></section>
+  <section class="section"><div class="wrap">
+    <div class="section-head"><div><p class="eyebrow">Active programs</p><h2 class="section-title">Where We Compete</h2></div><p class="lede">Current-season information only. Historical programs remain in the record book.</p></div>
+    <div class="story-grid mission-programs">
+      {active.map(program=><article class="story-panel mission-program">
+        <p class="eyebrow">{program.label}</p><h3>{program.name}</h3>
+        {program.series&&<p class="mission-program__series">{program.series}</p>}
+        <p><b>Race time:</b> {program.schedule}</p><p><b>Platform:</b> {program.platform}</p>
+        <div class="mission-roster">{assignments(program.id).map(driver=><span>#{driver.number} {driver.displayName}</span>)}</div>
+        <a href={`/programs/${program.id}/`}>Open program →</a>
+      </article>)}
+    </div>
+  </div></section>
+  <section class="section mission-values"><div class="wrap story-grid">
+    <article class="story-panel"><p class="eyebrow">01 / COMPETE</p><h3>Prepare to race</h3><p>We show up ready, communicate clearly, and treat every green flag as an opportunity to represent the team well.</p></article>
+    <article class="story-panel"><p class="eyebrow">02 / TEAM</p><h3>Build each other up</h3><p>Aetherwing is bigger than one car. Drivers, staff, creative work, and partner relationships all contribute to the same effort.</p></article>
+    <article class="story-panel"><p class="eyebrow">03 / FAITH</p><h3>To God be the glory</h3><p>We are grateful for every opportunity to compete and aim to carry that gratitude through wins, losses, and the work between races.</p></article>
+  </div></section>
+  <section class="section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Current leadership</p><h2 class="section-title">Team Direction</h2></div></div><div class="story-grid">{leadership.map(person=><article class="story-panel"><h3>{person.name}</h3><div class="mission-roster">{(person.roles||[]).map(role=><span>{role}</span>)}</div></article>)}</div></div></section>
+  <section class="section former-program"><div class="wrap"><article class="story-panel"><p class="eyebrow">Former program / historical archive</p><h3>UARL Division 2 · NFFF Grand National Series</h3><p>Closed September 15, 2026. Division 2 is no longer counted as an active Aetherwing program. Historical race results and paints remain preserved in History and archive surfaces.</p><a href="/history/">View team history →</a></article></div></section>
+</Base>
