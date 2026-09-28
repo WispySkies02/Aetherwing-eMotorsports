@@ -20,18 +20,25 @@ import driverPortfoliosSeed from '../data/driver-portfolios.json';
 import pageOverridesSeed from '../data/page-overrides.json';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 
-const normalizeDriverAssignments = (rows=[]) => rows.flatMap((entry) => {
-  if (entry?.id !== 'shared-kmart' && !(entry?.competitionId === 'kmart' && String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName || ''))) return [entry];
-  const common = {
-    number:'29', numberImage:entry.numberImage || '', competition:entry.competition || 'Kmart Auto Parts Series', competitionId:'kmart',
-    status:entry.status || 'Shared Part-Time Entry', affiliation:entry.affiliation || 'alliance', car:entry.car || 'SCR #29 PT'
-  };
-  return [
-    {...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},
-    {...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},
-    {...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}
-  ];
-});
+const normalizeDriverAssignments = (rows=[]) => {
+  const normalized=rows.flatMap((entry) => {
+    if (entry?.id !== 'shared-kmart' && !(entry?.competitionId === 'kmart' && String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName || ''))) return [entry];
+    const common = {
+      number:'29', numberImage:entry.numberImage || '', numberImageBackup:entry.numberImageBackup || '', competition:entry.competition || 'Kmart Auto Parts Series', competitionId:'kmart',
+      status:entry.status || 'Shared Part-Time Entry', affiliation:entry.affiliation || 'alliance', car:entry.car || 'SCR #29 PT'
+    };
+    return [
+      {...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},
+      {...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},
+      {...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}
+    ];
+  });
+  const shared29=normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
+  if(!shared29)return normalized;
+  const sharedUpload=shared29.numberImageBackup||'';
+  const sharedSource=shared29.numberImage||sharedUpload;
+  return normalized.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
+};
 const normalizeLegacyKmartResult = (result) => ({...result, entries:(result.entries||[]).map((entry) => {
   if (entry?.assignmentId === 'shared-kmart' || (String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.driver || ''))) {
     return {...entry, assignmentId:'', driver:'Part-Time Entry'};
@@ -107,7 +114,7 @@ export const rosterProfiles = rosterBase.map((profile) => {
   return {
     ...profile,
     numbers: [...new Set(assignments.map((entry) => entry.number).filter(Boolean))].join(' / '),
-    numberImages: assignments.filter((entry)=>entry.numberImage).map((entry)=>({assignmentId:entry.id,competitionId:entry.competitionId,number:entry.number,image:entry.numberImage})),
+    numberImages: assignments.filter((entry)=>entry.numberImageBackup||entry.numberImage).map((entry)=>({assignmentId:entry.id,competitionId:entry.competitionId,number:entry.number,image:entry.numberImageBackup||entry.numberImage})),
     programs: [...new Set(assignments.map((entry) => rosterProgramLabels[entry.competitionId] || entry.competition).filter(Boolean))]
   };
 });

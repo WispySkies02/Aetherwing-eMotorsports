@@ -34,7 +34,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   const tightenSignature=(img)=>{if(!(img instanceof HTMLImageElement)||img.dataset.signatureTightened==='1')return;img.dataset.signatureTightened='1';try{const w=img.naturalWidth,h=img.naturalHeight;if(!w||!h||w*h>3000000)return;const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);const pixels=ctx.getImageData(0,0,w,h).data;let left=w,top=h,right=-1,bottom=-1;for(let y=0;y<h;y+=1){for(let x=0;x<w;x+=1){if(pixels[(y*w+x)*4+3]>14){if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;}}}if(right<left||bottom<top)return;const visibleW=right-left+1,visibleH=bottom-top+1;if(visibleW/w>.93&&visibleH/h>.9)return;const padX=Math.max(2,Math.round(visibleW*.025)),padY=Math.max(2,Math.round(visibleH*.06)),sx=Math.max(0,left-padX),sy=Math.max(0,top-padY),ex=Math.min(w-1,right+padX),ey=Math.min(h-1,bottom+padY),out=document.createElement('canvas');out.width=ex-sx+1;out.height=ey-sy+1;out.getContext('2d').drawImage(canvas,sx,sy,out.width,out.height,0,0,out.width,out.height);img.src=out.toDataURL('image/webp',.95);}catch{}};
   const tightenNumber=(img)=>{if(!(img instanceof HTMLImageElement)||img.dataset.numberTightened==='1')return;img.dataset.numberTightened='1';try{const w=img.naturalWidth,h=img.naturalHeight;if(!w||!h||w*h>4000000)return;const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);const pixels=ctx.getImageData(0,0,w,h).data;let left=w,top=h,right=-1,bottom=-1;for(let y=0;y<h;y+=1){for(let x=0;x<w;x+=1){if(pixels[(y*w+x)*4+3]>14){if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;}}}if(right<left||bottom<top)return;const visibleW=right-left+1,visibleH=bottom-top+1;if(visibleW/w>.95&&visibleH/h>.93)return;const padX=Math.max(2,Math.round(visibleW*.035)),padY=Math.max(2,Math.round(visibleH*.035)),sx=Math.max(0,left-padX),sy=Math.max(0,top-padY),ex=Math.min(w-1,right+padX),ey=Math.min(h-1,bottom+padY),out=document.createElement('canvas');out.width=ex-sx+1;out.height=ey-sy+1;out.getContext('2d').drawImage(canvas,sx,sy,out.width,out.height,0,0,out.width,out.height);img.src=out.toDataURL('image/webp',.98);}catch{}};
   const fitNumberVisual=(img)=>{
-    if(!(img instanceof HTMLImageElement)||!img.naturalWidth||!img.naturalHeight)return;
+    if(!(img instanceof HTMLImageElement)||!img.naturalWidth||!img.naturalHeight||img.closest('.aw-lineup__dual-art'))return;
     const stage=img.closest('.aw-lineup__number');if(!(stage instanceof HTMLElement))return;
     const rect=stage.getBoundingClientRect();if(rect.width<40||rect.height<40)return;
     const styles=getComputedStyle(stage);
@@ -55,11 +55,15 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     img.style.maxHeight='none';
   };
   root.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__signature'))tightenSignature(image);if(image.closest('.aw-lineup__number')){tightenNumber(image);requestAnimationFrame(()=>fitNumberVisual(image));}},true);
-  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className='aw-lineup__number-fallback is-single';fallback.textContent=`#${image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
+  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className=image.closest('.aw-lineup__dual-slot')?'':'aw-lineup__number-fallback is-single';fallback.textContent=`#${image.closest('.aw-lineup__dual-slot')?.dataset.dualNumber||image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
   const shortProgram=(id,name='')=>({nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[id]||name||id);
   function render(){
-    const active=assignments.filter(e=>e.competitionId!=='iracing-factory');
+    const rawActive=assignments.filter(e=>e.competitionId!=='iracing-factory');
+    const sharedKmart29=rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImageBackup)||rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImage);
+    const sharedKmartUpload=sharedKmart29?.numberImageBackup||'';
+    const sharedKmartSource=sharedKmart29?.numberImage||sharedKmartUpload;
+    const active=rawActive.map(e=>e.competitionId==='kmart'&&String(e.number)==='29'?{...e,numberImage:e.numberImage||sharedKmartSource,numberImageBackup:e.numberImageBackup||sharedKmartUpload}:e);
     const programs=new Map(active.map(e=>[e.competitionId,label(e)]));
     for(const board of charters)if(!programs.has(board.id))programs.set(board.id,board.label||board.id);
     if(series!=='all'&&!programs.has(series))series='all';
@@ -78,7 +82,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
         const person=profiles.find(profile=>profile.slug===rows[0]?.profile);
         const ordered=[...rows].sort((a,b)=>(programOrder[a.competitionId]||99)-(programOrder[b.competitionId]||99)||Number(a.number)-Number(b.number));
         const primary=ordered.find(entry=>entry.numberImage||entry.numberImageBackup)||ordered[0];
-        const rides=ordered.map(entry=>({competitionId:entry.competitionId,program:programs.get(entry.competitionId)||label(entry),number:String(entry.number||''),status:entry.status||'Active'}));
+        const rides=ordered.map(entry=>({competitionId:entry.competitionId,program:programs.get(entry.competitionId)||label(entry),number:String(entry.number||''),status:entry.status||'Active',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||''}));
         const numbers=[...new Set(rides.map(ride=>ride.number).filter(Boolean))];
         const affiliations=[...new Set(ordered.map(entry=>entry.affiliation).filter(Boolean))];
         return {...primary,summary:true,profile:rows[0]?.profile||'',displayName:person?.name||primary?.displayName||key,number:numbers.join(' / '),numberImages:[],rides,programCount:new Set(rides.map(ride=>ride.competitionId)).size,affiliation:person?.affiliation||primary?.affiliation||'aetherwing',mixedAffiliation:affiliations.length>1};
@@ -100,10 +104,11 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const primaryNumber=String((dualSummary?dualRides[0]?.number:(e.number||rideNumbers[0]||'')).split(' / ')[0]||'');
       const correction=correctionFor(e.profile,primaryNumber);
       const artAttrs=` data-scale-desktop="${esc(correction.desktop??1)}" data-scale-mobile="${esc(correction.mobile??correction.desktop??1)}"`;
-      const artSrc=e.numberImage||e.numberImageBackup||'';
-      const backupSrc=e.numberImageBackup||'';
+      const artSrc=e.numberImageBackup||e.numberImage||'';
+      const backupSrc=e.numberImageBackup?e.numberImage||'':'';
+      const renderDualSlot=(ride)=>{const src=ride?.numberImageBackup||ride?.numberImage||'',fallback=ride?.numberImageBackup?ride?.numberImage||'':'';return `<span class="aw-lineup__dual-slot" data-dual-number="${esc(ride?.number||'')}">${src?`<img src="${esc(src)}" alt="Number ${esc(ride?.number||'')}" loading="lazy"${fallback?` data-backup-src="${esc(fallback)}"`:''}>`:`<b>#${esc(ride?.number||'')}</b>`}</span>`;};
       const image=dualSummary
-        ? `<div class="aw-lineup__dual-art" aria-label="${esc(dualRides.map(ride=>`${shortProgram(ride.competitionId,ride.program)} #${ride.number}`).join(' / '))}"><span>#${esc(dualRides[0]?.number||rideNumbers[0]||'')}</span><i>/</i><span>#${esc(dualRides[1]?.number||rideNumbers[1]||'')}</span></div>`
+        ? `<div class="aw-lineup__dual-art" aria-label="${esc(dualRides.map(ride=>`${shortProgram(ride.competitionId,ride.program)} #${ride.number}`).join(' / '))}">${renderDualSlot(dualRides[0])}<i>/</i>${renderDualSlot(dualRides[1])}</div>`
         : stacked.length
           ? `<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" loading="lazy"${artAttrs}>`:`<b class="aw-lineup__number-fallback is-single">#${esc(item.number)}</b>`).join('')}</div>`
           : artSrc

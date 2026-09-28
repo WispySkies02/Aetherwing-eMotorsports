@@ -1,3 +1,10 @@
+## v1.1.47 — public number-art delivery fix
+- Uploaded driver number files now take precedence over pasted URLs on the public site.
+- Kmart #29 is treated as one shared number-art identity across Clutch, Eazy, and Matty.
+- ALL-tab dual-number cards can render actual uploaded number art per ride, with text fallback only when art is absent.
+- Shared #29 upload/URL changes synchronize across all three Kmart #29 assignments in Admin.
+- The homepage/roster-derived number art also prefers the uploaded copy.
+
 ## v1.1.46 — Number Artwork Publish Fallback
 - Driver number file uploads are retained as a private/public data fallback even if an external URL is later pasted into the same Admin field.
 - The Drivers page automatically retries the stored upload if the primary external URL fails to render, before falling back to text.

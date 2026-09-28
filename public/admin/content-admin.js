@@ -109,11 +109,17 @@
   const status = (message) => { $('[data-content-status]').textContent=message; };
   const account = () => window.netlifyIdentity?.currentUser();
   const authorized = () => local || (account()?.app_metadata?.roles || account()?.app_metadata?.authorization?.roles || []).includes('admin');
-  const normalizeDriverAssignments = (rows=[]) => rows.flatMap((entry)=>{
-    if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||'')))return [entry];
-    const common={number:'29',numberImage:entry.numberImage||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
-    return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
-  });
+  const normalizeDriverAssignments = (rows=[]) => {
+    const normalized=rows.flatMap((entry)=>{
+      if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||'')))return [entry];
+      const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
+      return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
+    });
+    const shared29=normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
+    if(!shared29)return normalized;
+    const sharedUpload=shared29.numberImageBackup||'',sharedSource=shared29.numberImage||sharedUpload;
+    return normalized.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
+  };
   const base = (name) => {
     const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
@@ -639,6 +645,17 @@
   function valueAt(root, path) { return path.reduce((v,k)=>v?.[k],root); }
   function assign(root,path,value) { let obj=root; for(const k of path.slice(0,-1)) obj=obj[k]; obj[path.at(-1)]=value; }
   const current = () => Array.isArray(data)?data[index]:data;
+  function syncSharedKmart29Art(source,{syncUrl=true,syncUpload=true}={}){
+    if(key!=='drivers'||!Array.isArray(data)||source?.competitionId!=='kmart'||String(source?.number)!=='29')return 0;
+    let count=0;
+    for(const row of data){
+      if(row?.competitionId!=='kmart'||String(row?.number)!=='29')continue;
+      if(syncUrl)row.numberImage=source.numberImage||'';
+      if(syncUpload)row.numberImageBackup=source.numberImageBackup||'';
+      count++;
+    }
+    return count;
+  }
   function repairLegacyPartialStandings(value) {
     if(!Array.isArray(value)||!Array.isArray(seeds.standings))return value;
     const scrKmartNumbers=new Set(['15','24','29','34']);
@@ -754,9 +771,10 @@
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}">`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
       }
       if(key==='drivers'&&k==='numberImage') {
-        const backup=current()?.numberImageBackup||'';
-        const preview=v?`<img class="driver-number-preview" src="${esc(v)}" ${backup?`data-backup-src="${esc(backup)}"`:''} alt="Current number artwork preview">`:backup?`<img class="driver-number-preview" src="${esc(backup)}" alt="Uploaded number artwork preview">`:'';
-        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste a DIRECT image URL, or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Use either method. If you upload a file and later paste a URL, the URL becomes primary while the uploaded copy is kept as a fallback if that URL fails on the public Drivers page.','is-wide driver-number-field');
+        const upload=current()?.numberImageBackup||'',primary=upload||v||'',secondary=upload&&v&&v!==upload?v:'';
+        const preview=primary?`<img class="driver-number-preview" src="${esc(primary)}" ${secondary?`data-backup-src="${esc(secondary)}"`:''} alt="Current number artwork preview">`:'';
+        const sharedNote=current()?.competitionId==='kmart'&&String(current()?.number)==='29'?' Kmart #29 is shared, so this artwork is synchronized to Clutch, Eazy, and Matty.':'';
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Optional DIRECT image URL, or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Uploaded artwork is the public primary when present. A pasted direct URL is kept as a secondary source.'+sharedNote,'is-wide driver-number-field');
       }
       if(key==='charters'&&k==='numberImage') {
         const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current charter number artwork preview">`:'';
@@ -1084,9 +1102,9 @@
     if(scoreField&&key==='drivers'){
       const path=JSON.parse(scoreField.dataset.fieldPath||'[]');
       if(path.at(-1)==='numberImage'){
-        commit();dirty=true;render();
-        const row=current(),hasBackup=Boolean(row?.numberImageBackup),usingUrl=/^https:\/\//.test(String(row?.numberImage||''));
-        status(usingUrl&&hasBackup?'Direct image URL selected. The uploaded file is retained as a public fallback if the URL cannot render.':usingUrl?'Direct image URL selected. Use the preview to confirm it renders, then publish.':'Number artwork source updated. Publish Driver League Assignments to update the site.');
+        commit();const row=current(),shared=syncSharedKmart29Art(row,{syncUrl:true,syncUpload:Boolean(row?.numberImageBackup)});dirty=true;render();
+        const hasUpload=Boolean(row?.numberImageBackup),usingUrl=/^https:\/\//.test(String(row?.numberImage||''));
+        status(shared>1?`Kmart #29 artwork source synchronized to ${shared} assignments. ${hasUpload?'The uploaded file remains the public primary.':'Publish Driver League Assignments to update the site.'}`:usingUrl&&hasUpload?'Direct URL saved as the secondary source; the uploaded file remains public primary.':usingUrl?'Direct image URL selected. Use the preview to confirm it renders, then publish.':'Number artwork source updated. Publish Driver League Assignments to update the site.');
         return;
       }
     }
@@ -1094,7 +1112,7 @@
     if(numberUpload&&key==='drivers'){
       const file=numberUpload.files?.[0];if(!file)return;
       commit();const selected=current();
-      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;selected.numberImageBackup=numberArt;dirty=true;if(current()===selected)render();status(`${file.name} is attached to #${selected.number} and saved as its upload fallback. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
+      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;selected.numberImageBackup=numberArt;const shared=syncSharedKmart29Art(selected,{syncUrl:true,syncUpload:true});dirty=true;if(current()===selected)render();status(shared>1?`${file.name} is now the shared Kmart #29 artwork for Clutch, Eazy, and Matty. Publish Driver League Assignments to update the site.`:`${file.name} is attached to #${selected.number} and will be the public primary artwork. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
     }
     const charterNumberUpload=event.target.closest?.('[data-charter-number-image-upload]');
     if(charterNumberUpload&&key==='charters'){
@@ -1253,7 +1271,7 @@
   $('[data-content-export]').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(registry,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='aetherwing-site-content-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
   $('[data-content-fields]').addEventListener('error',(event)=>{
     const image=event.target;if(!(image instanceof HTMLImageElement)||!image.classList.contains('driver-number-preview'))return;
-    const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'){image.dataset.backupTried='1';image.src=backup;status('That external number-image URL did not render. Showing the uploaded fallback instead.');}
+    const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'){image.dataset.backupTried='1';image.src=backup;status('The primary number artwork did not render. Showing the secondary source instead.');}
   },true);
   window.addEventListener('beforeunload',(event)=>{if(dirty){event.preventDefault();event.returnValue='';}});
   window.netlifyIdentity?.on('logout',()=>{loaded=false;data=null;key='';dirty=false;seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});

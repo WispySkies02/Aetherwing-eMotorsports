@@ -75,3 +75,16 @@
   .aw-lineup__dual-art{font-size:clamp(2.75rem,15cqw,3.55rem);max-width:92%;gap:clamp(.22rem,1.7cqw,.45rem)}
   .aw-lineup__poster.has-dual-art .aw-lineup__number{padding-left:.75rem;padding-right:.75rem;padding-bottom:.8rem}
 }
+
+/* v1.1.47 — dual cards can mix uploaded number art with text fallbacks. */
+.aw-lineup__dual-art{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;width:min(94%,100%);max-width:94%;gap:clamp(.28rem,1.6cqw,.55rem);font-size:initial;text-shadow:none}
+.aw-lineup__dual-slot{min-width:0;height:clamp(72px,19cqw,112px);display:flex;align-items:flex-end;justify-content:center}
+.aw-lineup__dual-slot img{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(8px 10px 0 rgba(0,0,0,.58))}
+.aw-lineup__dual-slot b{font:400 clamp(2.8rem,11.5cqw,4.5rem)/.88 var(--font-number);color:#e5ebef;text-shadow:4px 5px #000;white-space:nowrap}
+.aw-lineup__dual-art>i{align-self:end;margin-bottom:.18em;font:400 clamp(1.35rem,5cqw,2rem)/1 var(--font-number);color:#c3ccd3;text-shadow:2px 3px #000;transform:none}
+@media(max-width:600px){
+  .aw-lineup__dual-art{width:min(96%,100%);max-width:96%;gap:clamp(.2rem,1.3cqw,.4rem)}
+  .aw-lineup__dual-slot{height:78px}
+  .aw-lineup__dual-slot b{font-size:clamp(2.65rem,13cqw,3.65rem)}
+  .aw-lineup__dual-art>i{font-size:clamp(1.15rem,5.5cqw,1.6rem)}
+}
