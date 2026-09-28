@@ -1,3 +1,8 @@
+## v1.1.49 — Driver number art shuffle bag
+- ALL-tab random number art now considers every configured number-image source, including older numberImage-only assignments.
+- Multi-number drivers use a session shuffle bag across reloads: every available number artwork is shown once in randomized order before a new cycle begins, with immediate repeats avoided between cycles.
+- Missing numbers with no image remain in the program badges only and are never promoted to giant art-stage fallback text when another uploaded/configured image exists.
+
 ## v1.1.48 — Random single-number art on ALL driver cards
 - ALL-tab driver cards now show one number visual at a time, matching the clean Hailey-card treatment.
 - Drivers with multiple different numbers randomly select one uploaded number image at page load/reload. The random pool only includes Admin-uploaded artwork (including legacy uploaded data images), never missing-number text or URL-only artwork.

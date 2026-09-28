@@ -20,7 +20,29 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   let assignments=entries,profiles=people,charters=boards,series='all';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const programOrder={kmart:1,sunoco:2,nrrs:3,'uarl-d1':4,'uarl-open':5};
-  const randomArtByDriver=new Map();
+  const artChoiceByDriver=new Map();
+  const shuffle=(items)=>{const copy=[...items];for(let i=copy.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;};
+  const chooseDriverArt=(driverKey,items)=>{
+    if(!items.length)return null;
+    const itemKey=(item)=>`${item.number}::${item.src}`;
+    const signature=items.map(itemKey).sort().join('||');
+    const cached=artChoiceByDriver.get(driverKey);
+    if(cached?.signature===signature){const match=items.find(item=>itemKey(item)===cached.itemKey);if(match)return match;}
+    const storageKey=`aetherwing:driver-art-bag:${driverKey}`;
+    let state={signature:'',queue:[],last:''};
+    try{state={...state,...JSON.parse(sessionStorage.getItem(storageKey)||'{}')};}catch{}
+    const validKeys=new Set(items.map(itemKey));
+    let queue=Array.isArray(state.queue)?state.queue.filter(key=>validKeys.has(key)):[];
+    if(state.signature!==signature||!queue.length){
+      queue=shuffle(items.map(itemKey));
+      if(queue.length>1&&queue[0]===state.last){const swap=1+Math.floor(Math.random()*(queue.length-1));[queue[0],queue[swap]]=[queue[swap],queue[0]];}
+    }
+    const chosenKey=queue.shift()||itemKey(items[0]);
+    try{sessionStorage.setItem(storageKey,JSON.stringify({signature,queue,last:chosenKey}));}catch{}
+    const chosen=items.find(item=>itemKey(item)===chosenKey)||items[0];
+    artChoiceByDriver.set(driverKey,{signature,itemKey:itemKey(chosen)});
+    return chosen;
+  };
   const artCorrections={
     'rocky:92':{desktop:1.16,mobile:1.1},
     'jaxon:34':{desktop:.9,mobile:.9},
@@ -103,23 +125,14 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const seenUploadedNumbers=new Set();
       for(const ride of rides){
         const number=String(ride.number||'');
-        const legacyUpload=String(ride.numberImage||'').startsWith('data:image/')?ride.numberImage:'';
-        const src=ride.numberImageBackup||legacyUpload||'';
+        const src=ride.numberImageBackup||ride.numberImage||'';
         if(!number||!src||seenUploadedNumbers.has(number))continue;
         seenUploadedNumbers.add(number);
         const secondary=ride.numberImageBackup&&ride.numberImage&&ride.numberImage!==ride.numberImageBackup?ride.numberImage:'';
         uploadedByNumber.push({number,src,backup:secondary});
       }
       const randomKey=e.profile||`${e.displayName||'driver'}::${e.affiliation||''}`;
-      let chosenArt=null;
-      if(e.summary&&uploadedByNumber.length){
-        const prior=randomArtByDriver.get(randomKey);
-        chosenArt=uploadedByNumber.find(item=>item.number===prior?.number&&item.src===prior?.src)||null;
-        if(!chosenArt){
-          chosenArt=uploadedByNumber[Math.floor(Math.random()*uploadedByNumber.length)];
-          randomArtByDriver.set(randomKey,chosenArt);
-        }
-      }
+      const chosenArt=e.summary?chooseDriverArt(randomKey,uploadedByNumber):null;
       const primaryNumber=String(e.summary?(chosenArt?.number||rideNumbers[0]||''):(e.number||'')).split(' / ')[0]||'';
       const correction=correctionFor(e.profile,primaryNumber);
       const artAttrs=` data-scale-desktop="${esc(correction.desktop??1)}" data-scale-mobile="${esc(correction.mobile??correction.desktop??1)}"`;
@@ -136,7 +149,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const topLine=e.summary?`${e.programCount||0} ACTIVE PROGRAM${e.programCount===1?'':'S'}`:`${programs.get(e.competitionId)||label(e)} · ${e.status||'ACTIVE'}`;
       const teamLabel=e.summary&&e.mixedAffiliation?'AETHERWING + STARCLUTCH':(alliance?'STARCLUTCH RACING':'AETHERWING');
       const artMode=stacked.length?'stack':(artSrc?'single':'fallback');
-      return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''} ${signature?'has-signature':''} ${e.summary?'is-driver-summary':''}" data-number="${esc(primaryNumber||e.number)}" data-primary-number="${esc(primaryNumber)}" data-team-label="${teamLabel}"><div class="aw-lineup__number" data-art-mode="${artMode}">${image}</div><div class="aw-lineup__plate">${signature}<small>${esc(topLine)}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${summary}${profile}</div></article>`;
+      return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''} ${signature?'has-signature':''} ${e.summary?'is-driver-summary':''}" data-number="${esc(primaryNumber||e.number)}" data-primary-number="${esc(primaryNumber)}" data-art-pool="${esc(uploadedByNumber.map(item=>item.number).join(','))}" data-team-label="${teamLabel}"><div class="aw-lineup__number" data-art-mode="${artMode}">${image}</div><div class="aw-lineup__plate">${signature}<small>${esc(topLine)}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${summary}${profile}</div></article>`;
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
     queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);requestAnimationFrame(()=>fitNumberVisual(img));}}));
   }
