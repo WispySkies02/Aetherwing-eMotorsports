@@ -175,10 +175,15 @@
     const source=URL.createObjectURL(file);
     try {
       const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('That number image could not be read.'));img.src=source;});
-      const scale=Math.min(1,1000/image.naturalWidth,650/image.naturalHeight),canvas=document.createElement('canvas');
-      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
-      let quality=.92,result=canvas.toDataURL('image/webp',quality);
+      const probe=document.createElement('canvas'),probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight));
+      probe.width=Math.max(1,Math.round(image.naturalWidth*probeScale));probe.height=Math.max(1,Math.round(image.naturalHeight*probeScale));
+      const probeCtx=probe.getContext('2d',{willReadFrequently:true});probeCtx.drawImage(image,0,0,probe.width,probe.height);
+      let sx=0,sy=0,sw=probe.width,sh=probe.height;
+      try{const pixels=probeCtx.getImageData(0,0,probe.width,probe.height).data;let left=probe.width,top=probe.height,right=-1,bottom=-1;for(let y=0;y<probe.height;y+=1){for(let x=0;x<probe.width;x+=1){if(pixels[(y*probe.width+x)*4+3]>14){if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;}}}if(right>=left&&bottom>=top){const visibleW=right-left+1,visibleH=bottom-top+1,padX=Math.max(2,Math.round(visibleW*.035)),padY=Math.max(2,Math.round(visibleH*.035));left=Math.max(0,left-padX);right=Math.min(probe.width-1,right+padX);top=Math.max(0,top-padY);bottom=Math.min(probe.height-1,bottom+padY);sx=left;sy=top;sw=right-left+1;sh=bottom-top+1;}}catch{}
+      const scale=Math.min(1,1000/sw,650/sh),canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(sw*scale));canvas.height=Math.max(1,Math.round(sh*scale));
+      canvas.getContext('2d').drawImage(probe,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+      let quality=.94,result=canvas.toDataURL('image/webp',quality);
       while(result.length>160000&&quality>.45){quality-=.08;result=canvas.toDataURL('image/webp',quality);}
       if(result.length>160000)throw new Error('This number art is too large after optimization. Please use a smaller image or an image URL.');
       return result;

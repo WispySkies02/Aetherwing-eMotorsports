@@ -27,6 +27,7 @@ if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.
 if(!lineupSource.includes('const groupedDrivers=')||!lineupSource.includes('ONE CARD EACH')||!lineupSource.includes('aw-lineup__summary-rides'))throw Error('Driver Lineup ALL filter must group league assignments into one card per driver.');
 const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
+if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))'))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
 if(!eventSource.includes("entryListMode==='custom'")||!eventSource.includes("status:'Raced'"))throw Error('Race Weekend pages must support custom event entry lists and result-driven Auto mode.');
 if(!adminContentSource.includes('data-schedule-entry-driver-choice')||!adminContentSource.includes('data-event-entries-sync-result')||!adminContentSource.includes('Fill from league roster'))throw Error('Calendar Admin must retain event-specific entry list editing tools.');
 

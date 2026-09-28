@@ -1,3 +1,9 @@
+## v1.1.41 — Normalized Driver Number Stages
+- Desktop driver cards now fit all visible number artwork to one consistent height/centerline instead of sizing primarily by PNG width.
+- Existing transparent number art is tightened client-side when possible; future Admin number uploads trim transparent padding before saving.
+- Mobile cards now give number art a dedicated fixed stage above an opaque information panel, so numbers never sit behind the translucent nameplate.
+- Mobile multi-program chips use compact league labels while desktop keeps the full series names.
+
 ## v1.1.40 — One Driver Card in ALL
 - Drivers page ALL filter now groups league assignments by actual person, so multi-program drivers appear once.
 - The combined card shows every current program and car number as compact roster chips.
