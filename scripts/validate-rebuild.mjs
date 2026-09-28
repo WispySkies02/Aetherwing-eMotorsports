@@ -26,6 +26,9 @@ const lineupSource=readFileSync('src/components/DriverLineup.astro','utf8');
 if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.includes('STARCLUTCH RACING'))throw Error('Driver Lineup must retain partner-team roster support.');
 if(!lineupSource.includes('const groupedDrivers=')||!lineupSource.includes('ONE CARD EACH')||!lineupSource.includes('aw-lineup__summary-rides'))throw Error('Driver Lineup ALL filter must group league assignments into one card per driver.');
 if(!lineupSource.includes('aw-lineup__dual-art')||!lineupSource.includes('dualProfiles')||!lineupSource.includes('artCorrections'))throw Error('Driver Lineup card art normalization and dual-number composition are missing.');
+const lineupCss=readFileSync('src/styles/driver-lineup.css','utf8');
+if(!lineupCss.includes('v1.1.45 — shared hard boundary between card art and information panel')||!lineupCss.includes('grid-template-rows:minmax(0,1fr) auto')||!lineupCss.includes('font-size:clamp(2.9rem,15cqw,4.2rem)'))throw Error('Driver cards must retain the v1.1.45 hard art/panel boundary and width-aware dual-number sizing.');
+if(!lineupSource.includes('contentWidth')||!lineupSource.includes('contentHeight'))throw Error('Single-number fitting must use the padded artwork content box.');
 const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
 if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))'))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
@@ -81,7 +84,7 @@ if(!adminContentSource.includes('data-standings-import-text')||!adminContentSour
 if(!profileSource.includes('data-profile-identity')||!profileSource.includes("d['roster-profiles']")||!profileSource.includes("d['driver-profiles']"))throw Error('Driver profile identity/stat edits must stay live-synced.');
 if(!adminContentSource.includes('data-partner-logo-upload'))throw Error('Team partner logo uploads must remain available in Admin.');
 if(!adminContentSource.includes('data-signature-logo-upload')||!lineupSource.includes('aw-lineup__signature'))throw Error('Driver signature-logo uploads and public roster rendering are missing.');
-if(!lineupSource.includes('fitNumberVisual')||!lineupSource.includes('targetArea=rect.width*rect.height'))throw Error('Driver number artwork must retain visible-area normalization.');
+if(!lineupSource.includes('fitNumberVisual')||!lineupSource.includes('targetArea=contentWidth*contentHeight'))throw Error('Driver number artwork must retain padded-box visible-area normalization.');
 if(!adminContentSource.includes('uploadedSignatureData')||!adminContentSource.includes('probeCtx.getImageData')||!lineupSource.includes("${signature?'has-signature':''}")||!lineupSource.includes('tightenSignature'))throw Error('Driver signatures must use transparent-padding trimming and the prominent roster-card treatment.');
 
 // v1.1.30 — Sep. 25 review closeout guards.

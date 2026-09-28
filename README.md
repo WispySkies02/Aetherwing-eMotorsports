@@ -1,3 +1,10 @@
+## v1.1.45 — Driver Card Art Boundary Fix
+- Rebuilt desktop driver cards as two real layout rows: a bounded artwork stage followed by the information panel, so number art can no longer sit behind the panel.
+- Single-number fitting now measures the actual padded content box before sizing visible artwork.
+- Dual-number cards use container-width-relative sizing so Clutch, Eazy, and Will stay fully inside the available card width.
+- Preserves the existing card design, normalized #92/#34 corrections, Hailey BELL signature placement, Matty handwritten signature treatment, and 220px mobile art stage.
+- Mobile rendered screenshots were attempted at 320/375/430 but the container Chromium process cannot complete even an about:blank headless render; do not treat those visual widths as verified until deployed or tested in a working browser environment.
+
 ## v1.1.44 — Drivers card art normalization
 - Normalized single-number driver artwork by visible bounds with small targeted corrections for the current #32 / #52 / #43 / #92 / #34 set.
 - Added a dedicated dual-number layout for Clutch, Eazy, and Will so both numbers remain fully visible on desktop and mobile.
