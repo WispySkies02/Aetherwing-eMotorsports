@@ -1,3 +1,8 @@
+## v1.1.42 — Visible-Area Number Normalization
+- Driver number artwork now fits by visible artwork area after transparent padding is trimmed, reducing size differences between tall/narrow and wide number logos.
+- Mobile number stage is shorter and uses a calmer target scale while preserving the separate opaque info panel.
+- Desktop poster design and signature overlap remain intact.
+
 ## v1.1.41 — Normalized Driver Number Stages
 - Desktop driver cards now fit all visible number artwork to one consistent height/centerline instead of sizing primarily by PNG width.
 - Existing transparent number art is tightened client-side when possible; future Admin number uploads trim transparent padding before saving.

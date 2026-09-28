@@ -80,6 +80,7 @@ if(!adminContentSource.includes('data-standings-import-text')||!adminContentSour
 if(!profileSource.includes('data-profile-identity')||!profileSource.includes("d['roster-profiles']")||!profileSource.includes("d['driver-profiles']"))throw Error('Driver profile identity/stat edits must stay live-synced.');
 if(!adminContentSource.includes('data-partner-logo-upload'))throw Error('Team partner logo uploads must remain available in Admin.');
 if(!adminContentSource.includes('data-signature-logo-upload')||!lineupSource.includes('aw-lineup__signature'))throw Error('Driver signature-logo uploads and public roster rendering are missing.');
+if(!lineupSource.includes('fitNumberVisual')||!lineupSource.includes('targetArea=rect.width*rect.height'))throw Error('Driver number artwork must retain visible-area normalization.');
 if(!adminContentSource.includes('uploadedSignatureData')||!adminContentSource.includes('probeCtx.getImageData')||!lineupSource.includes("${signature?'has-signature':''}")||!lineupSource.includes('tightenSignature'))throw Error('Driver signatures must use transparent-padding trimming and the prominent roster-card treatment.');
 
 // v1.1.30 — Sep. 25 review closeout guards.
