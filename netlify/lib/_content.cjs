@@ -58,6 +58,7 @@ function scoreKnownRace(race={}) {
 function normalize(key,data) {
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
+  if(key==='roster-profiles'&&Array.isArray(data))return data.map((profile)=>({signatureLogo:'',...profile}));
   if(key==='results'&&Array.isArray(data)){const sorted=[...data].map(scoreKnownRace).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));return sorted.map((race,index)=>({...race,featured:index===0}));}
   return data;
 }

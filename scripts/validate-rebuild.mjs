@@ -24,6 +24,7 @@ const profileSource=readFileSync('src/pages/drivers/[slug].astro','utf8');
 if(!profileSource.includes("d['driver-portfolios']")||!profileSource.includes('data-profile-partners'))throw Error('Driver profiles must stay synchronized with live Driver Portfolios.');
 const lineupSource=readFileSync('src/components/DriverLineup.astro','utf8');
 if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.includes('STARCLUTCH RACING'))throw Error('Driver Lineup must retain partner-team roster support.');
+if(!lineupSource.includes('const groupedDrivers=')||!lineupSource.includes('ONE CARD EACH')||!lineupSource.includes('aw-lineup__summary-rides'))throw Error('Driver Lineup ALL filter must group league assignments into one card per driver.');
 const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
 if(!eventSource.includes("entryListMode==='custom'")||!eventSource.includes("status:'Raced'"))throw Error('Race Weekend pages must support custom event entry lists and result-driven Auto mode.');
@@ -78,6 +79,7 @@ if(!adminContentSource.includes('data-standings-import-text')||!adminContentSour
 if(!profileSource.includes('data-profile-identity')||!profileSource.includes("d['roster-profiles']")||!profileSource.includes("d['driver-profiles']"))throw Error('Driver profile identity/stat edits must stay live-synced.');
 if(!adminContentSource.includes('data-partner-logo-upload'))throw Error('Team partner logo uploads must remain available in Admin.');
 if(!adminContentSource.includes('data-signature-logo-upload')||!lineupSource.includes('aw-lineup__signature'))throw Error('Driver signature-logo uploads and public roster rendering are missing.');
+if(!adminContentSource.includes('uploadedSignatureData')||!adminContentSource.includes('probeCtx.getImageData')||!lineupSource.includes("${signature?'has-signature':''}")||!lineupSource.includes('tightenSignature'))throw Error('Driver signatures must use transparent-padding trimming and the prominent roster-card treatment.');
 
 // v1.1.30 — Sep. 25 review closeout guards.
 const raceCalendarSource=readFileSync('src/components/RaceCalendar.astro','utf8');

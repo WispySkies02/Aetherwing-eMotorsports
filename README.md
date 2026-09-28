@@ -1,3 +1,13 @@
+## v1.1.40 — One Driver Card in ALL
+- Drivers page ALL filter now groups league assignments by actual person, so multi-program drivers appear once.
+- The combined card shows every current program and car number as compact roster chips.
+- Individual league filters remain assignment-specific with the correct league number/artwork.
+
+## v1.1.39 — Prominent Driver Signature Treatment
+- Driver signatures now float prominently above the roster card nameplate instead of sitting as a small logo under the name.
+- Signature uploads trim transparent whitespace before optimization, fixing wide/padded wordmarks that could appear tiny or invisible.
+- Driver Directory schema merging keeps the optional signature field available even when older published profile records predate the feature.
+
 ## v1.1.38 — Driver Signature Logos
 - Added optional Driver Directory signature logo artwork with Admin upload/URL support.
 - Public Drivers page roster cards now display a driver's signature logo when one exists.
