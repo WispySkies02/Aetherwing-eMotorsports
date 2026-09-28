@@ -23,6 +23,9 @@ function normalizeDriverAssignments(rows=[]) {
 function validNumberImage(value='') {
   return !value || /^(https:\/\/|\/)/.test(value) || (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) && value.length<=160000);
 }
+function validLogoImage(value='') {
+  return !value || /^(https:\/\/|\/)/.test(value) || /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value);
+}
 function compareScheduleEvents(a,b) {
   const date=String(a?.date||'9999-12-31').localeCompare(String(b?.date||'9999-12-31'));
   if(date)return date;
@@ -154,6 +157,7 @@ function validate(key, data, registry={}) {
     }
     if (key === 'news' && (!/^\d{4}-\d{2}-\d{2}$/.test(row.dateIso) || !Array.isArray(row.sections) || !Array.isArray(row.tags) || row.sections.some((s) => !s.heading || !Array.isArray(s.paragraphs)))) return 'Stories need an ISO date, tags, and sections with headings and paragraphs.';
     if (key === 'roster-profiles' && !Array.isArray(row.programs)) return 'Driver programs must be a list.';
+    if (key === 'roster-profiles' && !validLogoImage(row.signatureLogo||'')) return 'Driver signature logos must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points)) || (Array.isArray(row.chaseRows) && row.chaseRows.some((r)=>!Number.isFinite(r?.points))))) return 'Standings rows need numeric points (or an explicit pending placeholder before the first full-roster import).';
     if (key === 'charters') {
@@ -167,11 +171,11 @@ function validate(key, data, registry={}) {
       }
     }
     if (key === 'leadership' && !Array.isArray(row.roles)) return 'Leadership entries need a roles list.';
-    if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !/^(https:\/\/|\/|data:image\/(?:png|jpeg|webp);base64,)/.test(row.logo))) return 'Partners need an HTTPS website URL, an uploaded/HTTPS/site-relative logo, and a tags list.';
+    if (key === 'partners' && (!Array.isArray(row.tags) || !/^https:\/\//.test(row.url) || !validLogoImage(row.logo))) return 'Partners need an HTTPS website URL, an uploaded/HTTPS/site-relative logo, and a tags list.';
     if (key === 'driver-portfolios') {
       if (!Array.isArray(row.brands) || !row.brands.length) return `Driver portfolio ${index + 1}: add at least one brand.`;
       if (row.brands.some((brand) => !String(brand?.name || '').trim() || !Number.isFinite(brand?.order))) return `Driver portfolio ${index + 1}: every brand needs a name and numeric display order.`;
-      if (row.brands.some((brand) => brand.logo && !/^(https:\/\/|\/|data:image\/(?:png|jpeg|webp);base64,)/.test(brand.logo))) return `Driver portfolio ${index + 1}: logos must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
+      if (row.brands.some((brand) => !validLogoImage(brand.logo||''))) return `Driver portfolio ${index + 1}: logos must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
     }
     if(key==='navigation'&&!/^(\/|https:\/\/)/.test(row.href))return `Navigation entry ${index+1}: use a site-relative path or HTTPS URL.`;
     if(key==='page-overrides'){

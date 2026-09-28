@@ -42,7 +42,7 @@
     standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Competing organization',car:'Car / body',identityNote:'Identity note'},
-    'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
+    'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',signatureLogo:'Signature logo URL',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
     'driver-profiles':{slug:'Profile ID',displayName:'Current RoRacing display name',iracingName:'Current iRacing name',subtitle:'Profile subtitle',intro:'Profile introduction',stats:'Career stat tiles',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
     charters:{id:'League / charter board ID',label:'Public series label',seriesNote:'Board note',fullTime:'Full-time charters',openCharters:'Open Charters',uses:'Number identities / uses',number:'Car number',numberImage:'Number image URL',driver:'Assigned driver',slotLabel:'Slot label',active:'Active / public',description:'Public explanation'},
     'iracing-garage':{factoryDrivers:'Factory driver count',teamEntries:'Team entry count',schemes:'Published scheme count',entries:'Garage entries',driver:'Driver / team name',number:'Car number(s)',placeholder:'Placeholder entry'},
@@ -73,6 +73,7 @@
     featured:'Only use this when the item should receive featured treatment.',
     url:'Use the official HTTPS destination.',
     logo:'Use a direct HTTPS image URL.',
+    signatureLogo:'Optional personal wordmark / signature artwork. Upload a PNG/JPG/WebP or paste a direct HTTPS/site-relative image URL.',
     roles:'One public role per line.',
     tags:'One tag per line in this editor.',
     bio:'Long-form public biography.',
@@ -712,6 +713,10 @@
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current partner logo preview">`:'';
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-partner-logo-upload>`,'Paste an HTTPS/site-relative logo URL, or upload a PNG, JPG, or WebP. The published Partners page uses this exact image.','is-wide portfolio-logo-field');
       }
+      if(key==='roster-profiles'&&k==='signatureLogo') {
+        const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current driver signature logo preview">`:'';
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-signature-logo-upload>`,'Optional personal wordmark/signature art for the Drivers page. Upload a PNG, JPG, or WebP, or paste a direct HTTPS/site-relative image URL.','is-wide portfolio-logo-field');
+      }
       if(key==='driver-portfolios'&&k==='logo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current brand logo preview">`:'';
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}">`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
@@ -1060,6 +1065,12 @@
       const file=partnerLogoUpload.files?.[0];if(!file)return;
       commit();const selected=current();
       try{status(`Optimizing ${file.name}…`);const logo=await uploadedLogoData(file);if(!data.includes(selected))throw new Error('The partner entry changed during upload. Select it and upload again.');selected.logo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to ${selected.name}. Publish Partners to update the public page.`);}catch(error){status(error.message);}return;
+    }
+    const signatureLogoUpload=event.target.closest?.('[data-signature-logo-upload]');
+    if(signatureLogoUpload&&key==='roster-profiles'){
+      const file=signatureLogoUpload.files?.[0];if(!file)return;
+      commit();const selected=current();
+      try{status(`Optimizing ${file.name}…`);const logo=await uploadedLogoData(file);if(!data.includes(selected))throw new Error('The driver profile changed during upload. Select it and upload again.');selected.signatureLogo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to ${selected.name}. Publish Driver Directory to update the Drivers page.`);}catch(error){status(error.message);}return;
     }
     const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
     if(logoUpload&&key==='driver-portfolios'){

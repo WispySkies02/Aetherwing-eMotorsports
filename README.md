@@ -1,3 +1,8 @@
+## v1.1.38 — Driver Signature Logos
+- Added optional Driver Directory signature logo artwork with Admin upload/URL support.
+- Public Drivers page roster cards now display a driver's signature logo when one exists.
+- Driver profile hero can also surface the same signature branding asset.
+
 # Aetherwing eMotorsports · Fresh Site
 
 This is a new Astro frontend built around the supplied Aetherwing grunge background. It reuses the original site's structured content and Netlify Admin storage so race data, standings, driver assignments, team partners, driver portfolios, news, and paints remain editable.

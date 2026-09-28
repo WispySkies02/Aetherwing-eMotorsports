@@ -77,6 +77,7 @@ if(!hailey||Number(hailey.points)!==2087||hailey.delta!=='-108')throw Error('Hai
 if(!adminContentSource.includes('data-standings-import-text')||!adminContentSource.includes('Apply waiting race points')||!adminContentSource.includes('External / unrostered participant'))throw Error('Admin must retain standings import, automatic result points, and external result participants.');
 if(!profileSource.includes('data-profile-identity')||!profileSource.includes("d['roster-profiles']")||!profileSource.includes("d['driver-profiles']"))throw Error('Driver profile identity/stat edits must stay live-synced.');
 if(!adminContentSource.includes('data-partner-logo-upload'))throw Error('Team partner logo uploads must remain available in Admin.');
+if(!adminContentSource.includes('data-signature-logo-upload')||!lineupSource.includes('aw-lineup__signature'))throw Error('Driver signature-logo uploads and public roster rendering are missing.');
 
 // v1.1.30 — Sep. 25 review closeout guards.
 const raceCalendarSource=readFileSync('src/components/RaceCalendar.astro','utf8');
