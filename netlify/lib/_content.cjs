@@ -185,6 +185,7 @@ function validate(key, data, registry={}) {
       if(['link','image'].includes(row.type)&&!/^((https:\/\/)|\/|#)/.test(row.value))return `Page Content entry ${index+1}: link and image replacements need an HTTPS URL, site-relative path, or anchor.`;
     }
     if(key==='drivers'&&!validNumberImage(row.numberImage))return `Entry ${index+1}: number image must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
+    if(key==='drivers'&&row.numberImageBackup&&!validNumberImage(row.numberImageBackup))return `Entry ${index+1}: uploaded number-image fallback is invalid.`;
   }
   const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;

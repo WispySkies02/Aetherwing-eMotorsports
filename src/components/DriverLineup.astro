@@ -55,7 +55,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     img.style.maxHeight='none';
   };
   root.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__signature'))tightenSignature(image);if(image.closest('.aw-lineup__number')){tightenNumber(image);requestAnimationFrame(()=>fitNumberVisual(image));}},true);
-  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const fallback=document.createElement('b');fallback.className='aw-lineup__number-fallback is-single';fallback.textContent=`#${image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
+  root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className='aw-lineup__number-fallback is-single';fallback.textContent=`#${image.closest('[data-number]')?.dataset.number||image.alt.replace('Number ','')}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
   const shortProgram=(id,name='')=>({nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[id]||name||id);
   function render(){
@@ -77,7 +77,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       return [...groups.entries()].map(([key,rows])=>{
         const person=profiles.find(profile=>profile.slug===rows[0]?.profile);
         const ordered=[...rows].sort((a,b)=>(programOrder[a.competitionId]||99)-(programOrder[b.competitionId]||99)||Number(a.number)-Number(b.number));
-        const primary=ordered.find(entry=>entry.numberImage)||ordered[0];
+        const primary=ordered.find(entry=>entry.numberImage||entry.numberImageBackup)||ordered[0];
         const rides=ordered.map(entry=>({competitionId:entry.competitionId,program:programs.get(entry.competitionId)||label(entry),number:String(entry.number||''),status:entry.status||'Active'}));
         const numbers=[...new Set(rides.map(ride=>ride.number).filter(Boolean))];
         const affiliations=[...new Set(ordered.map(entry=>entry.affiliation).filter(Boolean))];
@@ -100,19 +100,21 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const primaryNumber=String((dualSummary?dualRides[0]?.number:(e.number||rideNumbers[0]||'')).split(' / ')[0]||'');
       const correction=correctionFor(e.profile,primaryNumber);
       const artAttrs=` data-scale-desktop="${esc(correction.desktop??1)}" data-scale-mobile="${esc(correction.mobile??correction.desktop??1)}"`;
+      const artSrc=e.numberImage||e.numberImageBackup||'';
+      const backupSrc=e.numberImageBackup||'';
       const image=dualSummary
         ? `<div class="aw-lineup__dual-art" aria-label="${esc(dualRides.map(ride=>`${shortProgram(ride.competitionId,ride.program)} #${ride.number}`).join(' / '))}"><span>#${esc(dualRides[0]?.number||rideNumbers[0]||'')}</span><i>/</i><span>#${esc(dualRides[1]?.number||rideNumbers[1]||'')}</span></div>`
         : stacked.length
           ? `<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" loading="lazy"${artAttrs}>`:`<b class="aw-lineup__number-fallback is-single">#${esc(item.number)}</b>`).join('')}</div>`
-          : e.numberImage
-            ? `<img src="${esc(e.numberImage)}" alt="Number ${esc(primaryNumber||e.number)}" loading="lazy"${artAttrs}>`
+          : artSrc
+            ? `<img src="${esc(artSrc)}" alt="Number ${esc(primaryNumber||e.number)}" loading="lazy"${artAttrs}${backupSrc?` data-backup-src="${esc(backupSrc)}"`:''}>`
             : `<b class="aw-lineup__number-fallback is-single">#${esc(primaryNumber||e.number)}</b>`;
       const signature=person?.signatureLogo&&!open?`<div class="aw-lineup__signature" data-signature-driver="${esc(person.slug||'')}" aria-hidden="true"><img src="${esc(person.signatureLogo)}" alt="" loading="lazy"></div>`:'';
       const profile=person&&!open&&profileSlugs.includes(person.slug)?`<a href="/drivers/${encodeURIComponent(person.slug)}/" aria-label="View ${esc(person.name||e.displayName)} profile">View profile ↗</a>`:`<span>${open?'Program entry':'Driver profile coming soon'}</span>`;
       const summary=e.summary?`<div class="aw-lineup__summary-rides" aria-label="Current racing programs">${(rides||[]).map(ride=>`<span><b data-short="${esc(shortProgram(ride.competitionId,ride.program))}">${esc(ride.program)}</b>${ride.number?` <em>#${esc(ride.number)}</em>`:''}</span>`).join('')}</div>`:'';
       const topLine=e.summary?`${e.programCount||0} ACTIVE PROGRAM${e.programCount===1?'':'S'}`:`${programs.get(e.competitionId)||label(e)} · ${e.status||'ACTIVE'}`;
       const teamLabel=e.summary&&e.mixedAffiliation?'AETHERWING + STARCLUTCH':(alliance?'STARCLUTCH RACING':'AETHERWING');
-      const artMode=dualSummary?'dual':(stacked.length?'stack':(e.numberImage?'single':'fallback'));
+      const artMode=dualSummary?'dual':(stacked.length?'stack':(artSrc?'single':'fallback'));
       return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''} ${signature?'has-signature':''} ${e.summary?'is-driver-summary':''} ${dualSummary?'has-dual-art':''}" data-number="${esc(e.number)}" data-primary-number="${esc(primaryNumber)}" data-team-label="${teamLabel}"><div class="aw-lineup__number" data-art-mode="${artMode}">${image}</div><div class="aw-lineup__plate">${signature}<small>${esc(topLine)}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${summary}${profile}</div></article>`;
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
     queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);requestAnimationFrame(()=>fitNumberVisual(img));}}));

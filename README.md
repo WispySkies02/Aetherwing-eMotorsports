@@ -1,3 +1,9 @@
+## v1.1.46 — Number Artwork Publish Fallback
+- Driver number file uploads are retained as a private/public data fallback even if an external URL is later pasted into the same Admin field.
+- The Drivers page automatically retries the stored upload if the primary external URL fails to render, before falling back to text.
+- Admin preview now mirrors that behavior and explains that upload and URL are alternate/primary+fallback sources rather than two required fields.
+- Existing v1.1.45 card-boundary and dual-number fixes are preserved.
+
 ## v1.1.45 — Driver Card Art Boundary Fix
 - Rebuilt desktop driver cards as two real layout rows: a bounded artwork stage followed by the information panel, so number art can no longer sit behind the panel.
 - Single-number fitting now measures the actual padded content box before sizing visible artwork.

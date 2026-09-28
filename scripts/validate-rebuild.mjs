@@ -31,6 +31,7 @@ if(!lineupCss.includes('v1.1.45 — shared hard boundary between card art and in
 if(!lineupSource.includes('contentWidth')||!lineupSource.includes('contentHeight'))throw Error('Single-number fitting must use the padded artwork content box.');
 const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
+if(!lineupSource.includes('data-backup-src')||!adminContentSource.includes('numberImageBackup')||!adminContentSource.includes('uploaded fallback'))throw Error('Driver number uploads must survive a failed external URL as a fallback.');
 if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))'))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
 if(!eventSource.includes("entryListMode==='custom'")||!eventSource.includes("status:'Raced'"))throw Error('Race Weekend pages must support custom event entry lists and result-driven Auto mode.');
 if(!adminContentSource.includes('data-schedule-entry-driver-choice')||!adminContentSource.includes('data-event-entries-sync-result')||!adminContentSource.includes('Fill from league roster'))throw Error('Calendar Admin must retain event-specific entry list editing tools.');

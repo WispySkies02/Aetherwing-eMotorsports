@@ -694,6 +694,7 @@
   function fields(value,path=[]) {
     const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
     return Object.entries(value).map(([k,v])=>{
+      if(key==='drivers'&&k==='numberImageBackup')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
       if (key==='standings' && k==='highlight') {
         return shell(pretty,`<input type="text" readonly value="${v?'Highlighted':'Not highlighted'}">`,'Use the ☆ Highlight Driver / ★ Highlighted button above this standings row.','is-readonly');
@@ -753,8 +754,9 @@
         return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}">`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
       }
       if(key==='drivers'&&k==='numberImage') {
-        const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current number artwork preview">`:'';
-        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste an image URL or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Upload a transparent PNG or WebP, or paste an image URL. This art replaces the large text number for this league assignment when you publish.','is-wide driver-number-field');
+        const backup=current()?.numberImageBackup||'';
+        const preview=v?`<img class="driver-number-preview" src="${esc(v)}" ${backup?`data-backup-src="${esc(backup)}"`:''} alt="Current number artwork preview">`:backup?`<img class="driver-number-preview" src="${esc(backup)}" alt="Uploaded number artwork preview">`:'';
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Paste a DIRECT image URL, or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Use either method. If you upload a file and later paste a URL, the URL becomes primary while the uploaded copy is kept as a fallback if that URL fails on the public Drivers page.','is-wide driver-number-field');
       }
       if(key==='charters'&&k==='numberImage') {
         const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current charter number artwork preview">`:'';
@@ -1079,11 +1081,20 @@
         commit();const scored=scoreKnownResult(current());Object.keys(current()).forEach(k=>delete current()[k]);Object.assign(current(),scored);dirty=true;render();status('Finish, stage, and total race points recalculated for this league.');return;
       }
     }
+    if(scoreField&&key==='drivers'){
+      const path=JSON.parse(scoreField.dataset.fieldPath||'[]');
+      if(path.at(-1)==='numberImage'){
+        commit();dirty=true;render();
+        const row=current(),hasBackup=Boolean(row?.numberImageBackup),usingUrl=/^https:\/\//.test(String(row?.numberImage||''));
+        status(usingUrl&&hasBackup?'Direct image URL selected. The uploaded file is retained as a public fallback if the URL cannot render.':usingUrl?'Direct image URL selected. Use the preview to confirm it renders, then publish.':'Number artwork source updated. Publish Driver League Assignments to update the site.');
+        return;
+      }
+    }
     const numberUpload=event.target.closest?.('[data-number-image-upload]');
     if(numberUpload&&key==='drivers'){
       const file=numberUpload.files?.[0];if(!file)return;
       commit();const selected=current();
-      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;dirty=true;if(current()===selected)render();status(`${file.name} is attached to #${selected.number}. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
+      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;selected.numberImageBackup=numberArt;dirty=true;if(current()===selected)render();status(`${file.name} is attached to #${selected.number} and saved as its upload fallback. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
     }
     const charterNumberUpload=event.target.closest?.('[data-charter-number-image-upload]');
     if(charterNumberUpload&&key==='charters'){
@@ -1240,6 +1251,10 @@
     } catch(error) { $('[data-admin-publish-status]').textContent=error.message; }
   });
   $('[data-content-export]').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(registry,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='aetherwing-site-content-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+  $('[data-content-fields]').addEventListener('error',(event)=>{
+    const image=event.target;if(!(image instanceof HTMLImageElement)||!image.classList.contains('driver-number-preview'))return;
+    const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'){image.dataset.backupTried='1';image.src=backup;status('That external number-image URL did not render. Showing the uploaded fallback instead.');}
+  },true);
   window.addEventListener('beforeunload',(event)=>{if(dirty){event.preventDefault();event.returnValue='';}});
   window.netlifyIdentity?.on('logout',()=>{loaded=false;data=null;key='';dirty=false;seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});
 })();
