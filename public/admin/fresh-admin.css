@@ -272,3 +272,9 @@ html[data-admin-theme="christmas"],html[data-admin-theme="christmas-week"]{--pre
 html[data-admin-theme="easter"] .admin-theme-preview__grid button[data-theme="easter"],html[data-admin-theme="christmas"] .admin-theme-preview__grid button[data-theme="christmas"],html[data-admin-theme="christmas-week"] .admin-theme-preview__grid button[data-theme="christmas-week"]{box-shadow:inset 4px 0 var(--preview-primary),0 0 0 1px color-mix(in srgb,var(--preview-primary) 25%,transparent)!important}
 
 @media(max-width:700px){.admin-faith-preview-banner{grid-template-columns:1fr;gap:.35rem}.admin-faith-preview-banner b{white-space:normal}.admin-faith-preview-banner strong{font-size:1rem}}
+
+/* v1.1.50 — signature upload feedback stays beside the Driver Directory field. */
+.admin-field__upload-status{display:block;margin-top:.15rem;color:#818b94;font:800 .55rem/1.45 var(--font-mono);letter-spacing:.02em}
+.admin-field__upload-status[data-state="working"]{color:#f3b51d}
+.admin-field__upload-status[data-state="success"]{color:#7fd9a5}
+.admin-field__upload-status[data-state="error"]{color:#ff9da4}

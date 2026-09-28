@@ -169,10 +169,19 @@
         for(let y=0;y<probe.height;y+=1){for(let x=0;x<probe.width;x+=1){const i=(y*probe.width+x)*4;if(pixels[i+3]>14){if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;}}}
         if(right>=left&&bottom>=top){const padX=Math.max(2,Math.round((right-left+1)*.025)),padY=Math.max(2,Math.round((bottom-top+1)*.06));left=Math.max(0,left-padX);right=Math.min(probe.width-1,right+padX);top=Math.max(0,top-padY);bottom=Math.min(probe.height-1,bottom+padY);sx=left;sy=top;sw=right-left+1;sh=bottom-top+1;}
       } catch {}
-      const output=document.createElement('canvas'),maxW=1000,maxH=300,scale=Math.min(1,maxW/sw,maxH/sh);
-      output.width=Math.max(1,Math.round(sw*scale));output.height=Math.max(1,Math.round(sh*scale));output.getContext('2d').drawImage(probe,sx,sy,sw,sh,0,0,output.width,output.height);
-      let quality=.94,result=output.toDataURL('image/webp',quality);while(result.length>110000&&quality>.5){quality-=.08;result=output.toDataURL('image/webp',quality);}if(result.length>110000)throw new Error('This signature is still too complex after optimization. Use a direct image URL instead.');
-      return result;
+      const maxW=1000,maxH=300,baseScale=Math.min(1,maxW/sw,maxH/sh);
+      let lastResult='';
+      for(let pass=0;pass<8;pass+=1){
+        const dimensionScale=baseScale*Math.pow(.84,pass),output=document.createElement('canvas');
+        output.width=Math.max(1,Math.round(sw*dimensionScale));output.height=Math.max(1,Math.round(sh*dimensionScale));
+        output.getContext('2d').drawImage(probe,sx,sy,sw,sh,0,0,output.width,output.height);
+        let quality=.94,result=output.toDataURL('image/webp',quality);
+        while(result.length>110000&&quality>.38){quality-=.07;result=output.toDataURL('image/webp',quality);}
+        lastResult=result;
+        if(result.length<=110000)return result;
+      }
+      if(lastResult&&lastResult.length<=145000)return lastResult;
+      throw new Error('This signature could not be reduced enough for the Driver Directory. Try a smaller PNG/WebP source.');
     } finally { URL.revokeObjectURL(source); }
   }
   async function uploadedNumberData(file) {
@@ -764,7 +773,7 @@
       }
       if(key==='roster-profiles'&&k==='signatureLogo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current driver signature logo preview">`:'';
-        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-signature-logo-upload>`,'Optional personal wordmark/signature art for the Drivers page. Upload a PNG, JPG, or WebP, or paste a direct HTTPS/site-relative image URL.','is-wide portfolio-logo-field');
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-signature-logo-upload><small class="admin-field__upload-status" data-signature-upload-status aria-live="polite">${v?'Signature artwork is stored and ready to publish.':'Choose a file to create the signature preview.'}</small>`,'Optional personal wordmark/signature art for the Drivers page. Upload a PNG, JPG, or WebP, or paste a direct HTTPS/site-relative image URL.','is-wide portfolio-logo-field');
       }
       if(key==='driver-portfolios'&&k==='logo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current brand logo preview">`:'';
@@ -1129,8 +1138,21 @@
     const signatureLogoUpload=event.target.closest?.('[data-signature-logo-upload]');
     if(signatureLogoUpload&&key==='roster-profiles'){
       const file=signatureLogoUpload.files?.[0];if(!file)return;
-      commit();const selected=current();
-      try{status(`Optimizing ${file.name}…`);const logo=await uploadedSignatureData(file);if(!data.includes(selected))throw new Error('The driver profile changed during upload. Select it and upload again.');selected.signatureLogo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to ${selected.name}. Publish Driver Directory to update the Drivers page.`);}catch(error){status(error.message);}return;
+      commit();const selected=current(),field=signatureLogoUpload.closest('.admin-field'),uploadStatus=field?.querySelector('[data-signature-upload-status]');
+      if(uploadStatus){uploadStatus.textContent=`Optimizing ${file.name}…`;uploadStatus.dataset.state='working';}
+      try{
+        status(`Optimizing ${file.name}…`);
+        const logo=await uploadedSignatureData(file);
+        if(!data.includes(selected))throw new Error('The driver profile changed during upload. Select it and upload again.');
+        selected.signatureLogo=logo;dirty=true;
+        if(uploadStatus){uploadStatus.textContent=`${file.name} optimized successfully. Ready to publish.`;uploadStatus.dataset.state='success';}
+        if(current()===selected)render();
+        status(`${file.name} is attached to ${selected.name}. Publish Driver Directory to update the Drivers page.`);
+      }catch(error){
+        if(uploadStatus){uploadStatus.textContent=error.message;uploadStatus.dataset.state='error';}
+        status(error.message);
+      }
+      return;
     }
     const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
     if(logoUpload&&key==='driver-portfolios'){

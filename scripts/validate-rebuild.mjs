@@ -31,6 +31,7 @@ if(!lineupCss.includes('v1.1.45 — shared hard boundary between card art and in
 if(!lineupSource.includes('contentWidth')||!lineupSource.includes('contentHeight'))throw Error('Single-number fitting must use the padded artwork content box.');
 const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
+if(!adminContentSource.includes('data-signature-upload-status')||!adminContentSource.includes('Math.pow(.84,pass)'))throw Error('Driver Directory signature upload must retain progressive downscale fallback and inline upload feedback.');
 if(!lineupSource.includes('data-backup-src')||!lineupSource.includes('e.numberImageBackup||e.numberImage')||!adminContentSource.includes('numberImageBackup')||!adminContentSource.includes('public primary'))throw Error('Driver number uploads must remain the public primary source with a secondary URL fallback.');
 if(!lineupSource.includes('sharedKmart29')||!lineupSource.includes('chooseDriverArt')||!adminContentSource.includes('syncSharedKmart29Art'))throw Error('Kmart #29 artwork must synchronize across Clutch/Eazy/Matty and remain eligible for ALL-card randomized art selection.');
 if(!lineupSource.includes('const src=ride.numberImageBackup||ride.numberImage')||!lineupSource.includes('sessionStorage')||!lineupSource.includes('queue.shift()'))throw Error('ALL-card artwork pool must include every configured image source and cycle through a persistent randomized shuffle bag.');

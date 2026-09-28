@@ -1,3 +1,8 @@
+## v1.1.50 — Driver Directory signature upload robustness
+- Complex signature uploads now downscale dimensions progressively instead of failing after quality-only compression.
+- Added inline per-field signature upload status/error feedback in Driver Directory, especially useful on mobile.
+- Successful uploads still convert to an optimized WebP data URL and immediately become the preview/source used by the public Drivers page after publish.
+
 ## v1.1.49 — Driver number art shuffle bag
 - ALL-tab random number art now considers every configured number-image source, including older numberImage-only assignments.
 - Multi-number drivers use a session shuffle bag across reloads: every available number artwork is shown once in randomized order before a new cycle begins, with immediate repeats avoided between cycles.
