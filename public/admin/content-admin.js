@@ -186,22 +186,31 @@
   }
   async function uploadedNumberData(file) {
     if(!/^image\/(png|jpeg|webp)$/.test(file?.type||''))throw new Error('Choose a PNG, JPG, or WebP number image. Transparent PNG or WebP works best.');
-    if(file.size>5000000)throw new Error('Number image files must be 5 MB or smaller.');
     const source=URL.createObjectURL(file);
     try {
       const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('That number image could not be read.'));img.src=source;});
-      const probe=document.createElement('canvas'),probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight));
+      const probe=document.createElement('canvas'),probeScale=Math.min(1,1600/Math.max(1,image.naturalWidth),1100/Math.max(1,image.naturalHeight));
       probe.width=Math.max(1,Math.round(image.naturalWidth*probeScale));probe.height=Math.max(1,Math.round(image.naturalHeight*probeScale));
       const probeCtx=probe.getContext('2d',{willReadFrequently:true});probeCtx.drawImage(image,0,0,probe.width,probe.height);
       let sx=0,sy=0,sw=probe.width,sh=probe.height;
       try{const pixels=probeCtx.getImageData(0,0,probe.width,probe.height).data;let left=probe.width,top=probe.height,right=-1,bottom=-1;for(let y=0;y<probe.height;y+=1){for(let x=0;x<probe.width;x+=1){if(pixels[(y*probe.width+x)*4+3]>14){if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;}}}if(right>=left&&bottom>=top){const visibleW=right-left+1,visibleH=bottom-top+1,padX=Math.max(2,Math.round(visibleW*.035)),padY=Math.max(2,Math.round(visibleH*.035));left=Math.max(0,left-padX);right=Math.min(probe.width-1,right+padX);top=Math.max(0,top-padY);bottom=Math.min(probe.height-1,bottom+padY);sx=left;sy=top;sw=right-left+1;sh=bottom-top+1;}}catch{}
-      const scale=Math.min(1,1000/sw,650/sh),canvas=document.createElement('canvas');
-      canvas.width=Math.max(1,Math.round(sw*scale));canvas.height=Math.max(1,Math.round(sh*scale));
-      canvas.getContext('2d').drawImage(probe,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
-      let quality=.94,result=canvas.toDataURL('image/webp',quality);
-      while(result.length>160000&&quality>.45){quality-=.08;result=canvas.toDataURL('image/webp',quality);}
-      if(result.length>160000)throw new Error('This number art is too large after optimization. Please use a smaller image or an image URL.');
-      return result;
+      const maxW=1200,maxH=760,baseScale=Math.min(1,maxW/sw,maxH/sh),targetLength=160000;
+      let lastResult='';
+      // Number artwork should never be rejected merely because the first optimized pass is too large.
+      // Keep reducing dimensions and WebP quality until the data is safe to publish.
+      for(let pass=0;pass<18;pass+=1){
+        const dimensionScale=baseScale*Math.pow(.84,pass),canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(sw*dimensionScale));canvas.height=Math.max(1,Math.round(sh*dimensionScale));
+        canvas.getContext('2d').drawImage(probe,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+        let quality=.96,result=canvas.toDataURL('image/webp',quality);
+        while(result.length>targetLength&&quality>.3){quality-=.07;result=canvas.toDataURL('image/webp',quality);}
+        lastResult=result;
+        if(result.length<=targetLength)return result;
+        if(canvas.width<=48||canvas.height<=48)break;
+      }
+      // At tiny dimensions the payload is already bounded; return the smallest valid image instead of failing the upload.
+      if(lastResult)return lastResult;
+      throw new Error('That number image could not be optimized. Try re-saving it as PNG or WebP.');
     } finally { URL.revokeObjectURL(source); }
   }
   function scheduleTimeMinutes(value='') {
@@ -1246,7 +1255,7 @@
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
   $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
-  $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data)||!confirm('Remove this entry from the section draft? It stays public until you publish.'))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();});
+  $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data))return;const row=current(),message=key==='roster-profiles'?`Remove ${row?.name||row?.slug||'this driver'} from the Driver Directory? When you publish, all of this driver’s current league assignments will also be removed from the public site. Historical results and wins are kept.`:'Remove this entry from the section draft? It stays public until you publish.';if(!confirm(message))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();if(key==='roster-profiles')status('Driver removed from this draft. Publish Driver Directory to remove the profile and current league assignments from the public site; historical results remain.');});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');
     if(busy)throw new Error('A save is already in progress.');
@@ -1261,9 +1270,9 @@
       if(name==='publish') {
         const publication=response.publication;
         if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
-        else status(publication?.queued
-          ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Public data is updated and the site rebuild is queued.`
-          : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Publish site / retry build.'}`);
+        else {const removed=Number(publication?.driverRemovalCascade?.removedAssignments||0),removedNote=removed?` Removed ${removed} current league assignment${removed===1?'':'s'} for the deleted driver profile${removed===1?'':'s'}; historical results were kept.`:'';status(publication?.queued
+          ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Public data is updated and the site rebuild is queued.${removedNote}`
+          : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Publish site / retry build.'}${removedNote}`);}
       } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?'Calendar sorted by date, start time, and league. Private draft saved; nothing public changed.':'Private draft saved. Nothing public changed.'):'Section updated.'));
       updateControlCenterStatus(response.publication);
     } finally { busy=false; $('[data-content-editor]').inert=false; }

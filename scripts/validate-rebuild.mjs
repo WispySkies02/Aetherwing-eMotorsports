@@ -35,7 +35,7 @@ if(!adminContentSource.includes('data-signature-upload-status')||!adminContentSo
 if(!lineupSource.includes('data-backup-src')||!lineupSource.includes('e.numberImageBackup||e.numberImage')||!adminContentSource.includes('numberImageBackup')||!adminContentSource.includes('public primary'))throw Error('Driver number uploads must remain the public primary source with a secondary URL fallback.');
 if(!lineupSource.includes('sharedKmart29')||!lineupSource.includes('chooseDriverArt')||!adminContentSource.includes('syncSharedKmart29Art'))throw Error('Kmart #29 artwork must synchronize across Clutch/Eazy/Matty and remain eligible for ALL-card randomized art selection.');
 if(!lineupSource.includes('const src=ride.numberImageBackup||ride.numberImage')||!lineupSource.includes('sessionStorage')||!lineupSource.includes('queue.shift()'))throw Error('ALL-card artwork pool must include every configured image source and cycle through a persistent randomized shuffle bag.');
-if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))'))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
+if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!(adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))')||adminContentSource.includes('probeScale=Math.min(1,1600/Math.max(1,image.naturalWidth),1100/Math.max(1,image.naturalHeight))')))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
 if(!eventSource.includes("entryListMode==='custom'")||!eventSource.includes("status:'Raced'"))throw Error('Race Weekend pages must support custom event entry lists and result-driven Auto mode.');
 if(!adminContentSource.includes('data-schedule-entry-driver-choice')||!adminContentSource.includes('data-event-entries-sync-result')||!adminContentSource.includes('Fill from league roster'))throw Error('Calendar Admin must retain event-specific entry list editing tools.');
 
@@ -170,3 +170,9 @@ console.log('v1.1.43 verified: active-program pages, current identities, private
 
 // v1.1.49 — randomized no-repeat ALL-tab number art pool.
 if(!lineupSource.includes('chooseDriverArt')||!lineupSource.includes('sessionStorage')||!lineupSource.includes('ride.numberImageBackup||ride.numberImage'))throw Error('Driver ALL-tab number art shuffle-bag selection is missing.');
+
+// v1.1.51 — resilient number uploads + public driver-removal cascade.
+if(!adminContentSource.includes("for(let pass=0;pass<18;pass+=1)")||!adminContentSource.includes("Number artwork should never be rejected merely because the first optimized pass is too large")||adminContentSource.includes('This number art is too large after optimization'))throw Error('Driver number uploads must keep downscaling instead of failing at the old optimization ceiling.');
+if(!siteAdminSource.includes('cascadeRemovedDriverProfiles')||!siteAdminSource.includes("registry.published.drivers=normalize('drivers'")||!siteAdminSource.includes("registry.published['schedule-events']=cleanSchedules"))throw Error('Publishing a Driver Directory deletion must cascade current driver assignments and active custom event entries.');
+if(!profileSource.includes("location.replace('/drivers/')"))throw Error('Removed driver profile routes must redirect away when live Admin data no longer contains the profile.');
+console.log('v1.1.51 verified: number uploads are resilient and Driver Directory removal cascades to current public roster data.');

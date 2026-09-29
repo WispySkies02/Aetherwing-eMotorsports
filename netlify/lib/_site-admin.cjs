@@ -60,6 +60,30 @@ function autoAdvanceStandings(registry, nextResults, priorResults=[]) {
   return changed;
 }
 
+
+function cascadeRemovedDriverProfiles(registry, beforeProfiles=[], afterProfiles=[]) {
+  const beforeSlugs=new Set((beforeProfiles||[]).map((profile)=>String(profile?.slug||'')).filter(Boolean));
+  const afterSlugs=new Set((afterProfiles||[]).map((profile)=>String(profile?.slug||'')).filter(Boolean));
+  const removedSlugs=new Set([...beforeSlugs].filter((slug)=>!afterSlugs.has(slug)));
+  if(!removedSlugs.size)return { removedSlugs:[], removedAssignments:0, scheduleEntries:0 };
+  const seed=seeds();
+  const currentDrivers=normalize('drivers',registry.published?.drivers??seed.drivers);
+  const removedAssignments=currentDrivers.filter((entry)=>removedSlugs.has(String(entry?.profile||'')));
+  const removedIds=new Set(removedAssignments.map((entry)=>String(entry?.id||'')).filter(Boolean));
+  registry.published.drivers=normalize('drivers',currentDrivers.filter((entry)=>!removedSlugs.has(String(entry?.profile||''))));
+  if(Array.isArray(registry.drafts?.drivers))registry.drafts.drivers=normalize('drivers',registry.drafts.drivers.filter((entry)=>!removedSlugs.has(String(entry?.profile||''))));
+  let scheduleEntries=0;
+  const cleanSchedules=(rows=[])=>rows.map((event)=>{
+    if(!Array.isArray(event?.entries)||!event.entries.length)return event;
+    const entries=event.entries.filter((entry)=>!removedIds.has(String(entry?.assignmentId||'')));
+    scheduleEntries+=event.entries.length-entries.length;
+    return entries.length===event.entries.length?event:{...event,entries};
+  });
+  if(Array.isArray(registry.published?.['schedule-events']))registry.published['schedule-events']=cleanSchedules(registry.published['schedule-events']);
+  if(Array.isArray(registry.drafts?.['schedule-events']))registry.drafts['schedule-events']=cleanSchedules(registry.drafts['schedule-events']);
+  return { removedSlugs:[...removedSlugs], removedAssignments:removedAssignments.length, scheduleEntries };
+}
+
 async function rebuild(revision) {
   const hook = process.env.AETHERWING_BUILD_HOOK;
   if (!hook) return { queued:false, message:'Set AETHERWING_BUILD_HOOK in the main Netlify project to publish site edits.' };
@@ -99,7 +123,9 @@ exports.handler = async (event, context) => {
     if (!user || !Array.isArray(roles) || !roles.includes('admin')) return json(403, { error:'The admin role is required for main-site editing.' });
     const { registry: rawRegistry, etag } = await read();
     const registry = migrateKnownPublished(rawRegistry);
-    const priorPublishedResults = normalize('results', registry.published.results ?? seeds().results);
+    const seedData=seeds();
+    const publicRosterBefore=normalize('roster-profiles',registry.published?.['roster-profiles']??seedData['roster-profiles']);
+    const priorPublishedResults = normalize('results', registry.published.results ?? seedData.results);
     if (event.httpMethod === 'GET') return json(200, { registry, seeds:seeds(), publishConfigured:!!process.env.AETHERWING_BUILD_HOOK });
     if (event.httpMethod !== 'POST') return json(405, { error:'Method not allowed.' });
     let input;
@@ -135,6 +161,12 @@ exports.handler = async (event, context) => {
       publishedKeys = entries.map(([draftKey]) => draftKey);
       registry.drafts = {};
     } else return json(400, { error:'Unknown action.' });
+    let driverRemovalCascade={ removedSlugs:[], removedAssignments:0, scheduleEntries:0 };
+    if(publishedKeys.includes('roster-profiles')){
+      driverRemovalCascade=cascadeRemovedDriverProfiles(registry,publicRosterBefore,registry.published['roster-profiles']);
+      if(driverRemovalCascade.removedAssignments&&!publishedKeys.includes('drivers'))publishedKeys.push('drivers');
+      if(driverRemovalCascade.scheduleEntries&&!publishedKeys.includes('schedule-events'))publishedKeys.push('schedule-events');
+    }
     if (publishedKeys.includes('results')) {
       const nextResults=normalize('results', registry.published.results ?? seeds().results);
       if(autoAdvanceStandings(registry,nextResults,priorPublishedResults) && !publishedKeys.includes('standings'))publishedKeys.push('standings');
@@ -147,7 +179,7 @@ exports.handler = async (event, context) => {
     let publication = null;
     if (input.action === 'publish' || input.action === 'publishAll') {
       try { publication = await rebuild(registry.revision); } catch (error) { publication = { queued:false, message:error.message }; }
-      publication = { ...publication, dataPublished:true, revision:registry.revision, datasets:publishedKeys };
+      publication = { ...publication, dataPublished:true, revision:registry.revision, datasets:publishedKeys, driverRemovalCascade };
     }
     return json(200, { registry, publication });
   } catch (error) {
@@ -155,3 +187,5 @@ exports.handler = async (event, context) => {
     return json(error.message === 'CONFLICT' ? 409 : 500, { error:error.message === 'CONFLICT' ? 'Another session saved first. Refresh before saving.' : 'Site content could not be saved. Check Netlify function logs.' });
   }
 };
+
+exports._test = { cascadeRemovedDriverProfiles };

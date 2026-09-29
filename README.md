@@ -1,3 +1,9 @@
+## v1.1.51 — Resilient number uploads + driver removal cascade
+- Driver number file uploads no longer fail at a post-optimization complexity ceiling; the browser keeps downscaling until the artwork is publishable while preserving aspect ratio/transparency.
+- Removing a Driver Directory profile and publishing now cascades to that person's current Driver League Assignments, so the public Drivers grid/profile disappears too.
+- Custom upcoming schedule-entry references tied to removed assignments are cleaned up; historical race results and wins are intentionally preserved.
+- A loaded public driver profile redirects back to /drivers/ immediately if live Admin data says that profile was removed.
+
 ## v1.1.50 — Driver Directory signature upload robustness
 - Complex signature uploads now downscale dimensions progressively instead of failing after quality-only compression.
 - Added inline per-field signature upload status/error feedback in Driver Directory, especially useful on mobile.
