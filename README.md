@@ -1,3 +1,13 @@
+## v1.2.0 — Aetherwing Team-Site Redesign
+- Rebuilds the public-facing design around a major NASCAR team-site structure while keeping Aetherwing's own identity and all existing Admin/data workflows.
+- Aetherwing's red/white/silver logo now drives the interface: red is the primary team/action color, graphite/silver form the UI shell, Aether Blue is reserved for telemetry/data, and Feather Gold remains a championship/faith accent.
+- New team header includes a compact race-control utility bar, a larger logo presentation, cleaner motorsports navigation, and dedicated Schedule access.
+- Homepage adds a full program-logo rail, stronger team-brand hero, redesigned championship/driver/news/partner surfaces, and keeps the live Race Calendar/data hooks intact.
+- Schedule filters now use the actual league/program logos for NRRS, Kmart, Sunoco, UARL D1, UARL Open, and iRacing, with an Aetherwing all-programs tile.
+- Driver Lineup, Championship Battles, and Paint Booth league filters now use the same logo-led selector system for a consistent public-site experience.
+- Programs, partner cards, profiles, news, history, mission/handbook surfaces, and race-control panels share one angled broadcast/team-site design language.
+- Closed UARL D2 remains historical-only in active competition data; its logo is used only where historical Paint Booth entries require it.
+
 ## v1.1.51 — Resilient number uploads + driver removal cascade
 - Driver number file uploads no longer fail at a post-optimization complexity ceiling; the browser keeps downscaling until the artwork is publishable while preserving aspect ratio/transparency.
 - Removing a Driver Directory profile and publishing now cascades to that person's current Driver League Assignments, so the public Drivers grid/profile disappears too.

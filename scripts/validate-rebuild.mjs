@@ -176,3 +176,16 @@ if(!adminContentSource.includes("for(let pass=0;pass<18;pass+=1)")||!adminConten
 if(!siteAdminSource.includes('cascadeRemovedDriverProfiles')||!siteAdminSource.includes("registry.published.drivers=normalize('drivers'")||!siteAdminSource.includes("registry.published['schedule-events']=cleanSchedules"))throw Error('Publishing a Driver Directory deletion must cascade current driver assignments and active custom event entries.');
 if(!profileSource.includes("location.replace('/drivers/')"))throw Error('Removed driver profile routes must redirect away when live Admin data no longer contains the profile.');
 console.log('v1.1.51 verified: number uploads are resilient and Driver Directory removal cascades to current public roster data.');
+
+// v1.2.0 — public team-site redesign + logo-led filters.
+const headerSource=readFileSync('src/components/global/SiteHeader.astro','utf8');
+const homeCss=readFileSync('src/styles/home.css','utf8');
+const paintPageSource=readFileSync('src/pages/paint-booth/index.astro','utf8');
+if(!headerSource.includes('site-header__utility')||!headerSource.includes('header-race-link')||!headerSource.includes('AETHERWING eMOTORSPORTS'))throw Error('v1.2.0 team-site header/race-control treatment is missing.');
+for(const asset of ['/images/schedule-logos/nrrs.png','/images/schedule-logos/kmart-regular.jpg','/images/schedule-logos/sunoco.png','/images/schedule-logos/uarl-d1.png','/images/schedule-logos/open.png','/images/schedule-logos/iracing.png'])if(!raceCalendarSource.includes(asset))throw Error(`Race Calendar logo filter is missing ${asset}.`);
+if(!lineupSource.includes('aw-lineup__filter-logo')||!lineupSource.includes("all:'/images/brand/aetherwing-logo.png'"))throw Error('Driver Lineup must use the logo-led program filter system.');
+if(!championshipsSource.includes('/images/schedule-logos/nrrs.png')||!championshipsSource.includes('/images/schedule-logos/kmart-regular.jpg')||!championshipsSource.includes('/images/schedule-logos/sunoco.png')||!championshipsSource.includes('/images/schedule-logos/uarl-d1.png'))throw Error('Championship filters must use league logos.');
+if(!paintPageSource.includes('leagueVisual')||!paintPageSource.includes('/images/schedule-logos/uarl-d2.png'))throw Error('Paint Booth must use logo-led league filters while retaining historical UARL D2 paint access.');
+if(!homeSource.includes('home-programs__rail')||!homeSource.includes('programLogo')||!homeCss.includes('v1.2.0 — full team-site homepage redesign'))throw Error('Homepage program rail/team-site redesign is missing.');
+if(!siteCss.includes('v1.2.0 — AETHERWING TEAM-SITE REDESIGN')||!siteCss.includes('--red:#e10600')||!siteCss.includes('--blue:#4a6fff'))throw Error('Aetherwing logo-led v1.2.0 public design tokens are missing.');
+console.log('v1.2.0 verified: team-site redesign and logo-led public filters are intact.');

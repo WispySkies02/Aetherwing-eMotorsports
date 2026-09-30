@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import RaceCalendar from '../components/RaceCalendar.astro';
-import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, scheduleEvents } from '../lib/site-content.mjs';
+import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, scheduleEvents, competitions } from '../lib/site-content.mjs';
 import '../styles/home.css';
 const chase=standings.find(s=>s.id==='nrrs');
 const driver=chase?.rows?.find(r=>r.highlight);
@@ -10,9 +10,18 @@ const leader=chase?.rows?.[0];
 const latest=results.find(r=>r.featured)||[...results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
 const leadNews=news.find(s=>s.featured)||news[0];
 const upcoming=scheduleEvents.filter(e=>!e.offWeek&&e.date>='2026-09-23').sort((a,b)=>a.date.localeCompare(b.date))[0];
+const programLogo={
+  nrrs:'/images/schedule-logos/nrrs.png',
+  'uarl-d1':'/images/schedule-logos/uarl-d1.png',
+  'uarl-open':'/images/schedule-logos/open.png',
+  'iracing-factory':'/images/schedule-logos/iracing.png',
+  kmart:'/images/schedule-logos/kmart-regular.jpg',
+  sunoco:'/images/schedule-logos/sunoco.png'
+};
 ---
 <Base>
-  <section class="home-hero"><div class="wrap home-hero__inner"><div><p class="kicker">Aetherwing eMotorsports / 2026</p><h1>BUILT<br>TO <em>FIGHT.</em></h1><p class="home-hero__lead">One team. Multiple series. Every green flag is another chance to fly.</p><div class="home-hero__actions"><a class="btn" href="#race-calendar">Where we're racing ↓</a><a class="btn btn--ghost" href="/drivers/">Meet the lineup ↗</a></div></div><aside><span>THE GARAGE / 01</span><img src="/images/brand/aetherwing-logo.png" alt="Aetherwing emblem"/><strong>BORN TO SOAR.</strong><small>NRRS · UARL · iRacing · Alliance</small></aside></div></section>
+  <section class="home-hero"><div class="wrap home-hero__inner"><div class="home-hero__copy"><p class="kicker">Aetherwing eMotorsports / 2026</p><h1>BORN TO<br><em>SOAR.</em></h1><p class="home-hero__lead">Built to fight across sim racing, RoRacing, and every program carrying the Aetherwing name.</p><div class="home-hero__actions"><a class="btn" href="#race-calendar">Race Control ↓</a><a class="btn btn--ghost" href="/drivers/">Meet the lineup ↗</a></div></div><aside><span>TEAM IDENTITY / AEM</span><img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports"/><strong>BUILT TO FIGHT.</strong><small>TO GOD BE THE GLORY · {siteSettings.faithVerse||'Matthew 17:20'}</small></aside></div></section>
+  <section class="home-programs" aria-labelledby="home-programs-title"><div class="wrap"><div class="home-programs__head"><span>OUR PROGRAMS</span><h2 id="home-programs-title">One team. Every green flag.</h2><a href="/programs/">Explore all programs →</a></div><div class="home-programs__rail">{competitions.map(program=><a href={`/programs/${program.id}/`} class:list={[{'is-alliance':program.label?.toLowerCase().includes('alliance')}]}><span>{programLogo[program.id]?<img src={programLogo[program.id]} alt="" loading="lazy"/>:<b>{program.name}</b>}</span><div><small>{program.label}</small><strong>{program.name}</strong></div></a>)}</div></div></section>
   <RaceCalendar />
   <section class="section home-battle" id="championship-battle"><div class="wrap"><div class="section-head"><div><p class="eyebrow">What we're fighting for</p><h2 class="section-title">Championship Battle</h2></div><a class="btn btn--ghost" href="/championships/">Full standings ↗</a></div><div class="home-battle__grid"><div class="home-battle__number" data-battle-number>{(battleAssignment?.numberImageBackup||battleAssignment?.numberImage)?<img src={battleAssignment.numberImageBackup||battleAssignment.numberImage} alt={`Number ${battleAssignment.number}`} />:`#${driver?.number||'32'}`}</div><div class="home-battle__copy"><span>{chase?.title||'NRRS Chase for the Cup'}</span><h3 data-battle-heading>{driver?`${driver.driver} · ${driver.position}`:'The championship fight'}</h3><p data-battle-context>{chase?.subtitle||'Season standings'} · {driver?.points?.toLocaleString('en-US')||'—'} PTS</p><div class="home-battle__markers"><div><b data-battle-gap>{driver?.delta||'—'}</b><small>TO LEADER</small></div><div><b data-battle-leader>{leader?.driver||'—'}</b><small>POINTS LEADER</small></div></div><a href="/championships/">Follow the battle ↗</a></div></div></div></section>
   <section class="section home-people"><div class="wrap"><div class="section-head"><div><p class="eyebrow">The people behind the numbers</p><h2 class="section-title">Garage Lineup</h2></div><p class="lede">Number art takes the spotlight until driver and car renders arrive.</p></div><div class="home-people__grid">{rosterProfiles.filter(d=>d.affiliation==='aetherwing').slice(0,4).map((person,index)=>{const number=person.numbers.split(' / ')[0],art=person.numberImages?.find(a=>a.number===number)?.image;return <a href="/drivers/" class="home-people__tile" data-profile={person.slug} data-number={number}><span>{String(index+1).padStart(2,'0')} / AETHERWING</span><b data-number-art>{art?<img src={art} alt={`Number ${number}`}/>:`#${number}`}</b><strong>{person.name}</strong><small>{person.programs.slice(0,2).join(' · ')}</small></a>})}</div><a class="home-people__more" href="/drivers/">Open the full garage →</a></div></section>

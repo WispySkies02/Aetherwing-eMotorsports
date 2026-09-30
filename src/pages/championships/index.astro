@@ -89,11 +89,11 @@ const pointsText=(row)=>row?.pointsPending||row?.points==null?'— PTS':`${Numbe
   <PageIntro eyebrow="The points picture" title="Championship Battles" description="Where the team stands and what remains on the line."/>
   <section class="section"><div class="wrap">
     <nav class="championship-filter" aria-label="Championship league filter" data-championship-filter>
-      <button type="button" class="is-active" data-championship-filter-value="all">All</button>
-      <button type="button" data-championship-filter-value="nrrs">NRRS</button>
-      <button type="button" data-championship-filter-value="kmart">Kmart</button>
-      <button type="button" data-championship-filter-value="sunoco">Sunoco</button>
-      <button type="button" data-championship-filter-value="uarl">UARL</button>
+      <button type="button" class="is-active" data-championship-filter-value="all" aria-label="All championships"><span><img src="/images/brand/aetherwing-logo.png" alt=""/></span><b>All Championships</b></button>
+      <button type="button" data-championship-filter-value="nrrs" aria-label="NRRS standings"><span><img src="/images/schedule-logos/nrrs.png" alt=""/></span><b>NRRS</b></button>
+      <button type="button" data-championship-filter-value="kmart" aria-label="Kmart Auto Parts Series standings"><span><img src="/images/schedule-logos/kmart-regular.jpg" alt=""/></span><b>Kmart</b></button>
+      <button type="button" data-championship-filter-value="sunoco" aria-label="Sunoco Truck Series standings"><span><img src="/images/schedule-logos/sunoco.png" alt=""/></span><b>Sunoco</b></button>
+      <button type="button" data-championship-filter-value="uarl" aria-label="UARL standings"><span><img src="/images/schedule-logos/uarl-d1.png" alt=""/></span><b>UARL</b></button>
     </nav>
     <div data-standings-root>
     {displayStandings.map(board=><article class="standings-board" data-board={board.id} data-board-group={standingsGroup(board)}>

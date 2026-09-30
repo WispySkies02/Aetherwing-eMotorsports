@@ -6,6 +6,13 @@ const homeLink=navigation.find((item)=>item.group==='Home')??{label:'Home',href:
 const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.filter((item)=>item.group===label).map((item)=>[item.label,item.href])})).filter((group)=>group.links.length);
 ---
 <header class="site-header" data-site-header>
+  <div class="site-header__utility">
+    <div class="shell site-header__utility-inner">
+      <span>AETHERWING eMOTORSPORTS</span>
+      <span>RACE CONTROL / 2026</span>
+      <a href={siteSettings.discordUrl}>TEAM DISCORD ↗</a>
+    </div>
+  </div>
   <div class="shell site-header__inner">
     <a class="brand" href="/" aria-label="Aetherwing eMotorsports home">
       <img src={siteSettings.logo} alt={siteSettings.name} />
@@ -14,23 +21,24 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
       <a class:list={[{active:active(homeLink.href)}]} href={homeLink.href}>{homeLink.label}</a>
       {groups.map((group)=>(
         <div class="nav-group">
-          <button type="button" aria-haspopup="true" aria-expanded="false">{group.label}<span aria-hidden="true">+</span></button>
+          <button type="button" aria-haspopup="true" aria-expanded="false">{group.label}<span aria-hidden="true">▾</span></button>
           <div class="nav-group__menu">
-            <small>{group.label} Control</small>
+            <small>{group.label} / AEM</small>
             {group.links.map(([label,href])=><a class:list={[{active:active(href)}]} href={href}>{label}</a>)}
           </div>
         </div>
       ))}
     </nav>
+    <a class="header-race-link" href="/schedule/"><span>RACE CONTROL</span><b>VIEW SCHEDULE →</b></a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open Aetherwing navigation"><span></span><span></span><span></span></button>
   </div>
 </header>
 <div class="mobile-scrim" data-menu-scrim hidden></div>
 <nav class="mobile-menu" id="mobile-menu" aria-label="Aetherwing mobile navigation" hidden>
-    <div class="mobile-menu__inner">
-      <div class="mobile-kicker">Navigation Control</div>
-      <a class="mobile-home" href={homeLink.href} data-mobile-home>{homeLink.label}</a>
-      <div data-mobile-groups>
+  <div class="mobile-menu__inner">
+    <div class="mobile-kicker">AETHERWING / NAVIGATION</div>
+    <a class="mobile-home" href={homeLink.href} data-mobile-home>{homeLink.label}</a>
+    <div data-mobile-groups>
       {groups.map((group,index)=>(
         <section class="mobile-group">
           <button type="button" class="mobile-group__toggle" aria-expanded={index===0?'true':'false'}>
@@ -41,12 +49,10 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
           </div>
         </section>
       ))}
-      </div>
-      <div class="mobile-feature">
-        <strong>{siteSettings.tagline}</strong>
-        <p>{siteSettings.mobileSummary}</p>
-      </div>
     </div>
+    <a class="mobile-race-link" href="/schedule/">Race Control <span>→</span></a>
+    <div class="mobile-feature"><strong>{siteSettings.tagline}</strong><p>{siteSettings.mobileSummary}</p></div>
+  </div>
 </nav>
 <script>
   const header=document.querySelector('[data-site-header]');
@@ -84,41 +90,22 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
       if(!Array.isArray(items)||!items.length)return;
       const home=items.find(item=>item?.group==='Home')||{label:'Home',href:'/'};
       const groups=['Team','Race','Connect'].map(label=>({label,links:items.filter(item=>item?.group===label)})).filter(group=>group.links.length);
-      if(desktopNav instanceof HTMLElement){
-        desktopNav.innerHTML=`<a class="${isActive(home.href)?'active':''}" href="${esc(home.href)}">${esc(home.label)}</a>`+groups.map(group=>`<div class="nav-group"><button type="button" aria-haspopup="true" aria-expanded="false">${esc(group.label)}<span aria-hidden="true">+</span></button><div class="nav-group__menu"><small>${esc(group.label)} Control</small>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></div>`).join('');
-      }
+      if(desktopNav instanceof HTMLElement){desktopNav.innerHTML=`<a class="${isActive(home.href)?'active':''}" href="${esc(home.href)}">${esc(home.label)}</a>`+groups.map(group=>`<div class="nav-group"><button type="button" aria-haspopup="true" aria-expanded="false">${esc(group.label)}<span aria-hidden="true">▾</span></button><div class="nav-group__menu"><small>${esc(group.label)} / AEM</small>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></div>`).join('');}
       if(mobileHome instanceof HTMLAnchorElement){mobileHome.href=home.href;mobileHome.textContent=home.label;}
-      if(mobileGroups instanceof HTMLElement){
-        mobileGroups.innerHTML=groups.map((group,index)=>`<section class="mobile-group"><button type="button" class="mobile-group__toggle" aria-expanded="${index===0?'true':'false'}"><span>${esc(group.label)}</span><b aria-hidden="true">+</b></button><div class="mobile-group__links" ${index===0?'':'hidden'}>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></section>`).join('');
-      }
+      if(mobileGroups instanceof HTMLElement){mobileGroups.innerHTML=groups.map((group,index)=>`<section class="mobile-group"><button type="button" class="mobile-group__toggle" aria-expanded="${index===0?'true':'false'}"><span>${esc(group.label)}</span><b aria-hidden="true">+</b></button><div class="mobile-group__links" ${index===0?'':'hidden'}>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></section>`).join('');}
       bindDesktopGroups();
     };
-
     close();
-    window.addEventListener('pageshow',close);
-    window.addEventListener('pagehide',close);
-    window.addEventListener('resize',()=>{if(window.matchMedia('(min-width: 981px)').matches)close()});
+    window.addEventListener('pageshow',close);window.addEventListener('pagehide',close);window.addEventListener('resize',()=>{if(window.matchMedia('(min-width: 981px)').matches)close()});
     if(toggle instanceof HTMLButtonElement)toggle.addEventListener('click',()=>toggle.getAttribute('aria-expanded')==='true'?close():open());
-    scrim?.addEventListener('click',close);
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();if(toggle instanceof HTMLButtonElement)toggle.focus()}});
-    menu?.addEventListener('click',event=>{
-      const link=event.target instanceof Element?event.target.closest('a'):null;
-      if(link)return close();
-      const btn=event.target instanceof Element?event.target.closest('.mobile-group__toggle'):null;
-      if(!(btn instanceof HTMLButtonElement))return;
-      const links=btn.nextElementSibling;
-      const expanded=btn.getAttribute('aria-expanded')==='true';
-      btn.setAttribute('aria-expanded',String(!expanded));
-      if(links instanceof HTMLElement)links.hidden=expanded;
-    });
-    bindDesktopGroups();
-    window.addEventListener('aetherwing:content',event=>renderNavigation(event.detail?.navigation));
+    scrim?.addEventListener('click',close);document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();if(toggle instanceof HTMLButtonElement)toggle.focus()}});
+    menu?.addEventListener('click',event=>{const link=event.target instanceof Element?event.target.closest('a'):null;if(link)return close();const btn=event.target instanceof Element?event.target.closest('.mobile-group__toggle'):null;if(!(btn instanceof HTMLButtonElement))return;const links=btn.nextElementSibling,expanded=btn.getAttribute('aria-expanded')==='true';btn.setAttribute('aria-expanded',String(!expanded));if(links instanceof HTMLElement)links.hidden=expanded;});
+    bindDesktopGroups();window.addEventListener('aetherwing:content',event=>renderNavigation(event.detail?.navigation));
   }
 </script>
 <style is:global>
-.site-header{position:sticky;top:0;z-index:300;background:rgba(0,0,0,.96);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:4px solid #fff;box-shadow:0 8px 0 rgba(0,0,0,.7)}.site-header::after{content:'';position:absolute;left:0;bottom:-4px;width:38%;height:4px;background:linear-gradient(90deg,var(--aw-red),var(--aw-gold) 72%,var(--aw-blue));clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}.site-header__inner{height:82px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem}.brand{display:flex;align-items:center;width:min(270px,31vw);min-width:190px;height:68px;text-decoration:none}.brand img{width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(3px 3px 0 #000)}.desktop-nav{display:flex;align-items:stretch;height:100%;gap:.25rem}.desktop-nav>a,.nav-group>button{display:flex;align-items:center;gap:.5rem;height:100%;border:0;background:none;padding:0 .8rem;color:#c0bdb5;text-decoration:none;font:900 .72rem/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase;cursor:pointer}.desktop-nav>a:hover,.desktop-nav>a.active,.nav-group>button:hover{color:#fff;background:#0b0b0b}.desktop-nav>a.active{box-shadow:inset 0 -5px var(--aw-red)}.nav-group{position:relative}.nav-group>button span{color:var(--aw-gold);font-size:1rem}.nav-group__menu{position:absolute;right:0;top:calc(100% + 4px);width:240px;padding:.7rem;background:#050505;border:3px solid #fff;box-shadow:7px 7px 0 #000;display:none;transform:rotate(.35deg)}.nav-group:hover .nav-group__menu,.nav-group:focus-within .nav-group__menu{display:grid}.nav-group__menu small{padding:.5rem .6rem;color:var(--aw-blue);font:900 .58rem/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase}.nav-group__menu a{padding:.8rem .65rem;border-top:1px solid #282828;color:#bbb;text-decoration:none;font:800 .78rem/1.1 var(--font-mono);text-transform:uppercase}.nav-group__menu a:hover,.nav-group__menu a.active{color:#000;background:var(--aw-paper)}
-.menu-toggle{display:none;width:48px;height:48px;border:3px solid #fff;background:#000;padding:9px;box-shadow:4px 4px 0 var(--aw-red);cursor:pointer}.menu-toggle span{display:block;height:3px;background:#fff;margin:5px 0;transition:.18s;transform:none}.menu-toggle span:nth-child(2){opacity:1}:global(html.menu-open) .menu-toggle[aria-expanded=true] span:nth-child(1){transform:translateY(8px) rotate(45deg)}:global(html.menu-open) .menu-toggle[aria-expanded=true] span:nth-child(2){opacity:0}:global(html.menu-open) .menu-toggle[aria-expanded=true] span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
-.mobile-scrim[hidden],.mobile-menu[hidden]{display:none!important}.mobile-scrim{position:fixed;z-index:280;inset:82px 0 0;background:rgba(0,0,0,.72);backdrop-filter:blur(2px)}.mobile-menu{position:fixed;z-index:290;top:82px;right:0;bottom:0;width:min(92vw,430px);overflow:auto;background-image:linear-gradient(rgba(5,5,5,.96),rgba(0,0,0,.98)),var(--site-bg-art);background-position:center;background-size:cover;background-repeat:no-repeat;border-left:4px solid #fff;box-shadow:-10px 0 0 rgba(0,0,0,.65)}.mobile-menu__inner{padding:1.25rem}.mobile-kicker{display:inline-block;background:var(--aw-gold);color:#000;padding:.35rem .7rem;font:900 .62rem/1 var(--font-mono);letter-spacing:.13em;text-transform:uppercase;transform:rotate(-1deg)}.mobile-home{display:block;margin:1.1rem 0 1.4rem;color:#fff;text-decoration:none;font:400 3rem/.8 var(--font-brush);text-transform:uppercase}.mobile-group{border-top:2px solid #333}.mobile-group__toggle{width:100%;min-height:58px;display:flex;justify-content:space-between;align-items:center;border:0;background:none;color:#fff;font:900 1.2rem/1 var(--font-condensed);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}.mobile-group__toggle b{font:400 1.7rem/1 var(--font-mono);color:var(--aw-red);transition:.18s}.mobile-group__toggle[aria-expanded=true] b{transform:rotate(45deg)}.mobile-group__links{display:grid;padding:0 0 .8rem 1rem}.mobile-group__links a{padding:.75rem;border-left:3px solid #333;color:#bbb;text-decoration:none;font:800 .84rem/1 var(--font-mono);text-transform:uppercase}.mobile-group__links a.active,.mobile-group__links a:hover{border-left-color:var(--aw-blue);color:#fff;background:#0b0b0b}.mobile-feature{margin-top:1.4rem;padding:1rem;border:2px dashed #444;background:#000;transform:rotate(-.5deg)}.mobile-feature strong{font:400 1.45rem/.9 var(--font-brush);text-transform:uppercase;color:var(--aw-paper)}.mobile-feature p{margin:.7rem 0 0;color:#8f8f8f;font:700 .68rem/1.5 var(--font-mono)}:global(html.menu-open){overflow:hidden}
-@media(max-width:980px){.desktop-nav{display:none}.menu-toggle{display:block}.brand{width:225px}}
-@media(max-width:520px){.site-header__inner{height:72px}.site-header .brand{height:58px;width:205px;min-width:0}.mobile-menu,.mobile-scrim{top:72px}}
+.site-header{position:sticky;top:0;z-index:300;background:rgba(7,8,10,.985);border-bottom:1px solid #474b50;box-shadow:0 14px 35px rgba(0,0,0,.42)}.site-header:after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:4px;background:linear-gradient(90deg,#e10600 0 36%,#f3f3f3 36% 47%,#777d83 47% 55%,#e10600 55% 71%,#4a6fff 71% 100%)}.site-header__utility{border-bottom:1px solid #25282d;background:#030405}.site-header__utility-inner{height:27px;display:flex;align-items:center;gap:1.2rem;color:#737a81;font:800 .54rem/1 var(--font-mono);letter-spacing:.13em;text-transform:uppercase}.site-header__utility-inner span:nth-child(2){color:#aeb4b9}.site-header__utility-inner a{margin-left:auto;color:#c9cdd0;text-decoration:none}.site-header__utility-inner a:hover{color:#fff}.site-header__inner{height:86px;display:flex;align-items:center;gap:1.5rem}.brand{display:flex;align-items:center;flex:0 0 min(320px,27vw);height:74px;text-decoration:none}.brand img{width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 7px 7px rgba(0,0,0,.7))}.desktop-nav{align-self:stretch;display:flex;align-items:stretch;gap:.1rem;margin-left:auto}.desktop-nav>a,.nav-group>button{position:relative;display:flex;align-items:center;gap:.45rem;height:100%;padding:0 .82rem;border:0;background:transparent;color:#c3c6c8;text-decoration:none;font:900 .71rem/1 var(--font-condensed);font-style:italic;letter-spacing:.065em;text-transform:uppercase;cursor:pointer}.desktop-nav>a:after,.nav-group>button:after{content:'';position:absolute;left:.75rem;right:.75rem;bottom:0;height:3px;background:#e10600;transform:scaleX(0);transform-origin:left;transition:transform .18s}.desktop-nav>a:hover,.desktop-nav>a.active,.nav-group>button:hover{color:#fff;background:linear-gradient(180deg,transparent,rgba(255,255,255,.035))}.desktop-nav>a:hover:after,.desktop-nav>a.active:after,.nav-group>button:hover:after{transform:scaleX(1)}.nav-group{position:relative}.nav-group>button span{color:#e10600;font-size:.65rem}.nav-group__menu{position:absolute;right:0;top:100%;width:245px;padding:.65rem;background:linear-gradient(180deg,#17191d,#090a0c);border:1px solid #555b61;border-top:3px solid #e10600;box-shadow:0 18px 42px rgba(0,0,0,.62);display:none}.nav-group:hover .nav-group__menu,.nav-group:focus-within .nav-group__menu{display:grid}.nav-group__menu small{padding:.48rem .6rem;color:#9ea4a9;font:900 .57rem/1 var(--font-mono);letter-spacing:.13em;text-transform:uppercase}.nav-group__menu a{padding:.82rem .65rem;border-top:1px solid #292c30;color:#c8cbcd;text-decoration:none;font:800 .77rem/1.1 var(--font-condensed);font-style:italic;letter-spacing:.045em;text-transform:uppercase}.nav-group__menu a:hover,.nav-group__menu a.active{color:#fff;background:linear-gradient(90deg,rgba(225,6,0,.17),transparent);box-shadow:inset 3px 0 #e10600}.header-race-link{display:grid;min-width:150px;padding:.58rem .72rem .6rem;border-left:1px solid #454a4f;text-decoration:none}.header-race-link span{color:#8e9499;font:800 .48rem/1 var(--font-mono);letter-spacing:.13em}.header-race-link b{margin-top:.25rem;color:#fff;font:900 .68rem/1 var(--font-condensed);font-style:italic;letter-spacing:.06em}.header-race-link:hover b{color:#ff4a42}.menu-toggle{display:none;width:48px;height:48px;border:1px solid #656a6f;background:#121417;padding:9px;cursor:pointer}.menu-toggle span{display:block;height:3px;background:#fff;margin:5px 0;transition:.18s}.menu-toggle span:first-child{background:#e10600}.mobile-scrim[hidden],.mobile-menu[hidden]{display:none!important}.mobile-scrim{position:fixed;z-index:280;inset:117px 0 0;background:rgba(0,0,0,.78)}.mobile-menu{position:fixed;z-index:290;top:117px;right:0;bottom:0;width:min(92vw,430px);overflow:auto;background:linear-gradient(155deg,#16191d,#050607 70%);border-left:1px solid #60656a;box-shadow:-18px 0 44px rgba(0,0,0,.58)}.mobile-menu__inner{padding:1.25rem}.mobile-kicker{display:inline-block;padding:.4rem .65rem;background:#e10600;color:#fff;font:900 .58rem/1 var(--font-mono);letter-spacing:.13em}.mobile-home{display:block;margin:1.2rem 0;color:#fff;text-decoration:none;font:900 3rem/.84 var(--font-condensed);font-style:italic;text-transform:uppercase}.mobile-group{border-top:1px solid #34383c}.mobile-group__toggle{width:100%;min-height:58px;display:flex;justify-content:space-between;align-items:center;border:0;background:none;color:#fff;font:900 1.25rem/1 var(--font-condensed);font-style:italic;letter-spacing:.055em;text-transform:uppercase}.mobile-group__toggle b{color:#e10600;font:400 1.7rem/1 var(--font-mono)}.mobile-group__links{display:grid;padding:0 0 .8rem 1rem}.mobile-group__links a{padding:.75rem;border-left:3px solid #35393e;color:#bbb;text-decoration:none;font:800 .84rem/1 var(--font-condensed);font-style:italic;text-transform:uppercase}.mobile-group__links a.active,.mobile-group__links a:hover{border-left-color:#e10600;color:#fff;background:rgba(225,6,0,.08)}.mobile-race-link{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding:1rem;background:#e10600;color:#fff;text-decoration:none;font:900 1rem/1 var(--font-condensed);font-style:italic;text-transform:uppercase}.mobile-feature{margin-top:1rem;padding:1rem;border:1px solid #40454a;background:#0b0d0f}.mobile-feature strong{font:900 1.4rem/.9 var(--font-condensed);font-style:italic;text-transform:uppercase}.mobile-feature p{margin:.7rem 0 0;color:#8f9498;font:700 .68rem/1.5 var(--font-mono)}:global(html.menu-open){overflow:hidden}
+@media(max-width:1160px){.header-race-link{display:none}.brand{flex-basis:min(290px,27vw)}}
+@media(max-width:980px){.desktop-nav{display:none}.menu-toggle{display:block;margin-left:auto}.brand{flex-basis:240px}.site-header__utility-inner span:nth-child(2){display:none}.mobile-menu,.mobile-scrim{top:117px}}
+@media(max-width:520px){.site-header__utility-inner{height:24px}.site-header__utility-inner span:first-child{font-size:.48rem}.site-header__utility-inner a{font-size:.48rem}.site-header__inner{height:74px}.brand{height:62px;flex-basis:220px}.mobile-menu,.mobile-scrim{top:102px}}
 </style>

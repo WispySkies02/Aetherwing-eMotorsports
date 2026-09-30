@@ -22,6 +22,16 @@ const initialResults = results;
   let events=initial, raceResults=initialResults, selected='all';
   const esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const labels=(rows)=>new Map(rows.map(e=>[e.league,e.leagueName||e.league.toUpperCase()]));
+  const seriesVisual={
+    all:{logo:'/images/brand/aetherwing-logo.png',label:'All Programs'},
+    nrrs:{logo:'/images/schedule-logos/nrrs.png',label:'NRRS'},
+    kmart:{logo:'/images/schedule-logos/kmart-regular.jpg',label:'Kmart Auto Parts Series'},
+    sunoco:{logo:'/images/schedule-logos/sunoco.png',label:'Sunoco Truck Series'},
+    'uarl-d1':{logo:'/images/schedule-logos/uarl-d1.png',label:'L.L. Bean Cup Series'},
+    open:{logo:'/images/schedule-logos/open.png',label:'UARL Open'},
+    iracing:{logo:'/images/schedule-logos/iracing.png',label:'iRacing Events'}
+  };
+  const filterMarkup=(key,names)=>{const visual=seriesVisual[key]||{};const label=visual.label||(key==='uarl-d1'?'UARL D1':names.get(key))||key;return `<button type="button" data-series="${esc(key)}" aria-pressed="${key===selected}" aria-label="${esc(label)}"><span class="aw-calendar__filter-logo">${visual.logo?`<img src="${esc(visual.logo)}" alt="" loading="lazy">`:`<b>${esc(label)}</b>`}</span><span class="aw-calendar__filter-meta"><strong>${esc(label)}</strong><small data-series-status></small></span></button>`;};
   const start=(e)=>{
     if(e.startAt){const t=new Date(e.startAt);if(!isNaN(t))return t;}
     const m=String(e.time||'').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -47,7 +57,7 @@ const initialResults = results;
     const names=labels(events), keys=['all',...names.keys()];
     if(filters.dataset.keys!==keys.join('|')){
       filters.dataset.keys=keys.join('|');
-      filters.innerHTML=keys.map(k=>`<button type="button" data-series="${esc(k)}" aria-pressed="${k===selected}"><strong>${k==='all'?'ALL':esc(k==='uarl-d1'?'UARL D1':names.get(k))}</strong><small data-series-status></small></button>`).join('');
+      filters.innerHTML=keys.map(k=>filterMarkup(k,names)).join('');
       filters.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{selected=button.dataset.series;tick();}));
     }
     filters.querySelectorAll('button').forEach(button=>{
