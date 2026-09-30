@@ -337,3 +337,10 @@ The custom validation script now resolves and switches to the repository root fr
 - Admin Theme Preview metadata, stage art, picker tiles, and effect density now mirror the revamped public themes.
 - Public-page previews launched from Admin force `anniversary=off` so seasonal themes remain previewable during the temporary Anniversary Retro overlay.
 - Existing automatic Eastern Time calendar, faith observances, Anniversary Retro cutoff, and Halloween Oct. 4 handoff are preserved.
+
+
+## v2.0.3 — Unmistakable Anniversary Retro Broadcast
+- Anniversary Retro now uses an intentionally obvious 2003–2007 motorsports broadcast treatment instead of a subtle dark recolor.
+- Added a fixed Aetherwing Race Network LIVE bug and bottom race-control scorebar.
+- Added stronger CRT scanlines, beveled chrome controls, timing-screen panels, metallic section headers, lower-third page framing, and backlit program filters.
+- The overlay still expires automatically at 12:00 AM ET on Oct. 4, 2026 and hands back to the normal Halloween theme.

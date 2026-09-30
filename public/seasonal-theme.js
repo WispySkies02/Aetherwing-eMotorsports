@@ -166,6 +166,14 @@
   };
 
   let mountedKey='';
+  function removeAnniversaryHud(){document.querySelector('.aw-anniversary-hud')?.remove();}
+  function mountAnniversaryHud(active){
+    if(!active){removeAnniversaryHud();return;}
+    if(document.querySelector('.aw-anniversary-hud')||!document.body)return;
+    const hud=document.createElement('div');hud.className='aw-anniversary-hud';hud.setAttribute('aria-hidden','true');
+    hud.innerHTML='<div class="aw-anniversary-hud__bug"><b class="aw-anniversary-hud__live">LIVE</b><span class="aw-anniversary-hud__channel"><b>AETHERWING RACE NETWORK</b><small>ANNIVERSARY WEEK</small></span></div><div class="aw-anniversary-hud__bar"><b class="aw-anniversary-hud__identity"><i></i>AEM // 2015</b><div class="aw-anniversary-hud__ticker"><span>BORN TO SOAR · BUILT TO FIGHT · ANNIVERSARY RETRO RACE CONTROL · TO GOD BE THE GLORY</span></div><b class="aw-anniversary-hud__era">2015 → 2026</b></div>';
+    document.body.appendChild(hud);
+  }
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
   function mountAtmosphere(theme,observance){
     const key=`${theme}|${observance}`;
@@ -213,6 +221,7 @@
     if(theme==='standard'){delete document.documentElement.dataset.season;delete document.documentElement.dataset.seasonUi;}else{document.documentElement.dataset.season=theme;document.documentElement.dataset.seasonUi=THEMES[theme]?.ui||theme;}
     if(observance){document.documentElement.dataset.observance=observance;document.documentElement.dataset.observanceUi=OBSERVANCES[observance]?.ui||observance;}else{delete document.documentElement.dataset.observance;delete document.documentElement.dataset.observanceUi;}
     if(anniversaryRetro)document.documentElement.dataset.anniversaryRetro='true';else delete document.documentElement.dataset.anniversaryRetro;
+    mountAnniversaryHud(anniversaryRetro);
 
     window.__AETHERWING_SEASON__={id:theme,...(THEMES[theme]||{title:'',subtitle:'',icon:'',effect:'none',density:0,ui:'default'})};
     window.__AETHERWING_OBSERVANCE__=observance?{id:observance,...OBSERVANCES[observance]}:null;

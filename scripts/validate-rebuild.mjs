@@ -203,3 +203,8 @@ if(!seasonSource.includes("christmas:{title:'CHRISTMAS / WINTER'")||!seasonSourc
 if(!siteCss.includes('v2.0.2 — REVAMPED SEASONAL TAKEOVERS')||!seasonalFxSource.includes('v2.0.2 — stronger seasonal atmosphere'))throw Error('Revamped public seasonal visual layers are missing.');
 if(!adminCss.includes('v2.0.2 — Theme Preview parity with the revamped public seasonal system')||!adminThemeSource.includes("url.searchParams.set('anniversary','off')")||!adminThemeSource.includes('Full Halloween takeover'))throw Error('Admin Theme Preview must show the revamped seasonal system, even during Anniversary Retro week.');
 console.log('v2.0.2 verified: seasonal takeovers are intensified and Admin Theme Preview stays in sync.');
+
+// v2.0.3 — unmistakable anniversary broadcast skin.
+if(!siteCss.includes('v2.0.3 — Anniversary Retro must read as a true 2003–2007 motorsports broadcast package')||!siteCss.includes('.aw-anniversary-hud__bar')||!siteCss.includes('AETHERWING RACE NETWORK  •  ANNIVERSARY BROADCAST'))throw Error('v2.0.3 Anniversary Retro broadcast treatment is missing.');
+if(!seasonSource.includes('mountAnniversaryHud')||!seasonSource.includes('AETHERWING RACE NETWORK')||!seasonSource.includes('2015 → 2026'))throw Error('v2.0.3 Anniversary Retro HUD lifecycle is missing.');
+console.log('v2.0.3 verified: Anniversary Retro reads as an unmistakable 2000s motorsports broadcast package.');
