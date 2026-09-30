@@ -317,3 +317,23 @@ The custom validation script now resolves and switches to the repository root fr
 - Kmart standings PNG metadata is now derived from the actual Kmart schedule, so the header shows current round information (for the bundled board: Round 7 of 23 at Rockingham) instead of allowing a legacy `SCR Drivers` label to leak into the export.
 - The public Championships page now has a sticky **All / NRRS / Kmart / Sunoco / UARL** league filter so visitors can open one points battle at a time. Sunoco also exposes its separate Chase-only table on the public page after those points are published.
 - Older live Sunoco standings payloads are expanded against the bundled 17-driver roster at both the public-content and Admin migration layers, preventing the old partial four-row board from replacing the full roster after a deploy.
+
+## v2.0.1 — Anniversary Week Retro Race Control
+
+- Adds an automatic Anniversary Week retro/broadcast UI overlay on top of the v2.0 team-site redesign.
+- Overlay uses Aetherwing red, graphite/steel, white/silver chrome, and blue telemetry accents so the main team logo remains visually native to the interface.
+- Anniversary presentation suppresses seasonal atmosphere effects while active instead of stacking Halloween effects over the retro package.
+- Anniversary banner reads `AETHERWING ANNIVERSARY WEEK · RETRO RACE CONTROL · EST. 2015`.
+- Automatic cutoff is exactly `2026-10-04 12:00 AM America/New_York` (`2026-10-04T04:00:00Z`).
+- At cutoff, the anniversary data attribute is removed and the existing October seasonal controller immediately exposes the normal `halloween` theme without a redeploy.
+- Private QA overrides: `?anniversary=retro` forces the overlay on; `?anniversary=off` forces it off.
+
+## v2.0.2 — Revamped Seasonal Themes + Admin Preview Parity
+
+- Increased seasonal atmosphere density across the calendar while keeping all effects pointer-safe and behind content.
+- Halloween / Halloween Week now use stronger violet-orange environmental lighting, denser fog, brighter embers, and more visible bats.
+- Christmas / Christmas Week now use richer Bethlehem night lighting, fuller snow, brighter live lights, stronger evergreen/gold UI, and a more visible tree/star treatment.
+- Valentine, Spring, Fall, Summer, Winter, Easter, New Year, Independence Day, St. Patrick's Day, Memorial Day, and transitional teaser themes all receive stronger unique backdrops and panel treatments.
+- Admin Theme Preview metadata, stage art, picker tiles, and effect density now mirror the revamped public themes.
+- Public-page previews launched from Admin force `anniversary=off` so seasonal themes remain previewable during the temporary Anniversary Retro overlay.
+- Existing automatic Eastern Time calendar, faith observances, Anniversary Retro cutoff, and Halloween Oct. 4 handoff are preserved.

@@ -39,3 +39,8 @@ Baseline: v1.1.29, rechecked before edits. This closeout becomes v1.1.30.
 - Compatibility `node scripts/validate.mjs`: pass.
 - Modified JavaScript syntax checks: pass.
 - Full dependency install / Astro compile could not be completed in the working container because `npm ci` timed out; Netlify remains the final production compile check.
+
+### v2.0.2 seasonal visual pass
+- Revamped seasonal themes now use stronger environment art and higher effect density.
+- Admin Theme Preview now mirrors the updated live theme values and bypasses Anniversary Retro for accurate QA previews.
+- Anniversary Retro still hands back to standard Halloween automatically at midnight ET on Oct. 4, 2026.

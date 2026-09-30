@@ -1,25 +1,25 @@
 (()=>{
   const THEMES={
-    'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',icon:'✦',effect:'fireworks',density:5,ui:'metallic'},
-    'clean-winter':{title:'CLEAN WINTER',subtitle:'COLD AIR · CLEAR FOCUS',icon:'❄',effect:'snow',density:9,ui:'frost'},
-    'valentine-teaser':{title:'VALENTINE TEASER',subtitle:'A LITTLE HEART IN THE GARAGE',icon:'♡',effect:'petals',density:8,ui:'rose-soft'},
-    valentine:{title:"VALENTINE'S WEEK",subtitle:'LOVE THE RACE · LOVE THE TEAM',icon:'♥',effect:'petals',density:16,ui:'rose'},
-    'late-winter':{title:'LATE WINTER',subtitle:'THE THAW IS COMING',icon:'❅',effect:'snow',density:6,ui:'thaw'},
-    spring:{title:'SPRING',subtitle:'FRESH SEASON · FRESH START',icon:'✿',effect:'petals',density:14,ui:'spring'},
-    'st-patrick':{title:"ST. PATRICK'S DAY",subtitle:'A FLASH OF GREEN',icon:'☘',effect:'twinkle',density:12,ui:'green'},
-    easter:{title:'HOLY WEEK / EASTER',subtitle:'I AM THE RESURRECTION, AND THE LIFE · JOHN 11:25',icon:'☀',effect:'petals',density:15,ui:'easter',faith:true,verse:'I AM THE RESURRECTION, AND THE LIFE',reference:'JOHN 11:25',scene:'holy-week'},
-    'memorial-day':{title:'MEMORIAL DAY',subtitle:'REMEMBER & HONOR',icon:'★',effect:'twinkle',density:7,ui:'memorial'},
-    summer:{title:'SUMMER',subtitle:'LONG DAYS · FAST LAPS',icon:'☀',effect:'glow',density:18,ui:'summer'},
-    'independence-day':{title:'INDEPENDENCE DAY',subtitle:'RED · WHITE · BLUE',icon:'✹',effect:'fireworks',density:6,ui:'patriotic'},
-    'summer-end':{title:"SUMMER'S END",subtitle:'LAST LIGHT OF THE SEASON',icon:'◒',effect:'glow',density:14,ui:'sunset'},
-    'halloween-teaser':{title:'HALLOWEEN IS CREEPING IN',subtitle:'SUBTLE SPOOKY SEASON',icon:'☾',effect:'haze',density:3,ui:'spooky-soft'},
-    halloween:{title:'SPOOKY SEASON',subtitle:'AETHERWING AFTER DARK',icon:'◐',effect:'halloween',density:18,ui:'spooky'},
-    'halloween-week':{title:'HALLOWEEN WEEK',subtitle:'FULL SEND · FULL SPOOKY',icon:'◆',effect:'halloween',density:28,ui:'spooky-max'},
-    fall:{title:'FALL AT AETHERWING',subtitle:'COOL AIR · HOT LAPS',icon:'❧',effect:'leaves',density:16,ui:'harvest'},
-    'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS OF THE SEASON',icon:'✦',effect:'twinkle',density:12,ui:'holiday-soft'},
-    christmas:{title:'CHRISTMAS / WINTER',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow',density:24,ui:'holiday',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
-    'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow-twinkle',density:38,ui:'holiday-max',lights:true,faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
-    'calm-winter':{title:'WINTER RESET',subtitle:'QUIET DAYS · NEXT RACE AHEAD',icon:'❅',effect:'snow',density:12,ui:'frost'},
+    'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',icon:'✦',effect:'fireworks',density:9,ui:'metallic'},
+    'clean-winter':{title:'CLEAN WINTER',subtitle:'COLD AIR · CLEAR FOCUS',icon:'❄',effect:'snow',density:16,ui:'frost'},
+    'valentine-teaser':{title:'VALENTINE TEASER',subtitle:'A LITTLE HEART IN THE GARAGE',icon:'♡',effect:'petals',density:12,ui:'rose-soft'},
+    valentine:{title:"VALENTINE'S WEEK",subtitle:'LOVE THE RACE · LOVE THE TEAM',icon:'♥',effect:'petals',density:26,ui:'rose'},
+    'late-winter':{title:'LATE WINTER',subtitle:'THE THAW IS COMING',icon:'❅',effect:'snow',density:10,ui:'thaw'},
+    spring:{title:'SPRING',subtitle:'FRESH SEASON · FRESH START',icon:'✿',effect:'petals',density:22,ui:'spring'},
+    'st-patrick':{title:"ST. PATRICK'S DAY",subtitle:'A FLASH OF GREEN',icon:'☘',effect:'twinkle',density:18,ui:'green'},
+    easter:{title:'HOLY WEEK / EASTER',subtitle:'I AM THE RESURRECTION, AND THE LIFE · JOHN 11:25',icon:'☀',effect:'petals',density:24,ui:'easter',faith:true,verse:'I AM THE RESURRECTION, AND THE LIFE',reference:'JOHN 11:25',scene:'holy-week'},
+    'memorial-day':{title:'MEMORIAL DAY',subtitle:'REMEMBER & HONOR',icon:'★',effect:'twinkle',density:10,ui:'memorial'},
+    summer:{title:'SUMMER',subtitle:'LONG DAYS · FAST LAPS',icon:'☀',effect:'glow',density:26,ui:'summer'},
+    'independence-day':{title:'INDEPENDENCE DAY',subtitle:'RED · WHITE · BLUE',icon:'✹',effect:'fireworks',density:10,ui:'patriotic'},
+    'summer-end':{title:"SUMMER'S END",subtitle:'LAST LIGHT OF THE SEASON',icon:'◒',effect:'glow',density:22,ui:'sunset'},
+    'halloween-teaser':{title:'HALLOWEEN IS CREEPING IN',subtitle:'SUBTLE SPOOKY SEASON',icon:'☾',effect:'haze',density:5,ui:'spooky-soft'},
+    halloween:{title:'SPOOKY SEASON',subtitle:'AETHERWING AFTER DARK',icon:'◐',effect:'halloween',density:32,ui:'spooky'},
+    'halloween-week':{title:'HALLOWEEN WEEK',subtitle:'FULL SEND · FULL SPOOKY',icon:'◆',effect:'halloween',density:46,ui:'spooky-max'},
+    fall:{title:'FALL AT AETHERWING',subtitle:'COOL AIR · HOT LAPS',icon:'❧',effect:'leaves',density:24,ui:'harvest'},
+    'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS OF THE SEASON',icon:'✦',effect:'twinkle',density:18,ui:'holiday-soft'},
+    christmas:{title:'CHRISTMAS / WINTER',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow',density:34,ui:'holiday',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
+    'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow-twinkle',density:52,ui:'holiday-max',lights:true,faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
+    'calm-winter':{title:'WINTER RESET',subtitle:'QUIET DAYS · NEXT RACE AHEAD',icon:'❅',effect:'snow',density:18,ui:'frost'},
   };
 
   const OBSERVANCES={
@@ -37,6 +37,19 @@
   const partsInEastern=(date=new Date())=>{
     const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter((p)=>p.type!=='literal').map((p)=>[p.type,p.value]));
     return {year:Number(parts.year),month:Number(parts.month),day:Number(parts.day)};
+  };
+
+  // v2.0.1 — Anniversary Week Retro UI. 2026-10-04 00:00 America/New_York
+  // is 2026-10-04T04:00:00Z while EDT is in effect. Keep this separate from
+  // the seasonal calendar so Halloween resumes automatically at the cutoff.
+  const ANNIVERSARY_RETRO_START=Date.parse('2026-09-28T04:00:00Z');
+  const ANNIVERSARY_RETRO_END=Date.parse('2026-10-04T04:00:00Z');
+  const anniversaryRetroActive=(date=new Date())=>{
+    const params=new URLSearchParams(location.search),forced=params.get('anniversary');
+    if(forced==='off'||forced==='modern')return false;
+    if(forced==='retro'||forced==='on')return true;
+    const now=date.getTime();
+    return now>=ANNIVERSARY_RETRO_START&&now<ANNIVERSARY_RETRO_END;
   };
   const easterSunday=(year)=>{
     const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;
@@ -196,16 +209,19 @@
   }
 
   function apply(){
-    const theme=resolveTheme(),observance=resolveObservance();
+    const theme=resolveTheme(),observance=resolveObservance(),anniversaryRetro=anniversaryRetroActive();
     if(theme==='standard'){delete document.documentElement.dataset.season;delete document.documentElement.dataset.seasonUi;}else{document.documentElement.dataset.season=theme;document.documentElement.dataset.seasonUi=THEMES[theme]?.ui||theme;}
     if(observance){document.documentElement.dataset.observance=observance;document.documentElement.dataset.observanceUi=OBSERVANCES[observance]?.ui||observance;}else{delete document.documentElement.dataset.observance;delete document.documentElement.dataset.observanceUi;}
+    if(anniversaryRetro)document.documentElement.dataset.anniversaryRetro='true';else delete document.documentElement.dataset.anniversaryRetro;
 
     window.__AETHERWING_SEASON__={id:theme,...(THEMES[theme]||{title:'',subtitle:'',icon:'',effect:'none',density:0,ui:'default'})};
     window.__AETHERWING_OBSERVANCE__=observance?{id:observance,...OBSERVANCES[observance]}:null;
+    window.__AETHERWING_ANNIVERSARY_RETRO__={active:anniversaryRetro,cutoff:'2026-10-04T00:00:00-04:00',timezone:'America/New_York'};
     const banner=document.querySelector('[data-season-banner]');
     if(banner){
-      const info=window.__AETHERWING_OBSERVANCE__||window.__AETHERWING_SEASON__,active=theme!=='standard'||Boolean(observance);
-      banner.hidden=!active;banner.setAttribute('aria-label',active?`${info.title} seasonal theme`:'Seasonal theme');
+      const retroInfo={title:'AETHERWING ANNIVERSARY WEEK',subtitle:'RETRO RACE CONTROL · EST. 2015',icon:'◼'};
+      const info=anniversaryRetro?retroInfo:(window.__AETHERWING_OBSERVANCE__||window.__AETHERWING_SEASON__),active=anniversaryRetro||theme!=='standard'||Boolean(observance);
+      banner.hidden=!active;banner.setAttribute('aria-label',anniversaryRetro?'Aetherwing Anniversary Week retro interface':active?`${info.title} seasonal theme`:'Seasonal theme');
       const icon=banner.querySelector('[data-season-icon]'),title=banner.querySelector('[data-season-title]'),subtitle=banner.querySelector('[data-season-subtitle]');
       if(icon)icon.textContent=info.icon||'';if(title)title.textContent=info.title||'';if(subtitle)subtitle.textContent=info.subtitle||'';
     }
@@ -215,4 +231,6 @@
   apply();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
   setInterval(apply,60*1000);
+  const anniversaryCutoffDelay=ANNIVERSARY_RETRO_END-Date.now();
+  if(anniversaryCutoffDelay>0&&anniversaryCutoffDelay<2147483600)setTimeout(apply,anniversaryCutoffDelay+75);
 })();

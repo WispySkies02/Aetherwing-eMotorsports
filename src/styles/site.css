@@ -277,3 +277,241 @@ html{background:#07080a}body{background:#07080a;color:#f4f4f2}body:before{filter
 @media(max-width:600px){.section{padding-block:3.8rem}.page-intro{padding-block:4rem 2.5rem;min-height:300px}.page-intro:after{display:none}.section-head{align-items:flex-start;flex-direction:column;gap:.8rem}.section-title{font-size:clamp(3rem,15vw,5.3rem)}}
 .program-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.program-card{min-height:340px;display:flex;flex-direction:column;align-items:flex-start}.program-card__logo{width:100%;min-height:105px;display:grid;place-items:center;margin:-.25rem 0 1.35rem;padding:.9rem;border-bottom:1px solid #33383d;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.055),transparent 72%)}.program-card__logo img{display:block;max-width:210px;max-height:78px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5))}.program-card a{margin-top:auto}
 @media(max-width:980px){.program-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.program-grid{grid-template-columns:1fr}.program-card{min-height:300px}}
+
+/* v2.0.1 — Anniversary Week Retro Race Control overlay.
+   Active through 2026-10-03 23:59:59 America/New_York; seasonal Halloween resumes at midnight ET Oct. 4. */
+html[data-anniversary-retro="true"]{
+  --retro-red:#e10600;
+  --retro-red-soft:#ff4d46;
+  --retro-steel:#bfc8cf;
+  --retro-steel-dark:#65717b;
+  --retro-screen:#07141b;
+  --retro-screen-2:#0b2230;
+  --retro-blue:#74d8ff;
+  --retro-amber:#f0bc52;
+  --retro-green:#9bf5a9;
+  --site-bg-art:
+    radial-gradient(circle at 80% 15%,rgba(225,6,0,.14),transparent 28%),
+    radial-gradient(circle at 14% 82%,rgba(74,111,255,.09),transparent 30%),
+    repeating-linear-gradient(180deg,rgba(255,255,255,.018) 0 1px,transparent 1px 4px),
+    linear-gradient(145deg,#071118 0%,#0b1d27 34%,#070b0f 68%,#140807 100%) !important;
+  --season-primary:var(--retro-red)!important;
+  --season-secondary:var(--retro-blue)!important;
+  --season-tertiary:var(--retro-steel)!important;
+}
+html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}
+html[data-anniversary-retro="true"] body{background:#050c11!important;color:#edf2f5}
+html[data-anniversary-retro="true"] body:before{filter:none!important}
+html[data-anniversary-retro="true"] body:after{
+  background:
+    linear-gradient(180deg,rgba(2,8,12,.2),rgba(2,8,12,.48)),
+    repeating-linear-gradient(180deg,rgba(255,255,255,.024) 0 1px,transparent 1px 3px)!important;
+  opacity:1!important;
+}
+html[data-anniversary-retro="true"] .aw-season-banner{
+  display:flex!important;
+  min-height:31px!important;
+  background:linear-gradient(180deg,#222a31 0%,#10171d 47%,#070c10 49%,#111a20 100%)!important;
+  border-top:1px solid #677680!important;
+  border-bottom:1px solid #000!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.04),0 4px 10px rgba(0,0,0,.42)!important;
+  color:#edf5f8!important;
+}
+html[data-anniversary-retro="true"] .aw-season-banner__icon{color:var(--retro-red)!important;filter:drop-shadow(0 0 7px rgba(225,6,0,.7))}
+html[data-anniversary-retro="true"] .aw-season-banner span{color:#fff!important;text-shadow:0 1px 0 #000}
+html[data-anniversary-retro="true"] .aw-season-banner b{color:#9edfff!important}
+
+html[data-anniversary-retro="true"] .site-header{
+  background:linear-gradient(180deg,#151d23 0%,#070b0f 70%,#040608 100%)!important;
+  border-bottom-color:#737f88!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-anniversary-retro="true"] .site-header:before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),transparent 34%),repeating-linear-gradient(90deg,transparent 0 68px,rgba(255,255,255,.018) 68px 69px,transparent 69px 136px)
+}
+html[data-anniversary-retro="true"] .site-header:after{
+  background:linear-gradient(90deg,#e10600 0 43%,#e7edf0 43% 50%,#78848d 50% 57%,#e10600 57% 74%,#74d8ff 74% 100%)!important;
+}
+html[data-anniversary-retro="true"] .site-header__utility{background:#020405!important;border-bottom-color:#353e45!important}
+html[data-anniversary-retro="true"] .site-header__utility-inner:before{
+  content:'ANNIVERSARY RETRO';
+  color:#fff;background:#e10600;padding:.2rem .45rem;margin-right:.15rem;
+  font:900 .5rem/1 var(--font-mono);letter-spacing:.1em;box-shadow:inset 0 1px rgba(255,255,255,.22)
+}
+html[data-anniversary-retro="true"] .brand img{filter:drop-shadow(0 7px 7px rgba(0,0,0,.85)) drop-shadow(0 0 8px rgba(255,255,255,.08))!important}
+html[data-anniversary-retro="true"] .desktop-nav>a,
+html[data-anniversary-retro="true"] .nav-group>button{font-family:var(--font-mono)!important;font-style:normal!important;letter-spacing:.08em!important}
+html[data-anniversary-retro="true"] .desktop-nav>a:hover,
+html[data-anniversary-retro="true"] .desktop-nav>a.active,
+html[data-anniversary-retro="true"] .nav-group>button:hover{background:linear-gradient(180deg,#23313a,#10181e)!important}
+html[data-anniversary-retro="true"] .nav-group__menu,
+html[data-anniversary-retro="true"] .mobile-menu{background:linear-gradient(180deg,#14212a,#05090d)!important;border-color:#7b8790!important;box-shadow:8px 10px 0 #000!important}
+html[data-anniversary-retro="true"] .header-race-link,
+html[data-anniversary-retro="true"] .mobile-race-link{background:linear-gradient(180deg,#d8e2e8,#8799a5)!important;color:#071017!important;border-color:#e8f1f5!important;box-shadow:inset 0 1px rgba(255,255,255,.6),0 3px 0 #030506!important}
+
+html[data-anniversary-retro="true"] .section-title,
+html[data-anniversary-retro="true"] .display,
+html[data-anniversary-retro="true"] .page-intro h1,
+html[data-anniversary-retro="true"] :is(.home-hero h1,.home-battle__copy h3,.home-after__card h3,.home-story__feature h3,.home-faith__copy h2){
+  font-family:var(--font-condensed)!important;font-style:italic!important;font-weight:900!important;letter-spacing:.005em!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.08),0 0 16px rgba(116,216,255,.12),7px 9px 0 rgba(0,0,0,.34)!important
+}
+html[data-anniversary-retro="true"] :is(.eyebrow,.kicker){color:var(--retro-blue)!important}
+html[data-anniversary-retro="true"] .eyebrow:before{background:var(--retro-red)!important}
+html[data-anniversary-retro="true"] .btn{
+  background:linear-gradient(180deg,#dbe6ec 0%,#9fb2bf 48%,#778995 52%,#9cafba 100%)!important;
+  border:1px solid #f1f6f8!important;color:#061017!important;border-radius:0!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72),inset 0 -1px 0 rgba(0,0,0,.36),0 3px 0 rgba(0,0,0,.55)!important
+}
+html[data-anniversary-retro="true"] .btn--ghost{background:linear-gradient(180deg,#253640,#101a20)!important;color:#f1f6f8!important;border-color:#778995!important}
+
+html[data-anniversary-retro="true"] .page-intro{
+  background-image:linear-gradient(90deg,rgba(5,14,19,.94),rgba(5,14,19,.56) 70%,rgba(5,14,19,.38))!important;
+  border-bottom-color:var(--retro-red)!important;box-shadow:inset 0 -30px 55px rgba(225,6,0,.05)!important;position:relative
+}
+html[data-anniversary-retro="true"] .page-intro:after{
+  content:'AETHERWING RACE NETWORK · 2015–2026';position:absolute;right:var(--gutter);top:1rem;
+  padding:.34rem .6rem;background:linear-gradient(180deg,#e5edf1,#8fa2ae);color:#061017;
+  border:1px solid #f8fbfc;box-shadow:inset 0 1px rgba(255,255,255,.7),0 3px 0 #000;
+  font:900 .52rem/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase
+}
+
+html[data-anniversary-retro="true"] :is(
+  .story-panel,.home-hero aside,.home-battle__grid,.home-people__tile,.home-after__card,.home-story__feature,.home-faith__copy,
+  .aw-calendar__hero,.aw-calendar__upcoming,.aw-calendar__recent,.aw-lineup__poster,.aw-paint-gallery__hero,.aw-paint-gallery__tile,
+  .news-tile,.news-article,.mission-program,.partner-personal__intro,.standings-board,.results-list article
+){
+  background-image:linear-gradient(180deg,#17242c 0%,#0c171e 42%,#071016 100%)!important;
+  border-color:#61717c!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 12px 30px rgba(0,0,0,.38)!important;
+  clip-path:none!important;border-radius:0!important
+}
+html[data-anniversary-retro="true"] :is(.home-hero aside,.home-battle__grid,.home-people__tile,.home-after__card,.home-story__feature,.aw-calendar__hero,.aw-lineup__poster,.aw-paint-gallery__hero){border-top-color:var(--retro-red)!important}
+html[data-anniversary-retro="true"] :is(.home-battle__grid,.aw-calendar__hero,.aw-lineup__poster,.aw-paint-gallery__hero,.home-story__feature):before{
+  content:'';position:absolute;left:0;right:0;top:0;height:19px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.018));border-bottom:1px solid rgba(255,255,255,.045)
+}
+
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues) button{
+  background:linear-gradient(180deg,#1f2e37 0%,#0b161c 52%,#071016 100%)!important;
+  border:1px solid #687984!important;border-radius:0!important;clip-path:none!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.11),0 3px 0 rgba(0,0,0,.5)!important
+}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues) button:before{background:#65737d!important;width:4px!important}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues) button[aria-pressed="true"]{
+  background:linear-gradient(180deg,#3a1717 0%,#190b0b 48%,#0b1014 100%)!important;
+  border-color:#e2e8eb!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 0 0 1px #e10600,0 4px 0 #000!important
+}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues) button[aria-pressed="true"]:before{background:var(--retro-red)!important;width:6px!important}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filter-logo,.aw-lineup__filter-logo,.aw-paint-gallery__leagues button>span){background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.08))!important;border-bottom-color:#46545d!important}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filter-meta small,.aw-lineup__program a,.home-people__tile small,.home-after__card span,.home-story__feature span){color:var(--retro-blue)!important}
+html[data-anniversary-retro="true"] :is(.aw-calendar__hero-top span,.aw-calendar__event b,.aw-calendar__heading a,.home-battle__copy>a,.home-story__feature b,.home-people__more){color:var(--retro-red-soft)!important}
+
+html[data-anniversary-retro="true"] .home-hero{
+  background-image:linear-gradient(90deg,rgba(3,10,14,.94),rgba(4,12,17,.47)),var(--site-bg-art)!important;
+  border-bottom:1px solid #53616a!important
+}
+html[data-anniversary-retro="true"] .home-hero:before{height:6px!important;background:linear-gradient(90deg,#e10600 0 46%,#e8eef1 46% 53%,#717e87 53% 60%,#e10600 60% 75%,#74d8ff 75%)!important}
+html[data-anniversary-retro="true"] .home-hero:after{content:'AETHERWING RACE NETWORK / ANNIVERSARY WEEK'!important;color:#8797a1!important}
+html[data-anniversary-retro="true"] .home-programs{background:linear-gradient(180deg,#0d171d,#05090c)!important;border-color:#55636c!important}
+html[data-anniversary-retro="true"] .home-programs__rail>a{
+  background:linear-gradient(180deg,#1b2931,#081117)!important;border-color:#63727c!important;clip-path:none!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 4px 0 rgba(0,0,0,.5)!important
+}
+html[data-anniversary-retro="true"] .home-programs__rail>a:before{background:#6e7b83!important}
+html[data-anniversary-retro="true"] .home-programs__rail>a.is-alliance:before{background:#e10600!important}
+html[data-anniversary-retro="true"] .home-faith__rule{background:linear-gradient(180deg,#d8dfe3,#e10600)!important}
+html[data-anniversary-retro="true"] .site-footer{background:linear-gradient(180deg,#111a20,#040709)!important;border-top-color:#7b8790!important;box-shadow:inset 0 1px rgba(255,255,255,.08)}
+html[data-anniversary-retro="true"] .site-footer:before{content:'AETHERWING RACE NETWORK · ANNIVERSARY WEEK';display:block;padding:.4rem var(--gutter);background:linear-gradient(180deg,#202a31,#0e1418);border-bottom:1px solid #38434b;color:#a8dfff;font:900 .52rem/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+
+@media(max-width:640px){
+  html[data-anniversary-retro="true"] .site-header__utility-inner:before{display:none}
+  html[data-anniversary-retro="true"] .page-intro:after{right:1rem;top:.7rem;font-size:.43rem;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+
+/* v2.0.2 — REVAMPED SEASONAL TAKEOVERS
+   Stronger environmental art, panel lighting and event-week identity. Anniversary Retro remains authoritative while active. */
+html[data-season]:not([data-anniversary-retro="true"]){
+  --season-shadow:0 18px 44px rgba(0,0,0,.42),inset 0 1px 0 color-mix(in srgb,var(--season-tertiary) 12%,transparent);
+}
+html[data-season]:not([data-anniversary-retro="true"]) body:after{opacity:.72}
+html[data-season]:not([data-anniversary-retro="true"]) .aw-season-banner{
+  min-height:36px;padding-block:.45rem;
+  border-bottom-color:color-mix(in srgb,var(--season-primary) 62%,transparent);
+  box-shadow:inset 0 2px 0 color-mix(in srgb,var(--season-primary) 72%,transparent),0 8px 24px rgba(0,0,0,.26);
+}
+html[data-season]:not([data-anniversary-retro="true"]) .site-header{box-shadow:0 10px 34px color-mix(in srgb,var(--season-primary) 8%,rgba(0,0,0,.62))}
+html[data-season]:not([data-anniversary-retro="true"]) .page-intro{
+  box-shadow:inset 0 -70px 120px color-mix(in srgb,var(--season-primary) 15%,transparent),inset 0 1px color-mix(in srgb,var(--season-tertiary) 12%,transparent);
+}
+html[data-season]:not([data-anniversary-retro="true"]) :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,.profile-stat,.profile-assignment,.profile-partners,.home-after__card,.home-story__feature,.home-people__tile,.faith-signature__inner){
+  background-image:linear-gradient(145deg,color-mix(in srgb,var(--season-primary) 8%,rgba(12,16,20,.94)),color-mix(in srgb,var(--season-secondary) 5%,rgba(5,8,11,.97)))!important;
+  box-shadow:var(--season-shadow)!important;
+}
+html[data-season]:not([data-anniversary-retro="true"]) :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button)[aria-pressed="true"]{
+  box-shadow:inset 0 -3px var(--season-primary),0 0 24px color-mix(in srgb,var(--season-primary) 13%,transparent)!important;
+}
+
+/* September dusk — amber sunset visibly takes over the garage. */
+html[data-season="summer-end"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 78% 9%,rgba(255,194,98,.42),transparent 25%),radial-gradient(circle at 88% 34%,rgba(255,101,48,.28),transparent 31%),radial-gradient(circle at 12% 82%,rgba(54,124,175,.18),transparent 34%),linear-gradient(160deg,#1d0c07 0%,#412115 34%,#111319 68%,#071019 100%)}
+html[data-season="summer-end"]:not([data-anniversary-retro="true"]) .section-title{text-shadow:0 0 28px rgba(255,130,66,.22),5px 8px #000}
+
+/* Teaser seasons still feel transitional, but are now unmistakable. */
+html[data-season="halloween-teaser"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 83% 14%,rgba(229,105,38,.24),transparent 25%),radial-gradient(circle at 14% 76%,rgba(103,53,139,.24),transparent 31%),repeating-linear-gradient(125deg,transparent 0 112px,rgba(217,135,67,.025) 113px 116px),linear-gradient(145deg,#070507,#160d14 38%,#0b090c 70%,#170b05)}
+html[data-season="christmas-teaser"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 84% 12%,rgba(209,74,74,.18),transparent 27%),radial-gradient(circle at 11% 76%,rgba(68,145,96,.2),transparent 30%),radial-gradient(circle at 52% 2%,rgba(255,224,142,.08),transparent 20%),linear-gradient(145deg,#05100d,#0c2018 38%,#080c0d 68%,#16090a)}
+html[data-season="valentine-teaser"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 84% 14%,rgba(232,137,169,.2),transparent 29%),radial-gradient(circle at 10% 79%,rgba(122,50,84,.14),transparent 31%),linear-gradient(145deg,#12070d,#1b0c14 44%,#080709)}
+html[data-season="late-winter"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 81% 12%,rgba(166,211,231,.2),transparent 31%),radial-gradient(circle at 13% 79%,rgba(76,112,134,.15),transparent 32%),linear-gradient(145deg,#07111a,#0b1820 42%,#080c10)}
+
+/* Halloween — deeper midnight, brighter embers, stronger violet/orange race graphics. */
+html[data-season="halloween"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(ellipse at 78% 11%,rgba(157,71,207,.42),transparent 31%),radial-gradient(ellipse at 17% 75%,rgba(255,105,16,.35),transparent 30%),radial-gradient(circle at 52% 44%,rgba(80,21,97,.2),transparent 36%),repeating-linear-gradient(128deg,transparent 0 105px,rgba(255,112,27,.065) 106px 110px,transparent 111px 174px),linear-gradient(135deg,#020103 0%,#17051d 40%,#040204 68%,#230b02 100%)}
+html[data-season="halloween-week"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(ellipse at 80% 9%,rgba(181,84,236,.5),transparent 31%),radial-gradient(ellipse at 14% 78%,rgba(255,98,0,.46),transparent 31%),radial-gradient(circle at 48% 46%,rgba(110,28,129,.24),transparent 38%),repeating-linear-gradient(128deg,transparent 0 77px,rgba(255,122,31,.09) 78px 82px,transparent 83px 138px),linear-gradient(135deg,#010102 0%,#1e0528 42%,#030204 67%,#2a0c01 100%)}
+html[data-season-ui^="spooky"]:not([data-anniversary-retro="true"]) :is(.story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,.home-after__card){
+  border-left-width:4px!important;
+  background-image:linear-gradient(135deg,rgba(30,12,31,.96),rgba(8,7,10,.98) 62%),repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 1px,transparent 1px 9px)!important;
+  box-shadow:inset 4px 0 color-mix(in srgb,var(--season-primary) 72%,transparent),0 16px 42px rgba(0,0,0,.5),0 0 28px color-mix(in srgb,var(--season-secondary) 8%,transparent)!important;
+}
+html[data-season-ui="spooky-max"]:not([data-anniversary-retro="true"]) :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button){text-shadow:0 0 10px rgba(255,106,0,.32)}
+
+/* Fall — stronger dusk, copper/amber metal and layered warmth. */
+html[data-season="fall"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 83% 11%,rgba(235,155,53,.34),transparent 31%),radial-gradient(circle at 13% 81%,rgba(155,65,24,.39),transparent 34%),radial-gradient(circle at 48% 55%,rgba(97,46,17,.15),transparent 40%),repeating-linear-gradient(0deg,rgba(255,225,178,.028) 0 1px,transparent 1px 6px),linear-gradient(145deg,#100704,#2d1608 37%,#0b0805 67%,#231006 100%)}
+html[data-season-ui="harvest"]:not([data-anniversary-retro="true"]) :is(.story-panel,.results-list article,.aw-calendar__event,.aw-lineup__poster,.home-after__card){background-image:linear-gradient(120deg,rgba(217,154,62,.14),rgba(168,79,42,.07) 42%,rgba(9,8,7,.96) 74%)!important}
+
+/* Winter — colder, brighter frost and more obvious atmospheric depth. */
+html[data-season="clean-winter"]:not([data-anniversary-retro="true"]),html[data-season="calm-winter"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 80% 12%,rgba(173,225,250,.27),transparent 31%),radial-gradient(circle at 12% 78%,rgba(89,130,163,.22),transparent 34%),linear-gradient(150deg,rgba(255,255,255,.03),transparent 30%),linear-gradient(145deg,#04101a,#0b1d29 39%,#060a0e 72%,#101b22 100%)}
+html[data-season-ui="frost"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile){backdrop-filter:blur(10px);background-image:linear-gradient(145deg,rgba(15,35,47,.91),rgba(5,13,19,.95))!important}
+
+/* Valentine — rich burgundy/rose race-night takeover. */
+html[data-season="valentine"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 10%,rgba(255,147,185,.4),transparent 30%),radial-gradient(circle at 12% 79%,rgba(192,50,105,.44),transparent 34%),radial-gradient(circle at 52% 45%,rgba(113,25,62,.3),transparent 34%),linear-gradient(145deg,#100208 0%,#380b20 38%,#0c0508 69%,#2e0716 100%)}
+html[data-season-ui="rose"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.profile-stat,.aw-calendar__event,.aw-lineup__poster,.home-after__card){background-image:radial-gradient(circle at 100% 0,rgba(243,154,183,.19),transparent 36%),linear-gradient(145deg,rgba(51,13,29,.95),rgba(10,5,8,.97))!important;box-shadow:0 18px 44px rgba(64,5,29,.36),inset 0 1px rgba(255,215,230,.12)!important}
+
+/* Spring — fresh green/teal light spreads through the full site. */
+html[data-season="spring"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 83% 11%,rgba(180,228,152,.34),transparent 31%),radial-gradient(circle at 13% 80%,rgba(86,199,165,.33),transparent 35%),radial-gradient(circle at 51% 4%,rgba(238,218,124,.13),transparent 24%),linear-gradient(145deg,#04120a 0%,#123120 36%,#06120f 68%,#18220c 100%)}
+html[data-season-ui="spring"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.profile-stat,.aw-calendar__event,.aw-lineup__poster){background-image:radial-gradient(circle at 100% 0,rgba(159,208,140,.18),transparent 35%),linear-gradient(145deg,rgba(14,39,28,.93),rgba(6,13,11,.96))!important}
+
+/* St. Patrick's — intentionally one-day, but now clearly visible. */
+html[data-season="st-patrick"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 12%,rgba(87,234,103,.31),transparent 28%),radial-gradient(circle at 14% 78%,rgba(220,197,91,.16),transparent 31%),linear-gradient(145deg,#031006,#0b2913 40%,#06100a 71%,#151207 100%)}
+
+/* Holy Week / Easter — sunrise, renewal and stronger faith scene lighting. */
+html[data-season="easter"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(ellipse at 50% 0%,rgba(255,226,124,.56),transparent 28%),radial-gradient(circle at 81% 30%,rgba(196,169,224,.32),transparent 31%),radial-gradient(circle at 13% 78%,rgba(159,217,145,.36),transparent 34%),linear-gradient(180deg,#221e0d 0%,#34351a 25%,#142019 54%,#070c09 100%)}
+html[data-season-ui="easter"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.profile-stat,.aw-calendar__event){background-image:radial-gradient(circle at 100% 0,rgba(228,212,143,.2),transparent 35%),linear-gradient(145deg,rgba(29,34,21,.91),rgba(8,11,8,.96))!important}
+
+/* Memorial remains respectful: stronger identity, restrained motion. */
+html[data-season="memorial-day"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 12%,rgba(184,64,71,.2),transparent 29%),radial-gradient(circle at 14% 79%,rgba(48,92,154,.28),transparent 34%),linear-gradient(145deg,#060a14,#101d32 39%,#08090c 68%,#1b090d 100%)}
+
+/* Summer — bright late-evening race atmosphere. */
+html[data-season="summer"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 9%,rgba(250,204,84,.35),transparent 28%),radial-gradient(circle at 13% 79%,rgba(47,178,224,.31),transparent 34%),radial-gradient(circle at 48% 52%,rgba(95,178,132,.09),transparent 36%),linear-gradient(145deg,#06131c 0%,#0c2a3b 38%,#081314 68%,#1d1808 100%)}
+html[data-season-ui="summer"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.home-after__card){background-image:linear-gradient(145deg,rgba(12,38,51,.94),rgba(8,15,18,.96)),radial-gradient(circle at 100% 0,rgba(240,196,90,.16),transparent 34%)!important}
+
+/* Independence Day — event-night red/white/blue with more visible fireworks backdrop. */
+html[data-season="independence-day"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 12%,rgba(224,69,79,.32),transparent 28%),radial-gradient(circle at 13% 77%,rgba(61,124,202,.38),transparent 34%),repeating-radial-gradient(circle at 72% 21%,rgba(255,255,255,.16) 0 1px,transparent 2px 24px),linear-gradient(145deg,#030817 0%,#0d2249 40%,#06080f 67%,#25080d 100%)}
+
+/* Christmas — deeper Bethlehem night, brighter gold, evergreen and live-light ambience. */
+html[data-season="christmas"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 51% 0%,rgba(255,225,133,.22),transparent 24%),radial-gradient(circle at 82% 14%,rgba(231,75,75,.28),transparent 28%),radial-gradient(circle at 13% 77%,rgba(43,157,91,.34),transparent 32%),linear-gradient(145deg,#020b12 0%,#08251b 35%,#040a11 64%,#210709 100%)}
+html[data-season="christmas-week"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 50% 0%,rgba(255,226,130,.34),transparent 26%),radial-gradient(circle at 83% 13%,rgba(244,82,82,.39),transparent 28%),radial-gradient(circle at 11% 78%,rgba(53,190,111,.42),transparent 31%),radial-gradient(circle at 48% 52%,rgba(74,132,173,.13),transparent 36%),linear-gradient(145deg,#010912 0%,#073522 36%,#030a11 62%,#2c080b 100%)}
+html[data-season-ui="holiday"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile),
+html[data-season-ui="holiday-max"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile){background-image:linear-gradient(145deg,rgba(7,34,27,.91),rgba(5,12,17,.96)),radial-gradient(circle at 100% 0,rgba(242,216,143,.19),transparent 35%)!important;box-shadow:inset 0 2px rgba(240,246,250,.35),0 18px 46px rgba(0,0,0,.44),0 0 30px rgba(242,216,143,.06)!important}
+html[data-season-ui="holiday-max"]:not([data-anniversary-retro="true"]) .section-title{text-shadow:0 0 26px rgba(255,225,145,.19),6px 8px #000}
+
+/* New Year — brighter metallic event-night treatment. */
+html[data-season="new-year"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 76% 12%,rgba(245,219,125,.34),transparent 27%),radial-gradient(circle at 21% 32%,rgba(205,217,230,.22),transparent 24%),repeating-radial-gradient(circle at 80% 20%,rgba(255,255,255,.18) 0 1px,transparent 2px 22px),linear-gradient(145deg,#030406 0%,#17191e 43%,#050609 71%,#24200d 100%)}
+html[data-season-ui="metallic"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.home-after__card){background-image:linear-gradient(120deg,rgba(27,30,35,.96),rgba(46,42,23,.88),rgba(8,10,13,.96))!important;box-shadow:inset 0 1px rgba(255,255,255,.17),0 18px 46px rgba(0,0,0,.46)!important}

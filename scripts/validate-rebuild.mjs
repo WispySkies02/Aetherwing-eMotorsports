@@ -189,3 +189,17 @@ if(!paintPageSource.includes('leagueVisual')||!paintPageSource.includes('/images
 if(!homeSource.includes('home-programs__rail')||!homeSource.includes('programLogo')||!homeCss.includes('v1.2.0 — full team-site homepage redesign'))throw Error('Homepage program rail/team-site redesign is missing.');
 if(!siteCss.includes('v1.2.0 — AETHERWING TEAM-SITE REDESIGN')||!siteCss.includes('--red:#e10600')||!siteCss.includes('--blue:#4a6fff'))throw Error('Aetherwing logo-led v1.2.0 public design tokens are missing.');
 console.log('v1.2.0 verified: team-site redesign and logo-led public filters are intact.');
+
+// v2.0.1 — Anniversary Week Retro Race Control overlay + exact Halloween handoff.
+if(!seasonSource.includes("ANNIVERSARY_RETRO_END=Date.parse('2026-10-04T04:00:00Z')")||!seasonSource.includes("document.documentElement.dataset.anniversaryRetro='true'")||!seasonSource.includes("cutoff:'2026-10-04T00:00:00-04:00'")||!seasonSource.includes('anniversaryCutoffDelay'))throw Error('Anniversary Retro overlay must expire automatically at 12:00 AM ET on Sunday, Oct. 4, 2026.');
+if(!siteCss.includes('v2.0.1 — Anniversary Week Retro Race Control overlay')||!siteCss.includes('html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}')||!siteCss.includes('AETHERWING RACE NETWORK · ANNIVERSARY WEEK'))throw Error('Anniversary Retro visual overlay/suppression layer is incomplete.');
+if(!seasonSource.includes("if(month===10&&day<=24)return 'halloween';"))throw Error('Normal October Halloween theme must remain intact after the anniversary overlay expires.');
+console.log('v2.0.1 verified: Anniversary Retro overlay hands back to Halloween at midnight ET Oct. 4.');
+
+// v2.0.2 — revamped seasonal takeovers + Admin Theme Preview parity.
+const seasonalFxSource=readFileSync('public/seasonal-effects.css','utf8');
+if(!seasonSource.includes("halloween:{title:'SPOOKY SEASON'")||!seasonSource.includes('density:32')||!seasonSource.includes("'halloween-week':{title:'HALLOWEEN WEEK'")||!seasonSource.includes('density:46'))throw Error('Revamped Halloween atmosphere densities are missing.');
+if(!seasonSource.includes("christmas:{title:'CHRISTMAS / WINTER'")||!seasonSource.includes('density:34')||!seasonSource.includes("'christmas-week':{title:'CHRISTMAS WEEK'")||!seasonSource.includes('density:52'))throw Error('Revamped Christmas atmosphere densities are missing.');
+if(!siteCss.includes('v2.0.2 — REVAMPED SEASONAL TAKEOVERS')||!seasonalFxSource.includes('v2.0.2 — stronger seasonal atmosphere'))throw Error('Revamped public seasonal visual layers are missing.');
+if(!adminCss.includes('v2.0.2 — Theme Preview parity with the revamped public seasonal system')||!adminThemeSource.includes("url.searchParams.set('anniversary','off')")||!adminThemeSource.includes('Full Halloween takeover'))throw Error('Admin Theme Preview must show the revamped seasonal system, even during Anniversary Retro week.');
+console.log('v2.0.2 verified: seasonal takeovers are intensified and Admin Theme Preview stays in sync.');
