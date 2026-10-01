@@ -3,3 +3,111 @@
 /* v1.2.0 — team-site Paint Booth treatment + logo league filters. */
 .aw-paint-gallery{background:linear-gradient(180deg,#090a0c,#050607)}.aw-paint-gallery__hero{position:relative;border:1px solid #3e4348;border-top:5px solid #e10600;background:radial-gradient(circle at 34% 50%,#22272c,#090a0c 66%);box-shadow:0 18px 38px rgba(0,0,0,.24);clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}.aw-paint-gallery__feature-copy{background:linear-gradient(90deg,transparent,#08090b)}.aw-paint-gallery__feature-copy small{color:#a9dfff}.aw-paint-gallery__feature-copy h3{font-family:var(--font-condensed);font-style:italic;font-weight:900}.aw-paint-gallery__feature-copy a{color:#ff655e}.aw-paint-gallery__feature-copy button,.aw-paint-gallery__info button{border-color:#555b61;background:#15181b}.aw-paint-gallery__controls{align-items:flex-end}.aw-paint-gallery__leagues{display:grid;grid-auto-flow:column;grid-auto-columns:135px;gap:.45rem;overflow-x:auto;max-width:100%;padding-bottom:.2rem}.aw-paint-gallery__leagues button{position:relative;display:grid;grid-template-rows:58px auto;min-width:135px;min-height:94px;padding:0;background:linear-gradient(180deg,#17191c,#0a0b0d);border:1px solid #41464b;color:#fff;overflow:hidden;clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)}.aw-paint-gallery__leagues button:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#4c5156}.aw-paint-gallery__leagues button>span{display:grid;place-items:center;padding:.45rem .7rem;border-bottom:1px solid #34383c}.aw-paint-gallery__leagues button img{display:block;max-width:100px;max-height:40px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}.aw-paint-gallery__leagues button small{padding:.58rem .65rem;color:#d5d9dc;font:900 .6rem/1 var(--font-condensed);font-style:italic;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aw-paint-gallery__leagues button[aria-pressed=true]{background:linear-gradient(145deg,rgba(225,6,0,.2),#111317 46%,#090a0c);border-color:#858c92}.aw-paint-gallery__leagues button[aria-pressed=true]:before{width:6px;background:#e10600}.aw-paint-gallery__controls input{background:#0d0f12;border-color:#464b50}.aw-paint-gallery__count{color:#ff655e}.aw-paint-gallery__tile{border:1px solid #373c41;background:#0b0d0f;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}.aw-paint-gallery__tile>a{background:radial-gradient(circle,#24292e,#090a0c)}.aw-paint-gallery__tile>a span{background:#e10600;color:#fff}.aw-paint-gallery__info h3{font-style:italic}.aw-paint-gallery__info button b{color:#ff655e}
 @media(max-width:640px){.aw-paint-gallery__leagues{grid-auto-columns:122px}.aw-paint-gallery__leagues button{min-width:122px;grid-template-rows:54px auto;min-height:88px}.aw-paint-gallery__leagues button img{max-width:92px;max-height:38px}}
+
+/* v2.0.7 — Anniversary Week Paint Booth uses the full 2015 debut identity. */
+html[data-anniversary-retro="true"] .aw-paint-gallery{
+  background:
+    linear-gradient(145deg,rgba(0,143,232,.09),transparent 32%),
+    linear-gradient(180deg,#071d2b,#03111a)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__top{
+  padding:1rem 1.1rem;
+  border:1px solid #2e7799;
+  border-bottom:4px solid #008fe8;
+  border-radius:7px 7px 0 0;
+  background:linear-gradient(180deg,#104760,#082a3d);
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 12px 24px rgba(0,0,0,.24);
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__top:before{
+  content:'AETHERWING PAINT SHOP • EST. 2015';
+  display:block;
+  width:100%;
+  margin-bottom:.2rem;
+  color:#84e6ff;
+  font:900 .56rem/1 var(--font-mono);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__hero{
+  border:1px solid #2d7698!important;
+  border-top:5px solid #008fe8!important;
+  border-radius:7px!important;
+  clip-path:none!important;
+  background:
+    radial-gradient(circle at 34% 50%,rgba(45,170,224,.22),transparent 42%),
+    linear-gradient(180deg,#10445c,#061d2b 70%)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 18px 34px rgba(0,0,0,.28)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__visual{
+  background:linear-gradient(150deg,rgba(0,143,232,.06),rgba(0,167,160,.045));
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__feature-copy{
+  background:linear-gradient(180deg,rgba(8,50,70,.94),rgba(4,27,40,.98))!important;
+  border-left:1px solid #2f7899;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__feature-copy small,
+html[data-anniversary-retro="true"] .aw-paint-gallery__count{color:#7fe7ff!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__feature-copy a{color:#6de2d6!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__feature-copy button,
+html[data-anniversary-retro="true"] .aw-paint-gallery__info button{
+  border-color:#4aa6cb!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,#0f526e,#07334a)!important;
+  color:#fff!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__controls{
+  padding:.75rem;
+  border:1px solid #286c8b;
+  border-radius:7px;
+  background:#061b29;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__leagues button{
+  border-color:#286e90!important;
+  border-radius:5px!important;
+  clip-path:none!important;
+  background:linear-gradient(180deg,#12435a,#082c3f)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__leagues button:before{background:#2e87ac!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__leagues button[aria-pressed="true"]{
+  border-color:#7ae1ff!important;
+  background:linear-gradient(180deg,#13a4e9,#0076bd)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.32),0 0 18px rgba(0,143,232,.25)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__leagues button[aria-pressed="true"]:before{background:#59e0d5!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__leagues button>span{border-bottom-color:#29718f!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__controls label{color:#8ddffb!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__controls input{
+  border-color:#3984a4!important;
+  border-radius:4px!important;
+  background:#041824!important;
+  color:#fff!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__tile{
+  border:1px solid #2d7191!important;
+  border-top:4px solid #008fe8!important;
+  border-radius:6px!important;
+  clip-path:none!important;
+  background:#061925!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.25)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__tile:nth-child(3n+2){border-top-color:#00a7a0!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__tile:nth-child(3n+3){border-top-color:#5fba46!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__tile>a{
+  background:radial-gradient(circle at 50% 48%,#174b61,#061925 68%)!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__tile>a span{
+  border-radius:3px;
+  background:linear-gradient(90deg,#008fe8,#0077c4)!important;
+  color:#fff!important;
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__info{
+  border-top:1px solid #256582;
+  background:linear-gradient(180deg,#0b3449,#061d2b);
+}
+html[data-anniversary-retro="true"] .aw-paint-gallery__info p{color:#91cfe5!important}
+html[data-anniversary-retro="true"] .aw-paint-gallery__info button b{color:#7ff0e7!important}
+@media(max-width:640px){
+  html[data-anniversary-retro="true"] .aw-paint-gallery__top{padding:.8rem}
+  html[data-anniversary-retro="true"] .aw-paint-gallery__feature-copy{border-left:0;border-top:1px solid #2f7899}
+}

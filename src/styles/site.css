@@ -766,3 +766,43 @@ html[data-anniversary-retro="true"] .aw-anniversary-hud__era{background:linear-g
   html[data-anniversary-retro="true"] .brand{flex-basis:235px!important;height:56px!important}
   html[data-anniversary-retro="true"] .section-head{border-radius:4px 4px 0 0!important}
 }
+
+/* v2.0.6 — Anniversary interior-page badge must stay compact.
+   Earlier retro rules left both top and bottom positioned, stretching the pseudo-element vertically. */
+html[data-anniversary-retro="true"] .page-intro:after{
+  content:'AETHERWING eMOTORSPORTS  //  EST. 2015  //  ANNIVERSARY WEEK'!important;
+  left:auto!important;
+  right:var(--gutter)!important;
+  top:1rem!important;
+  bottom:auto!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  max-width:min(70vw,29rem)!important;
+  padding:.38rem .62rem!important;
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  background:#06283b!important;
+  border:1px solid #3197c1!important;
+  border-radius:3px!important;
+  color:#bfefff!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.22)!important;
+  font:900 .52rem/1 var(--font-mono)!important;
+  letter-spacing:.105em!important;
+  text-transform:uppercase!important;
+  text-shadow:none!important;
+  transform:none!important;
+}
+@media(max-width:600px){
+  html[data-anniversary-retro="true"] .page-intro:after{
+    display:block!important;
+    left:var(--gutter)!important;
+    right:auto!important;
+    top:.7rem!important;
+    max-width:calc(100% - 2 * var(--gutter))!important;
+    font-size:.43rem!important;
+    padding:.32rem .5rem!important;
+  }
+}

@@ -18,6 +18,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
 (() => {
   const root=document.querySelector('[data-lineup]');if(!root)return;
   let assignments=entries,profiles=people,charters=boards,series='all';
+  const publishedArtById=new Map(),publishedSignatureBySlug=new Map();
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const programOrder={kmart:1,sunoco:2,nrrs:3,'uarl-d1':4,'uarl-open':5};
   const artChoiceByDriver=new Map();
@@ -88,9 +89,27 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     'uarl-d1':'/images/schedule-logos/uarl-d1.png',
     'uarl-open':'/images/schedule-logos/open.png'
   };
+  const rememberPublishedArt=(driverRows=[],profileRows=[])=>{
+    for(const row of Array.isArray(driverRows)?driverRows:[]){
+      if(!row?.id)continue;
+      const previous=publishedArtById.get(row.id)||{};
+      publishedArtById.set(row.id,{
+        numberImageBackup:row.numberImageBackup||previous.numberImageBackup||'',
+        numberImage:row.numberImage||previous.numberImage||''
+      });
+    }
+    for(const profile of Array.isArray(profileRows)?profileRows:[]){
+      if(profile?.slug&&profile.signatureLogo)publishedSignatureBySlug.set(profile.slug,profile.signatureLogo);
+    }
+  };
+  const assignmentWithPublishedArt=(entry)=>{
+    const art=publishedArtById.get(entry?.id);
+    return art?{...entry,numberImageBackup:art.numberImageBackup||entry.numberImageBackup||'',numberImage:art.numberImage||entry.numberImage||''}:entry;
+  };
+  const profileWithPublishedSignature=(profile)=>profile&&publishedSignatureBySlug.has(profile.slug)?{...profile,signatureLogo:publishedSignatureBySlug.get(profile.slug)}:profile;
   const programFilter=(key,labelText)=>{const logo=programLogo[key]||'';const label=key==='all'?'All Drivers':labelText||key;return `<button type="button" data-program="${esc(key)}" aria-pressed="${series===key}" aria-label="${esc(label)}"><span class="aw-lineup__filter-logo">${logo?`<img src="${esc(logo)}" alt="" loading="lazy">`:`<b>${esc(label)}</b>`}</span><span>${esc(label)}</span></button>`;};
   function render(){
-    const rawActive=assignments.filter(e=>e.competitionId!=='iracing-factory');
+    const rawActive=assignments.filter(e=>e.competitionId!=='iracing-factory').map(assignmentWithPublishedArt);
     const sharedKmart29=rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImageBackup)||rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImage);
     const sharedKmartUpload=sharedKmart29?.numberImageBackup||'';
     const sharedKmartSource=sharedKmart29?.numberImage||sharedKmartUpload;
@@ -110,7 +129,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
         groups.get(key).push(entry);
       }
       return [...groups.entries()].map(([key,rows])=>{
-        const person=profiles.find(profile=>profile.slug===rows[0]?.profile);
+        const person=profileWithPublishedSignature(profiles.find(profile=>profile.slug===rows[0]?.profile));
         const ordered=[...rows].sort((a,b)=>(programOrder[a.competitionId]||99)-(programOrder[b.competitionId]||99)||Number(a.number)-Number(b.number));
         const primary=ordered.find(entry=>entry.numberImage||entry.numberImageBackup)||ordered[0];
         const rides=ordered.map(entry=>({competitionId:entry.competitionId,program:programs.get(entry.competitionId)||label(entry),number:String(entry.number||''),status:entry.status||'Active',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||''}));
@@ -126,7 +145,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     const all=[...shown,...extra,...flex];
     root.querySelector('[data-lineup-program]').innerHTML=series==='all'?`<span>AETHERWING + PARTNER TEAM DRIVER DIRECTORY</span><strong>${shown.length} DRIVERS · ONE CARD EACH</strong>`:`<span>${esc(programs.get(series)||series)} PROGRAM</span><strong>${shown.length} ASSIGNED · ${(board?.openCharters||[]).filter(c=>c.active!==false).length} FLEX CHARTER</strong><a href="/schedule/">View program schedule →</a>`;
     root.querySelector('[data-lineup-grid]').innerHTML=all.map(e=>{
-      const person=profiles.find(p=>p.slug===e.profile),open=e.flex||/open charter|^open$/i.test(e.displayName||''),alliance=e.affiliation==='alliance';
+      const person=profileWithPublishedSignature(profiles.find(p=>p.slug===e.profile)),open=e.flex||/open charter|^open$/i.test(e.displayName||''),alliance=e.affiliation==='alliance';
       const rides=(e.rides||[]);
       const stacked=(e.numberImages||[]);
       const rideNumbers=[...new Set(rides.map(ride=>String(ride.number||'')).filter(Boolean))];
@@ -162,7 +181,12 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
     queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);requestAnimationFrame(()=>fitNumberVisual(img));}}));
   }
-  window.addEventListener('aetherwing:content',e=>{const d=e.detail||{};if(Array.isArray(d.drivers))assignments=d.drivers;if(Array.isArray(d['roster-profiles']))profiles=d['roster-profiles'];if(Array.isArray(d.charters))charters=d.charters;render();});
+  window.addEventListener('aetherwing:content',e=>{const d=e.detail||{};if(Array.isArray(d.drivers)){assignments=d.drivers;rememberPublishedArt(d.drivers,[]);}if(Array.isArray(d['roster-profiles'])){profiles=d['roster-profiles'];rememberPublishedArt([],d['roster-profiles']);}if(Array.isArray(d.charters))charters=d.charters;render();});
+  fetch(`/api/driver-art?v=${Date.now()}`,{cache:'no-store'}).then(response=>response.ok?response.json():null).then(payload=>{
+    if(!payload)return;
+    rememberPublishedArt(payload.drivers,payload.profiles);
+    render();
+  }).catch(()=>{});
   let resizeFrame=0;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>root.querySelectorAll('.aw-lineup__number img').forEach(fitNumberVisual));},{passive:true});
   render();
 })();

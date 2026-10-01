@@ -53,7 +53,8 @@ const obsoleteNavigation = Array.isArray(publishedNavigation) && (
   publishedNavigation.some((item) => ['/contact/','/wins-history/'].includes(item.href)) ||
   ['/programs/','/championships/','/history/','/mission-values/','/team-handbook/'].some((href) => !publishedNavigation.some((item) => item.href === href))
 );
-export const navigation = obsoleteNavigation ? navigationSeed : publishedNavigation;
+const rawNavigation = obsoleteNavigation ? navigationSeed : publishedNavigation;
+export const navigation = (Array.isArray(rawNavigation)?rawNavigation:navigationSeed).map((item)=>item?.label==='Paint Booth'&&item?.href==='/paint-booth/'?{...item,href:'https://paint.aetherwing.net/'}:item);
 export const liveryBrands = choose('livery-brands', liveryBrandsSeed);
 export const driverPortfolios = choose('driver-portfolios', driverPortfoliosSeed);
 export const pageOverrides = choose('page-overrides', pageOverridesSeed);

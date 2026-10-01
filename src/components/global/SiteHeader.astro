@@ -88,8 +88,9 @@ const groups=['Team','Race','Connect'].map((label)=>({label,links:navigation.fil
     });
     const renderNavigation=(items)=>{
       if(!Array.isArray(items)||!items.length)return;
-      const home=items.find(item=>item?.group==='Home')||{label:'Home',href:'/'};
-      const groups=['Team','Race','Connect'].map(label=>({label,links:items.filter(item=>item?.group===label)})).filter(group=>group.links.length);
+      const publicItems=items.map(item=>item?.label==='Paint Booth'&&item?.href==='/paint-booth/'?{...item,href:'https://paint.aetherwing.net/'}:item);
+      const home=publicItems.find(item=>item?.group==='Home')||{label:'Home',href:'/'};
+      const groups=['Team','Race','Connect'].map(label=>({label,links:publicItems.filter(item=>item?.group===label)})).filter(group=>group.links.length);
       if(desktopNav instanceof HTMLElement){desktopNav.innerHTML=`<a class="${isActive(home.href)?'active':''}" href="${esc(home.href)}">${esc(home.label)}</a>`+groups.map(group=>`<div class="nav-group"><button type="button" aria-haspopup="true" aria-expanded="false">${esc(group.label)}<span aria-hidden="true">▾</span></button><div class="nav-group__menu"><small>${esc(group.label)} / AEM</small>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></div>`).join('');}
       if(mobileHome instanceof HTMLAnchorElement){mobileHome.href=home.href;mobileHome.textContent=home.label;}
       if(mobileGroups instanceof HTMLElement){mobileGroups.innerHTML=groups.map((group,index)=>`<section class="mobile-group"><button type="button" class="mobile-group__toggle" aria-expanded="${index===0?'true':'false'}"><span>${esc(group.label)}</span><b aria-hidden="true">+</b></button><div class="mobile-group__links" ${index===0?'':'hidden'}>${group.links.map(item=>`<a class="${isActive(item.href)?'active':''}" href="${esc(item.href)}">${esc(item.label)}</a>`).join('')}</div></section>`).join('');}

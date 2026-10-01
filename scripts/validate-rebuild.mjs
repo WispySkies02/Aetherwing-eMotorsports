@@ -200,3 +200,21 @@ if(!baseSource.includes('family=Permanent+Marker&family=Saira+Condensed:')||!bas
 if(!adminHtml.includes('data-theme="anniversary"')||!adminThemeSource.includes("anniversary:{window:'Every year · Oct 1–7 · Eastern Time'")||!adminCss.includes('data-admin-theme="anniversary"'))throw Error('Admin Theme Preview must include the recurring Anniversary Week debut-identity picker.');
 if(!adminThemeSource.includes("url.searchParams.set('anniversary','throwback')"))throw Error('Admin Anniversary Week preview must force the public throwback overlay in the preview frame.');
 console.log('v2.0.5 verified: Saira Condensed headers restored; 2015 Anniversary Week identity, recurring Oct. 1–7 timing, and Admin preview remain intact.');
+
+// v2.0.7 — dedicated driver artwork delivery + Anniversary Paint Booth bundle.
+const driverArtHandler=readFileSync('netlify/lib/_driver-art.cjs','utf8');
+const netlifyConfig=readFileSync('netlify.toml','utf8');
+const paintCss=readFileSync('src/styles/paint-gallery.css','utf8');
+if(!existsSync('netlify/functions/driver-art.mjs')||!driverArtHandler.includes('numberImageBackup')||!driverArtHandler.includes('signatureLogo')||!netlifyConfig.includes('/api/driver-art'))throw Error('Dedicated public driver-art delivery endpoint is missing.');
+if(!lineupSource.includes("fetch(`/api/driver-art?v=${Date.now()}`")||!lineupSource.includes('publishedArtById')||!lineupSource.includes('publishedSignatureBySlug')||!lineupSource.includes('profileWithPublishedSignature'))throw Error('Drivers grid must independently hydrate published number and signature artwork.');
+if(!paintPageSource.includes("allPaintLogo=()=>document.documentElement.dataset.anniversaryRetro==='true'")||!paintPageSource.includes('MutationObserver'))throw Error('Paint Booth must use the Anniversary throwback mark and react to Anniversary mode changes.');
+if(!paintCss.includes('v2.0.7 — Anniversary Week Paint Booth uses the full 2015 debut identity')||!paintCss.includes('AETHERWING PAINT SHOP • EST. 2015'))throw Error('Anniversary Week Paint Booth takeover styling is missing.');
+if(!siteCss.includes('v2.0.6 — Anniversary interior-page badge must stay compact'))throw Error('v2.0.6 compact Anniversary interior-page badge fix must remain bundled.');
+console.log('v2.0.7 verified: desktop driver artwork feed, compact Anniversary badge, and 2015 Paint Booth takeover are bundled.');
+
+// v2.0.7 — Paint Booth header navigation must migrate the legacy internal path to the standalone viewer.
+const navigationSeedNow=JSON.parse(readFileSync('src/data/navigation.json','utf8'));
+const paintNav=navigationSeedNow.find((item)=>item.label==='Paint Booth'&&item.group==='Team');
+if(paintNav?.href!=='https://paint.aetherwing.net/')throw Error('Team → Paint Booth navigation must point directly to paint.aetherwing.net.');
+if(!headerSource.includes("item?.label==='Paint Booth'&&item?.href==='/paint-booth/'")||!readFileSync('src/lib/site-content.mjs','utf8').includes("href:'https://paint.aetherwing.net/'"))throw Error('Public navigation must migrate previously published legacy /paint-booth/ links to the standalone Paint Booth.');
+console.log('v2.0.7 verified: Team → Paint Booth routes directly to the standalone viewer, including legacy published navigation.');

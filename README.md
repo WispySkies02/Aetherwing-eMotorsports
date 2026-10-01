@@ -1,3 +1,12 @@
+## v2.0.7 — Bundled Driver Art + Anniversary Paint Booth Fix
+- Bundles the v2.0.6 compact interior-page Anniversary badge fix with the remaining requested Anniversary Week work.
+- Adds a dedicated lightweight public `/api/driver-art` feed so uploaded driver number artwork and Driver Directory signature/wordmark logos can hydrate the Drivers grid independently of the larger site-content payload.
+- Driver cards merge published number art/signature art over the normal roster data and re-render as soon as that artwork feed arrives, fixing desktop cards that stayed on giant text fallbacks.
+- Keeps the ALL-tab single-art shuffle-bag behavior and league-specific assignment behavior intact.
+- Extends the 2015 debut-identity Anniversary Week treatment across the main-site Paint Booth, including the throwback Aetherwing logo in the All Paints filter, blue/teal debut-era panels, filters, search, featured scheme, paint cards, and scheme-ID controls.
+- Anniversary timing remains every Oct. 1–7 ET with automatic handoff back to the normal seasonal calendar on Oct. 8.
+- Team → Paint Booth now routes directly to `https://paint.aetherwing.net/`; legacy published `/paint-booth/` navigation values are migrated at render time, while future Admin HTTPS destinations remain supported.
+
 ## v1.2.0 — Aetherwing Team-Site Redesign
 - Rebuilds the public-facing design around a major NASCAR team-site structure while keeping Aetherwing's own identity and all existing Admin/data workflows.
 - Aetherwing's red/white/silver logo now drives the interface: red is the primary team/action color, graphite/silver form the UI shell, Aether Blue is reserved for telemetry/data, and Feather Gold remains a championship/faith accent.

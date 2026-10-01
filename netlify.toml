@@ -33,6 +33,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/driver-art"
+  to = "/.netlify/functions/driver-art"
+  status = 200
+
+[[redirects]]
   from = "/api/paints"
   to = "/.netlify/functions/paint-data"
   status = 200
