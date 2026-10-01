@@ -92,3 +92,26 @@
 /* v1.2.0 — logo-led program filters + Aetherwing team-site card treatment. */
 .aw-lineup{position:relative;background:linear-gradient(180deg,rgba(8,9,11,.98),rgba(4,5,7,.99));overflow:hidden}.aw-lineup:before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(225,6,0,.065),transparent 30%),linear-gradient(90deg,transparent 0 75%,rgba(74,111,255,.04))}.aw-lineup>.shell{position:relative;z-index:1}.aw-lineup__filters{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(145px,1fr);gap:.5rem;overflow-x:auto;padding:.1rem .1rem 1.1rem}.aw-lineup__filters button{position:relative;display:grid;grid-template-rows:68px auto;min-width:145px;min-height:108px;padding:0;background:linear-gradient(180deg,#17191c,#0a0b0d);border:1px solid #44494e;color:#fff;overflow:hidden;clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);transition:.18s}.aw-lineup__filters button:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#4c5054}.aw-lineup__filters button:hover{transform:translateY(-2px);border-color:#737a80}.aw-lineup__filters button[aria-pressed=true]{background:linear-gradient(145deg,rgba(225,6,0,.2),#111317 46%,#090a0c);border-color:#8c9298;box-shadow:0 12px 28px rgba(0,0,0,.28)}.aw-lineup__filters button[aria-pressed=true]:before{background:#e10600;width:6px}.aw-lineup__filter-logo{display:grid;place-items:center;padding:.55rem .8rem;border-bottom:1px solid #34383c}.aw-lineup__filter-logo img{display:block;max-width:110px;max-height:48px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}.aw-lineup__filters button[data-program="all"] .aw-lineup__filter-logo img{max-width:118px;max-height:46px}.aw-lineup__filters button>span:last-child{padding:.65rem .75rem;color:#d7dadd;font:900 .68rem/1 var(--font-condensed);font-style:italic;letter-spacing:.045em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aw-lineup__filters button[aria-pressed=true]>span:last-child{color:#fff}.aw-lineup__program{margin-bottom:.25rem;border-top:1px solid #303439;border-bottom:1px solid #303439;padding:1rem .2rem}.aw-lineup__program span{color:#ff625b}.aw-lineup__program a{color:#a9dfff}.aw-lineup__grid{gap:.8rem}.aw-lineup__poster{border:1px solid #353a3f;border-top:4px solid #e10600;background:radial-gradient(ellipse at 48% 35%,rgba(255,255,255,.06),transparent 52%),linear-gradient(155deg,#1b1e22,#08090b 70%);box-shadow:0 18px 34px rgba(0,0,0,.22);clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)}.aw-lineup__poster:nth-child(3n+2){border-top-color:#8b9197;background:radial-gradient(ellipse at 48% 35%,rgba(255,255,255,.055),transparent 52%),linear-gradient(155deg,#1b1e22,#08090b 70%)}.aw-lineup__poster.is-alliance{border-top-color:#e10600;background:radial-gradient(ellipse at 48% 35%,rgba(225,6,0,.12),transparent 55%),linear-gradient(155deg,#1b1c20,#08090b 70%)}.aw-lineup__poster:before{top:1.15rem;left:1.2rem;color:#858b90;font-size:.58rem;letter-spacing:.16em}.aw-lineup__plate{background:linear-gradient(180deg,rgba(12,14,16,.96),rgba(7,8,10,.99));border-top:1px solid #555b61}.aw-lineup__plate small{color:#ff615a}.aw-lineup__plate h3{font-family:var(--font-condensed);font-style:italic;font-weight:900;letter-spacing:-.01em}.aw-lineup__plate p{color:#969ca1}.aw-lineup__plate a,.aw-lineup__plate>span{color:#a8dfff}.aw-lineup__summary-rides span{border-color:#41464b;background:#111418;color:#d2d6d9!important}.aw-lineup__summary-rides b{color:#9edfff}.aw-lineup__summary-rides em{color:#ff6f68}.aw-lineup__number img{filter:drop-shadow(10px 14px 0 rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,255,255,.025))}.aw-lineup__signature img{filter:drop-shadow(0 7px 10px rgba(0,0,0,.72))}
 @media(max-width:600px){.aw-lineup__filters{grid-auto-columns:132px}.aw-lineup__filters button{min-width:132px;grid-template-rows:60px auto;min-height:98px}.aw-lineup__filter-logo img{max-width:100px;max-height:43px}.aw-lineup__filters button>span:last-child{font-size:.62rem}.aw-lineup__poster{clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}}
+
+/* v2.0.8 — desktop driver artwork must render as actual uploaded art, not remain on text fallbacks. */
+@media(min-width:601px){
+  .aw-lineup__poster{overflow:hidden}
+  .aw-lineup__number{min-height:210px;overflow:hidden!important;display:flex!important;align-items:flex-end!important;justify-content:center!important}
+  .aw-lineup__number>img,
+  .aw-lineup__poster.is-driver-summary .aw-lineup__number>img{
+    display:block!important;
+    width:min(84%,360px)!important;
+    height:auto!important;
+    max-width:84%!important;
+    max-height:82%!important;
+    object-fit:contain!important;
+    object-position:center bottom!important;
+    visibility:visible!important;
+    opacity:1!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .aw-lineup__plate{overflow:visible!important;position:relative!important;z-index:6!important}
+  .aw-lineup__signature{display:flex!important;visibility:visible!important;opacity:1!important;z-index:12!important;pointer-events:none!important}
+  .aw-lineup__signature img{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:13!important}
+}

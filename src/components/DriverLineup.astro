@@ -77,7 +77,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     img.style.maxWidth='none';
     img.style.maxHeight='none';
   };
-  root.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__signature'))tightenSignature(image);if(image.closest('.aw-lineup__number')){tightenNumber(image);requestAnimationFrame(()=>fitNumberVisual(image));}},true);
+  root.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__signature'))tightenSignature(image);if(image.closest('.aw-lineup__number')){tightenNumber(image);if(matchMedia('(max-width: 600px)').matches)requestAnimationFrame(()=>fitNumberVisual(image));}},true);
   root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className=image.closest('.aw-lineup__dual-slot')?'':'aw-lineup__number-fallback is-single';fallback.textContent=`#${image.alt.replace('Number ','')||image.closest('[data-number]')?.dataset.number||''}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
   const shortProgram=(id,name='')=>({nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[id]||name||id);
@@ -167,11 +167,11 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const artSrc=e.summary?(chosenArt?.src||''):(e.numberImageBackup||e.numberImage||'');
       const backupSrc=e.summary?(chosenArt?.backup||''):(e.numberImageBackup?e.numberImage||'':'');
       const image=stacked.length
-        ? `<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" loading="lazy"${artAttrs}>`:`<b class="aw-lineup__number-fallback is-single">#${esc(item.number)}</b>`).join('')}</div>`
+        ? `<div class="aw-lineup__number-stack">${stacked.map(item=>item.image?`<img src="${esc(item.image)}" alt="Number ${esc(item.number)}" decoding="async" fetchpriority="high"${artAttrs}>`:`<b class="aw-lineup__number-fallback is-single">#${esc(item.number)}</b>`).join('')}</div>`
         : artSrc
-          ? `<img src="${esc(artSrc)}" alt="Number ${esc(primaryNumber||e.number)}" loading="lazy"${artAttrs}${backupSrc?` data-backup-src="${esc(backupSrc)}"`:''}>`
+          ? `<img src="${esc(artSrc)}" alt="Number ${esc(primaryNumber||e.number)}" decoding="async" fetchpriority="high"${artAttrs}${backupSrc?` data-backup-src="${esc(backupSrc)}"`:''}>`
           : `<b class="aw-lineup__number-fallback is-single">#${esc(primaryNumber||e.number)}</b>`;
-      const signature=person?.signatureLogo&&!open?`<div class="aw-lineup__signature" data-signature-driver="${esc(person.slug||'')}" aria-hidden="true"><img src="${esc(person.signatureLogo)}" alt="" loading="lazy"></div>`:'';
+      const signature=person?.signatureLogo&&!open?`<div class="aw-lineup__signature" data-signature-driver="${esc(person.slug||'')}" aria-hidden="true"><img src="${esc(person.signatureLogo)}" alt="" decoding="async" fetchpriority="high"></div>`:'';
       const profile=person&&!open&&profileSlugs.includes(person.slug)?`<a href="/drivers/${encodeURIComponent(person.slug)}/" aria-label="View ${esc(person.name||e.displayName)} profile">View profile ↗</a>`:`<span>${open?'Program entry':'Driver profile coming soon'}</span>`;
       const summary=e.summary?`<div class="aw-lineup__summary-rides" aria-label="Current racing programs">${(rides||[]).map(ride=>`<span><b data-short="${esc(shortProgram(ride.competitionId,ride.program))}">${esc(ride.program)}</b>${ride.number?` <em>#${esc(ride.number)}</em>`:''}</span>`).join('')}</div>`:'';
       const topLine=e.summary?`${e.programCount||0} ACTIVE PROGRAM${e.programCount===1?'':'S'}`:`${programs.get(e.competitionId)||label(e)} · ${e.status||'ACTIVE'}`;
@@ -179,15 +179,35 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
       const artMode=stacked.length?'stack':(artSrc?'single':'fallback');
       return `<article class="aw-lineup__poster ${open?'is-charter':''} ${alliance?'is-alliance':''} ${signature?'has-signature':''} ${e.summary?'is-driver-summary':''}" data-number="${esc(primaryNumber||e.number)}" data-primary-number="${esc(primaryNumber)}" data-art-pool="${esc(uploadedByNumber.map(item=>item.number).join(','))}" data-team-label="${teamLabel}"><div class="aw-lineup__number" data-art-mode="${artMode}">${image}</div><div class="aw-lineup__plate">${signature}<small>${esc(topLine)}</small><h3>${esc(open?e.displayName:(person?.name||e.displayName))}</h3><p>${esc(person?.handle&&!open?person.handle:(alliance?'AFFILIATED TEAM':'AETHERWING eMOTORSPORTS'))}</p>${summary}${profile}</div></article>`;
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
-    queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);requestAnimationFrame(()=>fitNumberVisual(img));}}));
+    queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);if(matchMedia('(max-width: 600px)').matches)requestAnimationFrame(()=>fitNumberVisual(img));}}));
   }
   window.addEventListener('aetherwing:content',e=>{const d=e.detail||{};if(Array.isArray(d.drivers)){assignments=d.drivers;rememberPublishedArt(d.drivers,[]);}if(Array.isArray(d['roster-profiles'])){profiles=d['roster-profiles'];rememberPublishedArt([],d['roster-profiles']);}if(Array.isArray(d.charters))charters=d.charters;render();});
-  fetch(`/api/driver-art?v=${Date.now()}`,{cache:'no-store'}).then(response=>response.ok?response.json():null).then(payload=>{
-    if(!payload)return;
-    rememberPublishedArt(payload.drivers,payload.profiles);
+  const applyArtPayload=(payload)=>{
+    if(!payload)return false;
+    const driverRows=Array.isArray(payload.drivers)?payload.drivers:Array.isArray(payload.datasets?.drivers)?payload.datasets.drivers:[];
+    const profileRows=Array.isArray(payload.profiles)?payload.profiles:Array.isArray(payload.datasets?.['roster-profiles'])?payload.datasets['roster-profiles']:[];
+    if(!driverRows.length&&!profileRows.length)return false;
+    rememberPublishedArt(driverRows,profileRows);
     render();
-  }).catch(()=>{});
-  let resizeFrame=0;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>root.querySelectorAll('.aw-lineup__number img').forEach(fitNumberVisual));},{passive:true});
+    return driverRows.some(row=>row?.numberImageBackup||row?.numberImage)||profileRows.some(profile=>profile?.signatureLogo);
+  };
+  const fetchJson=async(url)=>{const response=await fetch(url,{cache:'no-store',headers:{Accept:'application/json'}});if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json();};
+  const hydrateDriverArtwork=async(attempt=0)=>{
+    try{
+      const payload=await fetchJson(`/api/driver-art?v=${Date.now()}`);
+      if(applyArtPayload(payload))return true;
+    }catch{}
+    try{
+      const payload=await fetchJson(`/api/site-content?v=${Date.now()}`);
+      if(applyArtPayload(payload))return true;
+    }catch{}
+    if(attempt<3){setTimeout(()=>hydrateDriverArtwork(attempt+1),[700,1600,3200,5200][attempt]||5200);}
+    return false;
+  };
+  window.addEventListener('pageshow',()=>hydrateDriverArtwork(0));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')hydrateDriverArtwork(0);});
+  let resizeFrame=0;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{if(matchMedia('(max-width: 600px)').matches)root.querySelectorAll('.aw-lineup__number img').forEach(fitNumberVisual);});},{passive:true});
   render();
+  hydrateDriverArtwork(0);
 })();
 </script>

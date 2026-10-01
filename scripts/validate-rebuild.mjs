@@ -206,7 +206,7 @@ const driverArtHandler=readFileSync('netlify/lib/_driver-art.cjs','utf8');
 const netlifyConfig=readFileSync('netlify.toml','utf8');
 const paintCss=readFileSync('src/styles/paint-gallery.css','utf8');
 if(!existsSync('netlify/functions/driver-art.mjs')||!driverArtHandler.includes('numberImageBackup')||!driverArtHandler.includes('signatureLogo')||!netlifyConfig.includes('/api/driver-art'))throw Error('Dedicated public driver-art delivery endpoint is missing.');
-if(!lineupSource.includes("fetch(`/api/driver-art?v=${Date.now()}`")||!lineupSource.includes('publishedArtById')||!lineupSource.includes('publishedSignatureBySlug')||!lineupSource.includes('profileWithPublishedSignature'))throw Error('Drivers grid must independently hydrate published number and signature artwork.');
+if(!lineupSource.includes('/api/driver-art?v=${Date.now()}')||!lineupSource.includes('publishedArtById')||!lineupSource.includes('publishedSignatureBySlug')||!lineupSource.includes('profileWithPublishedSignature'))throw Error('Drivers grid must independently hydrate published number and signature artwork.');
 if(!paintPageSource.includes("allPaintLogo=()=>document.documentElement.dataset.anniversaryRetro==='true'")||!paintPageSource.includes('MutationObserver'))throw Error('Paint Booth must use the Anniversary throwback mark and react to Anniversary mode changes.');
 if(!paintCss.includes('v2.0.7 — Anniversary Week Paint Booth uses the full 2015 debut identity')||!paintCss.includes('AETHERWING PAINT SHOP • EST. 2015'))throw Error('Anniversary Week Paint Booth takeover styling is missing.');
 if(!siteCss.includes('v2.0.6 — Anniversary interior-page badge must stay compact'))throw Error('v2.0.6 compact Anniversary interior-page badge fix must remain bundled.');
@@ -218,3 +218,8 @@ const paintNav=navigationSeedNow.find((item)=>item.label==='Paint Booth'&&item.g
 if(paintNav?.href!=='https://paint.aetherwing.net/')throw Error('Team → Paint Booth navigation must point directly to paint.aetherwing.net.');
 if(!headerSource.includes("item?.label==='Paint Booth'&&item?.href==='/paint-booth/'")||!readFileSync('src/lib/site-content.mjs','utf8').includes("href:'https://paint.aetherwing.net/'"))throw Error('Public navigation must migrate previously published legacy /paint-booth/ links to the standalone Paint Booth.');
 console.log('v2.0.7 verified: Team → Paint Booth routes directly to the standalone viewer, including legacy published navigation.');
+
+// v2.0.8 — desktop artwork hydration must retry and must not depend on the mobile canvas fitter.
+if(!lineupSource.includes('hydrateDriverArtwork')||!lineupSource.includes('/api/site-content?v=${Date.now()}')||!lineupSource.includes('visibilitychange'))throw Error('Desktop driver artwork must retry the dedicated art feed and fall back to live site content.');
+if(!lineupCss.includes('v2.0.8 — desktop driver artwork must render as actual uploaded art')||!lineupCss.includes('visibility:visible!important')||!lineupCss.includes('z-index:12!important'))throw Error('Desktop number/signature artwork visibility safeguards are missing.');
+console.log('v2.0.8 verified: desktop driver number and signature artwork hydration is resilient.');
