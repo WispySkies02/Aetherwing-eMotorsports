@@ -1,3 +1,10 @@
+## v2.0.9 — Team Wire Feature Stories + Mobile Article Fix
+- Adds the September 14 Team Wire feature announcing Hailey Bell as a StarClutch Racing driver for NRRS Season 4, while making clear that Aetherwing remains in NRRS and Bell plans to step back from full-time competition after Season 4 to focus more heavily on running and building Aetherwing eMotorsports.
+- Rebuilds Team Wire article pages as visual motorsports features with headline stat panels, quick-fact metrics, tags, timelines, numbered story sections, pull quotes, and closing callouts when that data exists.
+- Fixes the shared mobile article template so long headlines such as Martinsville, North Wilkesboro, and Indianapolis cannot widen the viewport or create horizontal page scrolling.
+- Tightens mobile headline and summary sizing, adds hard wrapping safeguards, and keeps news tiles mobile-safe as well.
+- Team Wire Admin now exposes story timelines; the new SCR announcement is merged into older published News datasets so the route is not lost during the first deployment from v2.0.8.
+
 ## v2.0.7 — Bundled Driver Art + Anniversary Paint Booth Fix
 - Bundles the v2.0.6 compact interior-page Anniversary badge fix with the remaining requested Anniversary Week work.
 - Adds a dedicated lightweight public `/api/driver-art` feed so uploaded driver number artwork and Driver Directory signature/wordmark logos can hydrate the Drivers grid independently of the larger site-content payload.

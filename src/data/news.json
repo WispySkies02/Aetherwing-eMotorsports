@@ -165,6 +165,105 @@
     }
   },
   {
+    "slug": "hailey-bell-joins-starclutch-racing-nrrs-season-4",
+    "legacyRoute": "/hailey-bell-joins-starclutch-racing-nrrs-season-4",
+    "category": "Team & Organization",
+    "date": "September 14, 2026",
+    "dateIso": "2026-09-14",
+    "context": "NRRS Season 4 \u00b7 StarClutch Racing Alliance",
+    "kicker": "Aetherwing \u00d7 StarClutch",
+    "title": "Hailey Bell Joins StarClutch Racing for NRRS Season 4",
+    "summary": "StarClutch Racing owner Clutch announced on September 14 that Hailey Bell will join SCR for NRRS Season 4. Aetherwing will continue to compete in NRRS, while Season 4 is planned as Bell\u2019s final full-time campaign before she shifts more of her focus toward building and running Aetherwing eMotorsports.",
+    "tags": [
+      "NRRS",
+      "Season 4",
+      "StarClutch Racing",
+      "Hailey Bell",
+      "Aetherwing Alliance"
+    ],
+    "featured": false,
+    "heroGhost": "SEASON 4",
+    "headlineMark": {
+      "eyebrow": "NRRS SEASON 4",
+      "value": "SCR",
+      "detail": "HAILEY BELL \u00b7 DRIVER ANNOUNCEMENT"
+    },
+    "byline": "Aetherwing eMotorsports",
+    "metrics": [
+      {
+        "label": "Announced",
+        "value": "SEP 14"
+      },
+      {
+        "label": "Series",
+        "value": "NRRS"
+      },
+      {
+        "label": "Season",
+        "value": "S4"
+      },
+      {
+        "label": "Aetherwing NRRS",
+        "value": "CONTINUES"
+      },
+      {
+        "label": "Post-S4 Focus",
+        "value": "TEAM"
+      }
+    ],
+    "timeline": [
+      {
+        "series": "STARCLUTCH",
+        "season": "Announcement",
+        "title": "Clutch Announces Bell for SCR",
+        "method": "Hailey Bell confirmed as a StarClutch Racing driver for NRRS Season 4.",
+        "date": "September 14, 2026"
+      },
+      {
+        "series": "NRRS",
+        "season": "Season 4",
+        "title": "Two Programs Continue Forward",
+        "method": "Bell competes for SCR while Aetherwing continues its own NRRS program.",
+        "date": "NRRS Season 4"
+      },
+      {
+        "series": "AETHERWING",
+        "season": "Next Chapter",
+        "title": "Full-Time Competition Steps Back",
+        "method": "After Season 4, Bell plans to shift more of her focus toward building and running Aetherwing eMotorsports.",
+        "date": "After Season 4"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "A New Season 4 Seat",
+        "paragraphs": [
+          "StarClutch Racing owner Clutch announced on September 14 that Hailey Bell will join the organization as one of its drivers for Season 4 of NRRS.",
+          "The move adds another chapter to the relationship between StarClutch Racing and Aetherwing eMotorsports, putting Bell behind the wheel for SCR in NRRS while the two organizations continue to operate as distinct teams."
+        ]
+      },
+      {
+        "heading": "Aetherwing Is Staying in NRRS",
+        "paragraphs": [
+          "Bell\u2019s move to StarClutch Racing does not replace Aetherwing\u2019s NRRS program. Aetherwing will continue to field its own entries in the series during Season 4.",
+          "That means the announcement expands the Aetherwing\u2013SCR competition relationship rather than closing Aetherwing\u2019s chapter in NRRS."
+        ]
+      },
+      {
+        "heading": "One Final Full-Time Chapter",
+        "paragraphs": [
+          "Season 4 is also planned as Bell\u2019s final season of full-time competition. After the season, she intends to step back from a full-time driving schedule and put more of her time into building, operating and developing Aetherwing eMotorsports.",
+          "The shift places greater emphasis on the long-term future of the organization while giving Bell one more full-time NRRS season under the StarClutch Racing banner."
+        ]
+      }
+    ],
+    "callout": {
+      "label": "What This Means",
+      "title": "Aetherwing Continues. Bell\u2019s Role Evolves.",
+      "text": "Aetherwing remains an NRRS team in Season 4. Bell will race for StarClutch Racing, then plans to step back from full-time competition after the season to focus more heavily on leading and building Aetherwing eMotorsports."
+    }
+  },
+  {
     "slug": "wispy-clinches-nrrs-s3-chase-martinsville",
     "legacyRoute": "/wispy-clinches-nrrs-s3-chase-martinsville",
     "category": "Race & Competition",

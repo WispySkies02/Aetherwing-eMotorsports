@@ -131,7 +131,11 @@ const normalizeCharters = (boards) => (boards ?? []).map((board) => {
 });
 export const charters = normalizeCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
-export const news = choose('news', newsSeed);
+const publishedNews = choose('news', newsSeed);
+const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
+export const news = Array.isArray(publishedNews)
+  ? [...publishedNews, ...newsSeed.filter((story)=>requiredNewsSlugs.has(story.slug)&&!publishedNews.some((item)=>item?.slug===story.slug))]
+  : newsSeed;
 const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
 const staleCompetition = (item={}) => {

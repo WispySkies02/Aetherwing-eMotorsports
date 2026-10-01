@@ -223,3 +223,16 @@ console.log('v2.0.7 verified: Team → Paint Booth routes directly to the standa
 if(!lineupSource.includes('hydrateDriverArtwork')||!lineupSource.includes('/api/site-content?v=${Date.now()}')||!lineupSource.includes('visibilitychange'))throw Error('Desktop driver artwork must retry the dedicated art feed and fall back to live site content.');
 if(!lineupCss.includes('v2.0.8 — desktop driver artwork must render as actual uploaded art')||!lineupCss.includes('visibility:visible!important')||!lineupCss.includes('z-index:12!important'))throw Error('Desktop number/signature artwork visibility safeguards are missing.');
 console.log('v2.0.8 verified: desktop driver number and signature artwork hydration is resilient.');
+
+// v2.0.9 — Team Wire feature treatment + mobile headline overflow fix + SCR Season 4 story.
+const newsSourceNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
+const scrStory=newsSourceNow.find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
+if(!scrStory||scrStory.dateIso!=='2026-09-14'||!scrStory.title.includes('StarClutch Racing')||!scrStory.summary.includes('Aetherwing will continue to compete in NRRS'))throw Error('SCR Season 4 Team Wire story is missing or incomplete.');
+const newsArticleSource=readFileSync('src/pages/news/[slug].astro','utf8');
+const recordsCssNow=readFileSync('src/styles/records.css','utf8');
+const siteContentSourceNow=readFileSync('src/lib/site-content.mjs','utf8');
+if(!newsArticleSource.includes('news-headline-mark')||!newsArticleSource.includes('news-timeline')||!newsArticleSource.includes('news-callout')||!newsArticleSource.includes('news-section-index'))throw Error('Team Wire articles must render feature modules, not paragraph-only stories.');
+if(!recordsCssNow.includes('v2.0.9 — Team Wire feature layout + mobile-safe story headlines')||!recordsCssNow.includes('overflow-wrap:anywhere')||!recordsCssNow.includes('font-size:clamp(2.35rem,11.6vw,3.25rem)')||!recordsCssNow.includes('.news-article{position:relative;width:100%;max-width:100%;overflow-x:clip'))throw Error('Team Wire mobile headline overflow safeguards are missing.');
+if(!siteContentSourceNow.includes('requiredNewsSlugs')||!siteContentSourceNow.includes('hailey-bell-joins-starclutch-racing-nrrs-season-4'))throw Error('New Team Wire story must survive older published Admin overlays during deployment.');
+if(!adminContentSource.includes("timeline:'Story timeline'")||!adminContentSource.includes('requiredNewsSlugs'))throw Error('Team Wire Admin must expose the visual timeline and include the new SCR story in older published datasets.');
+console.log('v2.0.9 verified: Team Wire stories are mobile-safe, visually structured, and include the SCR Season 4 announcement.');

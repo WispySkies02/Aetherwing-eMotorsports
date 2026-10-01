@@ -53,7 +53,7 @@
     navigation:{label:'Link label',href:'Destination URL / path',group:'Navigation group'},
     'page-overrides':{id:'Content rule ID',page:'Public page path',type:'Content type',label:'Admin label',original:'Current page value',value:'Published replacement',enabled:'Apply this replacement'},
     'driver-portfolios':{id:'Portfolio ID',profile:'Linked Driver Directory profile',name:'Driver display name',handle:'Driver handle / username',label:'Portfolio label',order:'Driver display order',brands:'Individual partners / brands',logo:'Optional logo URL'},
-    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout'}
+    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout',timeline:'Story timeline'}
   };
   const fieldHelp = {
     slug:'Public identifier used in URLs. Change carefully after publication.',
@@ -88,6 +88,7 @@
     headlineMark:'Optional structured headline/stat treatment used by featured race stories.',
     metrics:'Optional structured metric cards for a story.',
     quote:'Optional pull quote with text and attribution.',
+    timeline:'Optional visual timeline. Each item can include series, season, title, method, and date.',
     openCharters:'Each item is ONE actual Open Charter slot. Add or remove Open Charter items to change the actual charter count.',
     uses:'Possible identities/usages for this one Open Charter. One use = one number. Multiple uses still count as one actual charter slot and are not simultaneous.',
     highlight:'Adds Aetherwing visual emphasis to this driver on the public standings cards. Standings PNG exports ignore this flag and only highlight Chase drivers when League is currently in the Chase is enabled.',
@@ -122,6 +123,12 @@
   };
   const base = (name) => {
     const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
+    if(name==='news'&&Array.isArray(value)){
+      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
+      const merged=[...value];
+      for(const story of (seeds.news||[]))if(requiredNewsSlugs.has(story.slug)&&!merged.some((item)=>item?.slug===story.slug))merged.push(structuredClone(story));
+      return merged;
+    }
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));
@@ -1254,7 +1261,7 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}if(key==='news'&&!Array.isArray(added.timeline))added.timeline=[];data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data))return;const row=current(),message=key==='roster-profiles'?`Remove ${row?.name||row?.slug||'this driver'} from the Driver Directory? When you publish, all of this driver’s current league assignments will also be removed from the public site. Historical results and wins are kept.`:'Remove this entry from the section draft? It stays public until you publish.';if(!confirm(message))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();if(key==='roster-profiles')status('Driver removed from this draft. Publish Driver Directory to remove the profile and current league assignments from the public site; historical results remain.');});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');

@@ -5,4 +5,91 @@ import '../../styles/records.css';
 export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
 const {story}=Astro.props;
 ---
-<Base title={story.title} description={story.summary}><article class="news-article"><div class="wrap"><a href="/news/">← Team Newsroom</a><p class="eyebrow">{story.category} · {story.date}</p><h1>{story.title}</h1><p class="news-article__summary">{story.summary}</p><div class="news-article__body">{story.metrics?.length>0&&<div class="news-metrics">{story.metrics.map(m=><div><b>{m.value}</b><small>{m.label}</small></div>)}</div>}{story.sections?.map(section=><section><h2>{section.heading}</h2>{section.paragraphs?.map(paragraph=><p>{paragraph}</p>)}</section>)}{story.quote?.text&&<blockquote>“{story.quote.text}”<cite>{story.quote.attribution}</cite></blockquote>}</div></div></article></Base>
+<Base title={story.title} description={story.summary}>
+  <article class="news-article">
+    <div class="wrap">
+      <header class="news-article__hero">
+        <a class="news-article__back" href="/news/">← Team Newsroom</a>
+        <div class="news-article__meta">
+          <p class="eyebrow">{story.category} · {story.date}</p>
+          <span>{story.context}</span>
+          <span>{story.byline || 'Aetherwing eMotorsports'}</span>
+        </div>
+
+        <div class:list={['news-article__hero-grid',{'has-mark':story.headlineMark?.value || story.heroGhost}]}>
+          <div class="news-article__headline">
+            <p class="news-article__kicker">{story.kicker}</p>
+            <h1>{story.title}</h1>
+            <p class="news-article__summary">{story.summary}</p>
+          </div>
+
+          {story.headlineMark?.value ? (
+            <aside class="news-headline-mark" aria-label="Story headline marker">
+              <small>{story.headlineMark.eyebrow || story.kicker}</small>
+              <strong>{story.headlineMark.value}</strong>
+              <span>{story.headlineMark.detail}</span>
+            </aside>
+          ) : story.heroGhost ? (
+            <aside class="news-headline-ghost" aria-hidden="true">{story.heroGhost}</aside>
+          ) : null}
+        </div>
+
+        {story.tags?.length>0 && (
+          <div class="news-article__tags" aria-label="Story tags">
+            {story.tags.map(tag=><span>{tag}</span>)}
+          </div>
+        )}
+      </header>
+
+      <div class="news-article__body">
+        {story.metrics?.length>0&&(
+          <section class="news-metrics" aria-label="Story quick facts">
+            {story.metrics.map(m=><div><b>{m.value}</b><small>{m.label}</small></div>)}
+          </section>
+        )}
+
+        {story.quote?.text&&(
+          <blockquote class="news-pullquote">
+            “{story.quote.text}”
+            <cite>{story.quote.attribution}</cite>
+          </blockquote>
+        )}
+
+        {story.timeline?.length>0&&(
+          <section class="news-timeline" aria-label="Story timeline">
+            <header><span>THE TIMELINE</span><h2>How We Got Here</h2></header>
+            <div class="news-timeline__rail">
+              {story.timeline.map((item,index)=><article>
+                <b>{String(index+1).padStart(2,'0')}</b>
+                <div>
+                  <small>{item.series}{item.season?` · ${item.season}`:''}</small>
+                  <h3>{item.title}</h3>
+                  <p>{item.method}</p>
+                  <time>{item.date}</time>
+                </div>
+              </article>)}
+            </div>
+          </section>
+        )}
+
+        <div class="news-article__sections">
+          {story.sections?.map((section,index)=><section>
+            <div class="news-section-index" aria-hidden="true">{String(index+1).padStart(2,'0')}</div>
+            <div>
+              <h2>{section.heading}</h2>
+              {section.paragraphs?.map(paragraph=><p>{paragraph}</p>)}
+            </div>
+          </section>)}
+        </div>
+
+        {story.callout?.title&&(
+          <aside class="news-callout">
+            <small>{story.callout.label || 'Team Wire'}</small>
+            <h2>{story.callout.title}</h2>
+            <p>{story.callout.text}</p>
+          </aside>
+        )}
+      </div>
+    </div>
+  </article>
+</Base>
