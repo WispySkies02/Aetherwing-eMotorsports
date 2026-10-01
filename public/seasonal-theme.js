@@ -39,17 +39,24 @@
     return {year:Number(parts.year),month:Number(parts.month),day:Number(parts.day)};
   };
 
-  // v2.0.1 — Anniversary Week Retro UI. 2026-10-04 00:00 America/New_York
-  // is 2026-10-04T04:00:00Z while EDT is in effect. Keep this separate from
-  // the seasonal calendar so Halloween resumes automatically at the cutoff.
-  const ANNIVERSARY_RETRO_START=Date.parse('2026-09-28T04:00:00Z');
-  const ANNIVERSARY_RETRO_END=Date.parse('2026-10-04T04:00:00Z');
+  // v2.0.4 — Aetherwing Anniversary Week is a recurring Oct. 1–7 Eastern-time
+  // throwback to the team's 2015 debut identity. Oct. 8 at 12:00 AM ET hands
+  // control straight back to the normal seasonal calendar (Halloween in October).
+  const ANNIVERSARY_TIMEZONE='America/New_York';
   const anniversaryRetroActive=(date=new Date())=>{
     const params=new URLSearchParams(location.search),forced=params.get('anniversary');
     if(forced==='off'||forced==='modern')return false;
-    if(forced==='retro'||forced==='on')return true;
-    const now=date.getTime();
-    return now>=ANNIVERSARY_RETRO_START&&now<ANNIVERSARY_RETRO_END;
+    if(forced==='retro'||forced==='on'||forced==='throwback')return true;
+    const eastern=partsInEastern(date);
+    return eastern.month===10&&eastern.day>=1&&eastern.day<=7;
+  };
+  const nextAnniversaryBoundary=(date=new Date())=>{
+    const eastern=partsInEastern(date),year=eastern.year;
+    // Oct. 1 and Oct. 8 occur during EDT under current U.S. DST rules (UTC-04:00).
+    const start=Date.UTC(year,9,1,4,0,0),end=Date.UTC(year,9,8,4,0,0),now=date.getTime();
+    if(now<start)return start;
+    if(now<end)return end;
+    return Date.UTC(year+1,9,1,4,0,0);
   };
   const easterSunday=(year)=>{
     const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;
@@ -167,11 +174,27 @@
 
   let mountedKey='';
   function removeAnniversaryHud(){document.querySelector('.aw-anniversary-hud')?.remove();}
+  function syncAnniversaryLogos(active){
+    document.querySelectorAll('img').forEach((img)=>{
+      const src=img.getAttribute('src')||'';
+      const isPrimary=src.endsWith('/images/brand/aetherwing-logo.png')||img.dataset.anniversarySwapped==='true';
+      if(!isPrimary)return;
+      if(active){
+        if(img.dataset.anniversarySwapped!=='true')img.dataset.anniversaryNormalSrc=src;
+        img.dataset.anniversarySwapped='true';
+        img.setAttribute('src','/images/brand/aetherwing-anniversary-2015.png');
+      }else if(img.dataset.anniversarySwapped==='true'){
+        img.setAttribute('src',img.dataset.anniversaryNormalSrc||'/images/brand/aetherwing-logo.png');
+        delete img.dataset.anniversarySwapped;delete img.dataset.anniversaryNormalSrc;
+      }
+    });
+  }
   function mountAnniversaryHud(active){
+    syncAnniversaryLogos(active);
     if(!active){removeAnniversaryHud();return;}
     if(document.querySelector('.aw-anniversary-hud')||!document.body)return;
     const hud=document.createElement('div');hud.className='aw-anniversary-hud';hud.setAttribute('aria-hidden','true');
-    hud.innerHTML='<div class="aw-anniversary-hud__bug"><b class="aw-anniversary-hud__live">LIVE</b><span class="aw-anniversary-hud__channel"><b>AETHERWING RACE NETWORK</b><small>ANNIVERSARY WEEK</small></span></div><div class="aw-anniversary-hud__bar"><b class="aw-anniversary-hud__identity"><i></i>AEM // 2015</b><div class="aw-anniversary-hud__ticker"><span>BORN TO SOAR · BUILT TO FIGHT · ANNIVERSARY RETRO RACE CONTROL · TO GOD BE THE GLORY</span></div><b class="aw-anniversary-hud__era">2015 → 2026</b></div>';
+    hud.innerHTML='<div class="aw-anniversary-hud__bug"><b class="aw-anniversary-hud__live">2015</b><span class="aw-anniversary-hud__channel"><b>AETHERWING ANNIVERSARY WEEK</b><small>DEBUT IDENTITY THROWBACK</small></span></div><div class="aw-anniversary-hud__bar"><b class="aw-anniversary-hud__identity"><i></i>EST. 2015</b><div class="aw-anniversary-hud__ticker"><span>BELLSOUTH RACING ROOTS · AETHERWING eMOTORSPORTS · BORN TO SOAR · BUILT TO FIGHT</span></div><b class="aw-anniversary-hud__era">OCT 01–07</b></div>';
     document.body.appendChild(hud);
   }
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
@@ -225,10 +248,10 @@
 
     window.__AETHERWING_SEASON__={id:theme,...(THEMES[theme]||{title:'',subtitle:'',icon:'',effect:'none',density:0,ui:'default'})};
     window.__AETHERWING_OBSERVANCE__=observance?{id:observance,...OBSERVANCES[observance]}:null;
-    window.__AETHERWING_ANNIVERSARY_RETRO__={active:anniversaryRetro,cutoff:'2026-10-04T00:00:00-04:00',timezone:'America/New_York'};
+    window.__AETHERWING_ANNIVERSARY_RETRO__={active:anniversaryRetro,window:'October 1–7',timezone:ANNIVERSARY_TIMEZONE};
     const banner=document.querySelector('[data-season-banner]');
     if(banner){
-      const retroInfo={title:'AETHERWING ANNIVERSARY WEEK',subtitle:'RETRO RACE CONTROL · EST. 2015',icon:'◼'};
+      const retroInfo={title:'AETHERWING ANNIVERSARY WEEK',subtitle:'2015 DEBUT IDENTITY · OCTOBER 1–7',icon:'◼'};
       const info=anniversaryRetro?retroInfo:(window.__AETHERWING_OBSERVANCE__||window.__AETHERWING_SEASON__),active=anniversaryRetro||theme!=='standard'||Boolean(observance);
       banner.hidden=!active;banner.setAttribute('aria-label',anniversaryRetro?'Aetherwing Anniversary Week retro interface':active?`${info.title} seasonal theme`:'Seasonal theme');
       const icon=banner.querySelector('[data-season-icon]'),title=banner.querySelector('[data-season-title]'),subtitle=banner.querySelector('[data-season-subtitle]');
@@ -240,6 +263,6 @@
   apply();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
   setInterval(apply,60*1000);
-  const anniversaryCutoffDelay=ANNIVERSARY_RETRO_END-Date.now();
-  if(anniversaryCutoffDelay>0&&anniversaryCutoffDelay<2147483600)setTimeout(apply,anniversaryCutoffDelay+75);
+  const anniversaryBoundaryDelay=nextAnniversaryBoundary()-Date.now();
+  if(anniversaryBoundaryDelay>0&&anniversaryBoundaryDelay<2147483600)setTimeout(apply,anniversaryBoundaryDelay+75);
 })();

@@ -344,3 +344,13 @@ The custom validation script now resolves and switches to the repository root fr
 - Added a fixed Aetherwing Race Network LIVE bug and bottom race-control scorebar.
 - Added stronger CRT scanlines, beveled chrome controls, timing-screen panels, metallic section headers, lower-third page framing, and backlit program filters.
 - The overlay still expires automatically at 12:00 AM ET on Oct. 4, 2026 and hands back to the normal Halloween theme.
+
+## v2.0.4 — 2015 Anniversary Identity + Aetherwing Typography
+- Replaces the generic 2000s broadcast Anniversary skin with a true 2015 team-identity throwback.
+- Anniversary Week now recurs every year from October 1 through October 7 in America/New_York and automatically returns to the normal seasonal calendar at 12:00 AM ET on October 8.
+- Uses the transparent `AETHERWING eMOTORSPORTS | EST. 2015` throwback mark throughout the public site while the anniversary overlay is active.
+- Anniversary styling now uses the debut blue/teal palette, simpler mid-2010s team-site surfaces, and BellSouth Racing heritage references instead of generic CRT chrome.
+- Adds an Anniversary Week picker to Admin Theme Preview; the embedded public preview can force the throwback on at any time for QA.
+- Normal Aetherwing typography now uses the OFL-licensed Tomorrow family for body, interface, navigation, and display hierarchy.
+- Permanent Marker provides the handwritten driver-identity voice; Share Tech Mono remains the timing/data voice. No restricted font binaries are bundled.
+- No Giulia font files are embedded or redistributed.

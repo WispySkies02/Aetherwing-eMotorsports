@@ -1,7 +1,4 @@
-@import url('https://fonts.cdnfonts.com/css/edo-sz');
-@font-face{font-family:'Smile Moon';src:url('/fonts/smile-moon.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Smile Moon Numerals';src:url('/fonts/smile-moon.otf') format('opentype');font-display:swap;unicode-range:U+0030-0039}
-:root{--bg:#08090c;--panel:#111419;--paper:#f2f1e9;--muted:#aab1b7;--blue:#12aaf5;--gold:#f3b51d;--red:#ec233a;--line:#40444b;--aw-blue:var(--blue);--aw-gold:var(--gold);--aw-red:var(--red);--aw-paper:var(--paper);--font-body:'Inter',Arial,sans-serif;--font-condensed:'Saira Condensed',Impact,sans-serif;--font-mono:'Share Tech Mono',monospace;--font-brush:'Smile Moon Numerals','Edo SZ','Saira Condensed',Impact,sans-serif;--font-number:'Smile Moon','Saira Condensed',Impact,sans-serif;--gutter:clamp(1rem,3vw,3.5rem)}
+:root{--bg:#08090c;--panel:#111419;--paper:#f2f1e9;--muted:#aab1b7;--blue:#12aaf5;--gold:#f3b51d;--red:#ec233a;--line:#40444b;--aw-blue:var(--blue);--aw-gold:var(--gold);--aw-red:var(--red);--aw-paper:var(--paper);--font-body:'Tomorrow',Arial,sans-serif;--font-condensed:'Tomorrow','Arial Narrow',Arial,sans-serif;--font-mono:'Share Tech Mono',monospace;--font-brush:'Tomorrow','Arial Narrow',Arial,sans-serif;--font-number:'Permanent Marker','Tomorrow',Impact,sans-serif;--gutter:clamp(1rem,3vw,3.5rem)}
 
 /* Runtime-created filter controls must never fall back to the browser's black button text. */
 :is(.aw-lineup__filters,.aw-calendar__filters,.aw-paint-gallery__leagues,.partner-select) button:not([aria-pressed="true"]){color:#e8edf1}
@@ -633,3 +630,139 @@ html[data-anniversary-retro="true"] .aw-anniversary-hud{display:block;position:f
 .aw-anniversary-hud__era{display:flex;align-items:center;padding:0 .9rem;background:linear-gradient(180deg,#183649,#071c28);border-left:1px solid #98b9ca;color:#a9e7ff;font-weight:900;font-size:.55rem;letter-spacing:.1em}
 @media(max-width:980px){html[data-anniversary-retro="true"] main:before{top:107px;font-size:.48rem}.aw-anniversary-hud__bug{display:none}.aw-anniversary-hud__channel{min-width:0}.aw-anniversary-hud__bar{grid-template-columns:auto 1fr}.aw-anniversary-hud__era{display:none}}
 @media(max-width:600px){html[data-anniversary-retro="true"] body{padding-bottom:34px!important}html[data-anniversary-retro="true"] main:before{top:101px;padding:.3rem .55rem;font-size:.42rem;max-width:72vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aw-anniversary-hud__bar{height:34px}.aw-anniversary-hud__identity{padding-inline:.55rem;font-size:.46rem}.aw-anniversary-hud__ticker{padding-inline:.55rem;font-size:.45rem}html[data-anniversary-retro="true"] .site-footer{padding-bottom:34px!important}html[data-anniversary-retro="true"] .section-head:before{display:none}}
+
+/* v2.0.4 — Aetherwing typography refresh.
+   Tomorrow is OFL-licensed and intentionally becomes the team voice; Permanent Marker keeps driver identity handwritten without bundling restricted font binaries. */
+body{font-family:var(--font-body);letter-spacing:.005em}
+.section-title,.display,.page-intro h1,.home-hero h1,.home-battle__copy h3,.home-after__card h3,.home-story__feature h3,.home-faith__copy h2,.aw-paint-gallery__feature-copy h3,.standings-board header h2,.news-tile h2,.news-article h1,.team-partner h3,.partner-personal__intro h3{
+  font-family:var(--font-brush)!important;font-weight:800!important;font-style:italic!important;letter-spacing:-.035em!important
+}
+.desktop-nav>a,.nav-group>button,.header-race-link,.mobile-group__toggle,.btn,.tag,
+.story-panel h3,.aw-paint-gallery__info h3,.standing-row b,.standing-row strong,.profile-assignment span,.profile-stat span,.profile-assignment strong,.profile-stat strong,.profile-partners strong,.news-article__summary,.news-article__body h2,.news-metrics b,.partner-logos strong{
+  font-family:var(--font-condensed)!important
+}
+/* Driver identity stays intentionally separate from the team type system. */
+.aw-lineup__plate h3,.profile-hero h1,.home-people__tile strong{font-family:var(--font-number)!important;font-style:normal!important;font-weight:400!important;letter-spacing:-.02em!important}
+
+/* v2.0.4 — Anniversary Week is a 2015 team-identity throwback, not a generic CRT skin. */
+html[data-anniversary-retro="true"]{
+  --throwback-blue:#008fe8;
+  --throwback-blue-deep:#006bb6;
+  --throwback-cyan:#33b9f3;
+  --throwback-teal:#00a7a0;
+  --throwback-green:#5fba46;
+  --throwback-navy:#061b2a;
+  --throwback-navy-2:#0a2a3c;
+  --throwback-paper:#f5fbff;
+  --throwback-line:#8fdcff;
+  --season-primary:var(--throwback-blue)!important;
+  --season-secondary:var(--throwback-teal)!important;
+  --season-tertiary:var(--throwback-paper)!important;
+  --font-body:Arial,Helvetica,sans-serif;
+  --font-condensed:'Arial Narrow',Arial,Helvetica,sans-serif;
+  --font-brush:'Arial Narrow',Arial,Helvetica,sans-serif;
+}
+html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}
+html[data-anniversary-retro="true"] body{background:#04131e!important;color:#f4fbff!important}
+html[data-anniversary-retro="true"] body:before{
+  background:
+    radial-gradient(circle at 84% 12%,rgba(0,143,232,.28),transparent 28%),
+    radial-gradient(circle at 12% 82%,rgba(0,167,160,.17),transparent 30%),
+    repeating-linear-gradient(135deg,rgba(255,255,255,.02) 0 1px,transparent 1px 18px),
+    linear-gradient(145deg,#03111b 0%,#08283a 42%,#04131e 76%,#052332 100%)!important;
+  filter:none!important
+}
+html[data-anniversary-retro="true"] body:after{
+  background:linear-gradient(180deg,rgba(2,12,19,.16),rgba(2,12,19,.52))!important;
+  opacity:1!important
+}
+html[data-anniversary-retro="true"] main:before{
+  content:'AETHERWING ANNIVERSARY WEEK  •  2015 DEBUT IDENTITY  •  OCTOBER 1–7'!important;
+  background:linear-gradient(90deg,var(--throwback-blue-deep),var(--throwback-blue) 56%,var(--throwback-teal))!important;
+  color:#fff!important;border-color:#72d8ff!important;box-shadow:0 5px 18px rgba(0,0,0,.32)!important
+}
+html[data-anniversary-retro="true"] .site-header{
+  background:linear-gradient(180deg,#ffffff 0 7px,#0a2b40 7px 100%)!important;
+  border-bottom:4px solid var(--throwback-blue)!important;
+  box-shadow:0 12px 26px rgba(0,0,0,.42)!important
+}
+html[data-anniversary-retro="true"] .site-header:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)!important}
+html[data-anniversary-retro="true"] .site-header:after{height:4px!important;bottom:-4px!important;background:linear-gradient(90deg,var(--throwback-blue) 0 66%,var(--throwback-teal) 66% 86%,var(--throwback-green) 86% 100%)!important;clip-path:none!important}
+html[data-anniversary-retro="true"] .site-header__utility{background:#05131d!important;border-bottom-color:#2d6f91!important}
+html[data-anniversary-retro="true"] .site-header__utility-inner:before{content:'EST. 2015 • ANNIVERSARY WEEK'!important;color:#9ce8ff!important}
+html[data-anniversary-retro="true"] .site-header__utility-inner>span:first-child{color:#eaf9ff!important}
+html[data-anniversary-retro="true"] .brand{flex-basis:min(390px,31vw)!important;height:76px!important}
+html[data-anniversary-retro="true"] .brand img{filter:drop-shadow(0 5px 8px rgba(0,0,0,.55))!important}
+html[data-anniversary-retro="true"] .desktop-nav>a,
+html[data-anniversary-retro="true"] .nav-group>button{
+  font-family:'Arial Narrow',Arial,Helvetica,sans-serif!important;font-weight:700!important;font-style:italic!important;letter-spacing:.035em!important;color:#d8ecf7!important
+}
+html[data-anniversary-retro="true"] .desktop-nav>a:hover,
+html[data-anniversary-retro="true"] .desktop-nav>a.active,
+html[data-anniversary-retro="true"] .nav-group>button:hover{background:linear-gradient(180deg,#0f4c6a,#0b3248)!important;color:#fff!important}
+html[data-anniversary-retro="true"] .desktop-nav>a:after,
+html[data-anniversary-retro="true"] .nav-group>button:after{background:linear-gradient(90deg,var(--throwback-blue),var(--throwback-teal))!important}
+html[data-anniversary-retro="true"] .nav-group__menu,
+html[data-anniversary-retro="true"] .mobile-menu{background:linear-gradient(180deg,#0d3a52,#061925)!important;border-color:#55bdec!important;border-top-color:#36b6ee!important;box-shadow:0 16px 34px rgba(0,0,0,.5)!important}
+html[data-anniversary-retro="true"] .header-race-link,
+html[data-anniversary-retro="true"] .mobile-race-link,
+html[data-anniversary-retro="true"] .btn{
+  border-radius:4px!important;border:1px solid #7bd8ff!important;background:linear-gradient(180deg,#16a4ea,#0074be)!important;color:#fff!important;box-shadow:inset 0 1px rgba(255,255,255,.38),0 3px 0 #003e67!important;text-shadow:0 1px #004b78!important
+}
+html[data-anniversary-retro="true"] .btn--ghost{background:linear-gradient(180deg,#133e55,#08283a)!important;color:#eafaff!important;border-color:#5fb7dd!important}
+html[data-anniversary-retro="true"] .aw-season-banner{
+  background:linear-gradient(90deg,#005f9d,#008fe8 50%,#00a7a0)!important;border-color:#72d8ff!important;box-shadow:inset 0 1px rgba(255,255,255,.28),0 7px 20px rgba(0,0,0,.3)!important
+}
+html[data-anniversary-retro="true"] .aw-season-banner__icon{color:#dff8ff!important;filter:none!important}
+html[data-anniversary-retro="true"] .aw-season-banner span,html[data-anniversary-retro="true"] .aw-season-banner b{color:#fff!important;text-shadow:0 1px rgba(0,0,0,.45)!important}
+html[data-anniversary-retro="true"] .section-head{
+  border:0!important;border-bottom:3px solid #0a84cf!important;background:linear-gradient(180deg,rgba(15,68,96,.78),rgba(6,31,45,.88))!important;clip-path:none!important;border-radius:6px 6px 0 0!important;box-shadow:inset 0 1px rgba(255,255,255,.11),0 8px 20px rgba(0,0,0,.2)!important
+}
+html[data-anniversary-retro="true"] .section-head:before{content:'AETHERWING eMOTORSPORTS • EST. 2015'!important;background:linear-gradient(90deg,#008fe8,#00a7a0)!important;color:#fff!important;border:0!important}
+html[data-anniversary-retro="true"] .section-head:after{background:linear-gradient(90deg,var(--throwback-teal),var(--throwback-green))!important;height:3px!important}
+html[data-anniversary-retro="true"] .section-title,
+html[data-anniversary-retro="true"] .display,
+html[data-anniversary-retro="true"] .page-intro h1,
+html[data-anniversary-retro="true"] :is(.home-hero h1,.home-battle__copy h3,.home-after__card h3,.home-story__feature h3,.home-faith__copy h2){
+  font-family:'Arial Narrow',Arial,Helvetica,sans-serif!important;font-weight:900!important;font-style:italic!important;letter-spacing:-.035em!important;text-shadow:0 2px 0 #002a46,5px 6px 0 rgba(0,0,0,.22)!important
+}
+html[data-anniversary-retro="true"] .eyebrow,html[data-anniversary-retro="true"] .kicker{color:#7de5ff!important;font-family:Arial,Helvetica,sans-serif!important}
+html[data-anniversary-retro="true"] .eyebrow:before{background:var(--throwback-teal)!important}
+html[data-anniversary-retro="true"] :is(
+  .story-panel,.home-hero aside,.home-battle__grid,.home-after__card,.home-story__feature,.home-faith__copy,.home-people__tile,
+  .aw-calendar__event,.aw-calendar__hero,.aw-calendar__recent,.aw-calendar__upcoming,.aw-lineup__poster,.aw-paint-gallery__tile,.aw-paint-gallery__hero,
+  .standings-board,.news-tile,.news-article,.mission-program,.team-partner,.partner-logos article,.partner-personal__intro,.profile-partners>div
+){
+  border-radius:7px!important;border-color:#2c779b!important;background-image:linear-gradient(180deg,rgba(16,65,88,.95),rgba(5,28,41,.97))!important;box-shadow:inset 0 1px rgba(255,255,255,.1),0 12px 28px rgba(0,0,0,.28)!important;clip-path:none!important
+}
+html[data-anniversary-retro="true"] :is(.home-hero aside,.aw-calendar__hero,.aw-lineup__poster,.aw-paint-gallery__hero):after{content:'EST. 2015'!important;background:linear-gradient(90deg,#008fe8,#00a7a0)!important;color:#fff!important;border:0!important}
+html[data-anniversary-retro="true"] .home-hero{
+  background-image:linear-gradient(90deg,rgba(2,16,25,.9),rgba(5,40,57,.43)),var(--site-bg-art)!important;border-bottom-color:var(--throwback-blue)!important
+}
+html[data-anniversary-retro="true"] .home-hero__lead{background:rgba(2,40,59,.78)!important;border:1px solid #287da3!important;border-left:5px solid var(--throwback-teal)!important;font-family:Arial,Helvetica,sans-serif!important}
+html[data-anniversary-retro="true"] .page-intro{border-bottom:4px solid var(--throwback-blue)!important;box-shadow:inset 0 -5px var(--throwback-teal)!important}
+html[data-anniversary-retro="true"] .page-intro:before{background:linear-gradient(90deg,#008fe8 0 68%,#00a7a0 68% 88%,#5fba46 88%)!important}
+html[data-anniversary-retro="true"] .page-intro:after{content:'AETHERWING eMOTORSPORTS  //  EST. 2015  //  ANNIVERSARY WEEK'!important;background:#06283b!important;border:1px solid #3197c1!important;color:#bfefff!important}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues){border:0!important;padding:.35rem!important;border-radius:7px!important;background:#061b29!important;box-shadow:inset 0 0 0 1px #25688a!important}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues) button{
+  min-height:54px!important;border-radius:5px!important;border:1px solid #286e90!important;background:linear-gradient(180deg,#12435a,#082c3f)!important;box-shadow:inset 0 1px rgba(255,255,255,.08)!important
+}
+html[data-anniversary-retro="true"] :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues) button[aria-pressed="true"]{
+  border-color:#7ae1ff!important;background:linear-gradient(180deg,#13a4e9,#0076bd)!important;box-shadow:inset 0 1px rgba(255,255,255,.32),0 0 18px rgba(0,143,232,.28)!important
+}
+html[data-anniversary-retro="true"] .home-programs__rail>a{border-radius:7px!important;border:1px solid #317b9e!important;background:linear-gradient(180deg,#12465f,#08283a)!important;box-shadow:inset 0 1px rgba(255,255,255,.08),0 7px 16px rgba(0,0,0,.24)!important}
+html[data-anniversary-retro="true"] .home-programs__rail>a:after{content:'2015'!important;color:#80dcff!important}
+html[data-anniversary-retro="true"] .site-footer{background:linear-gradient(180deg,#0c3b53,#04131e 44%)!important;border-top:5px solid #008fe8!important;box-shadow:inset 0 2px #00a7a0!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud{font-family:Arial,Helvetica,sans-serif!important;filter:drop-shadow(0 -4px 10px rgba(0,0,0,.3))!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__bug{background:#06283b!important;border-color:#4fc4ee!important;border-radius:5px!important;overflow:hidden!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__live{background:linear-gradient(180deg,#0fa3eb,#0071b9)!important;color:#fff!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__channel{background:linear-gradient(180deg,#0c405a,#06283b)!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__channel small{color:#7ff2e8!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__bar{background:linear-gradient(180deg,#e8f6fc,#a9d8ea 47%,#7fbad1 49%,#bfe3ef)!important;border-top-color:#f6fdff!important;color:#06314a!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__identity{background:linear-gradient(180deg,#0b9ce5,#006eb4)!important;clip-path:none!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__identity i{background:#65e5db!important;box-shadow:0 0 8px #65e5db!important}
+html[data-anniversary-retro="true"] .aw-anniversary-hud__era{background:linear-gradient(180deg,#079990,#05706d)!important;border-left-color:#7eece5!important;color:#efffff!important}
+@media(max-width:760px){
+  html[data-anniversary-retro="true"] .brand{flex-basis:235px!important;height:56px!important}
+  html[data-anniversary-retro="true"] .section-head{border-radius:4px 4px 0 0!important}
+}

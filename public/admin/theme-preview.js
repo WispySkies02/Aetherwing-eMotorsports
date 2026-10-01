@@ -43,6 +43,7 @@
     summer:{window:'After Memorial Day–Sep 19 (except Jul 4 window)',motion:'Summer-night glow field',motionCopy:'More visible firefly-like glow, warmer horizon light, and brighter race-day accents give summer its own unmistakable atmosphere.',ui:'Revamped summer race UI',uiCopy:'Sky-blue/gold race graphics, sunlit panel edges, energetic hovers, and stronger late-evening contrast across the site.',effect:'glow',density:26},
     'independence-day':{window:'Jun 28–Jul 4',motion:'Distant fireworks',motionCopy:'Occasional small fireworks burst behind the site instead of over the content.',ui:'Patriotic race UI',uiCopy:'Red/white/blue stripe language, crisp cards, and event-style accents.',effect:'fireworks',density:10},
     'summer-end':{window:'Sep 20–24',motion:'Warm light drift',motionCopy:'Slow firefly-like light specks sit behind the workspace.',ui:'Sunset race UI',uiCopy:'Warm gold/orange accents, brighter hover energy, and sunset-lit surfaces.',effect:'glow',density:22},
+    anniversary:{window:'Every year · Oct 1–7 · Eastern Time',motion:'Static debut-era atmosphere',motionCopy:'No novelty particle effect — the throwback comes from the 2015 identity, blue/teal interface, legacy logo and era-specific site treatment.',ui:'2015 debut identity',uiCopy:'A full Anniversary Week takeover using the EST. 2015 Aetherwing mark, debut blue/teal palette, simpler mid-2010s team-site panels and BellSouth Racing heritage references.',effect:'none',density:0},
     'halloween-teaser':{window:'Sep 25–30',motion:'Low drifting haze',motionCopy:'Barely-there fog makes the page feel like dusk without distracting from forms.',ui:'Early spooky UI',uiCopy:'Sharper corners, orange/violet edges, and darker distressed control surfaces.',effect:'haze',density:5},
     halloween:{window:'Oct 1–24',motion:'Layered fog + embers + bats',motionCopy:'Layered fog, brighter embers, and distant bat silhouettes build a noticeably darker race-night atmosphere while staying behind the UI.',ui:'After-dark UI',uiCopy:'A full after-dark takeover with clipped corners, glowing orange race lines, violet shadows, distressed panels, and ember-lit controls.',effect:'halloween',density:32},
     'halloween-week':{window:'Oct 25–31',motion:'Full Halloween takeover',motionCopy:'Dense fog, stronger embers, and more distant bats push Halloween week to its maximum without blocking controls or copy.',ui:'Intensified Halloween UI',uiCopy:'Maximum Halloween treatment: brighter orange edges, deeper violet panels, hotter hover glow, and more dramatic race-night contrast.',effect:'halloween',density:46},
@@ -120,6 +121,7 @@
     }
     if(m===9&&d>=20&&d<=24)return 'summer-end';
     if(m===9&&d>=25)return 'halloween-teaser';
+    if(m===10&&d>=1&&d<=7)return 'anniversary';
     if(m===10&&d<=24)return 'halloween';
     if(m===10)return 'halloween-week';
     const thanks=thanksgiving(y);
@@ -145,9 +147,13 @@
     const path=pageSelect?.value||'/';
     const url=new URL(path,location.origin);
     url.searchParams.set('themePreview','1');
-    url.searchParams.set('anniversary','off');
-    if(previewMode==='plain'){url.searchParams.set('season','off');url.searchParams.set('observance','off');}
-    else if(previewMode==='theme'){url.searchParams.set('season',selectedTheme);if(selectedObservance)url.searchParams.set('observance',selectedObservance);}
+    if(previewMode==='theme'&&selectedTheme==='anniversary'){
+      url.searchParams.set('anniversary','throwback');url.searchParams.set('season','off');url.searchParams.set('observance','off');
+    }else{
+      url.searchParams.set('anniversary','off');
+      if(previewMode==='plain'){url.searchParams.set('season','off');url.searchParams.set('observance','off');}
+      else if(previewMode==='theme'){url.searchParams.set('season',selectedTheme);if(selectedObservance)url.searchParams.set('observance',selectedObservance);}
+    }
     return `${url.pathname}${url.search}`;
   };
   const refreshPublicPreview=()=>{const url=publicPreviewUrl();if(publicFrame&&publicFrame.getAttribute('src')!==url)publicFrame.setAttribute('src',url);if(openPreview)openPreview.dataset.previewUrl=url;};

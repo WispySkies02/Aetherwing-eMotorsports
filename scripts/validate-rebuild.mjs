@@ -190,21 +190,13 @@ if(!homeSource.includes('home-programs__rail')||!homeSource.includes('programLog
 if(!siteCss.includes('v1.2.0 — AETHERWING TEAM-SITE REDESIGN')||!siteCss.includes('--red:#e10600')||!siteCss.includes('--blue:#4a6fff'))throw Error('Aetherwing logo-led v1.2.0 public design tokens are missing.');
 console.log('v1.2.0 verified: team-site redesign and logo-led public filters are intact.');
 
-// v2.0.1 — Anniversary Week Retro Race Control overlay + exact Halloween handoff.
-if(!seasonSource.includes("ANNIVERSARY_RETRO_END=Date.parse('2026-10-04T04:00:00Z')")||!seasonSource.includes("document.documentElement.dataset.anniversaryRetro='true'")||!seasonSource.includes("cutoff:'2026-10-04T00:00:00-04:00'")||!seasonSource.includes('anniversaryCutoffDelay'))throw Error('Anniversary Retro overlay must expire automatically at 12:00 AM ET on Sunday, Oct. 4, 2026.');
-if(!siteCss.includes('v2.0.1 — Anniversary Week Retro Race Control overlay')||!siteCss.includes('html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}')||!siteCss.includes('AETHERWING RACE NETWORK · ANNIVERSARY WEEK'))throw Error('Anniversary Retro visual overlay/suppression layer is incomplete.');
-if(!seasonSource.includes("if(month===10&&day<=24)return 'halloween';"))throw Error('Normal October Halloween theme must remain intact after the anniversary overlay expires.');
-console.log('v2.0.1 verified: Anniversary Retro overlay hands back to Halloween at midnight ET Oct. 4.');
-
-// v2.0.2 — revamped seasonal takeovers + Admin Theme Preview parity.
-const seasonalFxSource=readFileSync('public/seasonal-effects.css','utf8');
-if(!seasonSource.includes("halloween:{title:'SPOOKY SEASON'")||!seasonSource.includes('density:32')||!seasonSource.includes("'halloween-week':{title:'HALLOWEEN WEEK'")||!seasonSource.includes('density:46'))throw Error('Revamped Halloween atmosphere densities are missing.');
-if(!seasonSource.includes("christmas:{title:'CHRISTMAS / WINTER'")||!seasonSource.includes('density:34')||!seasonSource.includes("'christmas-week':{title:'CHRISTMAS WEEK'")||!seasonSource.includes('density:52'))throw Error('Revamped Christmas atmosphere densities are missing.');
-if(!siteCss.includes('v2.0.2 — REVAMPED SEASONAL TAKEOVERS')||!seasonalFxSource.includes('v2.0.2 — stronger seasonal atmosphere'))throw Error('Revamped public seasonal visual layers are missing.');
-if(!adminCss.includes('v2.0.2 — Theme Preview parity with the revamped public seasonal system')||!adminThemeSource.includes("url.searchParams.set('anniversary','off')")||!adminThemeSource.includes('Full Halloween takeover'))throw Error('Admin Theme Preview must show the revamped seasonal system, even during Anniversary Retro week.');
-console.log('v2.0.2 verified: seasonal takeovers are intensified and Admin Theme Preview stays in sync.');
-
-// v2.0.3 — unmistakable anniversary broadcast skin.
-if(!siteCss.includes('v2.0.3 — Anniversary Retro must read as a true 2003–2007 motorsports broadcast package')||!siteCss.includes('.aw-anniversary-hud__bar')||!siteCss.includes('AETHERWING RACE NETWORK  •  ANNIVERSARY BROADCAST'))throw Error('v2.0.3 Anniversary Retro broadcast treatment is missing.');
-if(!seasonSource.includes('mountAnniversaryHud')||!seasonSource.includes('AETHERWING RACE NETWORK')||!seasonSource.includes('2015 → 2026'))throw Error('v2.0.3 Anniversary Retro HUD lifecycle is missing.');
-console.log('v2.0.3 verified: Anniversary Retro reads as an unmistakable 2000s motorsports broadcast package.');
+// v2.0.4 — recurring Oct. 1–7 Anniversary Week + 2015 debut identity + typography refresh.
+if(!existsSync('public/images/brand/aetherwing-anniversary-2015.png'))throw Error('Anniversary Week throwback logo asset is missing.');
+if(!seasonSource.includes("return eastern.month===10&&eastern.day>=1&&eastern.day<=7")||!seasonSource.includes("window:'October 1–7'")||!seasonSource.includes('nextAnniversaryBoundary'))throw Error('Anniversary Week must recur every Oct. 1–7 in Eastern Time and hand control back on Oct. 8.');
+if(!seasonSource.includes('syncAnniversaryLogos')||!seasonSource.includes('/images/brand/aetherwing-anniversary-2015.png')||!seasonSource.includes('BELLSOUTH RACING ROOTS'))throw Error('Anniversary Week must swap to the 2015 throwback mark and debut-identity HUD.');
+if(!seasonSource.includes("if(month===10&&day<=24)return 'halloween';"))throw Error('Normal October Halloween theme must remain intact underneath Anniversary Week.');
+if(!siteCss.includes('v2.0.4 — Aetherwing typography refresh')||!siteCss.includes("--font-body:'Tomorrow'")||!siteCss.includes('v2.0.4 — Anniversary Week is a 2015 team-identity throwback'))throw Error('v2.0.4 public typography or Anniversary Week debut styling is missing.');
+if(!baseSource.includes('family=Permanent+Marker&family=Share+Tech+Mono&family=Tomorrow:'))throw Error('Public site must load Tomorrow plus the open web driver-identity font family.');
+if(!adminHtml.includes('data-theme="anniversary"')||!adminThemeSource.includes("anniversary:{window:'Every year · Oct 1–7 · Eastern Time'")||!adminCss.includes('data-admin-theme="anniversary"'))throw Error('Admin Theme Preview must include the recurring Anniversary Week debut-identity picker.');
+if(!adminThemeSource.includes("url.searchParams.set('anniversary','throwback')"))throw Error('Admin Anniversary Week preview must force the public throwback overlay in the preview frame.');
+console.log('v2.0.4 verified: Tomorrow typography, 2015 Anniversary Week identity, recurring Oct. 1–7 timing, and Admin preview are intact.');
