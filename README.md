@@ -354,3 +354,9 @@ The custom validation script now resolves and switches to the repository root fr
 - Normal Aetherwing typography now uses the OFL-licensed Tomorrow family for body, interface, navigation, and display hierarchy.
 - Permanent Marker provides the handwritten driver-identity voice; Share Tech Mono remains the timing/data voice. No restricted font binaries are bundled.
 - No Giulia font files are embedded or redistributed.
+
+
+## v2.0.5 — Header Typography Rollback
+- Restored Saira Condensed for normal-site headings, navigation, buttons, and major UI labels.
+- Preserved Tomorrow for body copy and Permanent Marker for driver-identity text.
+- Preserved the recurring Oct. 1–7 Anniversary Week throwback identity and Admin preview behavior.

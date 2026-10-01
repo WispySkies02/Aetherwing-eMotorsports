@@ -1,4 +1,4 @@
-:root{--bg:#08090c;--panel:#111419;--paper:#f2f1e9;--muted:#aab1b7;--blue:#12aaf5;--gold:#f3b51d;--red:#ec233a;--line:#40444b;--aw-blue:var(--blue);--aw-gold:var(--gold);--aw-red:var(--red);--aw-paper:var(--paper);--font-body:'Tomorrow',Arial,sans-serif;--font-condensed:'Tomorrow','Arial Narrow',Arial,sans-serif;--font-mono:'Share Tech Mono',monospace;--font-brush:'Tomorrow','Arial Narrow',Arial,sans-serif;--font-number:'Permanent Marker','Tomorrow',Impact,sans-serif;--gutter:clamp(1rem,3vw,3.5rem)}
+:root{--bg:#08090c;--panel:#111419;--paper:#f2f1e9;--muted:#aab1b7;--blue:#12aaf5;--gold:#f3b51d;--red:#ec233a;--line:#40444b;--aw-blue:var(--blue);--aw-gold:var(--gold);--aw-red:var(--red);--aw-paper:var(--paper);--font-body:'Tomorrow',Arial,sans-serif;--font-condensed:'Saira Condensed','Arial Narrow',Arial,sans-serif;--font-mono:'Share Tech Mono',monospace;--font-brush:'Saira Condensed','Arial Narrow',Arial,sans-serif;--font-number:'Permanent Marker','Tomorrow',Impact,sans-serif;--gutter:clamp(1rem,3vw,3.5rem)}
 
 /* Runtime-created filter controls must never fall back to the browser's black button text. */
 :is(.aw-lineup__filters,.aw-calendar__filters,.aw-paint-gallery__leagues,.partner-select) button:not([aria-pressed="true"]){color:#e8edf1}
@@ -631,8 +631,8 @@ html[data-anniversary-retro="true"] .aw-anniversary-hud{display:block;position:f
 @media(max-width:980px){html[data-anniversary-retro="true"] main:before{top:107px;font-size:.48rem}.aw-anniversary-hud__bug{display:none}.aw-anniversary-hud__channel{min-width:0}.aw-anniversary-hud__bar{grid-template-columns:auto 1fr}.aw-anniversary-hud__era{display:none}}
 @media(max-width:600px){html[data-anniversary-retro="true"] body{padding-bottom:34px!important}html[data-anniversary-retro="true"] main:before{top:101px;padding:.3rem .55rem;font-size:.42rem;max-width:72vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aw-anniversary-hud__bar{height:34px}.aw-anniversary-hud__identity{padding-inline:.55rem;font-size:.46rem}.aw-anniversary-hud__ticker{padding-inline:.55rem;font-size:.45rem}html[data-anniversary-retro="true"] .site-footer{padding-bottom:34px!important}html[data-anniversary-retro="true"] .section-head:before{display:none}}
 
-/* v2.0.4 — Aetherwing typography refresh.
-   Tomorrow is OFL-licensed and intentionally becomes the team voice; Permanent Marker keeps driver identity handwritten without bundling restricted font binaries. */
+/* v2.0.5 — header typography rollback.
+   Restore the pre-2.0.4 Saira Condensed heading/navigation voice while preserving the 2.0.4 body and driver typography choices. */
 body{font-family:var(--font-body);letter-spacing:.005em}
 .section-title,.display,.page-intro h1,.home-hero h1,.home-battle__copy h3,.home-after__card h3,.home-story__feature h3,.home-faith__copy h2,.aw-paint-gallery__feature-copy h3,.standings-board header h2,.news-tile h2,.news-article h1,.team-partner h3,.partner-personal__intro h3{
   font-family:var(--font-brush)!important;font-weight:800!important;font-style:italic!important;letter-spacing:-.035em!important

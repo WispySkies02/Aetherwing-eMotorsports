@@ -190,13 +190,13 @@ if(!homeSource.includes('home-programs__rail')||!homeSource.includes('programLog
 if(!siteCss.includes('v1.2.0 — AETHERWING TEAM-SITE REDESIGN')||!siteCss.includes('--red:#e10600')||!siteCss.includes('--blue:#4a6fff'))throw Error('Aetherwing logo-led v1.2.0 public design tokens are missing.');
 console.log('v1.2.0 verified: team-site redesign and logo-led public filters are intact.');
 
-// v2.0.4 — recurring Oct. 1–7 Anniversary Week + 2015 debut identity + typography refresh.
+// v2.0.5 — recurring Oct. 1–7 Anniversary Week + 2015 debut identity + pre-2.0.4 header typography rollback.
 if(!existsSync('public/images/brand/aetherwing-anniversary-2015.png'))throw Error('Anniversary Week throwback logo asset is missing.');
 if(!seasonSource.includes("return eastern.month===10&&eastern.day>=1&&eastern.day<=7")||!seasonSource.includes("window:'October 1–7'")||!seasonSource.includes('nextAnniversaryBoundary'))throw Error('Anniversary Week must recur every Oct. 1–7 in Eastern Time and hand control back on Oct. 8.');
 if(!seasonSource.includes('syncAnniversaryLogos')||!seasonSource.includes('/images/brand/aetherwing-anniversary-2015.png')||!seasonSource.includes('BELLSOUTH RACING ROOTS'))throw Error('Anniversary Week must swap to the 2015 throwback mark and debut-identity HUD.');
 if(!seasonSource.includes("if(month===10&&day<=24)return 'halloween';"))throw Error('Normal October Halloween theme must remain intact underneath Anniversary Week.');
-if(!siteCss.includes('v2.0.4 — Aetherwing typography refresh')||!siteCss.includes("--font-body:'Tomorrow'")||!siteCss.includes('v2.0.4 — Anniversary Week is a 2015 team-identity throwback'))throw Error('v2.0.4 public typography or Anniversary Week debut styling is missing.');
-if(!baseSource.includes('family=Permanent+Marker&family=Share+Tech+Mono&family=Tomorrow:'))throw Error('Public site must load Tomorrow plus the open web driver-identity font family.');
+if(!siteCss.includes('v2.0.5 — header typography rollback')||!siteCss.includes("--font-condensed:'Saira Condensed'")||!siteCss.includes("--font-brush:'Saira Condensed'")||!siteCss.includes('v2.0.4 — Anniversary Week is a 2015 team-identity throwback'))throw Error('v2.0.5 header typography rollback or Anniversary Week debut styling is missing.');
+if(!baseSource.includes('family=Permanent+Marker&family=Saira+Condensed:')||!baseSource.includes('family=Share+Tech+Mono&family=Tomorrow:'))throw Error('Public site must load restored Saira Condensed headers plus the existing body/data font families.');
 if(!adminHtml.includes('data-theme="anniversary"')||!adminThemeSource.includes("anniversary:{window:'Every year · Oct 1–7 · Eastern Time'")||!adminCss.includes('data-admin-theme="anniversary"'))throw Error('Admin Theme Preview must include the recurring Anniversary Week debut-identity picker.');
 if(!adminThemeSource.includes("url.searchParams.set('anniversary','throwback')"))throw Error('Admin Anniversary Week preview must force the public throwback overlay in the preview frame.');
-console.log('v2.0.4 verified: Tomorrow typography, 2015 Anniversary Week identity, recurring Oct. 1–7 timing, and Admin preview are intact.');
+console.log('v2.0.5 verified: Saira Condensed headers restored; 2015 Anniversary Week identity, recurring Oct. 1–7 timing, and Admin preview remain intact.');
