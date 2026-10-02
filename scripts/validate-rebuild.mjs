@@ -248,5 +248,19 @@ const darlingtonVisible=JSON.stringify({title:darlingtonV210?.title,summary:darl
 if(!darlingtonV210||/Wispy/i.test(darlingtonVisible)||!darlingtonV210.title.startsWith('Hailey'))throw Error('September 15 Darlington story must use Hailey consistently after the September 14 identity transition.');
 if(!newsArticleSource.includes('news-programs')||!newsArticleSource.includes('news-metric__value'))throw Error('Team Wire must render program cards and protected quick-fact values.');
 if(!recordsCssNow.includes('v2.0.10 — Team Wire fact-grid polish')||!recordsCssNow.includes('last-child:nth-child(odd)')||!recordsCssNow.includes('white-space:nowrap'))throw Error('Team Wire v2.0.10 mobile quick-fact safeguards are missing.');
-if(!siteContentSourceNow.includes('migrateStaleNewsStory')||!siteContentSourceNow.includes("story.slug === 'wispy-southern-500-darlington-top-five'"))throw Error('Known stale v2.0.9 Team Wire records must migrate safely.');
+if(!siteContentSourceNow.includes('migrateStaleNewsStory')||!siteContentSourceNow.includes('normalizeNewsIdentity'))throw Error('Known stale Team Wire records must migrate safely.');
 console.log('v2.0.10 verified: Season 4 details, Darlington identity, program cards, and mobile fact grid are updated.');
+
+
+// v2.0.11 — all reader-facing Team Wire identity references use Hailey.
+const newsV211=JSON.parse(readFileSync('src/data/news.json','utf8'));
+const adminSeedV211=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+const readerFacingNews=(stories)=>JSON.stringify(stories.map((story)=>Object.fromEntries(Object.entries(story).filter(([key])=>!['slug','legacyRoute'].includes(key)))));
+if(/Wispy/i.test(readerFacingNews(newsV211)))throw Error('Reader-facing src/data/news.json still contains a Wispy identity reference.');
+if(/Wispy/i.test(readerFacingNews(adminSeedV211.news||[])))throw Error('Reader-facing Admin news seed still contains a Wispy identity reference.');
+const talladegaV211=newsV211.find((story)=>story.slug==='wispy-100th-roracing-start-talladega');
+const firstWinV211=newsV211.find((story)=>story.slug==='wispy-wins-nrrs-all-star');
+if(!talladegaV211?.summary.includes('her 100th')||!firstWinV211?.summary.includes('her first career'))throw Error('Legacy Hailey stories must use corrected pronouns.');
+if(!siteContentSourceNow.includes('v2.0.11 — Team Wire uses Hailey consistently')||!siteContentSourceNow.includes('normalizeNewsIdentityValue'))throw Error('Public Team Wire runtime identity migration is missing.');
+if(!adminContentSource.includes('v2.0.11 — normalize legacy Wispy references')||!adminContentSource.includes('normalizeNewsIdentityValue'))throw Error('Admin Team Wire identity migration is missing.');
+console.log('v2.0.11 verified: every reader-facing Team Wire Wispy reference is normalized to Hailey while legacy routes remain stable.');

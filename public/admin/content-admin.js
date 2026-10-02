@@ -121,6 +121,20 @@
     const sharedUpload=shared29.numberImageBackup||'',sharedSource=shared29.numberImage||sharedUpload;
     return normalized.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
   };
+  // v2.0.11 — normalize legacy Wispy references in Team Wire without changing old story URLs.
+  const normalizeNewsIdentityValue=(value)=>{
+    if(Array.isArray(value))return value.map((item)=>normalizeNewsIdentityValue(item));
+    if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,(key==='slug'||key==='legacyRoute')?child:normalizeNewsIdentityValue(child)]));
+    if(typeof value!=='string')return value;
+    return value.replace(/WispySkies02/g,'Hailey Bell').replace(/WISPY/g,'HAILEY').replace(/Wispy’s/g,'Hailey’s').replace(/Wispy's/g,"Hailey's").replace(/\bWispy\b/g,'Hailey');
+  };
+  const normalizeNewsIdentity=(story)=>{
+    const normalized=normalizeNewsIdentityValue(story);
+    if(normalized?.slug==='wispy-100th-roracing-start-talladega'&&typeof normalized.summary==='string')normalized.summary=normalized.summary.replace('Hailey marked his 100th','Hailey marked her 100th');
+    if(normalized?.slug==='wispy-wins-nrrs-all-star'&&typeof normalized.summary==='string')normalized.summary=normalized.summary.replace('for his first career RoRacing win','for her first career RoRacing win');
+    return normalized;
+  };
+
   const base = (name) => {
     const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
     if(name==='news'&&Array.isArray(value)){
@@ -129,10 +143,10 @@
       const merged=[...value];
       for(const story of (seeds.news||[]))if(requiredNewsSlugs.has(story.slug)&&!merged.some((item)=>item?.slug===story.slug))merged.push(structuredClone(story));
       return merged.map((story)=>{
-        const fresh=seedBySlug.get(story?.slug);if(!fresh)return story;
-        if(story.slug==='wispy-southern-500-darlington-top-five'&&/Wispy/i.test(`${story.title||''} ${story.summary||''}`))return structuredClone(fresh);
-        if(story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'&&(story.metrics||[]).some((metric)=>metric?.value==='CONTINUES'))return structuredClone(fresh);
-        return story;
+        const normalized=normalizeNewsIdentity(story);
+        const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
+        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'&&(normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES'))return structuredClone(fresh);
+        return normalized;
       });
     }
     if(name==='drivers')return normalizeDriverAssignments(value||[]);

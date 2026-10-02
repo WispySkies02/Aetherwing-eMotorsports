@@ -1,3 +1,9 @@
+## v2.0.11 — Team Wire Hailey Identity Pass
+- Replaces every reader-facing `Wispy` / `WISPY` / `WispySkies02` reference in Team Wire stories with Hailey / Hailey Bell, including archive cards, article headlines, summaries, metrics, section copy, callouts, and bylines.
+- Corrects the two legacy story summaries that used masculine pronouns so the Talladega 100th-start and first-win stories read naturally with Hailey.
+- Preserves legacy story slugs/routes so existing news links do not break.
+- Adds a runtime migration for previously published Admin news data, so old Wispy copy is normalized even if an older News dataset is already stored.
+
 ## v2.0.10 — Season 4 Story Update + Team Wire Fact Grid Fix
 - Updates the September 14 SCR feature with Hailey Bell's #28, PetSmart sponsorship, Palmetto Gaming SCR/Aetherwing partnership, and Aetherwing's planned #32 / #42 / #46 NRRS charters.
 - Adds a visual Season 4 program-comparison module so the SCR #28 and Aetherwing NRRS program read as two connected but separate operations.

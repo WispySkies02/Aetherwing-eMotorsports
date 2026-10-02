@@ -134,12 +134,31 @@ export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
 const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
 const newsSeedBySlug = new Map(newsSeed.map((story)=>[story.slug,story]));
+// v2.0.11 — Team Wire uses Hailey consistently in all reader-facing copy.
+// Keep legacy slugs/routes stable so old links do not break.
+const normalizeNewsIdentityValue = (value, key='') => {
+  if (Array.isArray(value)) return value.map((item)=>normalizeNewsIdentityValue(item));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([childKey,childValue])=>[childKey,(childKey==='slug'||childKey==='legacyRoute')?childValue:normalizeNewsIdentityValue(childValue,childKey)]));
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/WispySkies02/g,'Hailey Bell')
+    .replace(/WISPY/g,'HAILEY')
+    .replace(/Wispy’s/g,'Hailey’s')
+    .replace(/Wispy's/g,"Hailey's")
+    .replace(/\bWispy\b/g,'Hailey');
+};
+const normalizeNewsIdentity = (story) => {
+  const normalized = normalizeNewsIdentityValue(story);
+  if (normalized?.slug === 'wispy-100th-roracing-start-talladega' && typeof normalized.summary === 'string') normalized.summary = normalized.summary.replace('Hailey marked his 100th','Hailey marked her 100th');
+  if (normalized?.slug === 'wispy-wins-nrrs-all-star' && typeof normalized.summary === 'string') normalized.summary = normalized.summary.replace('for his first career RoRacing win','for her first career RoRacing win');
+  return normalized;
+};
 const migrateStaleNewsStory = (story) => {
-  const fresh = newsSeedBySlug.get(story?.slug);
-  if (!fresh) return story;
-  if (story.slug === 'wispy-southern-500-darlington-top-five' && /Wispy/i.test(`${story.title || ''} ${story.summary || ''}`)) return fresh;
-  if (story.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4' && (story.metrics || []).some((metric)=>metric?.value === 'CONTINUES')) return fresh;
-  return story;
+  const normalized = normalizeNewsIdentity(story);
+  const fresh = newsSeedBySlug.get(normalized?.slug);
+  if (!fresh) return normalized;
+  if (normalized.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4' && (normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES')) return fresh;
+  return normalized;
 };
 export const news = Array.isArray(publishedNews)
   ? [...publishedNews, ...newsSeed.filter((story)=>requiredNewsSlugs.has(story.slug)&&!publishedNews.some((item)=>item?.slug===story.slug))].map(migrateStaleNewsStory)
