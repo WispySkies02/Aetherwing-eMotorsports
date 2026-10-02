@@ -3504,6 +3504,109 @@
   ],
   "news": [
     {
+      "slug": "hailey-bell-to-step-back-from-full-time-competition-after-season-4",
+      "legacyRoute": "/hailey-bell-to-step-back-from-full-time-competition-after-season-4",
+      "category": "Team & Organization",
+      "date": "October 1, 2026",
+      "dateIso": "2026-10-01",
+      "context": "Aetherwing eMotorsports · Driver & Team Leadership",
+      "kicker": "The Next Chapter",
+      "title": "Hailey Bell to Step Back From Full-Time Competition After Season 4",
+      "summary": "Following the conclusion of NRRS Season 4, Hailey Bell plans to step back from full-time competition and place a greater share of her focus on building, operating and developing Aetherwing eMotorsports. The change is a shift in priorities, not an end to Bell’s time behind the wheel.",
+      "tags": [
+        "Hailey Bell",
+        "Aetherwing eMotorsports",
+        "Team Leadership",
+        "NRRS",
+        "Season 4",
+        "Next Chapter"
+      ],
+      "featured": false,
+      "heroGhost": "NEXT CHAPTER",
+      "headlineMark": {
+        "eyebrow": "AFTER NRRS SEASON 4",
+        "value": "TEAM",
+        "detail": "HAILEY BELL · AETHERWING eMOTORSPORTS"
+      },
+      "byline": "Aetherwing eMotorsports",
+      "metrics": [
+        {
+          "label": "Timing",
+          "value": "AFTER S4"
+        },
+        {
+          "label": "Current Focus",
+          "value": "FULL-TIME"
+        },
+        {
+          "label": "Next Focus",
+          "value": "AETHERWING"
+        },
+        {
+          "label": "Driving",
+          "value": "CONTINUES"
+        }
+      ],
+      "timeline": [
+        {
+          "series": "NRRS",
+          "season": "Season 4",
+          "title": "One More Full-Time Season",
+          "method": "Bell plans to complete NRRS Season 4 as a full-time competitor before changing the balance of her racing schedule.",
+          "date": "NRRS Season 4"
+        },
+        {
+          "series": "AETHERWING",
+          "season": "After Season 4",
+          "title": "Team Leadership Becomes the Priority",
+          "method": "More time shifts toward operating Aetherwing, developing its programs, supporting its drivers and building the organization for the future.",
+          "date": "After Season 4"
+        },
+        {
+          "series": "DRIVING",
+          "season": "Next Chapter",
+          "title": "Stepping Back, Not Walking Away",
+          "method": "Bell plans to step away from a regular full-time schedule rather than close the door on future starts behind the wheel.",
+          "date": "Beyond Season 4"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "A Change in Priorities",
+          "paragraphs": [
+            "Following the conclusion of NRRS Season 4, Hailey Bell plans to step back from full-time competition and devote more of her time to building and running Aetherwing eMotorsports.",
+            "The decision is about changing the balance between driving and team leadership. Bell has continued to take on a larger role in Aetherwing’s direction, and the next phase will place that work at the center of her motorsports schedule."
+          ]
+        },
+        {
+          "heading": "Season 4 Still Comes First",
+          "paragraphs": [
+            "The transition is planned for after Season 4. Bell’s immediate focus remains the upcoming NRRS campaign and the #28 StarClutch Racing program announced on September 14.",
+            "That gives Season 4 its own significance without changing the goals for the year ahead: compete, pursue results and give the full-time chapter a complete final season before the schedule changes."
+          ]
+        },
+        {
+          "heading": "Building Aetherwing",
+          "paragraphs": [
+            "Stepping back from a full-time driving schedule will create more room for Bell to focus on Aetherwing’s drivers, partnerships, competition programs, creative direction and long-term growth.",
+            "Aetherwing will remain an active racing organization. The change is intended to give its owner more time to lead the team instead of balancing that work against a full-time personal schedule in competition."
+          ]
+        },
+        {
+          "heading": "Still a Driver",
+          "paragraphs": [
+            "The move is not a retirement announcement. Bell plans to step back from full-time competition, not disappear from the driver’s seat entirely.",
+            "Future starts can still be part of the picture when the right opportunities make sense, but the primary emphasis after Season 4 will shift toward the team itself and what Aetherwing can become next."
+          ]
+        }
+      ],
+      "callout": {
+        "label": "The Next Chapter",
+        "title": "Driver Second. Team Builder First.",
+        "text": "After NRRS Season 4, Hailey Bell plans to move away from a regular full-time schedule and make the continued growth and operation of Aetherwing eMotorsports the priority."
+      }
+    },
+    {
       "slug": "north-wilkesboro-chase-race-2-points-update",
       "legacyRoute": "/north-wilkesboro-chase-race-2-points-update",
       "category": "Race & Competition",
@@ -3677,7 +3780,7 @@
       "context": "NRRS Season 4 · StarClutch Racing Alliance",
       "kicker": "Aetherwing × StarClutch",
       "title": "Hailey Bell Joins StarClutch Racing for NRRS Season 4",
-      "summary": "StarClutch Racing owner Clutch announced on September 14 that Hailey Bell will drive the #28 for SCR in NRRS Season 4, bringing PetSmart sponsorship with her. Palmetto Gaming will continue alongside Bell as one of her personal partners on the #28, while Aetherwing plans to continue its own NRRS program with the #32, #42 and #46. Season 4 is planned as Bell’s final full-time campaign before she shifts more of her focus toward building and running Aetherwing eMotorsports.",
+      "summary": "StarClutch Racing owner Clutch announced on September 14 that Hailey Bell will drive the #28 for SCR in NRRS Season 4, bringing PetSmart sponsorship with her. Palmetto Gaming will continue alongside Bell as one of her personal partners on the #28, while Aetherwing plans to continue its own NRRS program with the #32, #42 and #46.",
       "tags": [
         "NRRS",
         "Season 4",
@@ -3712,10 +3815,6 @@
         {
           "label": "Aetherwing Charters",
           "value": "32 · 42 · 46"
-        },
-        {
-          "label": "Post-S4 Focus",
-          "value": "TEAM"
         }
       ],
       "timeline": [
@@ -3739,13 +3838,6 @@
           "title": "Aetherwing Stays in NRRS",
           "method": "Aetherwing plans to continue its own NRRS program with the #32, #42 and #46 charters.",
           "date": "NRRS Season 4"
-        },
-        {
-          "series": "AETHERWING",
-          "season": "Next Chapter",
-          "title": "Full-Time Competition Steps Back",
-          "method": "After Season 4, Bell plans to step back from full-time competition and focus more heavily on building and running Aetherwing eMotorsports.",
-          "date": "After Season 4"
         }
       ],
       "sections": [
@@ -3769,19 +3861,12 @@
             "Aetherwing’s planned NRRS charter lineup for Season 4 is #32, #42 and #46. The team is not leaving the series when Bell moves to the SCR #28.",
             "Instead, the Season 4 structure expands the relationship between Aetherwing and StarClutch Racing: Bell competes full-time for SCR while Aetherwing continues with its own cars, drivers and long-term program."
           ]
-        },
-        {
-          "heading": "One Final Full-Time Chapter",
-          "paragraphs": [
-            "Season 4 is planned as Bell’s final season of full-time competition. After the season, she intends to step back from a full-time driving schedule and put more of her time into building, operating and developing Aetherwing eMotorsports.",
-            "The transition is not planned as a complete departure from driving. It is a shift in priority: from carrying a full-time schedule herself toward leading the organization and helping shape what Aetherwing becomes next."
-          ]
         }
       ],
       "callout": {
         "label": "Season 4 Structure",
         "title": "#28 at SCR. #32 / #42 / #46 at Aetherwing.",
-        "text": "Hailey Bell will take the #28 and PetSmart sponsorship to StarClutch Racing for NRRS Season 4, with Palmetto Gaming continuing as one of Hailey’s personal partners. Aetherwing plans to continue in NRRS with the #32, #42 and #46 before Bell shifts more of her focus toward team leadership after the season."
+        "text": "Hailey Bell will take the #28 and PetSmart sponsorship to StarClutch Racing for NRRS Season 4, with Palmetto Gaming continuing as one of Hailey’s personal partners. Aetherwing plans to continue in NRRS with the #32, #42 and #46 as a separate team program."
       },
       "programBreakdown": [
         {

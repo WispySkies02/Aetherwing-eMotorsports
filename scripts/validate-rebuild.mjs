@@ -278,3 +278,16 @@ const partnersV212=JSON.parse(readFileSync('src/data/partners.json','utf8'));
 const palmettoV212=partnersV212.find((item)=>item.name==='Palmetto Gaming');
 if(!palmettoV212||palmettoV212.role!=='Hailey Partner'||!/personal partnership supporting Hailey Bell/i.test(palmettoV212.description||''))throw Error('Palmetto Gaming must be classified as Hailey’s personal partner, not a team-wide partner.');
 console.log('v2.0.12 verified: Palmetto Gaming is presented as Hailey Bell’s personal partner on the #28, not a joint SCR/Aetherwing sponsor.');
+
+
+// v2.0.13 — separate the SCR signing from Hailey's full-time competition transition.
+const newsV213=JSON.parse(readFileSync('src/data/news.json','utf8'));
+const adminSeedV213=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+const scrV213=newsV213.find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
+const transitionV213=newsV213.find((story)=>story.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4');
+const scrV213Text=JSON.stringify(scrV213||{});
+if(/final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter|step back from full-time/i.test(scrV213Text))throw Error('September 14 SCR story must not contain the post-Season-4 full-time transition announcement.');
+if(!transitionV213||transitionV213.dateIso!=='2026-10-01'||!/step back from full-time competition/i.test(JSON.stringify(transitionV213)))throw Error('Separate October 1 full-time transition story is missing or incomplete.');
+if(!(adminSeedV213.news||[]).some((story)=>story.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'))throw Error('Admin seed must contain the separate full-time transition story.');
+if(!siteContentSourceNow.includes('hailey-bell-to-step-back-from-full-time-competition-after-season-4')||!adminContentSource.includes('hailey-bell-to-step-back-from-full-time-competition-after-season-4'))throw Error('New transition story must survive older published News datasets in public and Admin views.');
+console.log('v2.0.13 verified: SCR signing and post-Season-4 full-time transition are separate Team Wire stories.');

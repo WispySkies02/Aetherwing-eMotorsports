@@ -1,3 +1,9 @@
+## v2.0.13 — Separate Full-Time Transition Story
+- Removes Hailey Bell’s post-Season-4 full-time competition transition from the September 14 StarClutch Racing signing story so that feature stays focused on the #28, PetSmart, Palmetto Gaming, and Aetherwing’s planned #32 / #42 / #46 NRRS program.
+- Adds a separate October 1 Team Wire feature announcing that Bell plans to step back from full-time competition after NRRS Season 4 and shift more of her focus toward building and running Aetherwing eMotorsports.
+- Makes clear that stepping back from a full-time schedule is not a retirement announcement, and keeps the new story as a separate organization/leadership feature.
+- Adds public and Admin migration safeguards so older published copies of the September 14 article cannot reintroduce the final-full-time-season material.
+
 ## v2.0.12 — Season 4 Partner Clarification
 - Corrects the September 14 SCR feature so Palmetto Gaming is identified as Hailey Bell’s personal partner on the #28, not a joint SCR/Aetherwing sponsorship, while retaining PetSmart and Aetherwing’s planned #32 / #42 / #46 NRRS charters.
 - Updates the Palmetto Gaming partner record to identify it as a Hailey-specific personal partnership rather than a team-wide Aetherwing sponsor.

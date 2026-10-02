@@ -138,14 +138,14 @@
   const base = (name) => {
     const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
     if(name==='news'&&Array.isArray(value)){
-      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
+      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4']);
       const seedBySlug=new Map((seeds.news||[]).map((story)=>[story.slug,story]));
       const merged=[...value];
       for(const story of (seeds.news||[]))if(requiredNewsSlugs.has(story.slug)&&!merged.some((item)=>item?.slug===story.slug))merged.push(structuredClone(story));
       return merged.map((story)=>{
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
-        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(serialized))return structuredClone(fresh);}
+        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
         return normalized;
       });
     }

@@ -132,7 +132,7 @@ const normalizeCharters = (boards) => (boards ?? []).map((board) => {
 export const charters = normalizeCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
-const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
+const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4']);
 const newsSeedBySlug = new Map(newsSeed.map((story)=>[story.slug,story]));
 // v2.0.11 — Team Wire uses Hailey consistently in all reader-facing copy.
 // Keep legacy slugs/routes stable so old links do not break.
@@ -159,7 +159,7 @@ const migrateStaleNewsStory = (story) => {
   if (!fresh) return normalized;
   if (normalized.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4') {
     const serialized = JSON.stringify(normalized);
-    if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(serialized)) return fresh;
+    if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized)) return fresh;
   }
   return normalized;
 };
