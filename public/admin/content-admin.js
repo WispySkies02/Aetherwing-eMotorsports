@@ -53,7 +53,7 @@
     navigation:{label:'Link label',href:'Destination URL / path',group:'Navigation group'},
     'page-overrides':{id:'Content rule ID',page:'Public page path',type:'Content type',label:'Admin label',original:'Current page value',value:'Published replacement',enabled:'Apply this replacement'},
     'driver-portfolios':{id:'Portfolio ID',profile:'Linked Driver Directory profile',name:'Driver display name',handle:'Driver handle / username',label:'Portfolio label',order:'Driver display order',brands:'Individual partners / brands',logo:'Optional logo URL'},
-    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout',timeline:'Story timeline'}
+    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout',timeline:'Story timeline',programBreakdown:'Program comparison cards'}
   };
   const fieldHelp = {
     slug:'Public identifier used in URLs. Change carefully after publication.',
@@ -125,9 +125,15 @@
     const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
     if(name==='news'&&Array.isArray(value)){
       const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
+      const seedBySlug=new Map((seeds.news||[]).map((story)=>[story.slug,story]));
       const merged=[...value];
       for(const story of (seeds.news||[]))if(requiredNewsSlugs.has(story.slug)&&!merged.some((item)=>item?.slug===story.slug))merged.push(structuredClone(story));
-      return merged;
+      return merged.map((story)=>{
+        const fresh=seedBySlug.get(story?.slug);if(!fresh)return story;
+        if(story.slug==='wispy-southern-500-darlington-top-five'&&/Wispy/i.test(`${story.title||''} ${story.summary||''}`))return structuredClone(fresh);
+        if(story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'&&(story.metrics||[]).some((metric)=>metric?.value==='CONTINUES'))return structuredClone(fresh);
+        return story;
+      });
     }
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){

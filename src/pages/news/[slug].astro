@@ -44,7 +44,22 @@ const {story}=Astro.props;
       <div class="news-article__body">
         {story.metrics?.length>0&&(
           <section class="news-metrics" aria-label="Story quick facts">
-            {story.metrics.map(m=><div><b>{m.value}</b><small>{m.label}</small></div>)}
+            {story.metrics.map(m=><div><b class:list={['news-metric__value',{'is-long':String(m.value || '').length > 8}]}>{m.value}</b><small>{m.label}</small></div>)}
+          </section>
+        )}
+
+        {story.programBreakdown?.length>0&&(
+          <section class="news-programs" aria-label="Season 4 program breakdown">
+            <header><span>SEASON 4 PROGRAMS</span><h2>How the NRRS Lineup Splits</h2></header>
+            <div class="news-programs__grid">
+              {story.programBreakdown.map(program=><article>
+                <small>{program.eyebrow}</small>
+                <div class="news-programs__number">{program.number}</div>
+                <h3>{program.title}</h3>
+                <p>{program.detail}</p>
+                {program.items?.length>0&&<ul>{program.items.map(item=><li>{item}</li>)}</ul>}
+              </article>)}
+            </div>
           </section>
         )}
 

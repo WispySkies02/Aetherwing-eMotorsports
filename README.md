@@ -1,3 +1,10 @@
+## v2.0.10 — Season 4 Story Update + Team Wire Fact Grid Fix
+- Updates the September 14 SCR feature with Hailey Bell's #28, PetSmart sponsorship, Palmetto Gaming SCR/Aetherwing partnership, and Aetherwing's planned #32 / #42 / #46 NRRS charters.
+- Adds a visual Season 4 program-comparison module so the SCR #28 and Aetherwing NRRS program read as two connected but separate operations.
+- Fixes narrow-screen quick-fact cards so values such as CONTINUES or charter strings do not split awkwardly, and odd metric counts no longer leave a fake empty tile.
+- Normalizes the September 15 Darlington story from Wispy to Hailey Bell so the public Team Wire identity stays consistent after the September 14 SCR announcement.
+- Migrates the known stale v2.0.9 SCR/Darlington records from older published Admin overlays while leaving later edited versions alone.
+
 ## v2.0.9 — Team Wire Feature Stories + Mobile Article Fix
 - Adds the September 14 Team Wire feature announcing Hailey Bell as a StarClutch Racing driver for NRRS Season 4, while making clear that Aetherwing remains in NRRS and Bell plans to step back from full-time competition after Season 4 to focus more heavily on running and building Aetherwing eMotorsports.
 - Rebuilds Team Wire article pages as visual motorsports features with headline stat panels, quick-fact metrics, tags, timelines, numbered story sections, pull quotes, and closing callouts when that data exists.

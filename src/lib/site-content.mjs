@@ -133,8 +133,16 @@ export const charters = normalizeCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
 const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4']);
+const newsSeedBySlug = new Map(newsSeed.map((story)=>[story.slug,story]));
+const migrateStaleNewsStory = (story) => {
+  const fresh = newsSeedBySlug.get(story?.slug);
+  if (!fresh) return story;
+  if (story.slug === 'wispy-southern-500-darlington-top-five' && /Wispy/i.test(`${story.title || ''} ${story.summary || ''}`)) return fresh;
+  if (story.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4' && (story.metrics || []).some((metric)=>metric?.value === 'CONTINUES')) return fresh;
+  return story;
+};
 export const news = Array.isArray(publishedNews)
-  ? [...publishedNews, ...newsSeed.filter((story)=>requiredNewsSlugs.has(story.slug)&&!publishedNews.some((item)=>item?.slug===story.slug))]
+  ? [...publishedNews, ...newsSeed.filter((story)=>requiredNewsSlugs.has(story.slug)&&!publishedNews.some((item)=>item?.slug===story.slug))].map(migrateStaleNewsStory)
   : newsSeed;
 const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));

@@ -227,7 +227,7 @@ console.log('v2.0.8 verified: desktop driver number and signature artwork hydrat
 // v2.0.9 — Team Wire feature treatment + mobile headline overflow fix + SCR Season 4 story.
 const newsSourceNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
 const scrStory=newsSourceNow.find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
-if(!scrStory||scrStory.dateIso!=='2026-09-14'||!scrStory.title.includes('StarClutch Racing')||!scrStory.summary.includes('Aetherwing will continue to compete in NRRS'))throw Error('SCR Season 4 Team Wire story is missing or incomplete.');
+if(!scrStory||scrStory.dateIso!=='2026-09-14'||!scrStory.title.includes('StarClutch Racing')||!/(Aetherwing will continue to compete in NRRS|Aetherwing plans to continue its own NRRS program)/.test(scrStory.summary))throw Error('SCR Season 4 Team Wire story is missing or incomplete.');
 const newsArticleSource=readFileSync('src/pages/news/[slug].astro','utf8');
 const recordsCssNow=readFileSync('src/styles/records.css','utf8');
 const siteContentSourceNow=readFileSync('src/lib/site-content.mjs','utf8');
@@ -236,3 +236,17 @@ if(!recordsCssNow.includes('v2.0.9 — Team Wire feature layout + mobile-safe st
 if(!siteContentSourceNow.includes('requiredNewsSlugs')||!siteContentSourceNow.includes('hailey-bell-joins-starclutch-racing-nrrs-season-4'))throw Error('New Team Wire story must survive older published Admin overlays during deployment.');
 if(!adminContentSource.includes("timeline:'Story timeline'")||!adminContentSource.includes('requiredNewsSlugs'))throw Error('Team Wire Admin must expose the visual timeline and include the new SCR story in older published datasets.');
 console.log('v2.0.9 verified: Team Wire stories are mobile-safe, visually structured, and include the SCR Season 4 announcement.');
+
+
+// v2.0.10 — Season 4 story details + Team Wire fact-grid polish.
+const newsV210=JSON.parse(readFileSync('src/data/news.json','utf8'));
+const scrV210=newsV210.find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
+const darlingtonV210=newsV210.find((story)=>story.slug==='wispy-southern-500-darlington-top-five');
+if(!scrV210||!scrV210.summary.includes('#28')||!scrV210.summary.includes('PetSmart')||!scrV210.summary.includes('Palmetto Gaming')||!scrV210.summary.includes('#32, #42 and #46'))throw Error('Season 4 SCR story must include the #28, PetSmart, Palmetto Gaming, and planned Aetherwing NRRS charters.');
+if(!Array.isArray(scrV210.programBreakdown)||scrV210.programBreakdown.length!==2)throw Error('Season 4 SCR story needs the visual SCR/Aetherwing program breakdown.');
+const darlingtonVisible=JSON.stringify({title:darlingtonV210?.title,summary:darlingtonV210?.summary,quote:darlingtonV210?.quote,sections:darlingtonV210?.sections,callout:darlingtonV210?.callout});
+if(!darlingtonV210||/Wispy/i.test(darlingtonVisible)||!darlingtonV210.title.startsWith('Hailey'))throw Error('September 15 Darlington story must use Hailey consistently after the September 14 identity transition.');
+if(!newsArticleSource.includes('news-programs')||!newsArticleSource.includes('news-metric__value'))throw Error('Team Wire must render program cards and protected quick-fact values.');
+if(!recordsCssNow.includes('v2.0.10 — Team Wire fact-grid polish')||!recordsCssNow.includes('last-child:nth-child(odd)')||!recordsCssNow.includes('white-space:nowrap'))throw Error('Team Wire v2.0.10 mobile quick-fact safeguards are missing.');
+if(!siteContentSourceNow.includes('migrateStaleNewsStory')||!siteContentSourceNow.includes("story.slug === 'wispy-southern-500-darlington-top-five'"))throw Error('Known stale v2.0.9 Team Wire records must migrate safely.');
+console.log('v2.0.10 verified: Season 4 details, Darlington identity, program cards, and mobile fact grid are updated.');

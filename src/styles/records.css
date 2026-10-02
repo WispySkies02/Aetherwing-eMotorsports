@@ -116,3 +116,40 @@ html[data-anniversary-retro="true"] .news-callout{border-color:#3b91b8;border-le
   .news-article h1{font-size:clamp(2.2rem,11.2vw,2.9rem)}
   .news-metrics{grid-template-columns:1fr 1fr}
 }
+
+
+/* v2.0.10 — Team Wire fact-grid polish + Season 4 program cards.
+   Keep metric values intact on narrow phones and make odd metric counts intentional. */
+.news-article__body .news-metrics{max-width:none;margin:1.35rem 0 0!important}
+.news-metrics b.news-metric__value{overflow-wrap:normal;word-break:keep-all;white-space:nowrap}
+.news-metrics b.news-metric__value.is-long{font-size:clamp(1.15rem,2.25vw,1.85rem);letter-spacing:-.04em}
+.news-programs{max-width:none!important;margin:2.3rem 0!important;padding:0!important}
+.news-programs>header{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:1rem;padding-bottom:.7rem;border-bottom:1px solid #38434b}
+.news-programs>header span{color:var(--blue);font:900 .65rem var(--font-mono);letter-spacing:.12em}
+.news-programs>header h2{margin:0!important;font:italic 900 clamp(1.9rem,3.5vw,3rem)/.9 var(--font-condensed)!important}
+.news-programs__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.news-programs__grid>article{position:relative;min-width:0;padding:1.3rem;border:1px solid #3b4952;border-top:5px solid var(--blue);background:linear-gradient(155deg,#14212b,#0a0f13);overflow:hidden}
+.news-programs__grid>article:after{content:'';position:absolute;right:-18%;bottom:-45%;width:65%;aspect-ratio:1;border:1px solid rgba(95,201,245,.12);transform:rotate(18deg)}
+.news-programs__grid small{display:block;color:#8fdcff;font:900 .62rem/1.25 var(--font-mono);letter-spacing:.11em;text-transform:uppercase}
+.news-programs__number{margin:.3rem 0;color:#fff;font:italic 900 clamp(2.2rem,5vw,4.4rem)/.9 var(--font-condensed);letter-spacing:-.045em;overflow-wrap:anywhere}
+.news-programs__grid h3{margin:.2rem 0;color:#fff;font:italic 900 clamp(1.45rem,2.8vw,2.2rem)/.95 var(--font-condensed);text-transform:uppercase}
+.news-programs__grid p{margin:.35rem 0 .9rem!important;color:#9eabb3!important;font:800 .67rem/1.35 var(--font-mono)!important;letter-spacing:.06em;text-transform:uppercase}
+.news-programs__grid ul{display:grid;gap:.45rem;margin:0;padding:0;list-style:none}
+.news-programs__grid li{position:relative;padding-left:1rem;color:#d6e0e5;font-size:.92rem;line-height:1.45}
+.news-programs__grid li:before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:900}
+html[data-anniversary-retro="true"] .news-programs>header{border-bottom-color:#2c779b}
+html[data-anniversary-retro="true"] .news-programs__grid>article{border-color:#2e83aa;border-top-color:#00a7a0;background:linear-gradient(160deg,#10445e,#072636)}
+html[data-anniversary-retro="true"] .news-programs__grid small,html[data-anniversary-retro="true"] .news-programs__grid li:before{color:#77defc}
+@media(max-width:760px){
+  .news-article__body .news-metrics{margin-top:1rem!important}
+  .news-metrics b.news-metric__value{font-size:clamp(1.08rem,5.6vw,1.55rem)}
+  .news-metrics b.news-metric__value.is-long{font-size:clamp(.92rem,4.65vw,1.28rem)}
+  .news-metrics>div:last-child:nth-child(odd){grid-column:1/-1}
+  .news-programs{margin:1.9rem 0!important}.news-programs>header{display:block}.news-programs>header h2{margin-top:.35rem!important}
+  .news-programs__grid{grid-template-columns:1fr}.news-programs__grid>article{padding:1.05rem}
+  .news-programs__number{font-size:clamp(2.2rem,12vw,3.3rem)}
+}
+@media(max-width:360px){
+  .news-metrics b.news-metric__value{font-size:1.05rem}
+  .news-metrics b.news-metric__value.is-long{font-size:.88rem}
+}
