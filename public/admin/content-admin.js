@@ -145,10 +145,11 @@
       return merged.map((story)=>{
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
-        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'&&(normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES'))return structuredClone(fresh);
+        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(serialized))return structuredClone(fresh);}
         return normalized;
       });
     }
+    if(name==='partners'&&Array.isArray(value)){const palmettoSeed=(seeds.partners||[]).find((item)=>item?.name==='Palmetto Gaming');return value.map((item)=>item?.name==='Palmetto Gaming'&&(item.role==='Gaming Partner'||/relationship centered on retro and modern games/i.test(String(item.description||'')))?{...item,...palmettoSeed}:item);}
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));

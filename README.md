@@ -1,3 +1,8 @@
+## v2.0.12 — Season 4 Partner Clarification
+- Corrects the September 14 SCR feature so Palmetto Gaming is identified as Hailey Bell’s personal partner on the #28, not a joint SCR/Aetherwing sponsorship, while retaining PetSmart and Aetherwing’s planned #32 / #42 / #46 NRRS charters.
+- Updates the Palmetto Gaming partner record to identify it as a Hailey-specific personal partnership rather than a team-wide Aetherwing sponsor.
+- Adds targeted public/Admin migrations so previously published copies using the old joint-partnership wording are replaced by the corrected Season 4 story without disturbing later unrelated edits.
+
 ## v2.0.11 — Team Wire Hailey Identity Pass
 - Replaces every reader-facing `Wispy` / `WISPY` / `WispySkies02` reference in Team Wire stories with Hailey / Hailey Bell, including archive cards, article headlines, summaries, metrics, section copy, callouts, and bylines.
 - Corrects the two legacy story summaries that used masculine pronouns so the Talladega 100th-start and first-win stories read naturally with Hailey.
@@ -5,7 +10,6 @@
 - Adds a runtime migration for previously published Admin news data, so old Wispy copy is normalized even if an older News dataset is already stored.
 
 ## v2.0.10 — Season 4 Story Update + Team Wire Fact Grid Fix
-- Updates the September 14 SCR feature with Hailey Bell's #28, PetSmart sponsorship, Palmetto Gaming SCR/Aetherwing partnership, and Aetherwing's planned #32 / #42 / #46 NRRS charters.
 - Adds a visual Season 4 program-comparison module so the SCR #28 and Aetherwing NRRS program read as two connected but separate operations.
 - Fixes narrow-screen quick-fact cards so values such as CONTINUES or charter strings do not split awkwardly, and odd metric counts no longer leave a fake empty tile.
 - Normalizes the September 15 Darlington story from Wispy to Hailey Bell so the public Team Wire identity stays consistent after the September 14 SCR announcement.

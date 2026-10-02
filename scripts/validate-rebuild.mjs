@@ -264,3 +264,17 @@ if(!talladegaV211?.summary.includes('her 100th')||!firstWinV211?.summary.include
 if(!siteContentSourceNow.includes('v2.0.11 — Team Wire uses Hailey consistently')||!siteContentSourceNow.includes('normalizeNewsIdentityValue'))throw Error('Public Team Wire runtime identity migration is missing.');
 if(!adminContentSource.includes('v2.0.11 — normalize legacy Wispy references')||!adminContentSource.includes('normalizeNewsIdentityValue'))throw Error('Admin Team Wire identity migration is missing.');
 console.log('v2.0.11 verified: every reader-facing Team Wire Wispy reference is normalized to Hailey while legacy routes remain stable.');
+
+// v2.0.12 — Palmetto Gaming follows Hailey personally on the SCR #28; it is not a joint SCR/Aetherwing sponsorship.
+const newsV212=JSON.parse(readFileSync('src/data/news.json','utf8'));
+const scrV212=newsV212.find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
+const scrV212Text=JSON.stringify(scrV212||{});
+if(!scrV212||!scrV212Text.includes('personal partners')||!scrV212Text.includes('Hailey personal partner'))throw Error('Season 4 SCR story must identify Palmetto Gaming as Hailey’s personal partner.');
+if(/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(scrV212Text))throw Error('Season 4 SCR story still describes Palmetto Gaming as a joint SCR/Aetherwing partnership.');
+const adminSeedV212=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+const adminScrV212=(adminSeedV212.news||[]).find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
+if(/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(JSON.stringify(adminScrV212||{})))throw Error('Admin seed still contains the old Palmetto joint-partnership wording.');
+const partnersV212=JSON.parse(readFileSync('src/data/partners.json','utf8'));
+const palmettoV212=partnersV212.find((item)=>item.name==='Palmetto Gaming');
+if(!palmettoV212||palmettoV212.role!=='Hailey Partner'||!/personal partnership supporting Hailey Bell/i.test(palmettoV212.description||''))throw Error('Palmetto Gaming must be classified as Hailey’s personal partner, not a team-wide partner.');
+console.log('v2.0.12 verified: Palmetto Gaming is presented as Hailey Bell’s personal partner on the #28, not a joint SCR/Aetherwing sponsor.');

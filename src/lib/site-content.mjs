@@ -157,7 +157,10 @@ const migrateStaleNewsStory = (story) => {
   const normalized = normalizeNewsIdentity(story);
   const fresh = newsSeedBySlug.get(normalized?.slug);
   if (!fresh) return normalized;
-  if (normalized.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4' && (normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES')) return fresh;
+  if (normalized.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4') {
+    const serialized = JSON.stringify(normalized);
+    if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(serialized)) return fresh;
+  }
   return normalized;
 };
 export const news = Array.isArray(publishedNews)
@@ -180,4 +183,9 @@ export const leadership = (Array.isArray(publishedLeadership)?publishedLeadershi
   if(index===0 && /^(Wispy|WispySkies02|Hailey)$/i.test(String(entry?.name||''))) return leadershipSeed[0];
   return entry;
 });
-export const partners = choose('partners', partnersSeed);
+const publishedPartners = choose('partners', partnersSeed);
+const palmettoSeed = partnersSeed.find((item)=>item?.name==='Palmetto Gaming');
+export const partners = (Array.isArray(publishedPartners)?publishedPartners:partnersSeed).map((item)=>{
+  if(item?.name==='Palmetto Gaming' && (item.role==='Gaming Partner' || /relationship centered on retro and modern games/i.test(String(item.description||'')))) return {...item,...palmettoSeed};
+  return item;
+});
