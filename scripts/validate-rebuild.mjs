@@ -299,3 +299,18 @@ if(!recordsCssV214.includes('font-size:clamp(3.15rem,5vw,5.35rem)'))throw Error(
 if(!recordsCssV214.includes('minmax(260px,320px)')||!recordsCssV214.includes('white-space:nowrap;overflow-wrap:normal;word-break:normal'))throw Error('Desktop Team Wire headline marker must have a stable width and no-wrap value.');
 console.log('v2.0.14 verified: desktop Team Wire heroes are rebalanced and headline markers stay intact.');
 
+
+// v2.0.15 — 100 / 150 / 200 seasonal intensity ladder.
+const seasonalThemeV215=readFileSync('public/seasonal-theme.js','utf8');
+const seasonalFxV215=readFileSync('public/seasonal-effects.css','utf8');
+const adminThemePreviewV215=readFileSync('public/admin/theme-preview.js','utf8');
+const adminThemeHtmlV215=readFileSync('public/admin/index.html','utf8');
+const siteCssV215=readFileSync('src/styles/site.css','utf8');
+if(!seasonalThemeV215.includes('automaticIntensity')||!seasonalThemeV215.includes("seasonIntensity")||!seasonalThemeV215.includes("dataset.seasonIntensity")||!seasonalThemeV215.includes("intensityLevel"))throw Error('Seasonal 100/150/200 automatic intensity resolver is missing.');
+for(const value of ['100','150','200'])if(!siteCssV215.includes(`data-season-intensity="${value}"`))throw Error(`Seasonal ${value}% public UI treatment is missing.`);
+if(!siteCssV215.includes('SEASONAL INTENSITY SYSTEM')||!siteCssV215.includes('aw-season-atmosphere:before')||!siteCssV215.includes('aw-season-atmosphere:after'))throw Error('Full seasonal UI/front-glass takeover rules are missing.');
+if(!seasonalFxV215.includes('aw-season-atmosphere--intensity-150')||!seasonalFxV215.includes('aw-season-atmosphere--intensity-200'))throw Error('Seasonal atmosphere intensity amplification is missing.');
+for(const value of ['100','150','200'])if(!adminThemeHtmlV215.includes(`data-theme-intensity="${value}"`))throw Error(`Admin Theme Preview is missing the ${value}% intensity control.`);
+if(!adminThemePreviewV215.includes('automaticIntensityForDate')||!adminThemePreviewV215.includes("seasonIntensity")||!adminThemePreviewV215.includes('defaultPreviewIntensity'))throw Error('Admin Theme Preview intensity parity is incomplete.');
+if(!siteCssV215.includes(':not([data-anniversary-retro="true"])'))throw Error('Seasonal intensity rules must defer to Anniversary Week.');
+console.log('v2.0.15 verified: seasonal themes run at 100% baseline, 150% big-week intensity, and 200% holiday-day intensity with Admin preview parity.');

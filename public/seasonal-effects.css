@@ -157,3 +157,16 @@ html[data-season="st-patrick"] .aw-fx__twinkle{opacity:.42}
   html[data-season="halloween-week"] .aw-fx__bat{opacity:.24;transform:scale(.92)}
   html[data-season="christmas-week"] .aw-fx__tree{opacity:.58}
 }
+
+/* v2.0.15 — atmosphere intensity amplification. */
+.aw-season-atmosphere--intensity-100 .aw-fx__haze{opacity:.38}
+.aw-season-atmosphere--intensity-150 .aw-fx__haze{opacity:.52;filter:blur(48px)}
+.aw-season-atmosphere--intensity-200 .aw-fx__haze{opacity:.66;filter:blur(42px)}
+.aw-season-atmosphere--intensity-150 :is(.aw-fx__ember,.aw-fx__twinkle,.aw-fx__glow,.aw-fx__petal,.aw-fx__leaf){filter:saturate(1.2) brightness(1.12)}
+.aw-season-atmosphere--intensity-200 :is(.aw-fx__ember,.aw-fx__twinkle,.aw-fx__glow,.aw-fx__petal,.aw-fx__leaf){filter:saturate(1.38) brightness(1.22)}
+.aw-season-atmosphere--intensity-150 .aw-fx__burst{filter:drop-shadow(0 0 11px color-mix(in srgb,var(--fx-primary,#fff) 72%,transparent))}
+.aw-season-atmosphere--intensity-200 .aw-fx__burst{filter:drop-shadow(0 0 16px color-mix(in srgb,var(--fx-primary,#fff) 86%,transparent))}
+.aw-season-atmosphere--intensity-150 .aw-fx__snow{box-shadow:0 0 13px rgba(220,242,255,.58)}
+.aw-season-atmosphere--intensity-200 .aw-fx__snow{box-shadow:0 0 17px rgba(230,247,255,.72)}
+.aw-season-atmosphere--intensity-200 .aw-fx__bat{opacity:.48!important;filter:drop-shadow(0 0 7px rgba(167,92,255,.28))}
+@media(max-width:700px){.aw-season-atmosphere--intensity-200 .aw-fx__bat{opacity:.34!important}}

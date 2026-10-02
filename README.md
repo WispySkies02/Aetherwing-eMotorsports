@@ -1,3 +1,12 @@
+## v2.0.15 — 100 / 150 / 200 Seasonal Intensity System
+- Makes 100% the baseline for every active seasonal theme: the full UI now participates through header/navigation, seasonal banner, page intros, cards/panels, filters, buttons, footer, scrollbar, background art, front-glass overlays, and ambient effects instead of relying on accent colors alone.
+- Adds automatic 150% major-week intensity for Valentine week, Holy Week/Easter buildup, Memorial Day weekend, Independence Day week, Halloween Week, Thanksgiving week, and Christmas Week.
+- Adds automatic 200% holiday/observance-day intensity for New Year, St. Patrick’s Day, Palm Sunday, Good Friday, Easter Sunday, Memorial Day, July 4, Halloween, Thanksgiving, Christmas Eve, and Christmas Day.
+- Atmosphere density now scales with intensity while keeping a mobile cap and respecting reduced-motion preferences.
+- Adds stronger theme-specific 200% environments for Halloween, Christmas, Valentine’s, Easter, Independence Day, St. Patrick’s Day, Thanksgiving/Fall, and New Year without changing the underlying site content or data.
+- Theme Preview Admin gains explicit 100% / 150% / 200% controls and passes the forced intensity through to the public-page iframe for direct QA.
+- Anniversary Week remains its own authoritative throwback shell and is not overwritten by the seasonal intensity rules.
+
 ## v2.0.14 — Team Wire Desktop Hero Rebalance
 - Rebalances desktop Team Wire feature heroes so long headlines stay dramatic without consuming nearly the entire first viewport.
 - Reduces desktop headline and summary scale, tightens hero spacing, and gives the headline-marker card a more intentional two-column relationship with the story copy.

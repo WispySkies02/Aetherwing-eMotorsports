@@ -348,3 +348,17 @@ html[data-admin-theme="anniversary"] .admin-theme-stage__chrome{background:linea
 html[data-admin-theme="anniversary"] .admin-theme-stage__card:after{content:'EST. 2015';position:absolute;right:.8rem;top:.65rem;color:#8eeaff;font:900 .48rem/1 var(--mono);letter-spacing:.12em}
 html[data-admin-theme="anniversary"] .admin-theme-stage__mini strong{color:#20a8ed!important;text-shadow:4px 5px 0 #002943!important}
 .admin-theme-preview__grid button[data-theme="anniversary"]{--theme-a:#008fe8;--theme-b:#00a7a0;--theme-texture:linear-gradient(135deg,rgba(0,143,232,.22),transparent 44%),linear-gradient(0deg,rgba(95,186,70,.11),transparent 46%)}
+
+/* v2.0.15 — preview the 100 / 150 / 200 seasonal intensity ladder. */
+.admin-theme-intensity{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin:-.35rem 0 1rem;padding:.65rem;border:1px solid #34414b;background:#090d11}
+.admin-theme-intensity>span{margin-right:.2rem;color:#8d99a2;font:900 .58rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.admin-theme-intensity button{min-height:36px;padding:.5rem .7rem;border:1px solid #46545e;background:#11171c;color:#dfe7eb;font:900 .58rem/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.admin-theme-intensity button.is-active{border-color:#12aaf5;background:#123044;color:#fff;box-shadow:inset 0 -3px #12aaf5,0 0 18px rgba(18,170,245,.14)}
+.admin-theme-intensity button[data-theme-intensity="150"].is-active{border-color:#f3b51d;box-shadow:inset 0 -3px #f3b51d,0 0 18px rgba(243,181,29,.14)}
+.admin-theme-intensity button[data-theme-intensity="200"].is-active{border-color:#ec233a;box-shadow:inset 0 -3px #ec233a,0 0 22px rgba(236,35,58,.18)}
+.admin-theme-intensity small{flex:1 1 260px;color:#7f8a91;font:700 .55rem/1.35 var(--mono)}
+html[data-admin-theme-intensity="150"] .admin-theme-stage{box-shadow:0 0 0 1px color-mix(in srgb,var(--preview-primary,#f3b51d) 48%,transparent),0 0 30px color-mix(in srgb,var(--preview-primary,#f3b51d) 16%,transparent)}
+html[data-admin-theme-intensity="200"] .admin-theme-stage{box-shadow:0 0 0 2px color-mix(in srgb,var(--preview-primary,#ec233a) 72%,transparent),0 0 46px color-mix(in srgb,var(--preview-primary,#ec233a) 24%,transparent)}
+html[data-admin-theme][data-admin-theme-intensity="150"] :is(.admin-overview,.content-editor,[data-panel],.admin-theme-preview,.admin-season-experience article){box-shadow:inset 0 1px color-mix(in srgb,var(--preview-third) 18%,transparent),0 18px 42px rgba(0,0,0,.45),0 0 28px color-mix(in srgb,var(--preview-primary) 14%,transparent)!important}
+html[data-admin-theme][data-admin-theme-intensity="200"] :is(.admin-overview,.content-editor,[data-panel],.admin-theme-preview,.admin-season-experience article){border-color:color-mix(in srgb,var(--preview-primary) 68%,#49545d)!important;box-shadow:inset 0 2px color-mix(in srgb,var(--preview-third) 24%,transparent),0 20px 50px rgba(0,0,0,.52),0 0 40px color-mix(in srgb,var(--preview-primary) 22%,transparent)!important}
+html[data-admin-theme][data-admin-theme-intensity="200"] :is(.admin-workspace-tabs button,.library-tools button,.admin-editor-tools button,.admin-theme-preview__status button,.admin-theme-intensity button){text-shadow:0 0 10px color-mix(in srgb,var(--preview-primary) 32%,transparent)}

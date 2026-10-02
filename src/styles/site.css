@@ -806,3 +806,152 @@ html[data-anniversary-retro="true"] .page-intro:after{
     padding:.32rem .5rem!important;
   }
 }
+
+/* v2.0.15 — SEASONAL INTENSITY SYSTEM
+   100% = full seasonal UI takeover at all times.
+   150% = major-week/event treatment.
+   200% = actual holiday / observance day spectacle.
+   Anniversary Week remains authoritative while its throwback shell is active. */
+html[data-season-intensity]:not([data-anniversary-retro="true"]){
+  --season-ui-glow:color-mix(in srgb,var(--season-primary) 22%,transparent);
+  --season-ui-glow-2:color-mix(in srgb,var(--season-secondary) 16%,transparent);
+  --season-panel-strong:linear-gradient(145deg,color-mix(in srgb,var(--season-primary) 13%,#10151a),color-mix(in srgb,var(--season-secondary) 8%,#05080b) 72%);
+  --season-control-strong:linear-gradient(180deg,color-mix(in srgb,var(--season-primary) 20%,#1a2025),color-mix(in srgb,var(--season-secondary) 10%,#080b0e));
+  scrollbar-color:var(--season-primary) color-mix(in srgb,#05070a 88%,var(--season-secondary) 12%);
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) body:after{opacity:.56!important}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .site-header{
+  background:linear-gradient(115deg,color-mix(in srgb,var(--season-secondary) 19%,#070a0d) 0 34%,color-mix(in srgb,var(--season-primary) 12%,#080a0d) 68%,#07090c 100%)!important;
+  border-bottom-color:color-mix(in srgb,var(--season-primary) 55%,#4a5158)!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.48),0 0 26px var(--season-ui-glow-2)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .site-header:after{height:5px!important;filter:drop-shadow(0 0 8px var(--season-ui-glow))}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) :is(.desktop-nav a,.nav-group>button,.header-nav a):hover{color:var(--season-primary)!important;text-shadow:0 0 14px var(--season-ui-glow)}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-banner{
+  min-height:41px!important;background:var(--season-banner)!important;border-block:1px solid color-mix(in srgb,var(--season-primary) 66%,transparent)!important;
+  box-shadow:inset 0 2px 0 color-mix(in srgb,var(--season-tertiary) 19%,transparent),0 10px 30px rgba(0,0,0,.34),0 0 25px var(--season-ui-glow)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .page-intro{
+  border-bottom:5px solid var(--season-primary)!important;
+  box-shadow:inset 0 -100px 150px color-mix(in srgb,var(--season-primary) 18%,transparent),inset 0 1px color-mix(in srgb,var(--season-tertiary) 20%,transparent)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) :is(.page-intro h1,.section-title,.display){text-shadow:5px 7px 0 rgba(0,0,0,.62),0 0 34px var(--season-ui-glow)!important}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .eyebrow{color:var(--season-primary)!important;text-shadow:0 0 12px var(--season-ui-glow)}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .section-head:after{height:4px!important;width:min(520px,68%)!important;opacity:1!important;box-shadow:0 0 16px var(--season-ui-glow)}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) :is(
+  .story-panel,.results-list article,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,
+  .profile-stat,.profile-assignment,.profile-partners,.home-after__card,.home-story__feature,.home-people__tile,.faith-signature__inner,
+  .aw-calendar__hero,.aw-paint-gallery__hero,.team-partner,.partner-card
+){
+  border-color:color-mix(in srgb,var(--season-primary) 58%,#3e474e)!important;
+  background-image:var(--season-panel-strong)!important;
+  box-shadow:inset 0 1px color-mix(in srgb,var(--season-tertiary) 17%,transparent),0 20px 50px rgba(0,0,0,.5),0 0 26px var(--season-ui-glow-2)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button){
+  background-image:var(--season-control-strong)!important;border-color:color-mix(in srgb,var(--season-primary) 55%,#59626a)!important;
+  box-shadow:inset 0 1px color-mix(in srgb,var(--season-tertiary) 16%,transparent),0 8px 22px rgba(0,0,0,.35)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .btn:not(.btn--ghost){background:linear-gradient(180deg,color-mix(in srgb,var(--season-primary) 90%,#fff 10%),color-mix(in srgb,var(--season-primary) 68%,#05080b))!important;color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.72)}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) :is(.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button)[aria-pressed="true"]{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--season-primary) 38%,#182027),color-mix(in srgb,var(--season-secondary) 18%,#070a0d))!important;
+  border-color:var(--season-primary)!important;box-shadow:inset 0 -4px var(--season-primary),0 0 26px var(--season-ui-glow)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .site-footer{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--season-secondary) 13%,#080a0d),#040608 55%)!important;
+  border-top-color:var(--season-primary)!important;box-shadow:inset 0 1px color-mix(in srgb,var(--season-tertiary) 16%,transparent),0 -12px 34px rgba(0,0,0,.32)!important;
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .site-footer:before{background:linear-gradient(90deg,var(--season-secondary) 0 30%,var(--season-primary) 30% 63%,var(--season-tertiary) 63% 78%,var(--season-primary) 78%)!important}
+html[data-season-intensity]:not([data-anniversary-retro="true"])::-webkit-scrollbar-thumb,
+html[data-season-intensity]:not([data-anniversary-retro="true"]) body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--season-secondary) 0 45%,var(--season-primary) 45% 88%,var(--season-tertiary) 88%)!important;box-shadow:0 0 12px var(--season-ui-glow)}
+
+/* Front-glass atmosphere: visible at 100%, amplified rather than introduced at higher levels. */
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before,
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{content:'';position:fixed;inset:0;pointer-events:none}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before{
+  z-index:2;opacity:.24;background:radial-gradient(circle at 50% -8%,color-mix(in srgb,var(--fx-primary) 18%,transparent),transparent 42%),radial-gradient(circle at 102% 60%,color-mix(in srgb,var(--fx-secondary) 14%,transparent),transparent 34%);mix-blend-mode:screen
+}
+html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{
+  z-index:4;opacity:.18;background:linear-gradient(90deg,rgba(0,0,0,.42),transparent 9%,transparent 91%,rgba(0,0,0,.42)),linear-gradient(180deg,rgba(0,0,0,.24),transparent 12%,transparent 88%,rgba(0,0,0,.32)),repeating-linear-gradient(108deg,transparent 0 87px,rgba(255,255,255,.035) 88px 89px,transparent 90px 173px)
+}
+
+/* 150% — event/big-week layer. */
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]){--season-ui-glow:color-mix(in srgb,var(--season-primary) 34%,transparent);--season-ui-glow-2:color-mix(in srgb,var(--season-secondary) 27%,transparent)}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) body:after{opacity:.46!important}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .site-header{box-shadow:0 16px 46px rgba(0,0,0,.54),0 0 42px var(--season-ui-glow-2)!important}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .site-header:after{height:7px!important}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .aw-season-banner{min-height:46px!important;box-shadow:inset 0 3px 0 color-mix(in srgb,var(--season-tertiary) 24%,transparent),0 12px 34px rgba(0,0,0,.38),0 0 38px var(--season-ui-glow)!important}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,.home-after__card,.home-story__feature){border-width:2px!important;box-shadow:inset 0 2px color-mix(in srgb,var(--season-tertiary) 18%,transparent),0 22px 54px rgba(0,0,0,.55),0 0 38px var(--season-ui-glow-2)!important}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before{opacity:.39}
+html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{opacity:.27}
+
+/* 200% — holiday / one-day spectacle. Readability wins, but the site should be unmistakable. */
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]){--season-ui-glow:color-mix(in srgb,var(--season-primary) 48%,transparent);--season-ui-glow-2:color-mix(in srgb,var(--season-secondary) 38%,transparent)}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) body:after{opacity:.34!important}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(115deg,color-mix(in srgb,var(--season-secondary) 31%,#05080b),color-mix(in srgb,var(--season-primary) 24%,#08090c) 58%,#050608)!important;box-shadow:0 18px 54px rgba(0,0,0,.58),0 0 58px var(--season-ui-glow)!important}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header:after{height:9px!important;filter:drop-shadow(0 0 15px var(--season-ui-glow))}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-season-banner{min-height:52px!important;font-size:.68rem!important;letter-spacing:.14em!important;box-shadow:inset 0 3px 0 color-mix(in srgb,var(--season-tertiary) 32%,transparent),0 14px 40px rgba(0,0,0,.4),0 0 52px var(--season-ui-glow)!important}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) :is(.page-intro h1,.section-title,.display){text-shadow:6px 8px 0 rgba(0,0,0,.68),0 0 28px var(--season-ui-glow),0 0 64px var(--season-ui-glow-2)!important}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) :is(.story-panel,.news-tile,.standings-board,.aw-calendar__event,.aw-lineup__poster,.aw-paint-gallery__tile,.home-after__card,.home-story__feature,.profile-stat,.profile-assignment){border-width:2px!important;border-color:color-mix(in srgb,var(--season-primary) 78%,var(--season-tertiary))!important;box-shadow:inset 0 2px color-mix(in srgb,var(--season-tertiary) 28%,transparent),0 24px 62px rgba(0,0,0,.6),0 0 54px var(--season-ui-glow-2)!important}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) :is(.btn,.aw-calendar__filters button,.aw-lineup__filters button,.aw-paint-gallery__leagues button,.partner-select button):hover{transform:translateY(-2px) scale(1.01);box-shadow:0 0 0 1px var(--season-primary),0 0 34px var(--season-ui-glow)!important}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before{opacity:.56}
+html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{opacity:.34}
+
+/* Theme-specific 100/150/200 signatures. */
+html[data-season-ui^="spooky"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#08030b 0%,#25102d 38%,#1c0903 72%,#050406)!important}
+html[data-season-ui^="spooky"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{background:radial-gradient(ellipse at 50% 52%,transparent 38%,rgba(0,0,0,.58) 100%),repeating-linear-gradient(112deg,transparent 0 72px,rgba(255,132,62,.055) 73px 74px,transparent 75px 144px),repeating-linear-gradient(72deg,transparent 0 119px,rgba(183,104,255,.035) 120px 121px,transparent 122px 217px)}
+html[data-season-ui^="spooky"][data-season-intensity="150"]:not([data-anniversary-retro="true"]) :is(.section-title,.page-intro h1){filter:drop-shadow(0 0 10px rgba(255,100,0,.16))}
+html[data-season-ui^="spooky"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(ellipse at 80% 7%,rgba(198,91,255,.62),transparent 30%),radial-gradient(ellipse at 12% 80%,rgba(255,92,0,.62),transparent 31%),radial-gradient(circle at 50% 46%,rgba(128,26,145,.32),transparent 38%),repeating-linear-gradient(126deg,transparent 0 64px,rgba(255,129,34,.12) 65px 69px,transparent 70px 120px),linear-gradient(135deg,#010102 0%,#260632 42%,#020203 65%,#380e00 100%)}
+html[data-season-ui^="spooky"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-season-banner{background:linear-gradient(90deg,#090109,#772300 38%,#4d1265 68%,#090109)!important}
+
+html[data-season-ui^="holiday"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#021111 0%,#0b3a27 40%,#3a1114 76%,#071016)!important}
+html[data-season-ui="holiday-max"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 50% -2%,rgba(255,229,143,.52),transparent 24%),radial-gradient(circle at 85% 13%,rgba(247,80,80,.55),transparent 27%),radial-gradient(circle at 10% 80%,rgba(48,205,115,.58),transparent 31%),linear-gradient(145deg,#010812 0%,#06452a 36%,#02080f 61%,#39080c 100%)}
+html[data-season-ui="holiday-max"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-fx__lights b{filter:saturate(1.55) brightness(1.42)!important}
+html[data-season-ui="holiday-max"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-fx__tree{opacity:1!important;filter:drop-shadow(0 20px 30px rgba(0,0,0,.62)) drop-shadow(0 0 34px rgba(255,220,105,.22))!important}
+
+html[data-season-ui="rose"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#16050c,#5c1532 47%,#2d091b 78%,#090508)!important}
+html[data-season-ui="rose"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 8%,rgba(255,159,193,.62),transparent 29%),radial-gradient(circle at 10% 81%,rgba(214,55,116,.63),transparent 34%),radial-gradient(circle at 51% 43%,rgba(143,29,76,.38),transparent 36%),linear-gradient(145deg,#160208,#510d29 38%,#0b0307 66%,#430916 100%)}
+
+html[data-season-ui="patriotic"]:not([data-anniversary-retro="true"]) .site-header,
+html[data-season-ui="memorial"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#07152b,#173e75 37%,#e6e9eb 37% 39%,#64141b 39% 72%,#080b11 100%)!important}
+html[data-season-ui="patriotic"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 82% 10%,rgba(231,68,78,.5),transparent 29%),radial-gradient(circle at 12% 78%,rgba(54,124,220,.58),transparent 34%),repeating-radial-gradient(circle at 72% 21%,rgba(255,255,255,.28) 0 1px,transparent 2px 19px),linear-gradient(145deg,#020716 0%,#123065 40%,#04070e 66%,#36070d 100%)}
+
+html[data-season-ui="easter"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#17170b,#5b5627 40%,#31472f 68%,#211b2b 100%)!important}
+html[data-season-ui="easter"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(ellipse at 50% -4%,rgba(255,231,139,.78),transparent 31%),radial-gradient(circle at 82% 31%,rgba(203,177,235,.48),transparent 31%),radial-gradient(circle at 12% 79%,rgba(166,230,150,.5),transparent 34%),linear-gradient(180deg,#302b0e 0%,#4a4c1c 24%,#183225 54%,#070d09 100%)}
+
+html[data-season-ui="green"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#031107,#0b5427 43%,#2d6f2a 68%,#221c08)!important}
+html[data-season-ui="green"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 81% 10%,rgba(95,242,112,.54),transparent 29%),radial-gradient(circle at 13% 79%,rgba(230,207,87,.3),transparent 33%),linear-gradient(145deg,#020d05,#0d401c 41%,#041009 69%,#302707 100%)}
+
+html[data-season-ui="harvest"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#150906,#52200d 43%,#6e3812 67%,#0b0806)!important}
+html[data-season-ui="harvest"][data-season-intensity="150"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 83% 9%,rgba(244,167,54,.5),transparent 31%),radial-gradient(circle at 11% 82%,rgba(169,67,21,.52),transparent 34%),linear-gradient(145deg,#140603,#401704 38%,#0b0704 65%,#361506 100%)}
+html[data-season-ui="harvest"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 50% 2%,rgba(255,203,95,.56),transparent 27%),radial-gradient(circle at 84% 13%,rgba(231,127,36,.58),transparent 31%),radial-gradient(circle at 10% 80%,rgba(143,52,18,.55),transparent 34%),linear-gradient(145deg,#160703,#4d1c05 37%,#0a0603 64%,#442006 100%)}
+
+html[data-season-ui="metallic"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#08090b,#2e3035 42%,#51451c 70%,#090a0c)!important}
+html[data-season-ui="metallic"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 75% 9%,rgba(250,224,132,.56),transparent 27%),radial-gradient(circle at 20% 31%,rgba(218,229,241,.4),transparent 25%),repeating-radial-gradient(circle at 80% 20%,rgba(255,255,255,.3) 0 1px,transparent 2px 17px),linear-gradient(145deg,#020305 0%,#25282e 42%,#030406 68%,#443b10 100%)}
+
+@media(max-width:700px){
+  html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-banner{min-height:36px!important}
+  html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .aw-season-banner{min-height:40px!important}
+  html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-season-banner{min-height:44px!important;font-size:.56rem!important}
+  html[data-season-intensity]:not([data-anniversary-retro="true"]) .site-header:after{height:4px!important}
+  html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .site-header:after{height:5px!important}
+  html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header:after{height:6px!important}
+  html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{opacity:.25}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-season-intensity] .aw-season-atmosphere:before,html[data-season-intensity] .aw-season-atmosphere:after{animation:none!important}
+}
+/* Explicit baseline marker for QA: 100% is a full takeover, not a teaser mode. */
+html[data-season-intensity="100"]:not([data-anniversary-retro="true"]){--season-intensity-label:100}
+
+/* 200% observance-day signatures stay specific to the meaning of the day. */
+html[data-observance="palm-sunday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 52% -2%,rgba(247,215,116,.48),transparent 27%),radial-gradient(circle at 8% 78%,rgba(79,139,74,.5),transparent 34%),linear-gradient(145deg,#11150a,#33411b 38%,#0b1009 67%,#35290c 100%)}
+html[data-observance="palm-sunday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#0c1609,#35531d 46%,#7a6124 76%,#0c0d08)!important}
+html[data-observance="good-friday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 80% 15%,rgba(113,31,26,.28),transparent 30%),radial-gradient(circle at 18% 78%,rgba(84,70,43,.15),transparent 33%),linear-gradient(145deg,#050404,#160807 40%,#050506 69%,#100c08 100%)}
+html[data-observance="good-friday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) body:after{opacity:.64!important}
+html[data-observance="good-friday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#080606,#22100d 45%,#16120d 76%,#050505)!important;box-shadow:0 18px 50px rgba(0,0,0,.66)!important}
+html[data-observance="good-friday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) :is(.page-intro h1,.section-title,.display){text-shadow:5px 7px 0 #000,0 0 28px rgba(137,61,48,.18)!important}
+html[data-observance="easter-sunday"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(ellipse at 50% -6%,rgba(255,239,157,.88),transparent 33%),radial-gradient(circle at 83% 31%,rgba(215,190,239,.5),transparent 31%),radial-gradient(circle at 10% 80%,rgba(170,239,155,.58),transparent 35%),linear-gradient(180deg,#493f12 0%,#5e6324 22%,#20412e 54%,#07100b 100%)}
+html[data-observance="thanksgiving"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 50% 0%,rgba(255,211,111,.58),transparent 28%),radial-gradient(circle at 84% 16%,rgba(224,126,39,.62),transparent 31%),radial-gradient(circle at 10% 80%,rgba(142,57,21,.56),transparent 35%),linear-gradient(145deg,#180803,#542004 38%,#0c0704 66%,#3d1d06 100%)}
+html[data-observance="christmas-eve"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 65% 2%,rgba(255,224,128,.5),transparent 24%),radial-gradient(circle at 9% 79%,rgba(36,131,88,.48),transparent 33%),linear-gradient(145deg,#010713,#08223a 37%,#030813 64%,#19090b 100%)}
+html[data-observance="christmas-eve"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#010b18,#0b2b47 46%,#4a3512 75%,#060a10)!important}
+html[data-observance="christmas-day"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 50% -3%,rgba(255,235,153,.7),transparent 27%),radial-gradient(circle at 84% 14%,rgba(245,82,82,.58),transparent 28%),radial-gradient(circle at 10% 79%,rgba(52,209,119,.62),transparent 32%),linear-gradient(145deg,#010912 0%,#075133 36%,#030a11 61%,#430a0f 100%)}

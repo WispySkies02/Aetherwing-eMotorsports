@@ -2,7 +2,7 @@
   const THEMES={
     'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',icon:'✦',effect:'fireworks',density:9,ui:'metallic'},
     'clean-winter':{title:'CLEAN WINTER',subtitle:'COLD AIR · CLEAR FOCUS',icon:'❄',effect:'snow',density:16,ui:'frost'},
-    'valentine-teaser':{title:'VALENTINE TEASER',subtitle:'A LITTLE HEART IN THE GARAGE',icon:'♡',effect:'petals',density:12,ui:'rose-soft'},
+    'valentine-teaser':{title:'VALENTINE TEASER',subtitle:'FIRST HEARTS · FULL THEME',icon:'♡',effect:'petals',density:12,ui:'rose-soft'},
     valentine:{title:"VALENTINE'S WEEK",subtitle:'LOVE THE RACE · LOVE THE TEAM',icon:'♥',effect:'petals',density:26,ui:'rose'},
     'late-winter':{title:'LATE WINTER',subtitle:'THE THAW IS COMING',icon:'❅',effect:'snow',density:10,ui:'thaw'},
     spring:{title:'SPRING',subtitle:'FRESH SEASON · FRESH START',icon:'✿',effect:'petals',density:22,ui:'spring'},
@@ -12,11 +12,11 @@
     summer:{title:'SUMMER',subtitle:'LONG DAYS · FAST LAPS',icon:'☀',effect:'glow',density:26,ui:'summer'},
     'independence-day':{title:'INDEPENDENCE DAY',subtitle:'RED · WHITE · BLUE',icon:'✹',effect:'fireworks',density:10,ui:'patriotic'},
     'summer-end':{title:"SUMMER'S END",subtitle:'LAST LIGHT OF THE SEASON',icon:'◒',effect:'glow',density:22,ui:'sunset'},
-    'halloween-teaser':{title:'HALLOWEEN IS CREEPING IN',subtitle:'SUBTLE SPOOKY SEASON',icon:'☾',effect:'haze',density:5,ui:'spooky-soft'},
+    'halloween-teaser':{title:'HALLOWEEN IS CREEPING IN',subtitle:'FIRST WAVE · FULL SPOOKY UI',icon:'☾',effect:'haze',density:5,ui:'spooky-soft'},
     halloween:{title:'SPOOKY SEASON',subtitle:'AETHERWING AFTER DARK',icon:'◐',effect:'halloween',density:32,ui:'spooky'},
     'halloween-week':{title:'HALLOWEEN WEEK',subtitle:'FULL SEND · FULL SPOOKY',icon:'◆',effect:'halloween',density:46,ui:'spooky-max'},
     fall:{title:'FALL AT AETHERWING',subtitle:'COOL AIR · HOT LAPS',icon:'❧',effect:'leaves',density:24,ui:'harvest'},
-    'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS OF THE SEASON',icon:'✦',effect:'twinkle',density:18,ui:'holiday-soft'},
+    'christmas-teaser':{title:'CHRISTMAS IS COMING',subtitle:'FIRST LIGHTS · FULL THEME',icon:'✦',effect:'twinkle',density:18,ui:'holiday-soft'},
     christmas:{title:'CHRISTMAS / WINTER',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow',density:34,ui:'holiday',faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
     'christmas-week':{title:'CHRISTMAS WEEK',subtitle:'GLORY TO GOD IN THE HIGHEST · LUKE 2:14',icon:'★',effect:'snow-twinkle',density:52,ui:'holiday-max',lights:true,faith:true,verse:'GLORY TO GOD IN THE HIGHEST',reference:'LUKE 2:14',scene:'bethlehem'},
     'calm-winter':{title:'WINTER RESET',subtitle:'QUIET DAYS · NEXT RACE AHEAD',icon:'❅',effect:'snow',density:18,ui:'frost'},
@@ -129,6 +129,38 @@
     return automaticObservance(partsInEastern());
   }
 
+  // v2.0.15 — seasonal intensity system. 100% is the new baseline takeover,
+  // 150% is major-week/event treatment, and 200% is reserved for the actual
+  // holiday/observance date. Manual previews can force ?seasonIntensity=100|150|200.
+  function automaticIntensity(parts,theme,observance){
+    if(theme==='standard')return 0;
+    if(observance)return 200;
+    const {year,month,day}=parts,key=dateKey(year,month,day);
+    if(theme==='new-year'||theme==='st-patrick')return 200;
+    if(theme==='valentine')return day===14?200:150;
+    if(theme==='easter')return key===iso(easterSunday(year))?200:150;
+    if(theme==='memorial-day')return key===iso(memorialDay(year))?200:150;
+    if(theme==='independence-day')return month===7&&day===4?200:150;
+    if(theme==='halloween-week')return day===31?200:150;
+    if(theme==='fall'){
+      const thanks=thanksgiving(year),weekStart=addDays(thanks,-6);
+      if(between(key,iso(weekStart),iso(thanks)))return key===iso(thanks)?200:150;
+    }
+    if(theme==='christmas-week')return day>=24?200:150;
+    return 100;
+  }
+  function resolveIntensity(theme,observance){
+    const forced=new URLSearchParams(location.search).get('seasonIntensity');
+    if(['100','150','200'].includes(forced))return Number(forced);
+    return automaticIntensity(partsInEastern(),theme,observance);
+  }
+  const intensityLevel=(value)=>value>=200?'holiday':value>=150?'event':'full';
+  const scaledDensity=(base,intensity)=>{
+    const factor=intensity>=200?1.9:intensity>=150?1.45:1;
+    const cap=window.matchMedia?.('(max-width:700px)').matches?58:84;
+    return Math.min(cap,Math.max(base,Math.round(base*factor)));
+  };
+
   const palette=()=>{
     const css=getComputedStyle(document.documentElement);
     return {primary:css.getPropertyValue('--season-primary').trim()||'#f3b51d',secondary:css.getPropertyValue('--season-secondary').trim()||'#12aaf5',tertiary:css.getPropertyValue('--season-tertiary').trim()||'#fff'};
@@ -198,31 +230,32 @@
     document.body.appendChild(hud);
   }
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
-  function mountAtmosphere(theme,observance){
-    const key=`${theme}|${observance}`;
+  function mountAtmosphere(theme,observance,intensity=100){
+    const key=`${theme}|${observance}|${intensity}`;
     if(!document.body||theme==='standard'){removeAtmosphere();return;}
     const meta=THEMES[theme],obs=OBSERVANCES[observance];
     if(!meta||mountedKey===key)return;
     removeAtmosphere();
-    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-season-atmosphere--${meta.effect}`;layer.setAttribute('aria-hidden','true');
+    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-season-atmosphere--${meta.effect} aw-season-atmosphere--intensity-${intensity}`;layer.dataset.intensity=String(intensity);layer.setAttribute('aria-hidden','true');
     const colors=palette();layer.style.setProperty('--fx-primary',colors.primary);layer.style.setProperty('--fx-secondary',colors.secondary);layer.style.setProperty('--fx-tertiary',colors.tertiary);
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset);layer.appendChild(el);}};
 
     if(!obs?.suppress){
-      if(meta.effect==='haze')add('aw-fx__haze',3);
-      else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',meta.density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
-      else if(meta.effect==='leaves')add('aw-fx__leaf',meta.density);
-      else if(meta.effect==='snow')add('aw-fx__snow',meta.density);
-      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',meta.density);add('aw-fx__twinkle',12);}
-      else if(meta.effect==='petals')add('aw-fx__petal',meta.density);
-      else if(meta.effect==='glow')add('aw-fx__glow',meta.density);
-      else if(meta.effect==='twinkle')add('aw-fx__twinkle',meta.density);
+      const density=scaledDensity(meta.density,intensity),detail=intensity>=200?2:intensity>=150?1.5:1;
+      if(meta.effect==='haze')add('aw-fx__haze',Math.round(3*detail));
+      else if(meta.effect==='halloween'){add('aw-fx__haze',Math.round(3*detail));add('aw-fx__ember',density);add('aw-fx__bat',Math.round((theme==='halloween-week'?4:2)*detail));}
+      else if(meta.effect==='leaves')add('aw-fx__leaf',density);
+      else if(meta.effect==='snow')add('aw-fx__snow',density);
+      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',Math.round(12*detail));}
+      else if(meta.effect==='petals')add('aw-fx__petal',density);
+      else if(meta.effect==='glow')add('aw-fx__glow',density);
+      else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
       else if(meta.effect==='fireworks'){
-        for(let i=0;i<meta.density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}
+        for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}
       }
-      if(obs?.add==='twinkle')add('aw-fx__twinkle',10,71);
-      if(obs?.add==='glow')add('aw-fx__glow',8,83);
-      if(obs?.add==='sunrise'){add('aw-fx__glow',12,101);add('aw-fx__twinkle',7,121);}
+      if(obs?.add==='twinkle')add('aw-fx__twinkle',Math.round(10*detail),71);
+      if(obs?.add==='glow')add('aw-fx__glow',Math.round(8*detail),83);
+      if(obs?.add==='sunrise'){add('aw-fx__glow',Math.round(12*detail),101);add('aw-fx__twinkle',Math.round(7*detail),121);}
     }
 
     if(meta.lights){
@@ -231,7 +264,7 @@
         for(let i=0;i<count;i++){const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i,20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i,21)*8)}px`);strand.appendChild(bulb);}
         layer.appendChild(strand);
       };
-      makeStrand('top',30);makeStrand('left',18);makeStrand('right',18);
+      const lightFactor=intensity>=200?1.45:intensity>=150?1.2:1;makeStrand('top',Math.round(30*lightFactor));makeStrand('left',Math.round(18*lightFactor));makeStrand('right',Math.round(18*lightFactor));
     }
     if(theme==='christmas-week')layer.appendChild(buildHolidayTree());
     const faithScene=buildFaithScene(theme);if(faithScene)layer.appendChild(faithScene);
@@ -240,13 +273,13 @@
   }
 
   function apply(){
-    const theme=resolveTheme(),observance=resolveObservance(),anniversaryRetro=anniversaryRetroActive();
-    if(theme==='standard'){delete document.documentElement.dataset.season;delete document.documentElement.dataset.seasonUi;}else{document.documentElement.dataset.season=theme;document.documentElement.dataset.seasonUi=THEMES[theme]?.ui||theme;}
+    const theme=resolveTheme(),observance=resolveObservance(),anniversaryRetro=anniversaryRetroActive(),intensity=resolveIntensity(theme,observance),level=intensityLevel(intensity);
+    if(theme==='standard'){delete document.documentElement.dataset.season;delete document.documentElement.dataset.seasonUi;delete document.documentElement.dataset.seasonIntensity;delete document.documentElement.dataset.seasonLevel;}else{document.documentElement.dataset.season=theme;document.documentElement.dataset.seasonUi=THEMES[theme]?.ui||theme;document.documentElement.dataset.seasonIntensity=String(intensity);document.documentElement.dataset.seasonLevel=level;}
     if(observance){document.documentElement.dataset.observance=observance;document.documentElement.dataset.observanceUi=OBSERVANCES[observance]?.ui||observance;}else{delete document.documentElement.dataset.observance;delete document.documentElement.dataset.observanceUi;}
     if(anniversaryRetro)document.documentElement.dataset.anniversaryRetro='true';else delete document.documentElement.dataset.anniversaryRetro;
     mountAnniversaryHud(anniversaryRetro);
 
-    window.__AETHERWING_SEASON__={id:theme,...(THEMES[theme]||{title:'',subtitle:'',icon:'',effect:'none',density:0,ui:'default'})};
+    window.__AETHERWING_SEASON__={id:theme,intensity,level,...(THEMES[theme]||{title:'',subtitle:'',icon:'',effect:'none',density:0,ui:'default'})};
     window.__AETHERWING_OBSERVANCE__=observance?{id:observance,...OBSERVANCES[observance]}:null;
     window.__AETHERWING_ANNIVERSARY_RETRO__={active:anniversaryRetro,window:'October 1–7',timezone:ANNIVERSARY_TIMEZONE};
     const banner=document.querySelector('[data-season-banner]');
@@ -257,7 +290,7 @@
       const icon=banner.querySelector('[data-season-icon]'),title=banner.querySelector('[data-season-title]'),subtitle=banner.querySelector('[data-season-subtitle]');
       if(icon)icon.textContent=info.icon||'';if(title)title.textContent=info.title||'';if(subtitle)subtitle.textContent=info.subtitle||'';
     }
-    mountAtmosphere(theme,observance);
+    mountAtmosphere(theme,observance,intensity);
   }
 
   apply();

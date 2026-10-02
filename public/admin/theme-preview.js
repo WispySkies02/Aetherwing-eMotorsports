@@ -15,6 +15,7 @@
   const autoButton=document.querySelector('[data-theme-auto]');
   const pageSelect=document.querySelector('[data-theme-preview-page]');
   const publicFrame=document.querySelector('[data-theme-public-frame]');
+  const intensityControls=document.querySelector('[data-theme-intensity-controls]');
   const openPreview=document.querySelector('[data-theme-open-preview]');
   const faithBanner=document.querySelector('[data-theme-faith-banner]');
   const faithKicker=document.querySelector('[data-theme-faith-kicker]');
@@ -24,6 +25,7 @@
   let previewMode='auto';
   let selectedTheme='default';
   let selectedObservance='';
+  let selectedIntensity=100;
   if(!grid||!name||!reset)return;
 
   const labels=Object.fromEntries([...grid.querySelectorAll('[data-theme]')].map((button)=>[button.dataset.theme,button.querySelector('b')?.textContent?.trim()||button.dataset.theme]));
@@ -143,16 +145,35 @@
     if(m===12&&d===25)return 'christmas-day';
     return '';
   };
+  const automaticIntensityForDate=(date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date))=>{
+    if(theme==='default')return 100;if(observance)return 200;
+    const y=date.getUTCFullYear(),m=date.getUTCMonth()+1,d=date.getUTCDate(),today=key(date);
+    if(theme==='new-year'||theme==='st-patrick')return 200;
+    if(theme==='valentine')return d===14?200:150;
+    if(theme==='easter')return today===key(easterSunday(y))?200:150;
+    if(theme==='memorial-day')return today===key(memorialDay(y))?200:150;
+    if(theme==='independence-day')return m===7&&d===4?200:150;
+    if(theme==='halloween-week')return d===31?200:150;
+    if(theme==='fall'){const thanks=thanksgiving(y),start=addDays(thanks,-6);if(today>=key(start)&&today<=key(thanks))return today===key(thanks)?200:150;}
+    if(theme==='christmas-week')return d>=24?200:150;
+    return 100;
+  };
+  const defaultPreviewIntensity=(theme)=>{
+    if(['new-year','st-patrick'].includes(theme))return 200;
+    if(['valentine','easter','memorial-day','independence-day','halloween-week','christmas-week'].includes(theme))return 150;
+    return 100;
+  };
   const publicPreviewUrl=()=>{
     const path=pageSelect?.value||'/';
     const url=new URL(path,location.origin);
     url.searchParams.set('themePreview','1');
-    if(previewMode==='theme'&&selectedTheme==='anniversary'){
+    if((previewMode==='theme'||previewMode==='auto')&&selectedTheme==='anniversary'){
       url.searchParams.set('anniversary','throwback');url.searchParams.set('season','off');url.searchParams.set('observance','off');
     }else{
       url.searchParams.set('anniversary','off');
       if(previewMode==='plain'){url.searchParams.set('season','off');url.searchParams.set('observance','off');}
-      else if(previewMode==='theme'){url.searchParams.set('season',selectedTheme);if(selectedObservance)url.searchParams.set('observance',selectedObservance);}
+      else if(previewMode==='theme'){url.searchParams.set('season',selectedTheme);url.searchParams.set('seasonIntensity',String(selectedIntensity));if(selectedObservance)url.searchParams.set('observance',selectedObservance);}
+      else if(previewMode==='auto'){url.searchParams.set('seasonIntensity',String(selectedIntensity));}
     }
     return `${url.pathname}${url.search}`;
   };
@@ -188,11 +209,12 @@
     return motif;
   };
   const removeFx=()=>document.querySelectorAll('.aw-admin-season-fx').forEach((node)=>node.remove());
-  const buildFx=(theme,observance='',stageMode=false)=>{
+  const buildFx=(theme,observance='',stageMode=false,intensity=selectedIntensity)=>{
     const meta=META[theme],obs=OBS[observance];if(!meta)return null;if(meta.effect==='none'&&!observance)return null;
-    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-admin-season-fx ${stageMode?'aw-admin-season-fx--stage':'aw-admin-season-fx--page'} aw-season-atmosphere--${meta.effect}`;layer.setAttribute('aria-hidden','true');
+    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-admin-season-fx ${stageMode?'aw-admin-season-fx--stage':'aw-admin-season-fx--page'} aw-season-atmosphere--${meta.effect} aw-season-atmosphere--intensity-${intensity}`;layer.setAttribute('aria-hidden','true');
     const css=getComputedStyle(root);layer.style.setProperty('--fx-primary',css.getPropertyValue('--preview-primary').trim()||'#f3b51d');layer.style.setProperty('--fx-secondary',css.getPropertyValue('--preview-secondary').trim()||'#12aaf5');layer.style.setProperty('--fx-tertiary',css.getPropertyValue('--preview-third').trim()||'#fff');
-    const density=stageMode?Math.max(meta.density,meta.effect==='haze'?3:12):meta.density;
+    const factor=intensity>=200?1.9:intensity>=150?1.45:1;const rawDensity=Math.round(meta.density*factor);
+    const density=stageMode?Math.min(48,Math.max(rawDensity,meta.effect==='haze'?3:12)):Math.min(84,rawDensity);
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset+(stageMode?31:0));layer.appendChild(el);}};
     if(!obs?.suppress){
       if(meta.effect==='haze')add('aw-fx__haze',3);
@@ -217,10 +239,10 @@
     const motif=buildObservanceMotif(observance,stageMode);if(motif)layer.appendChild(motif);
     return layer;
   };
-  const mountFx=(theme,observance='')=>{
+  const mountFx=(theme,observance='',intensity=selectedIntensity)=>{
     removeFx();
-    const pageLayer=buildFx(theme,observance,false);if(pageLayer)document.body.prepend(pageLayer);
-    const stageLayer=buildFx(theme,observance,true);if(stage&&stageLayer)stage.prepend(stageLayer);
+    const pageLayer=buildFx(theme,observance,false,intensity);if(pageLayer)document.body.prepend(pageLayer);
+    const stageLayer=buildFx(theme,observance,true,intensity);if(stage&&stageLayer)stage.prepend(stageLayer);
   };
 
   function updateObservanceDates(){
@@ -230,6 +252,7 @@
   const select=(theme='default',observance='',mode='theme')=>{
     previewMode=mode;selectedTheme=theme;selectedObservance=observance;
     if(theme==='default')delete root.dataset.adminTheme;else root.dataset.adminTheme=theme;
+    root.dataset.adminThemeIntensity=String(selectedIntensity);
     if(observance)root.dataset.adminObservance=observance;else delete root.dataset.adminObservance;
     grid.querySelectorAll('[data-theme]').forEach((button)=>{const active=button.dataset.theme===theme;button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));});
     observanceGrid?.querySelectorAll('[data-observance]').forEach((button)=>{const active=button.dataset.observance===observance;button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));});
@@ -237,7 +260,8 @@
     const meta=META[theme]||META.default,obs=OBS[observance];
     const auto=mode==='auto',plain=mode==='plain';
     const displayName=auto?`Auto · ${labels[theme]||theme}`:plain?'Plain Aetherwing':obs?`${observanceLabels[observance]||observance} · ${labels[theme]||theme}`:(labels[theme]||'Default Aetherwing');
-    name.textContent=displayName;if(stageName)stageName.textContent=displayName;
+    const intensityLabel=theme==='default'?'':` · ${selectedIntensity}%`;name.textContent=displayName+intensityLabel;if(stageName)stageName.textContent=displayName+intensityLabel;
+    intensityControls?.querySelectorAll('[data-theme-intensity]').forEach((button)=>{const active=Number(button.dataset.themeIntensity)===selectedIntensity;button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));});
     autoButton?.classList.toggle('is-active',auto);
     const blocked=theme!=='default'&&reduceMotion?.matches&&root.dataset.adminForceMotion!=='true';if(motionToggle)motionToggle.hidden=!blocked;
 
@@ -246,17 +270,18 @@
     if(uiEl)uiEl.textContent=obs?.ui||meta.ui;if(uiCopy)uiCopy.textContent=obs?.uiCopy||meta.uiCopy;
     const faith=obs?.faith?obs:(meta?.faith?meta:null);
     if(faithBanner){faithBanner.hidden=!faith;if(faith){if(faithKicker)faithKicker.textContent=obs?.faith?(obs.title||'FAITH MOMENT'):(meta.title||'FAITH THEME');if(faithVerse)faithVerse.textContent=faith.verse||'';if(faithReference)faithReference.textContent=faith.reference||'';}}
-    requestAnimationFrame(()=>mountFx(theme,observance));
+    requestAnimationFrame(()=>mountFx(theme,observance,selectedIntensity));
     refreshPublicPreview();
   };
 
-  grid.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme]');if(button){const theme=button.dataset.theme;select(theme,'',theme==='default'?'plain':'theme');}});
-  observanceGrid?.addEventListener('click',(event)=>{const button=event.target.closest('[data-observance]');if(button)select(button.dataset.baseTheme||OBS[button.dataset.observance]?.base||'default',button.dataset.observance,'theme');});
-  if(motionToggle)motionToggle.addEventListener('click',()=>{root.dataset.adminForceMotion='true';motionToggle.hidden=true;mountFx(selectedTheme,selectedObservance);});
-  autoButton?.addEventListener('click',()=>{delete root.dataset.adminForceMotion;const theme=automaticThemeForDate(),observance=automaticObservanceForDate();select(theme,observance,'auto');});
-  reset.addEventListener('click',()=>{delete root.dataset.adminForceMotion;select('default','','plain');});
+  grid.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme]');if(button){const theme=button.dataset.theme;selectedIntensity=defaultPreviewIntensity(theme);select(theme,'',theme==='default'?'plain':'theme');}});
+  observanceGrid?.addEventListener('click',(event)=>{const button=event.target.closest('[data-observance]');if(button){selectedIntensity=200;select(button.dataset.baseTheme||OBS[button.dataset.observance]?.base||'default',button.dataset.observance,'theme');}});
+  if(motionToggle)motionToggle.addEventListener('click',()=>{root.dataset.adminForceMotion='true';motionToggle.hidden=true;mountFx(selectedTheme,selectedObservance,selectedIntensity);});
+  autoButton?.addEventListener('click',()=>{delete root.dataset.adminForceMotion;const date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date);selectedIntensity=automaticIntensityForDate(date,theme,observance);select(theme,observance,'auto');});
+  reset.addEventListener('click',()=>{delete root.dataset.adminForceMotion;selectedIntensity=100;select('default','','plain');});
+  intensityControls?.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme-intensity]');if(!button)return;selectedIntensity=Number(button.dataset.themeIntensity)||100;select(selectedTheme,selectedObservance,previewMode==='plain'?'plain':'theme');});
   pageSelect?.addEventListener('change',refreshPublicPreview);
   openPreview?.addEventListener('click',()=>window.open(openPreview.dataset.previewUrl||publicPreviewUrl(),'_blank','noopener'));
   updateObservanceDates();
-  select(automaticThemeForDate(),automaticObservanceForDate(),'auto');
+  {const date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date);selectedIntensity=automaticIntensityForDate(date,theme,observance);select(theme,observance,'auto');}
 })();
