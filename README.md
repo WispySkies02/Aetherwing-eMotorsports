@@ -1,3 +1,9 @@
+## v2.0.14 — Team Wire Desktop Hero Rebalance
+- Rebalances desktop Team Wire feature heroes so long headlines stay dramatic without consuming nearly the entire first viewport.
+- Reduces desktop headline and summary scale, tightens hero spacing, and gives the headline-marker card a more intentional two-column relationship with the story copy.
+- Keeps short headline-marker values such as `TEAM` on one line so they cannot split into `TEA / M` on desktop.
+- Leaves the existing mobile Team Wire overflow safeguards and Anniversary Week styling intact.
+
 ## v2.0.13 — Separate Full-Time Transition Story
 - Removes Hailey Bell’s post-Season-4 full-time competition transition from the September 14 StarClutch Racing signing story so that feature stays focused on the #28, PetSmart, Palmetto Gaming, and Aetherwing’s planned #32 / #42 / #46 NRRS program.
 - Adds a separate October 1 Team Wire feature announcing that Bell plans to step back from full-time competition after NRRS Season 4 and shift more of her focus toward building and running Aetherwing eMotorsports.

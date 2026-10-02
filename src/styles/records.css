@@ -89,6 +89,22 @@ html[data-anniversary-retro="true"] .news-timeline__rail>article{border-color:#2
 html[data-anniversary-retro="true"] .news-section-index{color:#77defc;border-top-color:#00a7a0}
 html[data-anniversary-retro="true"] .news-callout{border-color:#3b91b8;border-left-color:#00a7a0;background:linear-gradient(135deg,#10516a,#082a3c 72%)}
 
+
+/* v2.0.14 — Desktop Team Wire hero scale + headline-mark fit.
+   Keep feature heroes dramatic without letting long headlines become poster-sized,
+   and keep short marker values such as TEAM on one clean line. */
+@media(min-width:761px){
+  .news-article{padding-block:clamp(2.8rem,4.5vw,4.5rem)}
+  .news-article__hero{padding-bottom:1.6rem}
+  .news-article__hero-grid{gap:clamp(1.2rem,2.6vw,2.25rem);margin-top:1rem}
+  .news-article__hero-grid.has-mark{grid-template-columns:minmax(0,1fr) minmax(260px,320px);align-items:center}
+  .news-article h1{font-size:clamp(3.15rem,5vw,5.35rem);line-height:.86;letter-spacing:-.045em}
+  .news-article__summary{max-width:720px;font-size:clamp(1.05rem,1.35vw,1.28rem);line-height:1.45}
+  .news-headline-mark{align-self:center;padding:1.1rem 1.05rem}
+  .news-headline-mark strong{font-size:clamp(3rem,4.1vw,4.4rem);line-height:.88;white-space:nowrap;overflow-wrap:normal;word-break:normal}
+  .news-headline-mark span{font-size:.58rem}
+}
+
 @media(max-width:760px){
   .news-article{padding-block:2.5rem 4rem}
   .news-article>.wrap{width:min(100% - 2rem,1180px)}

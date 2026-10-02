@@ -291,3 +291,11 @@ if(!transitionV213||transitionV213.dateIso!=='2026-10-01'||!/step back from full
 if(!(adminSeedV213.news||[]).some((story)=>story.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'))throw Error('Admin seed must contain the separate full-time transition story.');
 if(!siteContentSourceNow.includes('hailey-bell-to-step-back-from-full-time-competition-after-season-4')||!adminContentSource.includes('hailey-bell-to-step-back-from-full-time-competition-after-season-4'))throw Error('New transition story must survive older published News datasets in public and Admin views.');
 console.log('v2.0.13 verified: SCR signing and post-Season-4 full-time transition are separate Team Wire stories.');
+
+// v2.0.14 — desktop Team Wire hero sizing must remain editorial, not poster-sized.
+const recordsCssV214=readFileSync('src/styles/records.css','utf8');
+if(!recordsCssV214.includes('v2.0.14 — Desktop Team Wire hero scale + headline-mark fit'))throw Error('v2.0.14 Team Wire desktop hero rules are missing.');
+if(!recordsCssV214.includes('font-size:clamp(3.15rem,5vw,5.35rem)'))throw Error('Desktop Team Wire headline scale regression.');
+if(!recordsCssV214.includes('minmax(260px,320px)')||!recordsCssV214.includes('white-space:nowrap;overflow-wrap:normal;word-break:normal'))throw Error('Desktop Team Wire headline marker must have a stable width and no-wrap value.');
+console.log('v2.0.14 verified: desktop Team Wire heroes are rebalanced and headline markers stay intact.');
+
