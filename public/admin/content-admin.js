@@ -637,6 +637,8 @@
     if(draftCount)draftCount.textContent=String(drafts.length);
     if(publishedCount)publishedCount.textContent=String(published.length);
     if(last)last.textContent=registry.lastPublication?.at?new Date(registry.lastPublication.at).toLocaleString():'None yet';
+    const publishAll=$('[data-content-publish-all]');if(publishAll){publishAll.disabled=!drafts.length;publishAll.title=drafts.length?`Publish ${drafts.length} saved section draft${drafts.length===1?'':'s'} together`:'No saved drafts to publish';}
+    const rebuildButton=$('[data-content-rebuild]');if(rebuildButton)rebuildButton.title='Recovery only: retry the Netlify site rebuild after content has already been published.';
     document.querySelectorAll('[data-admin-dataset]').forEach((button)=>button.classList.toggle('has-draft',drafts.includes(button.dataset.adminDataset)));
     const overviewStatus=$('[data-admin-publish-status]');
     if(overviewStatus)overviewStatus.textContent=publication?.message || (publishConfigured?'Publishing is connected. Current changes can save and publish in one step.':'Drafts can be saved, but the site rebuild hook still needs configuration.');
@@ -1299,9 +1301,12 @@
       if(name==='publish') {
         const publication=response.publication;
         if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
+        else if(key==='news') status(publication?.queued
+          ? `Published revision ${publication.revision}. Team Wire article edits are live immediately; a rebuild is also queued for static HTML and social metadata.`
+          : `Published revision ${publication?.revision||registry.revision}. Team Wire article edits are live immediately. The static HTML/social metadata will catch up on the next deploy${publication?.message?`: ${publication.message}`:'.'}`);
         else {const removed=Number(publication?.driverRemovalCascade?.removedAssignments||0),removedNote=removed?` Removed ${removed} current league assignment${removed===1?'':'s'} for the deleted driver profile${removed===1?'':'s'}; historical results were kept.`:'';status(publication?.queued
           ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Public data is updated and the site rebuild is queued.${removedNote}`
-          : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Publish site / retry build.'}${removedNote}`);}
+          : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Retry site rebuild.'}${removedNote}`);}
       } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?'Calendar sorted by date, start time, and league. Private draft saved; nothing public changed.':'Private draft saved. Nothing public changed.'):'Section updated.'));
       updateControlCenterStatus(response.publication);
     } finally { busy=false; $('[data-content-editor]').inert=false; }
@@ -1309,7 +1314,7 @@
   $('[data-content-form]').addEventListener('submit',async(event)=>{event.preventDefault();commit();try{await action('saveDraft');}catch(error){status(error.message);}});
   $('[data-content-publish]').addEventListener('click',async()=>{
     commit();
-    const prompt=key==='navigation'?`${dirty?'Save and publish the current navigation changes':'Publish this navigation section'}? The public menu reads these links live.`:`${dirty?'Save and publish the current changes':'Publish this section'} and rebuild the public site?`;
+    const prompt=key==='navigation'?`${dirty?'Save and publish the current navigation changes':'Publish this navigation section'}? The public menu reads these links live.`:`${dirty?'Save and publish the current changes':'Publish this section'}? Existing Team Wire articles and other live-enabled content update immediately; a site rebuild is queued when configured.`;
     if(!confirm(prompt))return;
     try{await action('publish');}catch(error){status(error.message);}
   });

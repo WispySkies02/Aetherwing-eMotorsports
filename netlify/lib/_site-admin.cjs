@@ -102,8 +102,14 @@ async function rebuild(revision) {
   return { queued:true, message:'Build queued. Public pages update when Netlify finishes the deployment.' };
 }
 
+function replaceFullCirclePartner(value){
+  if(Array.isArray(value))return value.map(replaceFullCirclePartner);
+  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
+  return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
+}
 function migrateKnownPublished(registry){
   const seed=seeds();
+  if(Array.isArray(registry.published?.news))registry.published.news=registry.published.news.map((story)=>story?.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'?replaceFullCirclePartner(story):story);
   if(Array.isArray(registry.published?.['schedule-events']))registry.published['schedule-events']=registry.published['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>e?.league==='nrrs'&&e?.date==='2026-09-22'?{...e,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'}:e);
   if(Array.isArray(registry.published?.results)){
     const live=[...registry.published.results],officials=(seed.results||[]).filter(r=>(r.league==='nrrs'&&r.date==='2026-09-22')||(r.league==='uarl-d2'&&r.date==='2026-09-12'));

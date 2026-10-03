@@ -1,4 +1,4 @@
-## v2.0.16 — FULL CIRCLE Final Full-Time Season Feature
+## v2.0.17 — FULL CIRCLE Final Full-Time Season Feature
 - Rebuilds Hailey Bell’s full-time competition announcement into the 2027 **FULL CIRCLE** Tour feature: one more full-time season built around every chapter of her racing career.
 - Frames 2027 as Bell’s final **full-time** season rather than the end of racing entirely; one-off appearances, special events, and part-time starts remain possible afterward.
 - Adds the Season 3 origin story and confirms the 2027 return of Toys “R” Us, Cheddar’s Scratch Kitchen, and Apex Sim Racing alongside modern-era partners PetSmart, Mobil 1, Rheem, Home Depot, Ghost Energy, and Pokémon.
@@ -421,3 +421,10 @@ The custom validation script now resolves and switches to the repository root fr
 - Restored Saira Condensed for normal-site headings, navigation, buttons, and major UI labels.
 - Preserved Tomorrow for body copy and Permanent Marker for driver-identity text.
 - Preserved the recurring Oct. 1–7 Anniversary Week throwback identity and Admin preview behavior.
+
+
+## v2.0.17 — Live Team Wire publishing
+- Existing Team Wire article pages now hydrate from the live published news dataset, matching the Newsroom index.
+- FULL CIRCLE uses Ironmouse instead of Pokémon in the bundled article.
+- Admin publication labels clarify that Publish changes is the normal action and Retry rebuild only is a recovery tool.
+- Existing live FULL CIRCLE data is migrated from Pokémon/Pokemon to Ironmouse without replacing other Admin edits.

@@ -322,9 +322,22 @@ const adminSeedV216=JSON.parse(readFileSync('public/data/site-admin-seed.json','
 const fullCircleV216=newsV216.find((story)=>story.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4');
 const fullCircleTextV216=JSON.stringify(fullCircleV216||{});
 if(!fullCircleV216||fullCircleV216.title!=='Hailey Bell Announces 2027 “Full Circle” Tour, Final Full-Time Season')throw Error('FULL CIRCLE Team Wire headline is missing or incorrect.');
-for(const required of ['FULL CIRCLE','Toys “R” Us','Cheddar’s Scratch Kitchen','Apex Sim Racing','PetSmart','Mobil 1','Rheem','Home Depot','Ghost Energy','Pokémon','ONE MORE SEASON. EVERY CHAPTER.','TO GOD BE THE GLORY'])if(!fullCircleTextV216.includes(required))throw Error(`FULL CIRCLE story is missing required content: ${required}`);
+for(const required of ['FULL CIRCLE','Toys “R” Us','Cheddar’s Scratch Kitchen','Apex Sim Racing','PetSmart','Mobil 1','Rheem','Home Depot','Ghost Energy','Ironmouse','ONE MORE SEASON. EVERY CHAPTER.','TO GOD BE THE GLORY'])if(!fullCircleTextV216.includes(required))throw Error(`FULL CIRCLE story is missing required content: ${required}`);
 if(!/step back from full-time competition/i.test(fullCircleTextV216)||!/part-time starts remain possible/i.test(fullCircleTextV216))throw Error('FULL CIRCLE story must distinguish final full-time competition from total retirement.');
 const adminFullCircleV216=(adminSeedV216.news||[]).find((story)=>story.slug===fullCircleV216.slug);
 if(!adminFullCircleV216||adminFullCircleV216.title!==fullCircleV216.title)throw Error('Admin seed must carry the updated FULL CIRCLE story.');
 if(!siteContentSourceNow.includes("normalized.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4'")||!adminContentSource.includes("normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'"))throw Error('FULL CIRCLE stale-published-story migration is missing.');
 console.log('v2.0.16 verified: FULL CIRCLE replaces the old transition article with the complete 2027 final full-time season feature.');
+
+
+// v2.0.17 — Team Wire publishes existing story edits live without waiting on a rebuild.
+const newsArticleV217=readFileSync('src/pages/news/[slug].astro','utf8');
+const newsIndexV217=readFileSync('src/pages/news/index.astro','utf8');
+const siteDataV217=readFileSync('netlify/lib/_site-data.cjs','utf8');
+const siteAdminV217=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+const adminHtmlV217=readFileSync('public/admin/index.html','utf8');
+if(!newsArticleV217.includes('data-news-story-root')||!newsArticleV217.includes("window.addEventListener('aetherwing:content'")||!newsArticleV217.includes('window.__AETHERWING_CONTENT__'))throw Error('Individual Team Wire stories are not hydrated from live published content.');
+if(!newsIndexV217.includes('window.__AETHERWING_CONTENT__'))throw Error('Newsroom index must apply already-loaded live content as well as future content events.');
+for(const source of [siteDataV217,siteAdminV217,siteContentSourceNow])if(!source.includes("replace(/Pokémon|Pokemon/g,'Ironmouse')"))throw Error('FULL CIRCLE Ironmouse migration is missing from one of the live/static content paths.');
+if(!adminHtmlV217.includes('Publish changes')||!adminHtmlV217.includes('Retry site rebuild'))throw Error('Admin publish controls still use ambiguous labels.');
+console.log('v2.0.17 verified: Team Wire story edits hydrate live, FULL CIRCLE uses Ironmouse, and Admin publishing labels are clearer.');

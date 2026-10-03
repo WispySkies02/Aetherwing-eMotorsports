@@ -1,6 +1,12 @@
 const { read, json, normalizeDriverAssignments, seeds, normalize } = require('./_content.cjs');
+function replaceFullCirclePartner(value){
+  if(Array.isArray(value))return value.map(replaceFullCirclePartner);
+  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
+  return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
+}
 function mergeCanonical(datasets){
   const seed=seeds();
+  if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>story?.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'?replaceFullCirclePartner(story):story);
   if(Array.isArray(datasets['schedule-events'])){
     datasets['schedule-events']=datasets['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>{
       if(e?.league==='nrrs'&&e?.date==='2026-09-22')return {...e,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'};

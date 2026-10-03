@@ -153,8 +153,15 @@ const normalizeNewsIdentity = (story) => {
   if (normalized?.slug === 'wispy-wins-nrrs-all-star' && typeof normalized.summary === 'string') normalized.summary = normalized.summary.replace('for his first career RoRacing win','for her first career RoRacing win');
   return normalized;
 };
+const replaceFullCirclePartner = (value) => {
+  if (Array.isArray(value)) return value.map(replaceFullCirclePartner);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
+  if (typeof value === 'string') return value.replace(/Pokémon|Pokemon/g,'Ironmouse');
+  return value;
+};
 const migrateStaleNewsStory = (story) => {
-  const normalized = normalizeNewsIdentity(story);
+  let normalized = normalizeNewsIdentity(story);
+  if (normalized?.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4') normalized = replaceFullCirclePartner(normalized);
   const fresh = newsSeedBySlug.get(normalized?.slug);
   if (!fresh) return normalized;
   if (normalized.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4') {
