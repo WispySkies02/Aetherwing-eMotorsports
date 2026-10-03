@@ -3509,101 +3509,182 @@
       "category": "Team & Organization",
       "date": "October 1, 2026",
       "dateIso": "2026-10-01",
-      "context": "Aetherwing eMotorsports · Driver & Team Leadership",
-      "kicker": "The Next Chapter",
-      "title": "Hailey Bell to Step Back From Full-Time Competition After Season 4",
-      "summary": "Following the conclusion of NRRS Season 4, Hailey Bell plans to step back from full-time competition and place a greater share of her focus on building, operating and developing Aetherwing eMotorsports. The change is a shift in priorities, not an end to Bell’s time behind the wheel.",
+      "context": "2027 FULL CIRCLE Tour · Final Full-Time Season",
+      "kicker": "One More Season. Every Chapter.",
+      "title": "Hailey Bell Announces 2027 “Full Circle” Tour, Final Full-Time Season",
+      "summary": "Hailey Bell has announced that the 2027 season will be her final year competing full-time, bringing one chapter of her racing career to a close with a season-long celebration known as the FULL CIRCLE Tour. The tour will celebrate the people, partners, cars, moments and memories that shaped Bell’s racing career while she competes one final season on a full-time schedule.",
       "tags": [
         "Hailey Bell",
-        "Aetherwing eMotorsports",
-        "Team Leadership",
-        "NRRS",
-        "Season 4",
-        "Next Chapter"
+        "FULL CIRCLE",
+        "2027",
+        "Final Full-Time Season",
+        "Career Celebration",
+        "Aetherwing eMotorsports"
       ],
       "featured": false,
-      "heroGhost": "NEXT CHAPTER",
+      "heroGhost": "FULL CIRCLE",
       "headlineMark": {
-        "eyebrow": "AFTER NRRS SEASON 4",
-        "value": "TEAM",
-        "detail": "HAILEY BELL · AETHERWING eMOTORSPORTS"
+        "eyebrow": "FULL CIRCLE TOUR",
+        "value": "2027",
+        "detail": "HAILEY BELL · FINAL FULL-TIME SEASON"
       },
       "byline": "Aetherwing eMotorsports",
       "metrics": [
         {
-          "label": "Timing",
-          "value": "AFTER S4"
+          "label": "Final Full-Time Season",
+          "value": "2027"
         },
         {
-          "label": "Current Focus",
-          "value": "FULL-TIME"
+          "label": "Tour",
+          "value": "FULL CIRCLE"
         },
         {
-          "label": "Next Focus",
-          "value": "AETHERWING"
+          "label": "First Full-Time Campaign",
+          "value": "S3"
         },
         {
-          "label": "Driving",
-          "value": "CONTINUES"
+          "label": "Returning Early-Era Partners",
+          "value": "3"
+        },
+        {
+          "label": "Current-Era Partners",
+          "value": "6"
+        },
+        {
+          "label": "Future Starts",
+          "value": "OPEN"
         }
       ],
+      "quote": {
+        "text": "This isn’t really about saying goodbye. It’s about getting one more opportunity to celebrate everything that got me here — the people I’ve raced with, the friends I’ve made, the sponsors that became part of my identity and everybody who supported me along the way. I want this last full-time season to feel like the whole story coming back around.",
+        "attribution": "Hailey Bell"
+      },
       "timeline": [
         {
-          "series": "NRRS",
-          "season": "Season 4",
+          "series": "NSS",
+          "season": "Season 3",
+          "title": "Where the Full-Time Story Began",
+          "method": "Bell’s first full-time NSS campaign featured Toys “R” Us, Cheddar’s Scratch Kitchen and Apex Sim Racing — three partners that will return for FULL CIRCLE.",
+          "date": "Season 3"
+        },
+        {
+          "series": "HAILEY BELL",
+          "season": "Modern Era",
+          "title": "The Identity Built Along the Way",
+          "method": "PetSmart, Mobil 1, Rheem, Home Depot, Ghost Energy and Pokémon represent the modern chapter of Bell’s racing identity heading into 2027.",
+          "date": "Present Day"
+        },
+        {
+          "series": "FULL CIRCLE",
+          "season": "2027",
           "title": "One More Full-Time Season",
-          "method": "Bell plans to complete NRRS Season 4 as a full-time competitor before changing the balance of her racing schedule.",
-          "date": "NRRS Season 4"
+          "method": "Past and present meet through special paint schemes, returning partners, throwbacks and tributes while Bell continues to race for wins and championships.",
+          "date": "2027 Season"
         },
         {
-          "series": "AETHERWING",
-          "season": "After Season 4",
-          "title": "Team Leadership Becomes the Priority",
-          "method": "More time shifts toward operating Aetherwing, developing its programs, supporting its drivers and building the organization for the future.",
-          "date": "After Season 4"
+          "series": "FULL CIRCLE",
+          "season": "Every Chapter",
+          "title": "A Career Told Through Paint",
+          "method": "Selected events become individual chapters built around sponsors, seasons, memories, milestones, teammates, friends and defining moments from Bell’s career.",
+          "date": "Throughout 2027"
         },
         {
-          "series": "DRIVING",
-          "season": "Next Chapter",
-          "title": "Stepping Back, Not Walking Away",
-          "method": "Bell plans to step away from a regular full-time schedule rather than close the door on future starts behind the wheel.",
-          "date": "Beyond Season 4"
+          "series": "HAILEY BELL",
+          "season": "After 2027",
+          "title": "Full-Time Ends, Racing Does Not Have To",
+          "method": "The end of the 2027 season closes Bell’s weekly full-season commitments, while one-off appearances, special events and part-time starts remain possible.",
+          "date": "Beyond 2027"
         }
       ],
       "sections": [
         {
-          "heading": "A Change in Priorities",
+          "heading": "Full Circle",
           "paragraphs": [
-            "Following the conclusion of NRRS Season 4, Hailey Bell plans to step back from full-time competition and devote more of her time to building and running Aetherwing eMotorsports.",
-            "The decision is about changing the balance between driving and team leadership. Bell has continued to take on a larger role in Aetherwing’s direction, and the next phase will place that work at the center of her motorsports schedule."
+            "Rather than treating 2027 simply as a farewell, Bell wants the season to connect where her full-time career began with where it will ultimately end.",
+            "The name FULL CIRCLE represents exactly what Bell wants the 2027 season to become. Past and present will meet throughout the year through special paint schemes, returning partners, throwbacks and tributes to important moments throughout her career.",
+            "Current partners including PetSmart, Mobil 1, Rheem, Home Depot, Ghost Energy and Pokémon will help represent Bell’s modern racing identity. But FULL CIRCLE will also reach all the way back to the beginning of her full-time career."
           ]
         },
         {
-          "heading": "Season 4 Still Comes First",
+          "heading": "Where It Began",
           "paragraphs": [
-            "The transition is planned for after Season 4. Bell’s immediate focus remains the upcoming NRRS campaign and the #28 StarClutch Racing program announced on September 14.",
-            "That gives Season 4 its own significance without changing the goals for the year ahead: compete, pursue results and give the full-time chapter a complete final season before the schedule changes."
+            "Bell’s first full-time NSS campaign came in Season 3.",
+            "Three partners associated with that first full-time season will return in 2027: Toys “R” Us, Cheddar’s Scratch Kitchen and Apex Sim Racing.",
+            "Their return creates one of the central themes of FULL CIRCLE. The same brands that were part of Bell’s first season as a full-time competitor will return during her final one.",
+            "Each will receive special appearances during 2027 celebrating Bell’s early racing years and the journey from her first full-time season to her last. The returning partnerships are intended to feel authentic to their original eras, with paint schemes and promotional material drawing inspiration from the cars and visual identity associated with Bell’s Season 3 campaign.",
+            "From the first full-time season to the final one. That is FULL CIRCLE."
           ]
         },
         {
-          "heading": "Building Aetherwing",
+          "heading": "More Than a Farewell",
           "paragraphs": [
-            "Stepping back from a full-time driving schedule will create more room for Bell to focus on Aetherwing’s drivers, partnerships, competition programs, creative direction and long-term growth.",
-            "Aetherwing will remain an active racing organization. The change is intended to give its owner more time to lead the team instead of balancing that work against a full-time personal schedule in competition."
+            "Bell’s decision applies specifically to full-time competition. After the conclusion of the 2027 season, Bell will step back from full-time competition and end her weekly, full-season racing commitments, but it does not necessarily mean the final race of her career.",
+            "Future one-off appearances, special events or part-time starts remain possible. For Bell, that distinction is important.",
+            "Racing has been too significant a part of her story for the final full-time season to be framed entirely around an ending. FULL CIRCLE is instead intended as a celebration of everything that came before while leaving the door open for whatever may come afterward.",
+            "“I still want 2027 to be about racing,” Bell said. “I don’t want every weekend to feel like everybody is waiting for the last lap. I still want to win races. I still want to fight for championships. I still want to have fun with my friends. We’re just going to celebrate a lot of memories while we do it.”"
           ]
         },
         {
-          "heading": "Still a Driver",
+          "heading": "One More Shot",
           "paragraphs": [
-            "The move is not a retirement announcement. Bell plans to step back from full-time competition, not disappear from the driver’s seat entirely.",
-            "Future starts can still be part of the picture when the right opportunities make sense, but the primary emphasis after Season 4 will shift toward the team itself and what Aetherwing can become next."
+            "The FULL CIRCLE Tour will not be a ceremonial season. Bell intends to approach 2027 with the same competitive goals as any other year.",
+            "Every race still counts. Every win still matters. And if a championship opportunity presents itself, Bell intends to chase it.",
+            "What changes is everything surrounding those races. Throughout the season, selected events will feature commemorative paint schemes, returning sponsors, historical references and tributes highlighting different chapters of Bell’s racing career.",
+            "Some cars will recreate familiar ideas from the past. Others will reinterpret those designs through Bell’s current identity. Several will bring pieces of multiple eras together on one car."
+          ]
+        },
+        {
+          "heading": "A Career Told Through Paint",
+          "paragraphs": [
+            "Paint schemes have always been one of the most recognizable parts of Bell’s racing identity, making them a major component of FULL CIRCLE.",
+            "PetSmart will remain one of the defining brands of Bell’s modern era. Mobil 1, Rheem, Home Depot, Ghost Energy and Pokémon will also play roles throughout the final full-time campaign.",
+            "Then come the cars representing where the journey began. Toys “R” Us, Cheddar’s Scratch Kitchen and Apex Sim Racing will each return as direct callbacks to Bell’s first full-time NSS season.",
+            "Those appearances will not simply place old logos on modern cars. Each design will be treated as another chapter in the FULL CIRCLE story.",
+            "Throughout 2027, additional cars may celebrate important races, previous designs, career milestones, teammates, friends and memorable moments from Bell’s history. Together, the cars will tell the story of her career one race at a time."
+          ]
+        },
+        {
+          "heading": "Every Chapter",
+          "paragraphs": [
+            "Special FULL CIRCLE schemes throughout 2027 will be presented as individual chapters of Bell’s career. Each chapter may highlight a different sponsor, season, memory, milestone or era.",
+            "FULL CIRCLE // CHAPTER 01 — a look back at an early career moment.",
+            "FULL CIRCLE // CHAPTER 02 — a returning partner or historic paint scheme.",
+            "FULL CIRCLE // CHAPTER 03 — a championship, memorable race or important career milestone.",
+            "The chapter system will continue throughout the season, eventually building a visual timeline of Bell’s full-time career. By the end of 2027, the complete FULL CIRCLE collection will serve as a permanent record of the journey."
+          ]
+        },
+        {
+          "heading": "Thank You for the Ride",
+          "paragraphs": [
+            "While FULL CIRCLE tells Bell’s story, the season is equally intended as a thank-you to everyone who became part of it — teammates, competitors, friends, league organizers, designers, partners, fans and everyone who spent a race night in voice chat, watched a finish unfold, worked on a car, celebrated a win or simply stayed along for the ride.",
+            "Those relationships are ultimately what Bell wants remembered most.",
+            "“Trophies and wins are awesome, but when I think about racing, I think about the people,” Bell said. “Some of my favorite memories aren’t even things that would show up on a stat sheet. They’re the nights we were all together having fun. That’s what made all of this worth doing.”"
+          ]
+        },
+        {
+          "heading": "From Season 3 to 2027",
+          "paragraphs": [
+            "Years before FULL CIRCLE, Bell entered her first full-time NSS season in Season 3.",
+            "Toys “R” Us was there. Cheddar’s was there. Apex Sim Racing was there.",
+            "In 2027, they will be there again.",
+            "Different cars. Different years. A different Hailey. But part of the same story.",
+            "That connection between Bell’s first and final full-time campaigns is what gives the tour its name. The journey ends where it began. Full circle."
+          ]
+        },
+        {
+          "heading": "The Final Full-Time Lap",
+          "paragraphs": [
+            "There will eventually be a final starting grid. A final full-time green flag. A final championship chase.",
+            "And somewhere during the closing race of 2027, Bell will begin the final lap of her career as a full-time competitor.",
+            "Until then, there is another season to run. More races to win. More memories to make. And a few old friends coming back along the way.",
+            "Hailey Bell’s FULL CIRCLE Tour begins in 2027."
           ]
         }
       ],
       "callout": {
-        "label": "The Next Chapter",
-        "title": "Driver Second. Team Builder First.",
-        "text": "After NRRS Season 4, Hailey Bell plans to move away from a regular full-time schedule and make the continued growth and operation of Aetherwing eMotorsports the priority."
+        "label": "FULL CIRCLE · 2027",
+        "title": "ONE MORE SEASON. EVERY CHAPTER.",
+        "text": "The final full-time season is a celebration of every chapter that brought Hailey Bell here — and one more chance to write something new. TO GOD BE THE GLORY · Matthew 17:20."
       }
     },
     {

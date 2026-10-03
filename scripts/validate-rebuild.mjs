@@ -314,3 +314,17 @@ for(const value of ['100','150','200'])if(!adminThemeHtmlV215.includes(`data-the
 if(!adminThemePreviewV215.includes('automaticIntensityForDate')||!adminThemePreviewV215.includes("seasonIntensity")||!adminThemePreviewV215.includes('defaultPreviewIntensity'))throw Error('Admin Theme Preview intensity parity is incomplete.');
 if(!siteCssV215.includes(':not([data-anniversary-retro="true"])'))throw Error('Seasonal intensity rules must defer to Anniversary Week.');
 console.log('v2.0.15 verified: seasonal themes run at 100% baseline, 150% big-week intensity, and 200% holiday-day intensity with Admin preview parity.');
+
+
+// v2.0.16 — FULL CIRCLE final full-time season feature.
+const newsV216=JSON.parse(readFileSync('src/data/news.json','utf8'));
+const adminSeedV216=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+const fullCircleV216=newsV216.find((story)=>story.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4');
+const fullCircleTextV216=JSON.stringify(fullCircleV216||{});
+if(!fullCircleV216||fullCircleV216.title!=='Hailey Bell Announces 2027 “Full Circle” Tour, Final Full-Time Season')throw Error('FULL CIRCLE Team Wire headline is missing or incorrect.');
+for(const required of ['FULL CIRCLE','Toys “R” Us','Cheddar’s Scratch Kitchen','Apex Sim Racing','PetSmart','Mobil 1','Rheem','Home Depot','Ghost Energy','Pokémon','ONE MORE SEASON. EVERY CHAPTER.','TO GOD BE THE GLORY'])if(!fullCircleTextV216.includes(required))throw Error(`FULL CIRCLE story is missing required content: ${required}`);
+if(!/step back from full-time competition/i.test(fullCircleTextV216)||!/part-time starts remain possible/i.test(fullCircleTextV216))throw Error('FULL CIRCLE story must distinguish final full-time competition from total retirement.');
+const adminFullCircleV216=(adminSeedV216.news||[]).find((story)=>story.slug===fullCircleV216.slug);
+if(!adminFullCircleV216||adminFullCircleV216.title!==fullCircleV216.title)throw Error('Admin seed must carry the updated FULL CIRCLE story.');
+if(!siteContentSourceNow.includes("normalized.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4'")||!adminContentSource.includes("normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'"))throw Error('FULL CIRCLE stale-published-story migration is missing.');
+console.log('v2.0.16 verified: FULL CIRCLE replaces the old transition article with the complete 2027 final full-time season feature.');

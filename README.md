@@ -1,3 +1,10 @@
+## v2.0.16 — FULL CIRCLE Final Full-Time Season Feature
+- Rebuilds Hailey Bell’s full-time competition announcement into the 2027 **FULL CIRCLE** Tour feature: one more full-time season built around every chapter of her racing career.
+- Frames 2027 as Bell’s final **full-time** season rather than the end of racing entirely; one-off appearances, special events, and part-time starts remain possible afterward.
+- Adds the Season 3 origin story and confirms the 2027 return of Toys “R” Us, Cheddar’s Scratch Kitchen, and Apex Sim Racing alongside modern-era partners PetSmart, Mobil 1, Rheem, Home Depot, Ghost Energy, and Pokémon.
+- Expands the article with FULL CIRCLE quick facts, career timeline, Bell quotes, chapter-based paint-scheme concept, thank-you section, and final-full-time-lap closing feature.
+- Adds public and Admin migration safeguards so a previously published copy of the older post-Season-4 transition story is replaced by the new FULL CIRCLE feature without changing the existing story URL.
+
 ## v2.0.15 — 100 / 150 / 200 Seasonal Intensity System
 - Makes 100% the baseline for every active seasonal theme: the full UI now participates through header/navigation, seasonal banner, page intros, cards/panels, filters, buttons, footer, scrollbar, background art, front-glass overlays, and ambient effects instead of relying on accent colors alone.
 - Adds automatic 150% major-week intensity for Valentine week, Holy Week/Easter buildup, Memorial Day weekend, Independence Day week, Halloween Week, Thanksgiving week, and Christmas Week.
