@@ -169,3 +169,19 @@ html[data-anniversary-retro="true"] .news-programs__grid small,html[data-anniver
   .news-metrics b.news-metric__value{font-size:1.05rem}
   .news-metrics b.news-metric__value.is-long{font-size:.88rem}
 }
+
+
+/* v2.0.20 — Team Wire visual-logo + compact embed/card treatment. */
+.news-article__hero-grid.has-logo{grid-template-columns:minmax(0,1fr) minmax(340px,470px);align-items:center}
+.news-article__logo-card{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:220px;padding:1.15rem;border:1px solid #3c4c56;background:radial-gradient(circle at 45% 42%,rgba(74,111,255,.14),transparent 62%),linear-gradient(155deg,#111a21,#080b0e);overflow:hidden;box-shadow:0 18px 42px rgba(0,0,0,.28)}
+.news-article__logo-card:before{content:'';position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--red) 0 46%,#f1f3f4 46% 58%,#747d84 58% 70%,var(--blue) 70%)}
+.news-article__logo-card img{display:block;width:100%;max-width:450px;height:auto;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(0,0,0,.26))}
+.news-tile p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;line-height:1.55}
+.news-tile.is-lead p{-webkit-line-clamp:4;max-width:62ch}
+html[data-anniversary-retro="true"] .news-article__logo-card{border-color:#2e83aa;background:radial-gradient(circle at 48% 42%,rgba(51,185,243,.18),transparent 62%),linear-gradient(160deg,#10445e,#072636)}
+html[data-anniversary-retro="true"] .news-article__logo-card:before{background:linear-gradient(90deg,#008fe8 0 64%,#00a7a0 64% 86%,#5fba46 86%)}
+@media(max-width:760px){
+  .news-article__hero-grid.has-logo{grid-template-columns:minmax(0,1fr)}
+  .news-article__logo-card{min-height:0;padding:.75rem;margin-top:.25rem}
+  .news-article__logo-card img{max-width:100%}
+}

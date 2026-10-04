@@ -4,8 +4,10 @@ import { news } from '../../lib/site-content.mjs';
 import '../../styles/records.css';
 export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
 const {story}=Astro.props;
+const compactDescription=(value='',limit=170)=>{const clean=String(value||'').replace(/\s+/g,' ').trim();if(clean.length<=limit)return clean;const slice=clean.slice(0,limit+1);const cut=slice.lastIndexOf(' ');return `${slice.slice(0,cut>90?cut:limit).replace(/[.,;:!?-]+$/,'')}…`;};
+const shareDescription=story.embedDescription || compactDescription(story.summary);
 ---
-<Base title={story.title} description={story.summary} image={story.socialImage || story.image}>
+<Base title={story.title} description={shareDescription} image={story.socialImage || story.image}>
   <article class="news-article" data-news-story-root data-story-slug={story.slug}>
     <div class="wrap">
       <header class="news-article__hero">
@@ -16,14 +18,18 @@ const {story}=Astro.props;
           <span>{story.byline || 'Aetherwing eMotorsports'}</span>
         </div>
 
-        <div class:list={['news-article__hero-grid',{'has-mark':story.headlineMark?.value || story.heroGhost}]}>
+        <div class:list={['news-article__hero-grid',{'has-mark':story.articleLogo || story.headlineMark?.value || story.heroGhost,'has-logo':story.articleLogo}]}>
           <div class="news-article__headline">
             <p class="news-article__kicker">{story.kicker}</p>
             <h1>{story.title}</h1>
             <p class="news-article__summary">{story.summary}</p>
           </div>
 
-          {story.headlineMark?.value ? (
+          {story.articleLogo ? (
+            <aside class="news-article__logo-card" aria-label="Story logo">
+              <img src={story.articleLogo} alt={story.articleLogoAlt || `${story.title} logo`} loading="eager" decoding="async"/>
+            </aside>
+          ) : story.headlineMark?.value ? (
             <aside class="news-headline-mark" aria-label="Story headline marker">
               <small>{story.headlineMark.eyebrow || story.kicker}</small>
               <strong>{story.headlineMark.value}</strong>
@@ -115,10 +121,13 @@ const {story}=Astro.props;
     if(!root)return;
     const slug=root.dataset.storySlug||'';
     const esc=(value)=>String(value??'').replace(/[&<>"']/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const compactDescription=(value='',limit=170)=>{const clean=String(value||'').replace(/\s+/g,' ').trim();if(clean.length<=limit)return clean;const slice=clean.slice(0,limit+1);const cut=slice.lastIndexOf(' ');return `${slice.slice(0,cut>90?cut:limit).replace(/[.,;:!?-]+$/,'')}…`;};
     const storyHtml=(s)=>{
-      const mark=s.headlineMark?.value
-        ? `<aside class="news-headline-mark" aria-label="Story headline marker"><small>${esc(s.headlineMark.eyebrow||s.kicker)}</small><strong>${esc(s.headlineMark.value)}</strong><span>${esc(s.headlineMark.detail)}</span></aside>`
-        : s.heroGhost ? `<aside class="news-headline-ghost" aria-hidden="true">${esc(s.heroGhost)}</aside>` : '';
+      const mark=s.articleLogo
+        ? `<aside class="news-article__logo-card" aria-label="Story logo"><img src="${esc(s.articleLogo)}" alt="${esc(s.articleLogoAlt||`${s.title} logo`)}" loading="eager" decoding="async"></aside>`
+        : s.headlineMark?.value
+          ? `<aside class="news-headline-mark" aria-label="Story headline marker"><small>${esc(s.headlineMark.eyebrow||s.kicker)}</small><strong>${esc(s.headlineMark.value)}</strong><span>${esc(s.headlineMark.detail)}</span></aside>`
+          : s.heroGhost ? `<aside class="news-headline-ghost" aria-hidden="true">${esc(s.heroGhost)}</aside>` : '';
       const tags=(s.tags||[]).length?`<div class="news-article__tags" aria-label="Story tags">${s.tags.map(tag=>`<span>${esc(tag)}</span>`).join('')}</div>`:'';
       const metrics=(s.metrics||[]).length?`<section class="news-metrics" aria-label="Story quick facts">${s.metrics.map(m=>`<div><b class="news-metric__value ${String(m.value||'').length>8?'is-long':''}">${esc(m.value)}</b><small>${esc(m.label)}</small></div>`).join('')}</section>`:'';
       const programs=(s.programBreakdown||[]).length?`<section class="news-programs" aria-label="Season 4 program breakdown"><header><span>SEASON 4 PROGRAMS</span><h2>How the NRRS Lineup Splits</h2></header><div class="news-programs__grid">${s.programBreakdown.map(program=>`<article><small>${esc(program.eyebrow)}</small><div class="news-programs__number">${esc(program.number)}</div><h3>${esc(program.title)}</h3><p>${esc(program.detail)}</p>${(program.items||[]).length?`<ul>${program.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`:''}</article>`).join('')}</div></section>`:'';
@@ -126,16 +135,17 @@ const {story}=Astro.props;
       const timeline=(s.timeline||[]).length?`<section class="news-timeline" aria-label="Story timeline"><header><span>THE TIMELINE</span><h2>How We Got Here</h2></header><div class="news-timeline__rail">${s.timeline.map((item,index)=>`<article><b>${String(index+1).padStart(2,'0')}</b><div><small>${esc(item.series)}${item.season?` · ${esc(item.season)}`:''}</small><h3>${esc(item.title)}</h3><p>${esc(item.method)}</p><time>${esc(item.date)}</time></div></article>`).join('')}</div></section>`:'';
       const sections=`<div class="news-article__sections">${(s.sections||[]).map((section,index)=>`<section><div class="news-section-index" aria-hidden="true">${String(index+1).padStart(2,'0')}</div><div><h2>${esc(section.heading)}</h2>${(section.paragraphs||[]).map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</div></section>`).join('')}</div>`;
       const callout=s.callout?.title?`<aside class="news-callout"><small>${esc(s.callout.label||'Team Wire')}</small><h2>${esc(s.callout.title)}</h2><p>${esc(s.callout.text)}</p></aside>`:'';
-      return `<div class="wrap"><header class="news-article__hero"><a class="news-article__back" href="/news/">← Team Newsroom</a><div class="news-article__meta"><p class="eyebrow">${esc(s.category)} · ${esc(s.date)}</p><span>${esc(s.context)}</span><span>${esc(s.byline||'Aetherwing eMotorsports')}</span></div><div class="news-article__hero-grid ${(s.headlineMark?.value||s.heroGhost)?'has-mark':''}"><div class="news-article__headline"><p class="news-article__kicker">${esc(s.kicker)}</p><h1>${esc(s.title)}</h1><p class="news-article__summary">${esc(s.summary)}</p></div>${mark}</div>${tags}</header><div class="news-article__body">${metrics}${programs}${quote}${timeline}${sections}${callout}</div></div>`;
+      return `<div class="wrap"><header class="news-article__hero"><a class="news-article__back" href="/news/">← Team Newsroom</a><div class="news-article__meta"><p class="eyebrow">${esc(s.category)} · ${esc(s.date)}</p><span>${esc(s.context)}</span><span>${esc(s.byline||'Aetherwing eMotorsports')}</span></div><div class="news-article__hero-grid ${(s.articleLogo||s.headlineMark?.value||s.heroGhost)?'has-mark':''} ${s.articleLogo?'has-logo':''}"><div class="news-article__headline"><p class="news-article__kicker">${esc(s.kicker)}</p><h1>${esc(s.title)}</h1><p class="news-article__summary">${esc(s.summary)}</p></div>${mark}</div>${tags}</header><div class="news-article__body">${metrics}${programs}${quote}${timeline}${sections}${callout}</div></div>`;
     };
     const apply=(datasets)=>{
       const live=(datasets?.news||[]).find((item)=>item?.slug===slug);
       if(!live)return;
       root.innerHTML=storyHtml(live);
       document.title=`${live.title} | Aetherwing eMotorsports`;
-      const description=document.querySelector('meta[name="description"]'); if(description)description.setAttribute('content',live.summary||'');
+      const shareDescription=live.embedDescription||compactDescription(live.summary||'');
+      const description=document.querySelector('meta[name="description"]'); if(description)description.setAttribute('content',shareDescription);
       const ogTitle=document.querySelector('meta[property="og:title"]'); if(ogTitle)ogTitle.setAttribute('content',document.title);
-      const ogDescription=document.querySelector('meta[property="og:description"]'); if(ogDescription)ogDescription.setAttribute('content',live.summary||'');
+      const ogDescription=document.querySelector('meta[property="og:description"]'); if(ogDescription)ogDescription.setAttribute('content',shareDescription);
       const socialImage=live.socialImage||live.image||'';
       const ogImage=document.querySelector('meta[property="og:image"]'); if(ogImage&&socialImage){try{ogImage.setAttribute('content',new URL(socialImage,location.origin).href);}catch{ogImage.setAttribute('content',socialImage);}}
     };

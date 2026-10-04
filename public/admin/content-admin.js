@@ -53,7 +53,7 @@
     navigation:{label:'Link label',href:'Destination URL / path',group:'Navigation group'},
     'page-overrides':{id:'Content rule ID',page:'Public page path',type:'Content type',label:'Admin label',original:'Current page value',value:'Published replacement',enabled:'Apply this replacement'},
     'driver-portfolios':{id:'Portfolio ID',profile:'Linked Driver Directory profile',name:'Driver display name',handle:'Driver handle / username',label:'Portfolio label',order:'Driver display order',brands:'Individual partners / brands',logo:'Optional logo URL'},
-    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout',timeline:'Story timeline',programBreakdown:'Program comparison cards'}
+    news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout',timeline:'Story timeline',programBreakdown:'Program comparison cards',embedDescription:'Embed / share description',socialImage:'Embed / social image URL',articleLogo:'Article hero logo URL'}
   };
   const fieldHelp = {
     slug:'Public identifier used in URLs. Change carefully after publication.',
@@ -89,6 +89,9 @@
     metrics:'Optional structured metric cards for a story.',
     quote:'Optional pull quote with text and attribution.',
     timeline:'Optional visual timeline. Each item can include series, season, title, method, and date.',
+    embedDescription:'Short description used by article embeds and social previews. Keep it concise.',
+    socialImage:'Image used by article embeds/social previews. PNG transparency is supported.',
+    articleLogo:'Optional logo displayed visibly in the article hero.',
     openCharters:'Each item is ONE actual Open Charter slot. Add or remove Open Charter items to change the actual charter count.',
     uses:'Possible identities/usages for this one Open Charter. One use = one number. Multiple uses still count as one actual charter slot and are not simultaneous.',
     highlight:'Adds Aetherwing visual emphasis to this driver on the public standings cards. Standings PNG exports ignore this flag and only highlight Chase drivers when League is currently in the Chase is enabled.',
@@ -146,7 +149,7 @@
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
         if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
-        if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL HEART/i.test(serialized)||/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||!/Ironmouse/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);}
+        if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL HEART/i.test(serialized)||/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||!/Ironmouse/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};}
         return normalized;
       });
     }

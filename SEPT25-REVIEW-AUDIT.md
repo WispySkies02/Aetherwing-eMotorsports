@@ -44,3 +44,10 @@ Baseline: v1.1.29, rechecked before edits. This closeout becomes v1.1.30.
 - Revamped seasonal themes now use stronger environment art and higher effect density.
 - Admin Theme Preview now mirrors the updated live theme values and bypasses Anniversary Retro for accurate QA previews.
 - Anniversary Retro still hands back to standard Halloween automatically at midnight ET on Oct. 4, 2026.
+
+## v2.0.20 — FULL HEART article media / embed polish
+- FULL HEART tour logo is visible in the article hero.
+- Supplied logo is shipped as a transparent PNG for social/embed use.
+- News article OG descriptions are compact rather than full-summary walls.
+- Newsroom cards use compact teaser copy and line clamps.
+- Existing published FULL HEART records are backfilled with the new media/share fields without wiping unrelated Admin edits.

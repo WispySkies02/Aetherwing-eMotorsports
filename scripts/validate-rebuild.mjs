@@ -327,11 +327,13 @@ if(!fullHeartV218||normalizeQuotes(fullHeartV218.title)!==normalizeQuotes(expect
 for(const required of ['FULL HEART','Toys “R” Us','Cheddar’s Scratch Kitchen','Apex Sim Racing','PetSmart','Mobil 1','Rheem','Home Depot','Ghost Energy','Ironmouse','ONE MORE SEASON. FULL HEART.','TO GOD BE THE GLORY'])if(!fullHeartTextV218.includes(required))throw Error(`FULL HEART story is missing required content: ${required}`);
 if(/FULL CIRCLE/i.test(fullHeartTextV218))throw Error('FULL HEART story still contains obsolete FULL CIRCLE branding.');
 if(!/step back from full-time competition/i.test(fullHeartTextV218)||!/part-time starts remain possible/i.test(fullHeartTextV218))throw Error('FULL HEART story must distinguish final full-time competition from total retirement.');
-if(fullHeartV218.socialImage!=='/images/social/full-heart-tour-2027-logo.jpg'||!existsSync('public/images/social/full-heart-tour-2027-logo.jpg'))throw Error('FULL HEART social/embed logo is missing.');
+if(fullHeartV218.socialImage!=='/images/social/full-heart-tour-2027-logo.png'||!existsSync('public/images/social/full-heart-tour-2027-logo.png'))throw Error('FULL HEART transparent social/embed logo is missing.');
+if(fullHeartV218.articleLogo!==fullHeartV218.socialImage)throw Error('FULL HEART article hero must visibly use the same tour logo as the embed.');
+if(!fullHeartV218.embedDescription||fullHeartV218.embedDescription.length>180)throw Error('FULL HEART embed description should be concise.');
 const adminFullHeartV218=(adminSeedV216.news||[]).find((story)=>story.slug===fullHeartV218.slug);
-if(!adminFullHeartV218||normalizeQuotes(adminFullHeartV218.title)!==normalizeQuotes(fullHeartV218.title)||adminFullHeartV218.socialImage!==fullHeartV218.socialImage)throw Error('Admin seed must carry the updated FULL HEART story and social image.');
+if(!adminFullHeartV218||normalizeQuotes(adminFullHeartV218.title)!==normalizeQuotes(fullHeartV218.title)||adminFullHeartV218.socialImage!==fullHeartV218.socialImage||adminFullHeartV218.articleLogo!==fullHeartV218.articleLogo)throw Error('Admin seed must carry the updated FULL HEART story and article/embed logo.');
 if(!siteContentSourceNow.includes("normalized.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4'")||!adminContentSource.includes("normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'"))throw Error('FULL HEART stale-published-story migration is missing.');
-console.log('v2.0.18 verified: FULL HEART replaces FULL CIRCLE, keeps the final-full-time distinction, and uses the supplied tour logo for embeds.');
+console.log('v2.0.20 verified: FULL HEART uses the supplied transparent tour logo in both the article hero and embeds, with concise share copy.');
 
 
 // v2.0.17 — Team Wire publishes existing story edits live without waiting on a rebuild.
@@ -345,3 +347,12 @@ if(!newsIndexV217.includes('window.__AETHERWING_CONTENT__'))throw Error('Newsroo
 for(const source of [siteDataV217,siteAdminV217,siteContentSourceNow])if(!source.includes("replace(/Pokémon|Pokemon/g,'Ironmouse')"))throw Error('FULL HEART Ironmouse migration is missing from one of the live/static content paths.');
 if(!adminHtmlV217.includes('Publish changes')||!adminHtmlV217.includes('Retry site rebuild'))throw Error('Admin publish controls still use ambiguous labels.');
 console.log('v2.0.17 verified: Team Wire story edits hydrate live, the final-season story uses Ironmouse, and Admin publishing labels are clearer.');
+
+// v2.0.20 — visible article logo, transparent social image, compact Team Wire cards/embeds.
+const recordsCssV220=readFileSync('src/styles/records.css','utf8');
+if(!newsArticleV217.includes('news-article__logo-card')||!newsArticleV217.includes('embedDescription')||!newsArticleV217.includes('compactDescription'))throw Error('Team Wire article logo/share-description rendering is incomplete.');
+if(!newsIndexV217.includes('compactSummary')||!newsIndexV217.includes('embedDescription'))throw Error('Newsroom cards still render full wall-of-text summaries.');
+if(!recordsCssV220.includes('.news-article__logo-card')||!recordsCssV220.includes('-webkit-line-clamp:3'))throw Error('Team Wire logo/card compaction styles are missing.');
+if(!siteDataV217.includes('articleLogo:normalized.articleLogo||fresh.articleLogo')||!siteAdminV217.includes('articleLogo:normalized.articleLogo||fresh.articleLogo'))throw Error('Live FULL HEART media-field migration is incomplete.');
+console.log('v2.0.20 verified: Team Wire shows the FULL HEART logo in-article, uses transparent embed art, and keeps previews compact.');
+

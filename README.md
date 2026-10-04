@@ -1,3 +1,10 @@
+
+## v2.0.20 — FULL HEART article media + compact Team Wire previews
+- FULL HEART tour logo is displayed visibly in the article hero.
+- Social/embed image uses a transparent PNG version of the supplied logo.
+- Team Wire social descriptions and newsroom-card summaries are compact instead of full paragraph walls.
+- Existing published FULL HEART stories receive the new media/share fields without erasing unrelated Admin edits.
+
 ## v2.0.19 — FULL HEART Netlify validation + live migration fix
 
 - Updates the build validator from the retired FULL CIRCLE headline/content checks to FULL HEART.
