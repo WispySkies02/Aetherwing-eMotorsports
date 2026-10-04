@@ -1,3 +1,11 @@
+## v2.0.19 — FULL HEART Netlify validation + live migration fix
+
+- Updates the build validator from the retired FULL CIRCLE headline/content checks to FULL HEART.
+- Normalizes smart/straight quotation marks before exact headline validation.
+- Verifies the supplied FULL HEART 2027 logo exists and is wired as the story social/embed image.
+- Migrates stale published FULL CIRCLE copies to the FULL HEART seed in both the public site-data API and Admin publication path.
+- Keeps later FULL HEART Admin edits intact once the story is already on the new branding.
+
 ## v2.0.17 — FULL CIRCLE Final Full-Time Season Feature
 - Rebuilds Hailey Bell’s full-time competition announcement into the 2027 **FULL CIRCLE** Tour feature: one more full-time season built around every chapter of her racing career.
 - Frames 2027 as Bell’s final **full-time** season rather than the end of racing entirely; one-off appearances, special events, and part-time starts remain possible afterward.

@@ -6,7 +6,7 @@ function replaceFullCirclePartner(value){
 }
 function mergeCanonical(datasets){
   const seed=seeds();
-  if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>story?.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'?replaceFullCirclePartner(story):story);
+  if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);return fresh&&(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text)||normalized.socialImage!=='/images/social/full-heart-tour-2027-logo.jpg')?fresh:normalized;});
   if(Array.isArray(datasets['schedule-events'])){
     datasets['schedule-events']=datasets['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>{
       if(e?.league==='nrrs'&&e?.date==='2026-09-22')return {...e,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'};
