@@ -5,7 +5,7 @@ import '../../styles/records.css';
 export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
 const {story}=Astro.props;
 ---
-<Base title={story.title} description={story.summary}>
+<Base title={story.title} description={story.summary} image={story.socialImage || story.image}>
   <article class="news-article" data-news-story-root data-story-slug={story.slug}>
     <div class="wrap">
       <header class="news-article__hero">
@@ -136,6 +136,8 @@ const {story}=Astro.props;
       const description=document.querySelector('meta[name="description"]'); if(description)description.setAttribute('content',live.summary||'');
       const ogTitle=document.querySelector('meta[property="og:title"]'); if(ogTitle)ogTitle.setAttribute('content',document.title);
       const ogDescription=document.querySelector('meta[property="og:description"]'); if(ogDescription)ogDescription.setAttribute('content',live.summary||'');
+      const socialImage=live.socialImage||live.image||'';
+      const ogImage=document.querySelector('meta[property="og:image"]'); if(ogImage&&socialImage){try{ogImage.setAttribute('content',new URL(socialImage,location.origin).href);}catch{ogImage.setAttribute('content',socialImage);}}
     };
     window.addEventListener('aetherwing:content',(event)=>apply(event.detail));
     if(window.__AETHERWING_CONTENT__)apply(window.__AETHERWING_CONTENT__);

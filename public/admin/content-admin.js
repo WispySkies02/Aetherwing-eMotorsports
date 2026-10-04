@@ -146,7 +146,7 @@
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
         if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
-        if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);}
+        if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL HEART/i.test(serialized)||/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||!/Ironmouse/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);}
         return normalized;
       });
     }
