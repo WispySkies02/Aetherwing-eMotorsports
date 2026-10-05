@@ -16,4 +16,56 @@ html[data-season] .aw-calendar{background-image:linear-gradient(130deg,rgba(0,16
 
 /* v1.2.0 — logo-led race control filters + team-site schedule treatment. */
 .aw-calendar{position:relative;background:linear-gradient(180deg,rgba(8,9,11,.96),rgba(5,6,8,.98));border-block:1px solid #2f3236;overflow:hidden}.aw-calendar:before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(118deg,rgba(225,6,0,.08),transparent 30%),linear-gradient(90deg,transparent 0 72%,rgba(74,111,255,.045));clip-path:polygon(0 0,100% 0,100% 100%,3% 100%)}.aw-calendar>.shell{position:relative;z-index:1}.aw-calendar__filters{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(165px,1fr);gap:.55rem;overflow-x:auto;padding:.25rem .1rem 1.2rem;scroll-snap-type:x proximity}.aw-calendar__filters button{position:relative;display:grid;grid-template-rows:82px auto;min-width:165px;min-height:130px;padding:0;background:linear-gradient(180deg,#17191c,#0b0c0e);border:1px solid #42464a;color:#fff;text-align:left;overflow:hidden;scroll-snap-align:start;transition:transform .18s,border-color .18s,background .18s;clip-path:polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)}.aw-calendar__filters button:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#4b4f54;transition:.18s}.aw-calendar__filters button:hover{transform:translateY(-3px);border-color:#7e858c}.aw-calendar__filters button[aria-pressed="true"]{border-color:#9aa0a6;background:linear-gradient(145deg,rgba(225,6,0,.2),#121417 42%,#090a0c);box-shadow:0 13px 28px rgba(0,0,0,.28)}.aw-calendar__filters button[aria-pressed="true"]:before{background:#e10600;width:6px}.aw-calendar__filter-logo{display:grid;place-items:center;padding:.7rem 1rem;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.07),transparent 72%);border-bottom:1px solid #34383c}.aw-calendar__filter-logo img{display:block;max-width:125px;max-height:62px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 5px 7px rgba(0,0,0,.5))}.aw-calendar__filters button[data-series="all"] .aw-calendar__filter-logo img{max-width:135px;max-height:56px}.aw-calendar__filter-meta{display:block;padding:.72rem .82rem .76rem}.aw-calendar__filter-meta strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f1f2f3;font:900 .74rem/1 var(--font-condensed);font-style:italic;letter-spacing:.04em;text-transform:uppercase}.aw-calendar__filter-meta small{display:block;margin-top:.42rem;color:#9ba1a6;font:800 .56rem/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}.aw-calendar__filters button[aria-pressed="true"] .aw-calendar__filter-meta small{color:#ff736d}.aw-calendar__layout{gap:.8rem}.aw-calendar__hero{min-height:31rem;padding:clamp(1.5rem,3vw,3rem);background:linear-gradient(135deg,#191c20,#0a0b0d 70%);border:1px solid #555a60;border-top:5px solid #e10600;box-shadow:0 18px 38px rgba(0,0,0,.28);clip-path:polygon(0 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)}.aw-calendar__hero:after{content:'AETHERWING RACE CONTROL';position:absolute;right:1.2rem;bottom:1rem;color:#4e5358;font:900 .53rem/1 var(--font-mono);letter-spacing:.16em}.aw-calendar__hero-top span{color:#ff514a}.aw-calendar__hero p{color:#a9dfff}.aw-calendar__hero h3{font-family:var(--font-condensed);font-style:italic;font-weight:900;letter-spacing:-.02em;text-shadow:0 8px 24px #000}.aw-calendar__hero h4{color:#fff}.aw-calendar__hero [data-calendar-clock]{color:#fff;font-family:var(--font-condensed);font-style:italic;letter-spacing:.01em}.aw-calendar__hero>a{color:#ff5d56}.aw-calendar__upcoming{background:#0b0d0f;border:1px solid #363a3e;padding:1rem 1.2rem}.aw-calendar__heading{border-bottom:2px solid #31353a}.aw-calendar__heading a,.aw-calendar__event b{color:#ff5d56}.aw-calendar__event{position:relative;grid-template-columns:4.6rem 1fr auto;padding:1rem .35rem;border-bottom-color:#272a2e}.aw-calendar__event:before{content:'';position:absolute;left:-1.2rem;top:0;bottom:0;width:3px;background:transparent}.aw-calendar__event:hover{background:linear-gradient(90deg,rgba(225,6,0,.11),transparent)}.aw-calendar__event:hover:before{background:#e10600}.aw-calendar__event>span{color:#c8cdd1}.aw-calendar__event strong{font-style:italic}.aw-calendar__recent{background:linear-gradient(90deg,#15171a,#0b0c0e);border-left-color:#e10600}.aw-calendar__recent span{color:#ff5f58}.aw-calendar__recent a{color:#9edfff}
-@media(max-width:760px){.aw-calendar__filters{grid-auto-columns:145px}.aw-calendar__filters button{min-width:145px;grid-template-rows:70px auto;min-height:118px}.aw-calendar__filter-logo img{max-width:108px;max-height:52px}.aw-calendar__filter-meta strong{font-size:.67rem}.aw-calendar__filter-meta small{font-size:.5rem}.aw-calendar__hero{min-height:25rem}.aw-calendar__event{grid-template-columns:3.6rem 1fr auto}}
+/* v2.0.25 — mobile program selector: compact, readable horizontal cards. */
+@media(max-width:760px){
+  .aw-calendar__filters{
+    grid-auto-columns:min(220px,calc(100vw - 3.5rem));
+    gap:.5rem;
+    padding:.35rem .35rem .85rem;
+    scroll-padding-inline:.35rem;
+    scroll-snap-type:x mandatory;
+  }
+  .aw-calendar__filters button{
+    min-width:0;
+    min-height:82px;
+    grid-template-columns:76px minmax(0,1fr);
+    grid-template-rows:1fr;
+    align-items:stretch;
+    scroll-snap-align:start;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%);
+  }
+  .aw-calendar__filter-logo{
+    min-width:0;
+    padding:.45rem .5rem;
+    border-right:1px solid #34383c;
+    border-bottom:0;
+  }
+  .aw-calendar__filter-logo img{max-width:66px;max-height:46px}
+  .aw-calendar__filters button[data-series="all"] .aw-calendar__filter-logo img{max-width:68px;max-height:42px}
+  .aw-calendar__filter-meta{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:.58rem .65rem .6rem;
+  }
+  .aw-calendar__filter-meta strong{
+    display:-webkit-box;
+    white-space:normal;
+    overflow:hidden;
+    text-overflow:clip;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    font-size:.69rem;
+    line-height:1.08;
+  }
+  .aw-calendar__filter-meta small{margin-top:.38rem;font-size:.5rem;line-height:1.05}
+  .aw-calendar__hero{min-height:25rem}
+  .aw-calendar__event{grid-template-columns:3.6rem 1fr auto}
+}
+@media(max-width:390px){
+  .aw-calendar__filters{grid-auto-columns:min(210px,calc(100vw - 3rem))}
+  .aw-calendar__filters button{grid-template-columns:70px minmax(0,1fr)}
+  .aw-calendar__filter-logo img{max-width:60px;max-height:42px}
+  .aw-calendar__filter-meta{padding-inline:.58rem}
+}

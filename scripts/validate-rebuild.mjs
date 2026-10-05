@@ -409,3 +409,10 @@ const homeIndexV2024=readFileSync('src/pages/index.astro','utf8');
 if(!homeIndexV2024.includes('data-number-art>{art ? <img src={art}')||!homeIndexV2024.includes('/> : `#${number}`}'))throw Error('v2.0.24 Garage Lineup number-art ternary is malformed.');
 if(homeIndexV2024.includes('/>`#${number}`}'))throw Error('v2.0.24 regression: Garage Lineup fallback is missing the ternary colon.');
 console.log('v2.0.24 verified: Homepage Garage Lineup Astro ternary syntax is locked.');
+
+
+// v2.0.25 — mobile Race Calendar league selector readability.
+const raceCalendarCssV2025=readFileSync('src/styles/race-calendar.css','utf8');
+if(!raceCalendarCssV2025.includes('v2.0.25 — mobile program selector')||!raceCalendarCssV2025.includes('grid-template-columns:76px minmax(0,1fr)')||!raceCalendarCssV2025.includes('-webkit-line-clamp:2'))throw Error('v2.0.25 mobile league-selector layout is missing.');
+if(!raceCalendarCssV2025.includes('scroll-snap-type:x mandatory'))throw Error('v2.0.25 mobile league selector must retain intentional horizontal snapping.');
+console.log('v2.0.25 verified: mobile Race Calendar league buttons are compact, readable, and snap horizontally.');

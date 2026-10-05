@@ -1,3 +1,10 @@
+# Aetherwing Site v2.0.25 — MOBILE LEAGUE SELECTOR FIX
+
+- Rebuilds the Race Calendar league buttons on phones into compact horizontal cards with the logo on the left and readable metadata on the right.
+- Allows long series names such as Kmart Auto Parts Series and Sunoco Truck Series to wrap to two lines instead of being clipped with an ellipsis.
+- Keeps horizontal swipe/snap behavior while reducing wasted vertical space and preserving desktop/tablet presentation.
+- Keeps all v2.0.24 build fix and v2.0.21–v2.0.23 data/identity updates intact.
+
 # Aetherwing Site v2.0.24 — HOMEPAGE ASTRO BUILD FIX
 
 - Fixes the Garage Lineup number-art ternary in `src/pages/index.astro` that caused Astro to fail with `Expected : but found ${`.
