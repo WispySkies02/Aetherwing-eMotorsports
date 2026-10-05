@@ -45,12 +45,12 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
     return chosen;
   };
   const artCorrections={
-    'rocky:92':{desktop:1.16,mobile:1.1},
+    'rocky:46':{desktop:1.16,mobile:1.1},
     'jaxon:34':{desktop:.9,mobile:.9},
     'parker:43':{desktop:.96,mobile:.95},
-    'gk3r:52':{desktop:1,mobile:1},
+    'gk3r:42':{desktop:1,mobile:1},
     'burgertown2good:32':{desktop:1,mobile:1},
-    'wispy:15':{desktop:.98,mobile:.95},
+    'hailey:15':{desktop:.98,mobile:.95},
     'matty:29':{desktop:.96,mobile:.96}
   };
   const correctionFor=(profile,number)=>artCorrections[`${profile||''}:${number||''}`]||{desktop:1,mobile:1};

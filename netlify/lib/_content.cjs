@@ -20,10 +20,10 @@ function normalizeDriverAssignments(rows=[]) {
     return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
   });
   const shared29=normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
-  if(!shared29)return normalized;
+  if(!shared29)return normalized.map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
   const sharedUpload=shared29.numberImageBackup||'';
   const sharedSource=shared29.numberImage||sharedUpload;
-  return normalized.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
+  return normalized.map((entry)=>{const canonical=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;return canonical?.competitionId==='kmart'&&String(canonical?.number)==='29'?{...canonical,numberImage:canonical.numberImage||sharedSource,numberImageBackup:canonical.numberImageBackup||sharedUpload}:canonical;});
 }
 function validNumberImage(value='') {
   return !value || /^(https:\/\/|\/)/.test(value) || (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) && value.length<=160000);
@@ -63,7 +63,9 @@ function scoreKnownRace(race={}) {
 function normalize(key,data) {
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
-  if(key==='roster-profiles'&&Array.isArray(data))return data.map((profile)=>({signatureLogo:'',...profile}));
+  if(key==='roster-profiles'&&Array.isArray(data))return data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug}));
+  if(key==='driver-profiles'&&Array.isArray(data))return data.map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
+  if(key==='driver-portfolios'&&Array.isArray(data))return data.map((portfolio)=>portfolio?.profile==='wispy'?{...portfolio,profile:'hailey'}:portfolio);
   if(key==='results'&&Array.isArray(data)){const sorted=[...data].map(scoreKnownRace).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));return sorted.map((race,index)=>({...race,featured:index===0}));}
   return data;
 }
@@ -165,7 +167,7 @@ function validate(key, data, registry={}) {
     if (key === 'roster-profiles' && !Array.isArray(row.programs)) return 'Driver programs must be a list.';
     if (key === 'roster-profiles' && !validLogoImage(row.signatureLogo||'')) return 'Driver signature logos must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
-    if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points)) || (Array.isArray(row.chaseRows) && row.chaseRows.some((r)=>!Number.isFinite(r?.points))))) return 'Standings rows need numeric points (or an explicit pending placeholder before the first full-roster import).';
+    if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points)) || (Array.isArray(row.chaseRows) && row.chaseRows.some((r)=>!(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points))))) return 'Standings rows need numeric points (or an explicit pending placeholder before the first full-roster import).';
     if (key === 'charters') {
       if (!Array.isArray(row.fullTime) || !Array.isArray(row.openCharters)) return 'Charter boards need full-time entries and an Open Charters list.';
       if (row.fullTime.some((slot)=>slot?.numberImage && !validNumberImage(slot.numberImage))) return 'Full-time charter number images must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';

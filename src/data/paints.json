@@ -49,7 +49,7 @@
     "special": [
       "throwback"
     ],
-    "note": "Throwback to Tony Stewart\u2019s primary Pontiac for Joe Gibbs Racing from 1999\u20132001."
+    "note": "Throwback to Tony Stewart’s primary Pontiac for Joe Gibbs Racing from 1999–2001."
   },
   {
     "slug": "d1-ghost-merica",
@@ -84,7 +84,7 @@
     "special": [
       "concept"
     ],
-    "note": "IRL Concept \u2014 imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing\u2019s livery style with a real-world NASCAR presentation."
+    "note": "IRL Concept — imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing’s livery style with a real-world NASCAR presentation."
   },
   {
     "slug": "d1-friskies",
@@ -178,7 +178,8 @@
     "special": [
       "patriotic"
     ],
-    "note": "Ran in the UARL Season 5 Texas Race."
+    "note": "Historical UARL D1 #32 Cadillac Mobil 1 Patriotic scheme from the Season 5 Texas race. Preserved with its original number and manufacturer.",
+    "historical": true
   },
   {
     "slug": "kmart-petsmart",
@@ -249,7 +250,7 @@
       "throwback",
       "starclutch"
     ],
-    "note": "Throwback to Tony Stewart\u2019s 2005 Cup Series scheme."
+    "note": "Throwback to Tony Stewart’s 2005 Cup Series scheme."
   },
   {
     "slug": "kmart-clutch-sinder",
@@ -354,7 +355,7 @@
       "starclutch",
       "racewinner"
     ],
-    "note": "Race Winner \u2014 won at Rockingham on May 2, 2026."
+    "note": "Race Winner — won at Rockingham on May 2, 2026."
   },
   {
     "slug": "truck-mopar-starclutch-racing",
@@ -554,11 +555,11 @@
     "number": "97",
     "sponsor": "Monster Energy (Lando Norris)",
     "manufacturer": "Toyota",
-    "body": "NASCAR O\u2019Reilly Auto Parts Series Toyota Supra",
+    "body": "NASCAR O’Reilly Auto Parts Series Toyota Supra",
     "schemeId": "",
     "image": "https://i.ibb.co/xqc32PDT/i-Racing-com-Simulator-10-10-2025-5-02-57-PM.png",
     "special": [],
-    "note": "Inspired by Lando Norris\u2019 special-edition Monster Energy can design."
+    "note": "Inspired by Lando Norris’ special-edition Monster Energy can design."
   },
   {
     "slug": "iracing-monster-lando-mclaren",
@@ -574,6 +575,6 @@
     "schemeId": "",
     "image": "https://i.ibb.co/Jw6Tqmcf/i-Racing-com-Simulator-10-12-2025-11-42-56-PM.png",
     "special": [],
-    "note": "Team endurance livery inspired by Lando Norris\u2019 special-edition Monster Energy can design."
+    "note": "Team endurance livery inspired by Lando Norris’ special-edition Monster Energy can design."
   }
 ]

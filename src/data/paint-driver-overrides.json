@@ -5,9 +5,6 @@
   "uarl-d1::Hailey": [
     "28"
   ],
-  "uarl-d1::Rocky": [
-    "92"
-  ],
   "uarl-open::Hailey": [
     "28"
   ],
@@ -16,9 +13,6 @@
   ],
   "kmart::Will": [
     "24"
-  ],
-  "kmart::Jaxon": [
-    "34"
   ],
   "kmart::Eazy": [
     "29 PT"
@@ -59,20 +53,23 @@
   "uarl-d1::BurgerTown2Good": [
     "32"
   ],
-  "uarl-d1::Gk3r": [
-    "52"
-  ],
-  "uarl-d1::OPEN": [
-    "54"
-  ],
   "uarl-d1::Aetherwing Open Charter": [
     "62 PT / 82 DEV"
   ],
   "uarl-d2::Wispy": [
-    "62 \u00b7 HISTORICAL"
+    "62 · HISTORICAL"
   ],
   "iracing::Hailey Bell": [
     "28",
     "97"
+  ],
+  "uarl-d1::GK3R": [
+    "42"
+  ],
+  "uarl-d1::Rocky": [
+    "46"
+  ],
+  "uarl-d1::OPEN": [
+    "56"
   ]
 }

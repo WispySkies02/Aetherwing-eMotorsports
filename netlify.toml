@@ -11,6 +11,19 @@
   included_files = ["data/paint-seed.json", "src/data/*.json"]
 
 
+# Current driver identity. Preserve legacy external links permanently.
+[[redirects]]
+  from = "/drivers/wispy/"
+  to = "/drivers/hailey/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/drivers/wispy"
+  to = "/drivers/hailey/"
+  status = 301
+  force = true
+
 # Admin entrance aliases. Keep the canonical control center at /admin/.
 [[redirects]]
   from = "/admin"

@@ -1,7 +1,7 @@
 [
   {
     "id": "wispy-nrrs",
-    "profile": "wispy",
+    "profile": "hailey",
     "displayName": "Hailey",
     "number": "32",
     "competition": "NRRS",
@@ -24,7 +24,7 @@
   },
   {
     "id": "wispy-uarl-d1",
-    "profile": "wispy",
+    "profile": "hailey",
     "displayName": "Hailey",
     "number": "28",
     "competition": "UARL Division 1",
@@ -38,7 +38,7 @@
     "id": "rocky-uarl-d1",
     "profile": "rocky",
     "displayName": "Rocky",
-    "number": "92",
+    "number": "46",
     "competition": "UARL Division 1",
     "competitionId": "uarl-d1",
     "status": "Full-Time",
@@ -47,7 +47,7 @@
   },
   {
     "id": "wispy-uarl-open",
-    "profile": "wispy",
+    "profile": "hailey",
     "displayName": "Hailey",
     "number": "28",
     "competition": "UARL Open",
@@ -60,7 +60,7 @@
   },
   {
     "id": "wispy-kmart",
-    "profile": "wispy",
+    "profile": "hailey",
     "displayName": "Hailey",
     "number": "15",
     "competition": "Kmart Auto Parts Series",
@@ -75,17 +75,6 @@
     "profile": "will",
     "displayName": "Will",
     "number": "24",
-    "competition": "Kmart Auto Parts Series",
-    "competitionId": "kmart",
-    "status": "Active",
-    "affiliation": "alliance",
-    "numberImage": ""
-  },
-  {
-    "id": "jaxon-kmart",
-    "profile": "jaxon",
-    "displayName": "Jaxon",
-    "number": "34",
     "competition": "Kmart Auto Parts Series",
     "competitionId": "kmart",
     "status": "Active",
@@ -166,7 +155,7 @@
   },
   {
     "id": "wispy-sunoco",
-    "profile": "wispy",
+    "profile": "hailey",
     "displayName": "Hailey",
     "number": "54",
     "competition": "Sunoco Truck Series",
@@ -190,7 +179,7 @@
   },
   {
     "id": "nicholas-iracing",
-    "profile": "wispy",
+    "profile": "hailey",
     "displayName": "Hailey Bell",
     "number": "28",
     "competition": "iRacing Factory Program",
@@ -226,9 +215,9 @@
   {
     "id": "gk3r-uarl-d1",
     "profile": "gk3r",
-    "displayName": "Gk3r",
+    "displayName": "GK3R",
     "handle": "@sealsntags",
-    "number": "52",
+    "number": "42",
     "competition": "UARL Division 1",
     "competitionId": "uarl-d1",
     "status": "Full-Time",

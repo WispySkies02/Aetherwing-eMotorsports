@@ -720,7 +720,9 @@
     "status": "Special Event",
     "title": "Bathurst 1000",
     "track": "Mount Panorama Circuit",
-    "time": "Event Window"
+    "time": "Event Window",
+    "startAt": "2026-10-02T23:00:00-04:00",
+    "endAt": "2026-10-04T04:00:00-04:00"
   },
   {
     "date": "2026-10-10",
@@ -769,7 +771,7 @@
     "leagueName": "NRRS",
     "status": "The Chase",
     "title": "GEICO 400",
-    "track": "Kansas Speedway",
+    "track": "Las Vegas Motor Speedway",
     "time": "7:30 PM ET",
     "round": "ROUND 22"
   },

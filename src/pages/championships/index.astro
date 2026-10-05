@@ -74,16 +74,20 @@ const sunocoRoster=[
   {number:'31',driver:'Hotline',team:'Vice Motorsports',manufacturer:'Chevrolet'},
   {number:'41',driver:'Tnfan',team:'Vice Motorsports',manufacturer:'Chevrolet'}
 ];
+const sunocoRank=(row)=>{const match=String(row?.position||'').match(/P(\d+)/i);return match?Number(match[1]):Number.POSITIVE_INFINITY;};
 const repairSunocoBoard=(board)=>{
   if((board?.league||board?.id)!=='sunoco')return board;
   const existing=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(existing.map(row=>[String(row.number||''),row]));
   const knownNumbers=new Set(sunocoRoster.map(item=>item.number)),extras=existing.filter(row=>!knownNumbers.has(String(row.number||'')));
-  const rows=sunocoRoster.map((roster,index)=>{const live=byNumber.get(roster.number);if(live)return {...roster,...live,driver:live.driver||roster.driver,team:live.team||roster.team,manufacturer:live.manufacturer||roster.manufacturer};return {...roster,position:'—',points:null,delta:'—',highlight:false,chaseStatus:'',chaseEligible:false,pointsPending:true,unranked:true};});
-  return {...board,title:board.title==='Sunoco Truck Series Chase'?'Sunoco Truck Series Standings':board.title,rows:[...rows,...extras],chaseRows:Array.isArray(board.chaseRows)?board.chaseRows:[],chaseActive:true};
+  const rows=sunocoRoster.map((roster)=>{const live=byNumber.get(roster.number);if(live)return {...roster,...live,driver:live.driver||roster.driver,team:live.team||roster.team,manufacturer:live.manufacturer||roster.manufacturer};return {...roster,position:'—',points:null,delta:'—',highlight:false,chaseStatus:'',chaseEligible:false,pointsPending:true,unranked:true};});
+  const missing=(Array.isArray(board.missingRanks)?board.missingRanks:[]).filter(rank=>!rows.some(row=>String(row.position)===String(rank))).map(rank=>({position:rank,driver:'Official data pending',points:null,delta:'—',pointsPending:true,rankPlaceholder:true}));
+  const ordered=[...rows,...extras,...missing].sort((a,b)=>sunocoRank(a)-sunocoRank(b));
+  const chaseRows=(Array.isArray(board.chaseRows)?board.chaseRows:[]).slice().sort((a,b)=>sunocoRank(a)-sunocoRank(b));
+  return {...board,title:board.title==='Sunoco Truck Series Chase'?'Sunoco Truck Series Standings':board.title,rows:ordered,chaseRows,chaseActive:true};
 };
 const displayStandings=standings.map(repairSunocoBoard);
 const standingsGroup=(board)=>{const key=board?.league||board?.id||'';return key.startsWith('uarl')||key==='open'?'uarl':key;};
-const pointsText=(row)=>row?.pointsPending||row?.points==null?'— PTS':`${Number(row.points||0).toLocaleString('en-US')} PTS`;
+const pointsText=(row)=>row?.pointsPending||row?.points==null?'PTS pending':`${Number(row.points||0).toLocaleString('en-US')} PTS`;
 ---
 <Base title="Championship Battles" description="Current standings and title fights across Aetherwing programs.">
   <PageIntro eyebrow="The points picture" title="Championship Battles" description="Where the team stands and what remains on the line."/>
@@ -149,8 +153,9 @@ const pointsText=(row)=>row?.pointsPending||row?.points==null?'— PTS':`${Numbe
   const makeIcon=(results,board,row,fallbackNumber='')=>{const make=makeFor(results,board,row,fallbackNumber),src=manufacturerIconPaths[makeKey(board,make)]||'';return src?`<span class="standing-row__make"><img src="${src}" alt="${esc(make)}" loading="lazy"></span>`:'<span class="standing-row__make"></span>';};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const boardGroup=board=>{const key=board?.league||board?.id||'';return key.startsWith('uarl')||key==='open'?'uarl':key;};
-  const pointsText=row=>row?.pointsPending||row?.points==null?'— PTS':`${Number(row.points||0).toLocaleString('en-US')} PTS`;
-  const repairSunoco=board=>{if((board?.league||board?.id)!=='sunoco')return board;const existing=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(existing.map(row=>[String(row.number||''),row])),known=new Set(sunocoRoster.map(item=>item.number)),extras=existing.filter(row=>!known.has(String(row.number||''))),rows=sunocoRoster.map(roster=>{const live=byNumber.get(roster.number);return live?{...roster,...live,driver:live.driver||roster.driver,team:live.team||roster.team,manufacturer:live.manufacturer||roster.manufacturer}:{...roster,position:'—',points:null,delta:'—',highlight:false,chaseStatus:'',chaseEligible:false,pointsPending:true,unranked:true};});return {...board,title:board.title==='Sunoco Truck Series Chase'?'Sunoco Truck Series Standings':board.title,rows:[...rows,...extras],chaseRows:Array.isArray(board.chaseRows)?board.chaseRows:[],chaseActive:true};};
+  const pointsText=row=>row?.pointsPending||row?.points==null?'PTS pending':`${Number(row.points||0).toLocaleString('en-US')} PTS`;
+  const sunocoRank=row=>{const match=String(row?.position||'').match(/P(\d+)/i);return match?Number(match[1]):Number.POSITIVE_INFINITY;};
+  const repairSunoco=board=>{if((board?.league||board?.id)!=='sunoco')return board;const existing=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(existing.map(row=>[String(row.number||''),row])),known=new Set(sunocoRoster.map(item=>item.number)),extras=existing.filter(row=>!known.has(String(row.number||''))),rows=sunocoRoster.map(roster=>{const live=byNumber.get(roster.number);return live?{...roster,...live,driver:live.driver||roster.driver,team:live.team||roster.team,manufacturer:live.manufacturer||roster.manufacturer}:{...roster,position:'—',points:null,delta:'—',highlight:false,chaseStatus:'',chaseEligible:false,pointsPending:true,unranked:true};}),missing=(Array.isArray(board.missingRanks)?board.missingRanks:[]).filter(rank=>!rows.some(row=>String(row.position)===String(rank))).map(rank=>({position:rank,driver:'Official data pending',points:null,delta:'—',pointsPending:true,rankPlaceholder:true})),ordered=[...rows,...extras,...missing].sort((a,b)=>sunocoRank(a)-sunocoRank(b)),chaseRows=(Array.isArray(board.chaseRows)?board.chaseRows:[]).slice().sort((a,b)=>sunocoRank(a)-sunocoRank(b));return {...board,title:board.title==='Sunoco Truck Series Chase'?'Sunoco Truck Series Standings':board.title,rows:ordered,chaseRows,chaseActive:true};};
   let activeChampionshipFilter='all';
   function applyChampionshipFilter(value=activeChampionshipFilter){activeChampionshipFilter=value;document.querySelectorAll('[data-championship-filter-value]').forEach(button=>button.classList.toggle('is-active',button.dataset.championshipFilterValue===value));document.querySelectorAll('[data-standings-root] .standings-board').forEach(board=>{board.hidden=value!=='all'&&board.dataset.boardGroup!==value;});}
   document.querySelector('[data-championship-filter]')?.addEventListener('click',event=>{const button=event.target.closest('[data-championship-filter-value]');if(!button)return;applyChampionshipFilter(button.dataset.championshipFilterValue||'all');});

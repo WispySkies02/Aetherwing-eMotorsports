@@ -50,7 +50,7 @@
       "special": [
         "throwback"
       ],
-      "note": "Throwback to Tony Stewart\u2019s primary Pontiac for Joe Gibbs Racing from 1999\u20132001."
+      "note": "Throwback to Tony Stewart’s primary Pontiac for Joe Gibbs Racing from 1999–2001."
     },
     {
       "slug": "d1-ghost-merica",
@@ -85,7 +85,7 @@
       "special": [
         "concept"
       ],
-      "note": "IRL Concept \u2014 imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing\u2019s livery style with a real-world NASCAR presentation."
+      "note": "IRL Concept — imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing’s livery style with a real-world NASCAR presentation."
     },
     {
       "slug": "d1-friskies",
@@ -179,7 +179,8 @@
       "special": [
         "patriotic"
       ],
-      "note": "Ran in the UARL Season 5 Texas Race."
+      "note": "Historical UARL D1 #32 Cadillac Mobil 1 Patriotic scheme from the Season 5 Texas race. Preserved with its original number and manufacturer.",
+      "historical": true
     },
     {
       "slug": "kmart-petsmart",
@@ -250,7 +251,7 @@
         "throwback",
         "starclutch"
       ],
-      "note": "Throwback to Tony Stewart\u2019s 2005 Cup Series scheme."
+      "note": "Throwback to Tony Stewart’s 2005 Cup Series scheme."
     },
     {
       "slug": "kmart-clutch-sinder",
@@ -355,7 +356,7 @@
         "starclutch",
         "racewinner"
       ],
-      "note": "Race Winner \u2014 won at Rockingham on May 2, 2026."
+      "note": "Race Winner — won at Rockingham on May 2, 2026."
     },
     {
       "slug": "truck-mopar-starclutch-racing",
@@ -555,11 +556,11 @@
       "number": "97",
       "sponsor": "Monster Energy (Lando Norris)",
       "manufacturer": "Toyota",
-      "body": "NASCAR O\u2019Reilly Auto Parts Series Toyota Supra",
+      "body": "NASCAR O’Reilly Auto Parts Series Toyota Supra",
       "schemeId": "",
       "image": "https://i.ibb.co/xqc32PDT/i-Racing-com-Simulator-10-10-2025-5-02-57-PM.png",
       "special": [],
-      "note": "Inspired by Lando Norris\u2019 special-edition Monster Energy can design."
+      "note": "Inspired by Lando Norris’ special-edition Monster Energy can design."
     },
     {
       "slug": "iracing-monster-lando-mclaren",
@@ -575,14 +576,14 @@
       "schemeId": "",
       "image": "https://i.ibb.co/Jw6Tqmcf/i-Racing-com-Simulator-10-12-2025-11-42-56-PM.png",
       "special": [],
-      "note": "Team endurance livery inspired by Lando Norris\u2019 special-edition Monster Energy can design."
+      "note": "Team endurance livery inspired by Lando Norris’ special-edition Monster Energy can design."
     }
   ],
   "leagues": [
     {
       "id": "nrrs",
       "name": "NRRS",
-      "subtitle": "Aetherwing Program \u00b7 Stock Car Competition",
+      "subtitle": "Aetherwing Program · Stock Car Competition",
       "bodyTag": "D1 Toyota",
       "color": "#18c2ff",
       "description": "Current NRRS charter board. Aetherwing fields three full-time charters plus one shared Part-Time / Development charter.",
@@ -613,10 +614,10 @@
     {
       "id": "uarl-d1",
       "name": "UARL D1",
-      "subtitle": "Aetherwing Program \u00b7 LL Bean Cup Series",
-      "bodyTag": "D1 Cadillac",
+      "subtitle": "Aetherwing Program · LL Bean Cup Series",
+      "bodyTag": "D1 Toyota",
       "color": "#ff5eb8",
-      "description": "Current UARL Division 1 charter board: five full-time charters plus one shared Aetherwing Open Charter. Historical uploaded schemes stay with the season and number they originally ran.",
+      "description": "Current UARL Division 1 Toyota charter board: five full-time charters plus one shared Aetherwing Open Charter. Historical uploaded schemes stay with the season, number, and manufacturer they originally ran.",
       "drivers": [
         {
           "name": "Hailey",
@@ -629,19 +630,19 @@
           "role": "Driver"
         },
         {
-          "name": "Gk3r",
+          "name": "GK3R",
           "username": "@sealsntags",
+          "role": "Driver"
+        },
+        {
+          "name": "Rocky",
+          "username": "@IIKyle5Larson",
           "role": "Driver"
         },
         {
           "name": "OPEN",
           "username": "",
           "role": "Vacant Full-Time Charter"
-        },
-        {
-          "name": "Rocky",
-          "username": "@IIKyle5Larson",
-          "role": "Driver"
         },
         {
           "name": "Aetherwing Open Charter",
@@ -653,16 +654,16 @@
     },
     {
       "id": "uarl-d2",
-      "name": "UARL D2 \u2014 Closed / Historical Archive",
-      "subtitle": "Closed September 15, 2026 \u00b7 Historical Archive",
+      "name": "UARL D2 — Closed / Historical Archive",
+      "subtitle": "Closed September 15, 2026 · Historical Archive",
       "bodyTag": "NXS20 Toyota Supra",
       "color": "#9f6bff",
-      "description": "Historical archive for Aetherwing\u2019s former UARL Division 2 program. The #62 Mobil 1 Toyota Supra and its Daytona-era context are preserved here without counting D2 as an active program.",
+      "description": "Historical archive for Aetherwing’s former UARL Division 2 program. The #62 Mobil 1 Toyota Supra and its Daytona-era context are preserved here without counting D2 as an active program.",
       "drivers": [
         {
           "name": "Wispy",
           "username": "@Aokikoto",
-          "role": "Historical D2 Driver \u00b7 current Roblox display name Hailey"
+          "role": "Historical D2 Driver · current Roblox display name Hailey"
         }
       ],
       "relationship": "archive"
@@ -670,7 +671,7 @@
     {
       "id": "uarl-open",
       "name": "UARL Open",
-      "subtitle": "Aetherwing Program \u00b7 Open Series",
+      "subtitle": "Aetherwing Program · Open Series",
       "bodyTag": "Late Model Toyota",
       "color": "#d8ff3e",
       "description": "Current UARL Open Series roster. Late model entries and uploaded open-series schemes live in this garage.",
@@ -686,7 +687,7 @@
     {
       "id": "kmart",
       "name": "Kmart",
-      "subtitle": "StarClutch Racing Alliance \u00b7 Kmart Auto Parts Series",
+      "subtitle": "StarClutch Racing Alliance · Kmart Auto Parts Series",
       "bodyTag": "D2 Dodge",
       "color": "#ff6a00",
       "description": "Alliance competition under the StarClutch Racing banner. Dodge schemes use the BBR D2 Chevrolet body.",
@@ -699,11 +700,6 @@
         {
           "name": "Will",
           "username": "@Raceartstudios",
-          "role": "StarClutch Racing Alliance Driver"
-        },
-        {
-          "name": "Jaxon",
-          "username": "@Arctic_Blitzzzz",
           "role": "StarClutch Racing Alliance Driver"
         },
         {
@@ -727,7 +723,7 @@
     {
       "id": "sunoco-truck",
       "name": "Sunoco Truck Series",
-      "subtitle": "StarClutch Racing Alliance \u00b7 Truck Series",
+      "subtitle": "StarClutch Racing Alliance · Truck Series",
       "bodyTag": "D3 RAM",
       "color": "#ffd236",
       "description": "Alliance competition under the StarClutch Racing banner. Current Sunoco entries use RAM.",
@@ -758,7 +754,7 @@
     {
       "id": "iracing",
       "name": "iRacing",
-      "subtitle": "Aetherwing Program \u00b7 Sim Racing Collection",
+      "subtitle": "Aetherwing Program · Sim Racing Collection",
       "bodyTag": "Mixed Fleet",
       "color": "#00D0FF",
       "description": "Aetherwing iRacing Factory Program drivers and team endurance liveries. Current iRacing driver presentation uses Hailey Bell.",
@@ -791,9 +787,6 @@
     "uarl-d1::Hailey": [
       "28"
     ],
-    "uarl-d1::Rocky": [
-      "92"
-    ],
     "uarl-open::Hailey": [
       "28"
     ],
@@ -802,9 +795,6 @@
     ],
     "kmart::Will": [
       "24"
-    ],
-    "kmart::Jaxon": [
-      "34"
     ],
     "kmart::Eazy": [
       "29 PT"
@@ -848,21 +838,24 @@
     "uarl-d1::BurgerTown2Good": [
       "32"
     ],
-    "uarl-d1::Gk3r": [
-      "52"
-    ],
-    "uarl-d1::OPEN": [
-      "54"
-    ],
     "uarl-d1::Aetherwing Open Charter": [
       "62 PT / 82 DEV"
     ],
     "uarl-d2::Wispy": [
-      "62 \u00b7 HISTORICAL"
+      "62 · HISTORICAL"
     ],
     "iracing::Hailey Bell": [
       "28",
       "97"
+    ],
+    "uarl-d1::GK3R": [
+      "42"
+    ],
+    "uarl-d1::Rocky": [
+      "46"
+    ],
+    "uarl-d1::OPEN": [
+      "56"
     ]
   }
 }

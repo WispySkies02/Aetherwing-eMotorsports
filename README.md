@@ -1,3 +1,21 @@
+# Aetherwing Site v2.0.23 — IDENTITY / POLISH
+
+- Makes `/drivers/hailey/` canonical and permanently redirects legacy `/drivers/wispy/`.
+- Moves Palmetto Gaming out of team-wide partners and into Hailey's personal driver portfolio.
+- Reduces only the Drivers desktop hero height; driver cards and number-art treatment remain untouched.
+- Extends roster/identity normalization through the live site-content API so stale Admin snapshots cannot undo the current canon.
+
+# Aetherwing Site v2.0.22 — RESULTS / STANDINGS / SCHEDULE
+
+- Publishes official Kmart Round 8 Portland result and post-transfer standings.
+- Keeps NRRS Round 22 results pending until an official finishing order/points sheet is supplied; venue corrected to Las Vegas.
+- Repairs Sunoco ranked ordering, explicit P3 pending state, separate Chase dataset, and consistent `PTS pending` copy.
+- Adds explicit special-event end timestamps so expired events cannot remain LIVE.
+
+# Aetherwing Main Site v2.0.21 — Shared Roster Canon
+
+October 4, 2026 update: synchronizes the current UARL D1 Toyota roster, removes Jaxon from active competition while preserving staff/history, applies the approved one-time Kmart driver-points transfer, and derives Homepage multi-program number credentials from assignments.
+
 
 ## v2.0.20 — FULL HEART article media + compact Team Wire previews
 - FULL HEART tour logo is displayed visibly in the article hero.

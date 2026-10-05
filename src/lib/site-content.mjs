@@ -56,7 +56,9 @@ const obsoleteNavigation = Array.isArray(publishedNavigation) && (
 const rawNavigation = obsoleteNavigation ? navigationSeed : publishedNavigation;
 export const navigation = (Array.isArray(rawNavigation)?rawNavigation:navigationSeed).map((item)=>item?.label==='Paint Booth'&&item?.href==='/paint-booth/'?{...item,href:'https://paint.aetherwing.net/'}:item);
 export const liveryBrands = choose('livery-brands', liveryBrandsSeed);
-export const driverPortfolios = choose('driver-portfolios', driverPortfoliosSeed);
+const palmettoPartner=partnersSeed.find((item)=>item?.name==='Palmetto Gaming');
+const normalizeDriverPortfolios=(rows=[])=>rows.map((portfolio)=>{const profile=portfolio?.profile==='wispy'?'hailey':portfolio?.profile;if(profile!=='hailey'||!palmettoPartner)return {...portfolio,profile};const brands=[...(portfolio.brands||[])].filter((brand)=>brand?.name!=='Palmetto Gaming').map((brand,index)=>({...brand,order:index+2}));return {...portfolio,profile:'hailey',brands:[{name:'Palmetto Gaming',logo:palmettoPartner.logo||'',order:1},...brands]};});
+export const driverPortfolios = normalizeDriverPortfolios(choose('driver-portfolios', driverPortfoliosSeed));
 export const pageOverrides = choose('page-overrides', pageOverridesSeed);
 const resultSlug=(value='')=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
 const scheduleResultId=(event={})=>`${event.date||'tbd'}-${event.league||'event'}-${resultSlug(event.title||event.track||'scheduled-event')}`;
@@ -75,12 +77,12 @@ const scorePublishedRace=(race)=>{
   const finishPoints=(finish)=>{const pos=Number(finish||0);if(pos<1)return 0;if(race.league==='nrrs')return pos===1?40:Math.max(1,37-pos);return publicUarlFinishPoints[pos]||0;};
   return {...race,entries:race.entries.map((entry)=>{const stage1Points=stage(entry.stage1Finish),stage2Points=stage(entry.stage2Finish),base=finishPoints(entry.finish),bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;return {...entry,stage1Points,stage2Points,finishPoints:base,bonusPoints,pointsEligible,racePoints:pointsEligible?base+stage1Points+stage2Points+bonusPoints:0};})};
 };
-const canonicalResults=resultsSeed.filter((result)=>(result.league==='nrrs'&&result.date==='2026-09-22')||(result.league==='uarl-d2'&&result.date==='2026-09-12'));
+const canonicalResults=resultsSeed.filter((result)=>(result.league==='nrrs'&&result.date==='2026-09-22')||(result.league==='kmart'&&result.date==='2026-09-28')||(result.league==='uarl-d2'&&result.date==='2026-09-12'));
 const mergedResults=normalizeResults(choose('results', resultsSeed));
 for(const official of canonicalResults){
   const i=mergedResults.findIndex((result)=>result?.league===official.league&&result?.date===official.date);
   if(i===-1)mergedResults.push(official);
-  else if(official.league==='nrrs')mergedResults[i]={...mergedResults[i],title:official.title,track:official.track,round:official.round,status:official.status,specialTag:official.specialTag,entries:mergedResults[i].entries?.length?mergedResults[i].entries:official.entries};
+  else if(['nrrs','kmart'].includes(official.league))mergedResults[i]={...mergedResults[i],title:official.title,track:official.track,round:official.round,status:official.status,specialTag:official.specialTag,entries:mergedResults[i].entries?.length?mergedResults[i].entries:official.entries};
 }
 export const results = mergedResults.map(normalizeLegacyKmartResult).map(scorePublishedRace).map((result)=>{
   const event=scheduleEvents.find((item)=>scheduleResultId(item)===result.scheduleId);
@@ -97,19 +99,32 @@ const supersededSnapshot = (board) => {
   const freshRows = Array.isArray(fresh?.rows) ? fresh.rows.length : 0;
   const publishedPt = Array.isArray(board.ptEntry?.drivers) ? board.ptEntry.drivers.length : 0;
   const freshPt = Array.isArray(fresh?.ptEntry?.drivers) ? fresh.ptEntry.drivers.length : 0;
-  return /After Race 6 of 23/.test(board.subtitle || '') || publishedRows < freshRows || publishedPt < freshPt;
+  const staleRound=!String(board.subtitle||'').includes('After Round 8')||String(board.lastResultDate||'')<'2026-09-28';
+  const stillHasJaxon=(board.rows||[]).some((row)=>row?.driver==='Jaxon');
+  const transferApplied=(board.appliedAdjustments||[]).some((item)=>item?.id==='KMART_TRANSFER_JAXON_TO_HAILEY_2026');
+  return /After Race 6 of 23/.test(board.subtitle || '') || staleRound || stillHasJaxon || !transferApplied || publishedRows < freshRows || publishedPt < freshPt;
 };
 export const standings = Array.isArray(publishedStandings)
   ? publishedStandings.map((board) => supersededSnapshot(board) ? standingsSeedById.get(board.id) || board : board)
   : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
-export const drivers = normalizeDriverAssignments(choose('drivers', driversSeed));
+const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
+  if(entry?.competitionId!=='uarl-d1')return entry;
+  const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
+  if(key==='wispy'||key==='hailey')return {...entry,number:'28',displayName:'Hailey'};
+  if(key==='burgertown2good')return {...entry,number:'32'};
+  if(key==='gk3r')return {...entry,number:'42',displayName:'GK3R'};
+  if(key==='rocky')return {...entry,number:'46'};
+  return entry;
+});
+export const drivers = enforceCurrentAssignments(choose('drivers', driversSeed));
 const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',
   kmart:'Kmart', sunoco:'Sunoco'
 };
 const rosterBase = choose('roster-profiles', rosterSeed);
-export const rosterProfiles = rosterBase.map((profile) => {
+export const rosterProfiles = rosterBase.map((sourceProfile) => {
+  const profile=sourceProfile?.slug==='wispy'?{...sourceProfile,slug:'hailey'}:sourceProfile;
   const assignments = drivers.filter((entry) => entry.profile === profile.slug && entry.competitionId !== 'iracing-factory');
   if (!assignments.length) return profile;
   return {
@@ -119,7 +134,7 @@ export const rosterProfiles = rosterBase.map((profile) => {
     programs: [...new Set(assignments.map((entry) => rosterProgramLabels[entry.competitionId] || entry.competition).filter(Boolean))]
   };
 });
-export const driverProfiles = choose('driver-profiles', profilesSeed);
+export const driverProfiles = choose('driver-profiles', profilesSeed).map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
 const normalizeCharters = (boards) => (boards ?? []).map((board) => {
   if (Array.isArray(board.openCharters)) return board;
   const old = board.openCharter;
@@ -129,7 +144,17 @@ const normalizeCharters = (boards) => (boards ?? []).map((board) => {
   delete next.openCharter;
   return next;
 });
-export const charters = normalizeCharters(choose('charters', chartersSeed));
+const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=>{
+  if(board?.id!=='uarl-d1')return board;
+  return {...board,fullTime:[
+    {number:'28',driver:'Hailey',numberImage:board.fullTime?.find(x=>String(x.number)==='28')?.numberImage||''},
+    {number:'32',driver:'BurgerTown2Good',numberImage:board.fullTime?.find(x=>String(x.number)==='32')?.numberImage||''},
+    {number:'42',driver:'GK3R',numberImage:board.fullTime?.find(x=>['42','52'].includes(String(x.number)))?.numberImage||''},
+    {number:'46',driver:'Rocky',numberImage:board.fullTime?.find(x=>['46','92'].includes(String(x.number)))?.numberImage||''},
+    {number:'56',driver:'Open',numberImage:board.fullTime?.find(x=>['56','54'].includes(String(x.number)))?.numberImage||''}
+  ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:'6TH CHARTER',uses:[{...(charter.uses||[]).find(u=>String(u.number)==='62'),number:'62',label:'Part-Time',active:true},{...(charter.uses||[]).find(u=>String(u.number)==='82'),number:'82',label:'Development',active:true}]}))};
+});
+export const charters = enforceCurrentCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
 const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4']);
@@ -187,7 +212,8 @@ const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
 const staleCompetition = (item={}) => {
   if(item.id==='uarl-d2') return true;
-  if(item.id==='uarl-d1') return /Saturday/i.test(item.schedule||'') || !['#28 Hailey','#32 BurgerTown2Good','#52 Gk3r','#92 Rocky'].every((entry)=>(item.roster||[]).includes(entry));
+  if(item.id==='uarl-d1') return /Saturday/i.test(item.schedule||'') || /Cadillac/i.test(item.machine||'') || !['#28 Hailey','#32 BurgerTown2Good','#42 GK3R','#46 Rocky','#56 OPEN'].every((entry)=>(item.roster||[]).includes(entry));
+  if(item.id==='kmart' && (item.roster||[]).some((entry)=>/Jaxon/i.test(entry))) return true;
   if(item.id==='nrrs') return (item.roster||[]).some((entry)=>/#32\s+Wispy|#43\s+Parker/i.test(entry));
   if(item.id==='iracing-factory') return (item.roster||[]).some((entry)=>/Nicholas Waggoner/i.test(entry));
   return false;
@@ -201,8 +227,4 @@ export const leadership = (Array.isArray(publishedLeadership)?publishedLeadershi
   return entry;
 });
 const publishedPartners = choose('partners', partnersSeed);
-const palmettoSeed = partnersSeed.find((item)=>item?.name==='Palmetto Gaming');
-export const partners = (Array.isArray(publishedPartners)?publishedPartners:partnersSeed).map((item)=>{
-  if(item?.name==='Palmetto Gaming' && (item.role==='Gaming Partner' || /relationship centered on retro and modern games/i.test(String(item.description||'')))) return {...item,...palmettoSeed};
-  return item;
-});
+export const partners = (Array.isArray(publishedPartners)?publishedPartners:partnersSeed).filter((item)=>item?.name!=='Palmetto Gaming');

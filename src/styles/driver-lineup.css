@@ -115,3 +115,6 @@
   .aw-lineup__signature{display:flex!important;visibility:visible!important;opacity:1!important;z-index:12!important;pointer-events:none!important}
   .aw-lineup__signature img{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:13!important}
 }
+
+/* v2.0.23 — Drivers hero only. Preserve the finished card/number-art system below. */
+@media(min-width:641px){.drivers-page .page-intro{min-height:clamp(250px,28vw,365px);padding-block:3.25rem 2.4rem}.drivers-page .page-intro h1{font-size:clamp(3.9rem,8vw,7.7rem);margin-bottom:.75rem}}

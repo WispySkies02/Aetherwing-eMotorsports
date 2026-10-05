@@ -11,7 +11,7 @@ for(const file of needed)if(!existsSync(file))throw Error(`Missing site asset: $
 for(const name of ['schedule-events','drivers','charters','results','standings','driver-portfolios','partners','paints','news']){const content=JSON.parse(readFileSync(`src/data/${name}.json`,'utf8'));if(!Array.isArray(content)||!content.length)throw Error(`Empty or invalid ${name} dataset`);}
 const standings=JSON.parse(readFileSync('src/data/standings.json','utf8'));
 const kmart=standings.find((board)=>board.id==='kmart');
-if(!kmart||!Array.isArray(kmart.rows)||kmart.rows.length<17)throw Error('Kmart standings must include the full 17-driver grid.');
+if(!kmart||!Array.isArray(kmart.rows)||kmart.rows.length<16)throw Error('Kmart standings must include the active post-Jaxon driver grid.');
 if(kmart.cutoffAfter!==6)throw Error('Kmart Chase cutoff must remain after P6.');
 if(!Array.isArray(kmart.ptEntry?.drivers)||kmart.ptEntry.drivers.length<3)throw Error('Kmart standings must include all three part-time ineligible drivers.');
 
@@ -98,7 +98,7 @@ const contentStoreSource=readFileSync('netlify/lib/_content.cjs','utf8');
 if(!contentStoreSource.includes('function scoreKnownRace')||!contentStoreSource.includes("league==='uarl-d1'")||!contentStoreSource.includes('stage1Points:stage1'))throw Error('Known NRRS/UARL D1 scoring must retain automatic stage-point calculation.');
 if(!adminContentSource.includes('scoreKnownResult')||!adminContentSource.includes('Bonus / adjustment points')||!adminContentSource.includes('Championship points eligible'))throw Error('Results Admin must expose the automatic scoring controls for known points systems.');
 const driverProfiles=JSON.parse(readFileSync('src/data/driver-profiles.json','utf8'));
-const haileyProfile=driverProfiles.find((profile)=>profile.slug==='wispy');
+const haileyProfile=driverProfiles.find((profile)=>profile.slug==='hailey');
 const statMap=new Map((haileyProfile?.stats||[]).map((item)=>[item.label,item.value]));
 if(statMap.get('iRacing Starts')!=='409'||statMap.get('Wins')!=='59'||statMap.get('Top Fives')!=='121'||statMap.get('Poles')!=='52'||statMap.get('Formula Win Rate')!=='14.1%')throw Error('Published iRacing figures changed from the reviewed 409/59/121/52/14.1% baseline.');
 if(haileyProfile?.iracingName!=='Hailey Bell'||haileyProfile?.historicalIRacingName!=='Nicholas Waggoner')throw Error('Hailey Bell must remain the current iRacing identity with Nicholas Waggoner retained as the historical name.');
@@ -125,7 +125,10 @@ const currentNumbers={
   'uarl-d1':new Set(drivers.filter((d)=>d.competitionId==='uarl-d1').map((d)=>String(d.number))),
   nrrs:new Set(drivers.filter((d)=>d.competitionId==='nrrs').map((d)=>String(d.number)))
 };
-if(currentNumbers['uarl-d1'].has('42')||currentNumbers['uarl-d1'].has('46')||currentNumbers['uarl-d1'].has('56')||currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season #42/#46/#56 numbers must stay out of the current roster until the season changes.');
+if(!['28','32','42','46'].every((number)=>currentNumbers['uarl-d1'].has(number)))throw Error('Current UARL D1 assigned-driver roster must contain #28/#32/#42/#46.');
+const uarlCharter=charters.find((board)=>board.id==='uarl-d1');
+if(!(uarlCharter?.fullTime||[]).some((slot)=>String(slot.number)==='56'&&String(slot.driver||'').toUpperCase()==='OPEN'))throw Error('Current UARL D1 charter set must contain #56 OPEN.');
+if(currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season NRRS #42/#46/#56 numbers must stay out of the current NRRS roster until the season changes.');
 
 // v1.1.31 — selected-board standings PNG export.
 if(!adminContentSource.includes('data-standings-export')||!adminContentSource.includes('createStandingsPng')||!adminContentSource.includes('Save PNG')||!adminContentSource.includes('Open full size'))throw Error('Admin Standings must retain full selected-board PNG generation, preview, and save controls.');
@@ -156,7 +159,7 @@ const missionSource=readFileSync('src/pages/mission-values/index.astro','utf8');
 const handbookSource=readFileSync('src/pages/team-handbook/index.astro','utf8');
 if(!missionSource.includes('aetherwing.length')||!missionSource.includes('alliance.length')||!missionSource.includes('active.length'))throw Error('Mission & Values counters must be derived from active competition data.');
 if(!missionSource.includes('Former program / historical archive')||!handbookSource.includes('UARL D2 is closed'))throw Error('Closed UARL D2 must be historical-only on Mission and Handbook pages.');
-if(!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#32 BurgerTown2Good')||!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#52 Gk3r'))throw Error('UARL D1 current roster is incomplete.');
+if(!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#32 BurgerTown2Good')||!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#42 GK3R'))throw Error('UARL D1 current roster is incomplete.');
 if(competitions.some((item)=>item.id==='uarl-d2'))throw Error('UARL D2 must stay out of active competitions.');
 if(competitions.find((item)=>item.id==='uarl-d1')?.schedule!=='Sundays · 8:30 PM ET')throw Error('UARL D1 must race Sundays at 8:30 PM ET.');
 if(!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Hailey')||!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Plarker'))throw Error('NRRS active roster must use Hailey and Plarker identities.');
@@ -275,8 +278,9 @@ const adminSeedV212=JSON.parse(readFileSync('public/data/site-admin-seed.json','
 const adminScrV212=(adminSeedV212.news||[]).find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
 if(/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(JSON.stringify(adminScrV212||{})))throw Error('Admin seed still contains the old Palmetto joint-partnership wording.');
 const partnersV212=JSON.parse(readFileSync('src/data/partners.json','utf8'));
-const palmettoV212=partnersV212.find((item)=>item.name==='Palmetto Gaming');
-if(!palmettoV212||palmettoV212.role!=='Hailey Partner'||!/personal partnership supporting Hailey Bell/i.test(palmettoV212.description||''))throw Error('Palmetto Gaming must be classified as Hailey’s personal partner, not a team-wide partner.');
+const portfoliosV212=JSON.parse(readFileSync('src/data/driver-portfolios.json','utf8'));
+const palmettoV212=partnersV212.find((item)=>item.name==='Palmetto Gaming')||portfoliosV212.find((item)=>['wispy','hailey'].includes(item.profile))?.brands?.find((brand)=>brand.name==='Palmetto Gaming');
+if(!palmettoV212)throw Error('Palmetto Gaming must remain attached to Hailey’s personal program.');
 console.log('v2.0.12 verified: Palmetto Gaming is presented as Hailey Bell’s personal partner on the #28, not a joint SCR/Aetherwing sponsor.');
 
 
@@ -356,3 +360,46 @@ if(!recordsCssV220.includes('.news-article__logo-card')||!recordsCssV220.include
 if(!siteDataV217.includes('articleLogo:normalized.articleLogo||fresh.articleLogo')||!siteAdminV217.includes('articleLogo:normalized.articleLogo||fresh.articleLogo'))throw Error('Live FULL HEART media-field migration is incomplete.');
 console.log('v2.0.20 verified: Team Wire shows the FULL HEART logo in-article, uses transparent embed art, and keeps previews compact.');
 
+
+// v2.0.21 — October 4 shared roster canon
+{
+ const comps=JSON.parse(readFileSync('src/data/competitions.json','utf8')), d1=comps.find(x=>x.id==='uarl-d1'), km=comps.find(x=>x.id==='kmart');
+ if(!d1||d1.machine!=='BBR Next-Gen Toyota'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#32 BurgerTown2Good','#42 GK3R','#46 Rocky','#56 OPEN','AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT'])) throw Error('v2.0.21 UARL D1 canon mismatch.');
+ if((km?.roster||[]).some(x=>/Jaxon/i.test(x))) throw Error('v2.0.21 Jaxon must not remain in active Kmart roster.');
+ const drivers=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
+ if(drivers.some(x=>x.id==='jaxon-kmart')) throw Error('v2.0.21 Jaxon active assignment still present.');
+ const standings=JSON.parse(readFileSync('src/data/standings.json','utf8')).find(x=>x.id==='kmart');
+ const hb=standings?.rows?.find(x=>x.driver==='Hailey');
+ if(hb?.points!==533||standings?.rows?.some(x=>x.driver==='Jaxon')||standings?.appliedAdjustments?.filter(x=>x.id==='KMART_TRANSFER_JAXON_TO_HAILEY_2026').length!==1) throw Error('v2.0.21 Kmart transfer must be applied exactly once.');
+}
+console.log('v2.0.21 verified: UARL D1 canon, Toyota identity, Jaxon competition cleanup, and one-time Kmart transfer are locked.');
+
+// v2.0.22 — results / standings / schedule freshness.
+const resultsV2022=JSON.parse(readFileSync('src/data/results.json','utf8'));
+const kmartR8=resultsV2022.find((race)=>race.league==='kmart'&&race.date==='2026-09-28');
+if(!kmartR8||kmartR8.track!=='Portland'||kmartR8.entries?.find((e)=>e.driver==='Hailey')?.racePoints!==33)throw Error('Kmart Round 8 Portland result is missing or incorrect.');
+const scheduleV2022=JSON.parse(readFileSync('src/data/schedule-events.json','utf8'));
+const bathurstV2022=scheduleV2022.find((e)=>e.title==='Bathurst 1000'&&e.date==='2026-10-02');
+if(!bathurstV2022?.startAt||!bathurstV2022?.endAt)throw Error('Bathurst must have explicit start/end timestamps.');
+const vegasR22=scheduleV2022.find((e)=>e.league==='nrrs'&&e.date==='2026-09-29');
+if(vegasR22?.track!=='Las Vegas Motor Speedway')throw Error('NRRS Round 22 venue must be Las Vegas Motor Speedway.');
+const standingsV2022=JSON.parse(readFileSync('src/data/standings.json','utf8'));
+const sunocoV2022=standingsV2022.find((b)=>b.id==='sunoco');
+if(!sunocoV2022?.missingRanks?.includes('P3')||!Array.isArray(sunocoV2022.chaseRows)||sunocoV2022.chaseRows.length<17)throw Error('Sunoco regular/Chase pending datasets are incomplete.');
+if(!championshipsSource.includes('PTS pending')||!championshipsSource.includes('sunocoRank'))throw Error('Sunoco public ordering/pending-state repair is missing.');
+if(!raceCalendarSource.includes('e.endAt'))throw Error('Race Calendar must honor explicit special-event end timestamps.');
+console.log('v2.0.22 verified: Kmart R8, Sunoco dual standings, and event expiration are locked without guessing NRRS R22.');
+
+// v2.0.23 — canonical Hailey identity / personal partner / Drivers hero polish.
+const rosterV2023=JSON.parse(readFileSync('src/data/roster-profiles.json','utf8'));
+if(!rosterV2023.some(p=>p.slug==='hailey')||rosterV2023.some(p=>p.slug==='wispy'))throw Error('Hailey must use /drivers/hailey/ as the canonical roster slug.');
+if(!readFileSync('netlify.toml','utf8').includes('from = "/drivers/wispy/"')||!readFileSync('netlify.toml','utf8').includes('to = "/drivers/hailey/"'))throw Error('Legacy Wispy driver URL redirect is missing.');
+const partnersV2023=JSON.parse(readFileSync('src/data/partners.json','utf8'));
+const portfoliosV2023=JSON.parse(readFileSync('src/data/driver-portfolios.json','utf8'));
+if(partnersV2023.some(p=>p.name==='Palmetto Gaming')||!portfoliosV2023.find(p=>p.profile==='hailey')?.brands?.some(b=>b.name==='Palmetto Gaming'))throw Error('Palmetto Gaming must be Hailey-only, not a team partner.');
+const driversPageV2023=readFileSync('src/pages/drivers/index.astro','utf8');
+if(!driversPageV2023.includes('drivers-page')||!lineupCss.includes('.drivers-page .page-intro'))throw Error('Drivers-only desktop hero reduction is missing.');
+const siteDataV2023=readFileSync('netlify/lib/_site-data.cjs','utf8');
+if(!siteDataV2023.includes("profile==='hailey'")||!siteDataV2023.includes("p?.name!=='Palmetto Gaming'"))throw Error('Live site-content API must preserve canonical Hailey/Palmetto placement.');
+if(!siteDataV2023.includes("access-control-allow-origin':'https://paint.aetherwing.net"))throw Error('Paint Booth must be allowed to read the canonical public roster API.');
+console.log('v2.0.23 verified: Hailey canonical URL, personal Palmetto placement, and Drivers hero polish are locked.');

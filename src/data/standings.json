@@ -1,8 +1,8 @@
 [
   {
     "id": "nrrs",
-    "title": "NRRS Championship · Chase for the Cup",
-    "subtitle": "Town Fair Cup · Season 3 · After R21/25 · North Wilkesboro · Chase Race 2 · Sep 22, 2026",
+    "title": "NRRS Championship \u00b7 Chase for the Cup",
+    "subtitle": "Town Fair Cup \u00b7 Season 3 \u00b7 After R21/25 \u00b7 North Wilkesboro \u00b7 Chase Race 2 \u00b7 Sep 22, 2026",
     "league": "nrrs",
     "status": "THE CHASE",
     "rows": [
@@ -12,7 +12,7 @@
         "driver": "Will",
         "points": 2195,
         "delta": "LEADER",
-        "positionChange": "▲1",
+        "positionChange": "\u25b21",
         "chaseEligible": true,
         "highlight": false
       },
@@ -22,7 +22,7 @@
         "driver": "Trent",
         "points": 2182,
         "delta": "-13",
-        "positionChange": "▼1",
+        "positionChange": "\u25bc1",
         "chaseEligible": true,
         "highlight": false
       },
@@ -32,7 +32,7 @@
         "driver": "Clutch",
         "points": 2173,
         "delta": "-22",
-        "positionChange": "—",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": false
       },
@@ -42,7 +42,7 @@
         "driver": "Jaxon",
         "points": 2130,
         "delta": "-65",
-        "positionChange": "—",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": false
       },
@@ -52,7 +52,7 @@
         "driver": "Outlaw",
         "points": 2128,
         "delta": "-67",
-        "positionChange": "—",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": false
       },
@@ -62,7 +62,7 @@
         "driver": "Hailey",
         "points": 2087,
         "delta": "-108",
-        "positionChange": "—",
+        "positionChange": "\u2014",
         "chaseEligible": true,
         "highlight": true,
         "note": "Listed as Wispy in league standings"
@@ -113,7 +113,7 @@
         "driver": "Matty",
         "points": 231,
         "delta": null,
-        "positionChange": "▲1",
+        "positionChange": "\u25b21",
         "chaseEligible": false,
         "highlight": false
       },
@@ -123,7 +123,7 @@
         "driver": "Eazy",
         "points": 227,
         "delta": null,
-        "positionChange": "▼1",
+        "positionChange": "\u25bc1",
         "chaseEligible": false,
         "highlight": false
       },
@@ -148,7 +148,7 @@
         "highlight": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "20",
         "driver": "Cod",
         "points": 121,
@@ -159,7 +159,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "",
         "driver": "Ryan",
         "points": 114,
@@ -170,7 +170,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "99",
         "driver": "AJ",
         "points": 61,
@@ -181,7 +181,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "15",
         "driver": "Kentong",
         "points": 59,
@@ -202,7 +202,7 @@
         "highlight": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "1",
         "driver": "Max Verstappen",
         "points": 47,
@@ -213,7 +213,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "",
         "driver": "chanler",
         "points": 36,
@@ -225,7 +225,7 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "07",
         "driver": "Jaykay",
         "points": 35,
@@ -266,7 +266,7 @@
         "highlight": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "",
         "driver": "Butters",
         "points": 26,
@@ -288,7 +288,7 @@
       }
     ],
     "cutoffAfter": 6,
-    "cutoffLabel": "Chase cutoff · Top 6",
+    "cutoffLabel": "Chase cutoff \u00b7 Top 6",
     "pointsContext": "Chase gaps are measured from the championship leader. Published race points can advance this board automatically.",
     "autoPoints": true,
     "gapMode": "leader",
@@ -299,25 +299,26 @@
   {
     "id": "kmart",
     "title": "Kmart Cup Driver Standings",
-    "subtitle": "After Round 7 of 23 · Rockingham · Sep 21, 2026 · Chase Bubble",
+    "subtitle": "After Round 8 of 23 \u00b7 Portland \u00b7 Sep 28, 2026 \u00b7 Chase Bubble",
     "league": "kmart",
     "status": "CHASE BUBBLE",
     "rows": [
       {
         "position": "P1",
-        "number": "34",
-        "driver": "Jaxon",
-        "points": 267,
-        "delta": "+147",
+        "number": "15",
+        "driver": "Hailey",
+        "points": 533,
+        "delta": "+408",
         "chaseEligible": true,
-        "highlight": false
+        "highlight": true,
+        "note": "Jaxon\u2019s 310 driver points transferred once after Portland; base total 223."
       },
       {
         "position": "P2",
         "number": "24",
         "driver": "Will",
-        "points": 244,
-        "delta": "+124",
+        "points": 288,
+        "delta": "+163",
         "chaseEligible": true,
         "highlight": false
       },
@@ -325,27 +326,26 @@
         "position": "P3",
         "number": "61",
         "driver": "Carl",
-        "points": 201,
-        "delta": "+81",
+        "points": 236,
+        "delta": "+111",
         "chaseEligible": true,
         "highlight": false
       },
       {
         "position": "P4",
-        "number": "15",
-        "driver": "Hailey",
-        "points": 190,
-        "delta": "+70",
-        "chaseEligible": true,
-        "highlight": true,
-        "note": "Listed as Wispy in league standings"
-      },
-      {
-        "position": "P5",
         "number": "88",
         "driver": "TJ",
         "points": 173,
-        "delta": "+53",
+        "delta": "+48",
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "P5",
+        "number": "0",
+        "driver": "Sparklez",
+        "points": 154,
+        "delta": "+29",
         "chaseEligible": true,
         "highlight": false
       },
@@ -354,21 +354,12 @@
         "number": "45",
         "driver": "Trent",
         "points": 125,
-        "delta": "+5",
+        "delta": "0",
         "chaseEligible": true,
         "highlight": false
       },
       {
         "position": "P7",
-        "number": "0",
-        "driver": "Sparklez",
-        "points": 120,
-        "delta": "-5",
-        "chaseEligible": false,
-        "highlight": false
-      },
-      {
-        "position": "P8",
         "number": "21",
         "driver": "Outlaw",
         "points": 107,
@@ -377,7 +368,7 @@
         "highlight": false
       },
       {
-        "position": "P9",
+        "position": "P8",
         "number": "50",
         "driver": "Tnfan",
         "points": 60,
@@ -386,7 +377,7 @@
         "highlight": false
       },
       {
-        "position": "P10",
+        "position": "P9",
         "number": "05",
         "driver": "Cod",
         "points": 58,
@@ -395,7 +386,7 @@
         "highlight": false
       },
       {
-        "position": "P11",
+        "position": "P10",
         "number": "5",
         "driver": "B4L_ALEX",
         "points": 53,
@@ -404,7 +395,7 @@
         "highlight": false
       },
       {
-        "position": "P12",
+        "position": "P11",
         "number": "9",
         "driver": "redfont",
         "points": 53,
@@ -413,7 +404,7 @@
         "highlight": false
       },
       {
-        "position": "P13",
+        "position": "P12",
         "number": "1",
         "driver": "rusty214_",
         "points": 37,
@@ -422,7 +413,7 @@
         "highlight": false
       },
       {
-        "position": "P14",
+        "position": "P13",
         "number": "18",
         "driver": "Nico",
         "points": 36,
@@ -431,7 +422,7 @@
         "highlight": false
       },
       {
-        "position": "P15",
+        "position": "P14",
         "number": "13",
         "driver": "Stampy",
         "points": 36,
@@ -440,7 +431,7 @@
         "highlight": false
       },
       {
-        "position": "P16",
+        "position": "P15",
         "number": "54",
         "driver": "Matt",
         "points": 29,
@@ -449,7 +440,7 @@
         "highlight": false
       },
       {
-        "position": "P17",
+        "position": "P16",
         "number": "10",
         "driver": "MannyGtr",
         "points": 27,
@@ -460,12 +451,12 @@
     ],
     "ptEntry": {
       "number": "29",
-      "title": "Part-time drivers · Shared #29",
+      "title": "Part-time drivers \u00b7 Shared #29",
       "status": "NOT CHASE ELIGIBLE",
       "drivers": [
         {
           "driver": "Clutch",
-          "points": 179
+          "points": 240
         },
         {
           "driver": "Matty",
@@ -478,18 +469,31 @@
       ]
     },
     "cutoffAfter": 6,
-    "cutoffLabel": "Chase cutoff · Top 6 full-time drivers",
+    "cutoffLabel": "Chase cutoff \u00b7 Top 6 full-time drivers",
     "pointsContext": "Gap is measured from the Chase cutoff. Imported or published race points can advance this board automatically.",
     "autoPoints": true,
     "gapMode": "cutoff",
-    "lastResultDate": "2026-09-21",
-    "lastResultScheduleId": "",
-    "chaseActive": false
+    "lastResultDate": "2026-09-28",
+    "lastResultScheduleId": "2026-09-28-kmart-brembo-performance-200",
+    "chaseActive": false,
+    "appliedAdjustments": [
+      {
+        "id": "KMART_TRANSFER_JAXON_TO_HAILEY_2026",
+        "series": "kmart",
+        "sourceDriver": "Jaxon",
+        "destinationDriver": "Hailey",
+        "amount": 310,
+        "destinationBasePoints": 223,
+        "destinationAdjustedPoints": 533,
+        "applied": true,
+        "appliedAfterRound": 8
+      }
+    ]
   },
   {
     "id": "sunoco",
     "title": "Sunoco Truck Series Standings",
-    "subtitle": "Regular points · After Round 18 of 25",
+    "subtitle": "Regular points \u00b7 After Round 18 of 25",
     "league": "sunoco",
     "status": "CHASE ACTIVE",
     "rows": [
@@ -542,13 +546,13 @@
         "chaseEligible": false
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "61",
         "driver": "Carl",
         "team": "Sky Motorsports",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -556,13 +560,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "3",
         "driver": "Cod",
         "team": "Sky Motorsports",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -570,13 +574,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "13",
         "driver": "Stampy",
         "team": "Team Hog Racing",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -584,13 +588,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "18",
         "driver": "Nico",
         "team": "Team Hog Racing",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -598,13 +602,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "21",
         "driver": "Outlaw",
         "team": "Team Hog Racing",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -612,13 +616,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "51",
         "driver": "Matty",
         "team": "Campbell Garage",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -626,13 +630,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "77",
         "driver": "Jaxon",
         "team": "Spire Motorsports",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -640,13 +644,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "67",
         "driver": "Ryan",
         "team": "Sunset Motorsports",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -654,13 +658,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "22",
         "driver": "Flamingo",
         "team": "Facemob Racing",
         "manufacturer": "RAM",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -668,13 +672,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "7",
         "driver": "Trent",
         "team": "Big D Motorsports",
         "manufacturer": "Ford",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -682,13 +686,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "69",
         "driver": "AJ",
         "team": "Big D Motorsports",
         "manufacturer": "Ford",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -696,13 +700,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "31",
         "driver": "Hotline",
         "team": "Vice Motorsports",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -710,13 +714,13 @@
         "unranked": true
       },
       {
-        "position": "—",
+        "position": "\u2014",
         "number": "41",
         "driver": "Tnfan",
         "team": "Vice Motorsports",
         "manufacturer": "Chevrolet",
         "points": null,
-        "delta": "—",
+        "delta": "\u2014",
         "chaseStatus": "",
         "chaseEligible": false,
         "highlight": false,
@@ -724,21 +728,245 @@
         "unranked": true
       }
     ],
-    "chaseRows": [],
+    "chaseRows": [
+      {
+        "position": "\u2014",
+        "number": "42",
+        "driver": "Will",
+        "team": "Starclutch Racing",
+        "manufacturer": "RAM",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "46",
+        "driver": "Clutch",
+        "team": "Starclutch Racing",
+        "manufacturer": "RAM",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "27",
+        "driver": "Eazy",
+        "team": "Starclutch Racing",
+        "manufacturer": "RAM",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "54",
+        "driver": "Hailey",
+        "team": "Starclutch Racing",
+        "manufacturer": "RAM",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "61",
+        "driver": "Carl",
+        "team": "Sky Motorsports",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "3",
+        "driver": "Cod",
+        "team": "Sky Motorsports",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "13",
+        "driver": "Stampy",
+        "team": "Team Hog Racing",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "18",
+        "driver": "Nico",
+        "team": "Team Hog Racing",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "21",
+        "driver": "Outlaw",
+        "team": "Team Hog Racing",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "51",
+        "driver": "Matty",
+        "team": "Campbell Garage",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "77",
+        "driver": "Jaxon",
+        "team": "Spire Motorsports",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "67",
+        "driver": "Ryan",
+        "team": "Sunset Motorsports",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "22",
+        "driver": "Flamingo",
+        "team": "Facemob Racing",
+        "manufacturer": "RAM",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "7",
+        "driver": "Trent",
+        "team": "Big D Motorsports",
+        "manufacturer": "Ford",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "69",
+        "driver": "AJ",
+        "team": "Big D Motorsports",
+        "manufacturer": "Ford",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "31",
+        "driver": "Hotline",
+        "team": "Vice Motorsports",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      },
+      {
+        "position": "\u2014",
+        "number": "41",
+        "driver": "Tnfan",
+        "team": "Vice Motorsports",
+        "manufacturer": "Chevrolet",
+        "points": null,
+        "delta": "\u2014",
+        "pointsPending": true,
+        "unranked": true,
+        "chaseEligible": true,
+        "highlight": false
+      }
+    ],
     "chaseTitle": "Chase Points",
-    "chaseSubtitle": "Chase-only points · After Chase Race 3 of 10",
-    "chaseEmptyMessage": "Paste the Chase-only points CSV in Admin to populate this panel.",
+    "chaseSubtitle": "Chase-only points \u00b7 After Chase Race 3 of 10",
     "pointsContext": "Regular points show the full active roster. Chase-only points are maintained separately in Admin.",
     "autoPoints": false,
     "gapMode": "leader",
     "lastResultDate": "",
     "lastResultScheduleId": "",
-    "chaseActive": true
+    "chaseActive": true,
+    "missingRanks": [
+      "P3"
+    ]
   },
   {
     "id": "uarl",
-    "title": "UARL · Division 1 + Open",
-    "subtitle": "Season 6 · D2 Closed",
+    "title": "UARL \u00b7 Division 1 + Open",
+    "subtitle": "Season 6 \u00b7 D2 Closed",
     "league": "uarl",
     "status": "D1 POSTPONED",
     "emptyMessage": "No official UARL standings snapshot published yet",
