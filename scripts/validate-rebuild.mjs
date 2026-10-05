@@ -403,3 +403,9 @@ const siteDataV2023=readFileSync('netlify/lib/_site-data.cjs','utf8');
 if(!siteDataV2023.includes("profile==='hailey'")||!siteDataV2023.includes("p?.name!=='Palmetto Gaming'"))throw Error('Live site-content API must preserve canonical Hailey/Palmetto placement.');
 if(!siteDataV2023.includes("access-control-allow-origin':'https://paint.aetherwing.net"))throw Error('Paint Booth must be allowed to read the canonical public roster API.');
 console.log('v2.0.23 verified: Hailey canonical URL, personal Palmetto placement, and Drivers hero polish are locked.');
+
+// v2.0.24 — Homepage Astro compiler fix.
+const homeIndexV2024=readFileSync('src/pages/index.astro','utf8');
+if(!homeIndexV2024.includes('data-number-art>{art ? <img src={art}')||!homeIndexV2024.includes('/> : `#${number}`}'))throw Error('v2.0.24 Garage Lineup number-art ternary is malformed.');
+if(homeIndexV2024.includes('/>`#${number}`}'))throw Error('v2.0.24 regression: Garage Lineup fallback is missing the ternary colon.');
+console.log('v2.0.24 verified: Homepage Garage Lineup Astro ternary syntax is locked.');

@@ -1,3 +1,9 @@
+# Aetherwing Site v2.0.24 — HOMEPAGE ASTRO BUILD FIX
+
+- Fixes the Garage Lineup number-art ternary in `src/pages/index.astro` that caused Astro to fail with `Expected : but found ${`.
+- Keeps all v2.0.23 identity/polish, v2.0.22 results/schedule, and v2.0.21 roster-canon changes intact.
+- Adds a validator guard so the malformed number-art fallback cannot silently return.
+
 # Aetherwing Site v2.0.23 — IDENTITY / POLISH
 
 - Makes `/drivers/hailey/` canonical and permanently redirects legacy `/drivers/wispy/`.
