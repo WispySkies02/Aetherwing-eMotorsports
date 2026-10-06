@@ -9,11 +9,25 @@ export function slugify(value = '') {
     .toLowerCase();
 }
 
-export function eventSlug(event = {}) {
+export function legacyEventSlug(event = {}) {
   const date = event.date || 'tbd';
   const league = event.league || 'event';
   const title = slugify(event.title || event.track || 'scheduled-event');
   return `${date}-${league}-${title}`;
+}
+
+export function eventSlug(event = {}) {
+  // v2.0.27: Race Weekend routes must survive ordinary Admin edits.
+  // Prefer an explicit immutable routeId/id, then a league + round identity.
+  // Non-round events use league + date so changing the track/title does not
+  // create a URL Astro did not generate at build time.
+  const explicit = slugify(event.routeId || event.eventId || '');
+  if (explicit) return explicit;
+  const league = slugify(event.league || 'event') || 'event';
+  const roundMatch = String(event.round || '').match(/(\d+)/);
+  if (roundMatch) return `${league}-round-${Number(roundMatch[1])}`;
+  const date = slugify(event.date || 'tbd') || 'tbd';
+  return `${league}-${date}`;
 }
 
 export function eventDisplayDate(event = {}) {

@@ -197,8 +197,9 @@ function validate(key, data, registry={}) {
   const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;
   if (key==='schedule-events') {
-    const eventKey=(r)=>`${r.date}-${r.league}-${r.title.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;
-    if(new Set(rows.map(eventKey)).size!==rows.length)return 'Two calendar entries would have the same share route. Change the date, league, or title.';
+    const clean=(v)=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+    const eventKey=(r)=>{const explicit=clean(r.routeId||r.eventId||'');if(explicit)return explicit;const league=clean(r.league||'event')||'event',round=String(r.round||'').match(/(\d+)/);return round?`${league}-round-${Number(round[1])}`:`${league}-${clean(r.date||'tbd')||'tbd'}`;};
+    if(new Set(rows.map(eventKey)).size!==rows.length)return 'Two calendar entries would have the same stable Race Weekend route. Use a unique series/round or series/date identity.';
   }
   if (key === 'news' && rows.filter((r) => r.featured).length !== 1) return 'Choose exactly one featured Team Wire story.';
   if(key==='results'){

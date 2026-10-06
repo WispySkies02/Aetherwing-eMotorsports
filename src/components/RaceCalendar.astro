@@ -48,7 +48,8 @@ const initialResults = results;
   const completed=(e,now=new Date())=>Boolean(resultFor(e))||end(e)<now;
   const dateLabel=(e)=>{const d=new Date(`${e.date}T12:00:00Z`);return isNaN(d)?'DATE TBD':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();};
   const relative=(ms)=>ms<=0?'LIVE':`${Math.max(1,Math.ceil(ms/86400000))}D`;
-  const url=(e)=>e.url||`/event/${e.date||'tbd'}-${e.league||'event'}-${String(e.title||e.track||'scheduled-event').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}/`;
+  const routeSlug=(e)=>{const slugify=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();const explicit=slugify(e.routeId||e.eventId||'');if(explicit)return explicit;const league=slugify(e.league||'event')||'event',round=String(e.round||'').match(/(\d+)/);if(round)return `${league}-round-${Number(round[1])}`;return `${league}-${slugify(e.date||'tbd')||'tbd'}`;};
+  const url=(e)=>`/event/${routeSlug(e)}/`;
   function tick(){
     const now=new Date(), visible=events.filter(e=>!e.offWeek&&(selected==='all'||e.league===selected));
     const upcoming=visible.filter(e=>!completed(e,now)).sort((a,b)=>start(a)-start(b));

@@ -422,3 +422,17 @@ if(!raceCalendarCssV2026.includes('v2.0.26 — mobile featured-event containment
 if(!raceCalendarCssV2026.includes('.aw-calendar__layout,.aw-calendar__hero,.aw-calendar__hero>div,.aw-calendar__upcoming,.aw-calendar__heading,.aw-calendar__event,.aw-calendar__event>div{min-width:0}'))throw Error('v2.0.26 Race Calendar min-width containment is missing.');
 console.log('v2.0.26 verified: long mobile track names and Race Calendar metadata stay inside the viewport.');
 
+
+
+// v2.0.27 — stable Race Weekend routes survive live Admin track/title edits.
+const scheduleLibV2027=readFileSync('src/lib/schedule-events.mjs','utf8');
+const eventPageV2027=readFileSync('src/pages/event/[slug].astro','utf8');
+const raceCalendarV2027=readFileSync('src/components/RaceCalendar.astro','utf8');
+const siteDataV2027=readFileSync('netlify/lib/_site-data.cjs','utf8');
+const siteAdminV2027=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+if(!scheduleLibV2027.includes('legacyEventSlug')||!scheduleLibV2027.includes('`${league}-round-${Number(roundMatch[1])}`'))throw Error('v2.0.27 stable league/round Race Weekend route helper is missing.');
+if(!eventPageV2027.includes('legacyEventSlug(event)')||!eventPageV2027.includes('stableSlug(v)===eventId||legacySlug(v)===eventId')||!eventPageV2027.includes('data-event-track')||!eventPageV2027.includes('data-event-summary'))throw Error('v2.0.27 Race Weekend page must generate compatibility aliases and hydrate live event identity.');
+if(!raceCalendarV2027.includes('const routeSlug=(e)=>')||!raceCalendarV2027.includes('`${league}-round-${Number(round[1])}`')||!raceCalendarV2027.includes('const url=(e)=>`/event/${routeSlug(e)}/`'))throw Error('v2.0.27 Race Calendar must link live Admin events through stable routes.');
+if(siteDataV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 live site-data must not overwrite Admin venue edits with the old Las Vegas R22 venue.');
+if(siteAdminV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 Admin migration must not overwrite venue edits with the old Las Vegas R22 venue.');
+console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin track/title edits and live event identity hydrates on-page.');

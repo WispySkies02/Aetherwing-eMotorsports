@@ -2,10 +2,18 @@
 import Base from '../../layouts/Base.astro';
 import FaithSignature from '../../components/FaithSignature.astro';
 import { scheduleEvents, results, drivers } from '../../lib/site-content.mjs';
-import { eventSlug, eventDisplayDate } from '../../lib/schedule-events.mjs';
+import { eventSlug, legacyEventSlug, eventDisplayDate } from '../../lib/schedule-events.mjs';
 import '../../styles/records.css';
 
-export function getStaticPaths(){return scheduleEvents.filter(e=>!e.offWeek).map(e=>({params:{slug:eventSlug(e)},props:{event:e}}));}
+export function getStaticPaths(){
+  const paths=[];
+  for(const event of scheduleEvents.filter(e=>!e.offWeek)){
+    const stable=eventSlug(event),legacy=legacyEventSlug(event);
+    paths.push({params:{slug:stable},props:{event}});
+    if(legacy!==stable)paths.push({params:{slug:legacy},props:{event}});
+  }
+  return paths.filter((path,index,all)=>all.findIndex(other=>other.params.slug===path.params.slug)===index);
+}
 const {event}=Astro.props;
 const result=results.find(r=>r.date===event.date&&r.league===event.league&&r.title===event.title);
 const competitionId=(league='')=>league==='open'?'uarl-open':league==='iracing'?'iracing-factory':league;
@@ -26,17 +34,26 @@ const resolveEventEntries=(raceEvent,raceResult)=>{
 const entries=resolveEventEntries(event,result);
 ---
 <Base title={`${event.title} · Race Weekend`} description={`${event.leagueName} at ${event.track} · ${eventDisplayDate(event)}.`}>
-  <section class="page-intro"><div class="wrap"><a class="eyebrow" href="/schedule/">← Race calendar</a><p class="eyebrow">{event.leagueName} · {event.round||event.status||'RACE WEEKEND'}</p><h1>{event.track}</h1><p>{event.title} · {eventDisplayDate(event)} · {event.time||'TIME TBD'}</p><button class="btn" type="button" data-share>Copy event link ↗</button></div></section>
+  <section class="page-intro"><div class="wrap"><a class="eyebrow" href="/schedule/">← Race calendar</a><p class="eyebrow" data-event-series>{event.leagueName} · {event.round||event.status||'RACE WEEKEND'}</p><h1 data-event-track>{event.track}</h1><p data-event-summary>{event.title} · {eventDisplayDate(event)} · {event.time||'TIME TBD'}</p><button class="btn" type="button" data-share>Copy event link ↗</button></div></section>
   <FaithSignature field="faithRaceDayLine" label="Before the green flag"/>
-  <section class="section"><div class="wrap story-grid"><article class="story-panel"><p class="eyebrow">01 / Race weekend</p><h3>{event.title}</h3><p>{event.status||'Scheduled'} · {event.track} · {eventDisplayDate(event)}</p><a href="/schedule/">Full calendar ↗</a></article><article class="story-panel"><p class="eyebrow">02 / The garage</p><h3>Team Entries</h3><div data-event-entries>{entries.length?entries.map(e=><div class="profile-assignment"><span>{e.displayName}</span><strong>#{e.number}</strong><small>{e.status}</small></div>):<p>No team entries are currently listed for this event.</p>}</div></article><article class="story-panel"><p class="eyebrow">03 / The result</p><h3 data-event-head>{result?'Official Result':'Awaiting Green Flag'}</h3><div data-event-result>{result?<>{result.entries?.map(e=><div class="profile-assignment"><span>{e.driver}</span><strong>#{e.number}</strong><small>{e.finish?`P${e.finish}`:'DNS'}</small></div>)}<p>{result.summary}</p></>:<p>Results appear here after the race is published.</p>}</div><a href="/history/">Results archive ↗</a></article></div></section>
+  <section class="section"><div class="wrap story-grid"><article class="story-panel"><p class="eyebrow">01 / Race weekend</p><h3 data-event-title>{event.title}</h3><p data-event-detail>{event.status||'Scheduled'} · {event.track} · {eventDisplayDate(event)}</p><a href="/schedule/">Full calendar ↗</a></article><article class="story-panel"><p class="eyebrow">02 / The garage</p><h3>Team Entries</h3><div data-event-entries>{entries.length?entries.map(e=><div class="profile-assignment"><span>{e.displayName}</span><strong>#{e.number}</strong><small>{e.status}</small></div>):<p>No team entries are currently listed for this event.</p>}</div></article><article class="story-panel"><p class="eyebrow">03 / The result</p><h3 data-event-head>{result?'Official Result':'Awaiting Green Flag'}</h3><div data-event-result>{result?<>{result.entries?.map(e=><div class="profile-assignment"><span>{e.driver}</span><strong>#{e.number}</strong><small>{e.finish?`P${e.finish}`:'DNS'}</small></div>)}<p>{result.summary}</p></>:<p>Results appear here after the race is published.</p>}</div><a href="/history/">Results archive ↗</a></article></div></section>
 </Base>
 <script define:vars={{ eventId:eventSlug(event) }}>
   const share=document.querySelector('[data-share]');share?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);share.textContent='✓ LINK COPIED';setTimeout(()=>share.textContent='Copy event link ↗',2000);}catch{share.textContent='Copy the address bar link';}});
   window.addEventListener('aetherwing:content',({detail:d})=>{
-    const slug=e=>`${e.date}-${e.league}-${String(e.title||e.track||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;
-    const e=d['schedule-events']?.find(v=>slug(v)===eventId);if(!e)return;
+    const slugify=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+    const stableSlug=e=>{const explicit=slugify(e.routeId||e.eventId||'');if(explicit)return explicit;const league=slugify(e.league||'event')||'event',round=String(e.round||'').match(/(\d+)/);if(round)return `${league}-round-${Number(round[1])}`;return `${league}-${slugify(e.date||'tbd')||'tbd'}`;};
+    const legacySlug=e=>`${e.date||'tbd'}-${e.league||'event'}-${slugify(e.title||e.track||'scheduled-event')}`;
+    const e=d['schedule-events']?.find(v=>stableSlug(v)===eventId||legacySlug(v)===eventId);if(!e)return;
     const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const result=d.results?.find(r=>r.date===e.date&&r.league===e.league&&r.title===e.title);
+    const displayDate=v=>{if(v.tbd)return 'TBD';if(v.displayDate)return String(v.displayDate);if(!v.date)return 'TBD';const [year,month,day]=String(v.date).split('-').map(Number);return new Date(Date.UTC(year,month-1,day,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});};
+    document.querySelector('[data-event-series]').textContent=`${e.leagueName||e.league} · ${e.round||e.status||'RACE WEEKEND'}`;
+    document.querySelector('[data-event-track]').textContent=e.track||e.title||'Race Weekend';
+    document.querySelector('[data-event-summary]').textContent=`${e.title||e.track||'Race Weekend'} · ${displayDate(e)} · ${e.time||'TIME TBD'}`;
+    document.querySelector('[data-event-title]').textContent=e.title||e.track||'Race Weekend';
+    document.querySelector('[data-event-detail]').textContent=`${e.status||'Scheduled'} · ${e.track||e.title||'Track TBD'} · ${displayDate(e)}`;
+    document.title=`${e.title||e.track||'Race Weekend'} · Race Weekend · Aetherwing eMotorsports`;
+    const result=d.results?.find(r=>r.date===e.date&&r.league===e.league&&(r.title===e.title||r.track===e.track||r.scheduleId===legacySlug(e)));
     const leagueId=e.league==='open'?'uarl-open':e.league==='iracing'?'iracing-factory':e.league;
     const roster=Array.isArray(d.drivers)?d.drivers.filter(v=>v.competitionId===leagueId):[];
     let eventEntries=[];

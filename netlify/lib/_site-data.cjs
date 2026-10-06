@@ -11,7 +11,7 @@ function mergeCanonical(datasets){
     const scheduleSeedByKey=new Map((seed['schedule-events']||[]).map(e=>[`${e.date}|${e.league}|${e.title}`,e]));
     datasets['schedule-events']=datasets['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>{
       if(e?.league==='nrrs'&&e?.date==='2026-09-22')return {...e,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'};
-      if(e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'};
+      
       if(e?.league==='iracing'&&e?.title==='Bathurst 1000'&&e?.date==='2026-10-02'){const fresh=scheduleSeedByKey.get(`${e.date}|${e.league}|${e.title}`)||{};return {...e,startAt:fresh.startAt,endAt:fresh.endAt};}
       return e;
     });

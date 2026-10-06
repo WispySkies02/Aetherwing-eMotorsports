@@ -1,3 +1,12 @@
+# Aetherwing Site v2.0.27 — STABLE RACE WEEKEND ROUTES
+
+## v2.0.27 — Stable Race Weekend routes
+- Race Weekend URLs now use stable league/round identities for numbered rounds.
+- Editing a track or race title in Admin no longer creates a dead URL.
+- Non-round events use league/date identities.
+- Legacy title-based event URLs remain generated for compatibility.
+- Live Admin event edits hydrate the Race Weekend heading, metadata, entries, and result panel together.
+
 # Aetherwing Site v2.0.26 — MOBILE FEATURED EVENT CONTAINMENT FIX
 
 ## v2.0.26 — Mobile featured-event containment fix
