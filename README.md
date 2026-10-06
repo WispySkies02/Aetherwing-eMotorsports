@@ -1,4 +1,12 @@
-# Aetherwing Site v2.0.25 — MOBILE LEAGUE SELECTOR FIX
+# Aetherwing Site v2.0.26 — MOBILE FEATURED EVENT CONTAINMENT FIX
+
+## v2.0.26 — Mobile featured-event containment fix
+- Prevents long track names such as **TALLADEGA SUPERSPEEDWAY** from widening the Race Calendar beyond the mobile viewport.
+- Uses a true mobile fluid headline size while preserving the condensed/italic editorial treatment.
+- Adds `min-width: 0` containment to the hero, upcoming list, and metadata rows so right-side labels and Full Schedule links stay visible.
+- Allows compact top-right series/round metadata to wrap safely without forcing horizontal page overflow.
+- Leaves the v2.0.25 mobile league selector and desktop Race Calendar presentation unchanged.
+
 
 - Rebuilds the Race Calendar league buttons on phones into compact horizontal cards with the logo on the left and readable metadata on the right.
 - Allows long series names such as Kmart Auto Parts Series and Sunoco Truck Series to wrap to two lines instead of being clipped with an ellipsis.

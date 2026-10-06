@@ -69,3 +69,30 @@ html[data-season] .aw-calendar{background-image:linear-gradient(130deg,rgba(0,16
   .aw-calendar__filter-logo img{max-width:60px;max-height:42px}
   .aw-calendar__filter-meta{padding-inline:.58rem}
 }
+/* v2.0.26 — mobile featured-event containment for long track names. */
+@media(max-width:760px){
+  .aw-calendar__layout,.aw-calendar__hero,.aw-calendar__hero>div,.aw-calendar__upcoming,.aw-calendar__heading,.aw-calendar__event,.aw-calendar__event>div{min-width:0}
+  .aw-calendar__hero{overflow:hidden}
+  .aw-calendar__hero h3{
+    max-width:100%;
+    font-size:clamp(2rem,9.5vw,2.6rem);
+    line-height:.88;
+    overflow-wrap:normal;
+    word-break:normal;
+  }
+  .aw-calendar__hero-top{min-width:0}
+  .aw-calendar__hero-top small{
+    min-width:0;
+    max-width:62%;
+    font-size:.62rem;
+    line-height:1.2;
+    overflow-wrap:anywhere;
+  }
+  .aw-calendar__heading{overflow:hidden}
+  .aw-calendar__heading>span,.aw-calendar__heading>a{min-width:0}
+  .aw-calendar__heading>a{flex:0 1 auto;text-align:right;white-space:normal}
+}
+@media(max-width:390px){
+  .aw-calendar__hero h3{font-size:clamp(1.9rem,9vw,2.25rem)}
+  .aw-calendar__hero-top small{max-width:58%;font-size:.58rem}
+}

@@ -416,3 +416,9 @@ const raceCalendarCssV2025=readFileSync('src/styles/race-calendar.css','utf8');
 if(!raceCalendarCssV2025.includes('v2.0.25 — mobile program selector')||!raceCalendarCssV2025.includes('grid-template-columns:76px minmax(0,1fr)')||!raceCalendarCssV2025.includes('-webkit-line-clamp:2'))throw Error('v2.0.25 mobile league-selector layout is missing.');
 if(!raceCalendarCssV2025.includes('scroll-snap-type:x mandatory'))throw Error('v2.0.25 mobile league selector must retain intentional horizontal snapping.');
 console.log('v2.0.25 verified: mobile Race Calendar league buttons are compact, readable, and snap horizontally.');
+// v2.0.26 — mobile Race Calendar featured-event containment.
+const raceCalendarCssV2026 = readFileSync('src/styles/race-calendar.css','utf8');
+if(!raceCalendarCssV2026.includes('v2.0.26 — mobile featured-event containment')||!raceCalendarCssV2026.includes('font-size:clamp(2rem,9.5vw,2.6rem)')||!raceCalendarCssV2026.includes('.aw-calendar__hero{overflow:hidden}'))throw Error('v2.0.26 mobile featured-event containment is missing.');
+if(!raceCalendarCssV2026.includes('.aw-calendar__layout,.aw-calendar__hero,.aw-calendar__hero>div,.aw-calendar__upcoming,.aw-calendar__heading,.aw-calendar__event,.aw-calendar__event>div{min-width:0}'))throw Error('v2.0.26 Race Calendar min-width containment is missing.');
+console.log('v2.0.26 verified: long mobile track names and Race Calendar metadata stay inside the viewport.');
+
