@@ -1,4 +1,6 @@
 (()=>{
+  const __awPreviewParams=new URLSearchParams(location.search);
+  if(__awPreviewParams.get('motionPreview')==='1')document.documentElement.dataset.themePreviewMotion='true';
   const THEMES={
     'new-year':{title:'NEW YEAR',subtitle:'NEW LAPS · SAME FIGHT',icon:'✦',effect:'fireworks',density:9,ui:'metallic'},
     'clean-winter':{title:'CLEAN WINTER',subtitle:'COLD AIR · CLEAR FOCUS',icon:'❄',effect:'snow',density:16,ui:'frost'},

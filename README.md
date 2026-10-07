@@ -1,3 +1,11 @@
+## v2.0.38 — Admin Theme Preview Motion Fix
+
+- Manual Theme Preview choices now explicitly force the requested seasonal motion inside Admin.
+- The embedded LIVE PUBLIC PAGE preview receives `motionPreview=1`, so it demonstrates animation even when the device normally prefers reduced motion; normal public browsing still respects reduced-motion preferences.
+- Every Admin theme preview gets a visible lightweight background/stage drift in addition to snow, petals, leaves, embers, glows, twinkles, fireworks, bats, holiday lights, and observance motion where applicable.
+- Anniversary Week no longer hides the atmosphere layer.
+- Preserves v2.0.37: Palmetto Gaming + Apex Sim Racing coexist as team partners, the Talladega no-image stat feature, v2.0.36 wide Team Wire layout, and all prior Admin/live-data fixes.
+
 ## v2.0.37 — Core Partners + Talladega Stat Feature + Theme Motion
 
 - Keeps **Palmetto Gaming** and **Apex Sim Racing** together as Aetherwing team partners across seed, Admin, build-time, and live API data.

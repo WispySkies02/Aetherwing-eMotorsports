@@ -583,3 +583,19 @@ console.log('v2.0.35 verified: Palmetto is an Aetherwing team partner, the SCR s
   if(!seasonalFx.includes('@media(prefers-reduced-motion:reduce)'))throw Error('v2.0.37 theme motion must honor reduced-motion preferences.');
 }
 console.log('v2.0.37 verified: Palmetto + Apex coexist, Talladega is a no-image stat feature, and every active theme has lightweight visible motion.');
+
+
+// v2.0.38 — Admin Theme Preview must actually run visible motion.
+{
+  const themePreviewV2038=readFileSync('public/admin/theme-preview.js','utf8');
+  const seasonalThemeV2038=readFileSync('public/seasonal-theme.js','utf8');
+  const seasonalFxV2038=readFileSync('public/seasonal-effects.css','utf8');
+  const adminCssV2038=readFileSync('public/admin/fresh-admin.css','utf8');
+  const siteCssV2038=readFileSync('src/styles/site.css','utf8');
+  if(!themePreviewV2038.includes("url.searchParams.set('motionPreview','1')")||!themePreviewV2038.includes("root.dataset.adminForceMotion='true'"))throw Error('v2.0.38 Admin theme choices must explicitly preview motion.');
+  if(!seasonalThemeV2038.includes("dataset.themePreviewMotion='true'"))throw Error('v2.0.38 public preview iframe must recognize forced motion preview.');
+  if(!seasonalFxV2038.includes('data-theme-preview-motion')||!seasonalFxV2038.includes('data-admin-force-motion'))throw Error('v2.0.38 reduced-motion CSS must allow explicit Admin motion previews.');
+  if(!adminCssV2038.includes('@keyframes aw-admin-preview-stage-drift')||!adminCssV2038.includes('@keyframes aw-admin-preview-bg-drift'))throw Error('v2.0.38 Admin preview must include visible background/stage animation.');
+  if(siteCssV2038.includes('html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}'))throw Error('v2.0.38 Anniversary must not hide the seasonal atmosphere layer.');
+}
+console.log('v2.0.38 verified: Admin Theme Preview visibly animates every selected theme, including explicit motion preview overrides.');

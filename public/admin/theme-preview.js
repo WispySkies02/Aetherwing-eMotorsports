@@ -151,6 +151,7 @@
     const path=pageSelect?.value||'/';
     const url=new URL(path,location.origin);
     url.searchParams.set('themePreview','1');
+    url.searchParams.set('motionPreview','1');
     if((previewMode==='theme'||previewMode==='auto')&&selectedTheme==='anniversary'){
       url.searchParams.set('anniversary','throwback');url.searchParams.set('season','off');url.searchParams.set('observance','off');
     }else{
@@ -260,8 +261,8 @@
     refreshPublicPreview();
   };
 
-  grid.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme]');if(button){const theme=button.dataset.theme;selectedIntensity=defaultPreviewIntensity(theme);select(theme,'',theme==='default'?'plain':'theme');}});
-  observanceGrid?.addEventListener('click',(event)=>{const button=event.target.closest('[data-observance]');if(button){selectedIntensity=200;select(button.dataset.baseTheme||OBS[button.dataset.observance]?.base||'default',button.dataset.observance,'theme');}});
+  grid.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme]');if(button){const theme=button.dataset.theme;if(theme==='default')delete root.dataset.adminForceMotion;else root.dataset.adminForceMotion='true';selectedIntensity=defaultPreviewIntensity(theme);select(theme,'',theme==='default'?'plain':'theme');}});
+  observanceGrid?.addEventListener('click',(event)=>{const button=event.target.closest('[data-observance]');if(button){root.dataset.adminForceMotion='true';selectedIntensity=200;select(button.dataset.baseTheme||OBS[button.dataset.observance]?.base||'default',button.dataset.observance,'theme');}});
   if(motionToggle)motionToggle.addEventListener('click',()=>{root.dataset.adminForceMotion='true';motionToggle.hidden=true;mountFx(selectedTheme,selectedObservance,selectedIntensity);});
   autoButton?.addEventListener('click',()=>{delete root.dataset.adminForceMotion;const date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date);selectedIntensity=automaticIntensityForDate(date,theme,observance);select(theme,observance,'auto');});
   reset.addEventListener('click',()=>{delete root.dataset.adminForceMotion;selectedIntensity=200;select('default','','plain');});

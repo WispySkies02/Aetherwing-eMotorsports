@@ -296,7 +296,7 @@ html[data-anniversary-retro="true"]{
   --season-secondary:var(--retro-blue)!important;
   --season-tertiary:var(--retro-steel)!important;
 }
-html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}
+html[data-anniversary-retro="true"] .aw-season-atmosphere{display:block!important}
 html[data-anniversary-retro="true"] body{background:#050c11!important;color:#edf2f5}
 html[data-anniversary-retro="true"] body:before{filter:none!important}
 html[data-anniversary-retro="true"] body:after{
@@ -666,7 +666,7 @@ html[data-anniversary-retro="true"]{
   --font-condensed:'Arial Narrow',Arial,Helvetica,sans-serif;
   --font-brush:'Arial Narrow',Arial,Helvetica,sans-serif;
 }
-html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}
+html[data-anniversary-retro="true"] .aw-season-atmosphere{display:block!important}
 html[data-anniversary-retro="true"] body{background:#04131e!important;color:#f4fbff!important}
 html[data-anniversary-retro="true"] body:before{
   background:
