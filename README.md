@@ -1,3 +1,10 @@
+## v2.0.34 — Verified Admin Save State
+
+- Standings and Race Results Save Draft / Publish now verify the saved payload by reading it back from Netlify storage before clearing the unsaved state.
+- The editor reloads the server-normalized saved copy after persistence, preventing phantom dirty-state warnings.
+- Tab switches and page-exit warnings compare the current editor data against the last verified saved snapshot instead of trusting a stale boolean flag.
+- Preserves all v2.0.33 article, live standings/results propagation, broadcast standings, and full-results CSV work.
+
 ## v2.0.33 — Talladega Chase Consistency Context
 
 - Replaces the earlier “showing up and existing” concept in the featured Talladega Team Wire story with Hailey’s revised Chase/playoff consistency section.

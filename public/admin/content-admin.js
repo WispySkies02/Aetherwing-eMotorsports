@@ -108,7 +108,7 @@
   const fieldLabel = (name) => fieldLabels[key]?.[name] || label(name);
   const helpFor = (name) => fieldHelp[name] || '';
 
-  let registry = { revision:0, published:{}, drafts:{}, history:[] }, seeds = {}, key='', data=null, index=0, dirty=false, loaded=false, busy=false, publishConfigured=false;
+  let registry = { revision:0, published:{}, drafts:{}, history:[] }, seeds = {}, key='', data=null, index=0, dirty=false, loaded=false, busy=false, publishConfigured=false, persistedSnapshot='';
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const label = (s) => s.replace(/([A-Z])/g,' $1').replace(/[-_]/g,' ').replace(/^./,(c)=>c.toUpperCase());
@@ -810,6 +810,28 @@
       assign(current(),path,value);
     });
   }
+  const editorSnapshot=()=>JSON.stringify(data);
+  function rememberPersistedState(){persistedSnapshot=editorSnapshot();dirty=false;}
+  function refreshDirtyState(){
+    if(!key||data===null){dirty=false;return false;}
+    commit();dirty=editorSnapshot()!==persistedSnapshot;return dirty;
+  }
+  function editorValue(name,value){
+    let next=structuredClone(value);
+    if(name==='standings')next=repairLegacyPartialStandings(next);
+    if(name==='charters')next=migrateCharters(next);
+    if(name==='schedule-events')next=next.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
+    if(name==='results'){next=migrateResults(next).sort(compareResults);next=next.map((race,i)=>({...race,featured:i===0}));}
+    if(name==='drivers')next=next.map((row)=>({numberImage:'',...row}));
+    if(['wins','milestones'].includes(name))next=next.map((row)=>({assignmentId:'',...row}));
+    return next;
+  }
+  const rowIdentity=(row)=>row?.scheduleId?`schedule:${row.scheduleId}`:row?.id?`id:${row.id}`:row?.slug?`slug:${row.slug}`:row?.title?`title:${row.title}`:'';
+  function loadPersistedEditorValue(name,value,preferredIdentity=''){
+    data=editorValue(name,value);index=0;
+    if(Array.isArray(data)&&preferredIdentity){const found=data.findIndex((row)=>rowIdentity(row)===preferredIdentity);if(found>=0)index=found;}
+    rememberPersistedState();
+  }
   function fields(value,path=[]) {
     const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
     return Object.entries(value).map(([k,v])=>{
@@ -1117,7 +1139,7 @@
     if(panel)panel.hidden=true;
   }
   function showOverview() {
-    if(dirty&&!confirm('Leave unsaved changes in this tab?'))return;
+    if(refreshDirtyState()&&!confirm('Leave unsaved changes in this tab?'))return;
     $('[data-admin-overview]').hidden=false;
     $('[data-content-editor]').hidden=true;
     hidePaintPanels();
@@ -1127,11 +1149,7 @@
     window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   }
   function chooseDataset(name) {
-    key=name; standingsImportPreview=[]; sunocoChaseImportPreview=[]; resultsImportPreview=[]; data=structuredClone(base(key)); if(key==='standings')data=repairLegacyPartialStandings(data); if(key==='charters')data=migrateCharters(data); index=0; dirty=false;
-    if (key==='schedule-events') data=data.map((r)=>({offWeek:false,tbd:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
-    if(key==='results'){data=migrateResults(data).sort(compareResults);data=data.map((race,i)=>({...race,featured:i===0}));}
-    if(key==='drivers')data=data.map((row)=>({numberImage:'',...row}));
-    if(['wins','milestones'].includes(key))data=data.map((row)=>({assignmentId:'',...row}));
+    key=name; standingsImportPreview=[]; sunocoChaseImportPreview=[]; resultsImportPreview=[]; loadPersistedEditorValue(key,base(key));
     const meta=datasetMeta[key]||{number:'EDIT',kicker:'CONTENT WORKSPACE',title:label(key),description:'Edit this content section.'};
     $('[data-content-number]').textContent=meta.number;
     $('[data-content-kicker]').textContent=meta.kicker;
@@ -1145,7 +1163,7 @@
   }
   async function openDatasetTab(name) {
     if (busy) return;
-    if (dirty && key!==name && !confirm('Leave unsaved changes in this tab?')) return;
+    if (key!==name && refreshDirtyState() && !confirm('Leave unsaved changes in this tab?')) return;
     try {
       if (!loaded) await load();
       $('[data-admin-overview]').hidden=true;
@@ -1164,7 +1182,7 @@
     if(first)await openDatasetTab(first);
   }
   function openPaintTab(name) {
-    if(dirty&&!confirm('Leave unsaved changes in this content tab?'))return;
+    if(refreshDirtyState()&&!confirm('Leave unsaved changes in this content tab?'))return;
     dirty=false;
     $('[data-admin-overview]').hidden=true;
     $('[data-content-editor]').hidden=true;
@@ -1175,7 +1193,7 @@
     document.querySelector(`[data-panel="${name}"]`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
   function showThemePreview() {
-    if(dirty&&!confirm('Leave unsaved changes in this content tab?'))return;
+    if(refreshDirtyState()&&!confirm('Leave unsaved changes in this content tab?'))return;
     dirty=false;key='';data=null;
     $('[data-admin-overview]').hidden=true;
     $('[data-content-editor]').hidden=true;
@@ -1190,7 +1208,7 @@
   document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',()=>openPaintTab(button.dataset.adminPaintTab)));
   document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',showOverview);
   document.querySelector('[data-admin-tab="theme-preview"]')?.addEventListener('click',showThemePreview);
-  $('[data-content-dataset]').addEventListener('change',(event)=>{ if(dirty&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
+  $('[data-content-dataset]').addEventListener('change',(event)=>{ if(refreshDirtyState()&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
   $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   document.querySelectorAll('[data-shift-preview]').forEach((button)=>button.addEventListener('click',()=>previewScheduleShift(Number(button.dataset.shiftPreview))));
@@ -1355,6 +1373,8 @@
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');
     if(busy)throw new Error('A save is already in progress.');
+    if(['saveDraft','publish'].includes(name))commit();
+    const selectedIdentity=rowIdentity(current());
     const autoPlaced=['saveDraft','publish'].includes(name)&&autoPlaceScheduleEvents();
     const autoLatest=['saveDraft','publish'].includes(name)&&autoPlaceResults();
     if(autoPlaced||autoLatest){render();refreshScheduleShiftTool();}
@@ -1362,7 +1382,20 @@
     $('[data-content-editor]').inert=true;
     try {
       const response=await api(name,{dataset:key,...(['saveDraft','publish'].includes(name)?{data}: {})});
-      registry=response.registry;dirty=false;
+      registry=response.registry;
+      if(['saveDraft','publish'].includes(name)){
+        const responseSaved=name==='saveDraft'?registry.drafts?.[key]:registry.published?.[key];
+        if(responseSaved===undefined)throw new Error('The server replied successfully, but the saved section was missing. Nothing was marked saved; please retry.');
+        const responseSerialized=JSON.stringify(responseSaved);
+        if(['standings','results'].includes(key)){
+          const verification=await api();
+          const verifiedSaved=name==='saveDraft'?verification.registry?.drafts?.[key]:verification.registry?.published?.[key];
+          if(verifiedSaved===undefined||JSON.stringify(verifiedSaved)!==responseSerialized)throw new Error('Save verification failed. Your editor is still marked unsaved so no work is silently lost. Please retry.');
+          registry=verification.registry;seeds=verification.seeds||seeds;publishConfigured=verification.publishConfigured??publishConfigured;
+        }
+        const persisted=name==='saveDraft'?registry.drafts[key]:registry.published[key];
+        loadPersistedEditorValue(key,persisted,selectedIdentity);render();refreshScheduleShiftTool();refreshResultsRaceOptions(current()?.scheduleId||'');refreshPageScanTool();
+      } else dirty=false;
       if(name==='publish') {
         const publication=response.publication;
         if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
@@ -1372,7 +1405,7 @@
         else {const removed=Number(publication?.driverRemovalCascade?.removedAssignments||0),removedNote=removed?` Removed ${removed} current league assignment${removed===1?'':'s'} for the deleted driver profile${removed===1?'':'s'}; historical results were kept.`:'';status(publication?.queued
           ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Live public data is updated immediately; a static rebuild is also queued.${removedNote}`
           : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Retry site rebuild.'}${removedNote}`);}
-      } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?'Calendar sorted by date, start time, and league. Private draft saved; nothing public changed.':'Private draft saved. Nothing public changed.'):'Section updated.'));
+      } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?`Calendar sorted and private draft saved + verified at revision ${registry.revision}. No unsaved changes remain; nothing public changed.`:`Private draft saved + verified at revision ${registry.revision}. No unsaved changes remain; nothing public changed.`):'Section updated.'));
       updateControlCenterStatus(response.publication);
     } finally { busy=false; $('[data-content-editor]').inert=false; }
   }
@@ -1384,7 +1417,7 @@
     try{await action('publish');}catch(error){status(error.message);}
   });
   $('[data-content-discard]').addEventListener('click',async()=>{if(!confirm('Discard this saved section draft and return to published content?'))return;try{await action('discardDraft');chooseDataset(key);status('Draft discarded. Published content is unchanged.');}catch(error){status(error.message);}});
-  $('[data-content-refresh]').addEventListener('click',async()=>{if(dirty&&!confirm('Replace unsaved changes with saved data?'))return;try{await load();chooseDataset(key);}catch(error){status(error.message);}});
+  $('[data-content-refresh]').addEventListener('click',async()=>{if(refreshDirtyState()&&!confirm('Replace unsaved changes with saved data?'))return;try{await load();chooseDataset(key);}catch(error){status(error.message);}});
   $('[data-content-rebuild]').addEventListener('click',async()=>{try{const result=await api('rebuild');status(result.publication.message);updateControlCenterStatus(result.publication);}catch(error){status(error.message);}});
   $('[data-content-publish-all]')?.addEventListener('click',async()=>{
     try {
@@ -1403,6 +1436,6 @@
     const image=event.target;if(!(image instanceof HTMLImageElement)||!image.classList.contains('driver-number-preview'))return;
     const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'){image.dataset.backupTried='1';image.src=backup;status('The primary number artwork did not render. Showing the secondary source instead.');}
   },true);
-  window.addEventListener('beforeunload',(event)=>{if(dirty){event.preventDefault();event.returnValue='';}});
-  window.netlifyIdentity?.on('logout',()=>{loaded=false;data=null;key='';dirty=false;seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});
+  window.addEventListener('beforeunload',(event)=>{if(refreshDirtyState()){event.preventDefault();event.returnValue='';}});
+  window.netlifyIdentity?.on('logout',()=>{loaded=false;data=null;key='';dirty=false;persistedSnapshot='';seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});
 })();

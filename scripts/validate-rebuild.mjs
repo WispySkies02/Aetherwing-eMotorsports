@@ -564,3 +564,22 @@ console.log('v2.0.31 verified: final full-time context is inserted after teammat
   if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.33 Talladega story must remain the one featured Team Wire story.');
 }
 console.log('v2.0.33 verified: Chase/playoff consistency replacement is inserted before the enjoyment section and remains migration-safe.');
+
+// v2.0.34 — verified Admin save-state + persistence readback.
+{
+  const admin=readFileSync('public/admin/content-admin.js','utf8');
+  const required=[
+    "persistedSnapshot=''",
+    'function rememberPersistedState()',
+    'function refreshDirtyState()',
+    "['standings','results'].includes(key)",
+    'const verification=await api()',
+    'Save verification failed.',
+    'loadPersistedEditorValue(key,persisted,selectedIdentity)',
+    "if(refreshDirtyState()&&!confirm('Leave unsaved changes in this tab?'))return;",
+    "window.addEventListener('beforeunload',(event)=>{if(refreshDirtyState())"
+  ];
+  for(const needle of required)if(!admin.includes(needle))throw Error(`v2.0.34 Admin verified-save requirement missing: ${needle}`);
+  if(!admin.includes('Private draft saved + verified at revision'))throw Error('v2.0.34 Save Draft must clearly confirm verified persistence.');
+}
+console.log('v2.0.34 verified: Admin save/publish uses a persisted snapshot and verifies standings/results storage before clearing unsaved state.');
