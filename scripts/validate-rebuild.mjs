@@ -268,20 +268,19 @@ if(!siteContentSourceNow.includes('v2.0.11 — Team Wire uses Hailey consistentl
 if(!adminContentSource.includes('v2.0.11 — normalize legacy Wispy references')||!adminContentSource.includes('normalizeNewsIdentityValue'))throw Error('Admin Team Wire identity migration is missing.');
 console.log('v2.0.11 verified: every reader-facing Team Wire Wispy reference is normalized to Hailey while legacy routes remain stable.');
 
-// v2.0.12 — Palmetto Gaming follows Hailey personally on the SCR #28; it is not a joint SCR/Aetherwing sponsorship.
+// v2.0.12 historical note — Palmetto classification was later corrected in v2.0.35.
 const newsV212=JSON.parse(readFileSync('src/data/news.json','utf8'));
 const scrV212=newsV212.find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
 const scrV212Text=JSON.stringify(scrV212||{});
-if(!scrV212||!scrV212Text.includes('personal partners')||!scrV212Text.includes('Hailey personal partner'))throw Error('Season 4 SCR story must identify Palmetto Gaming as Hailey’s personal partner.');
-if(/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(scrV212Text))throw Error('Season 4 SCR story still describes Palmetto Gaming as a joint SCR/Aetherwing partnership.');
+if(!scrV212||!scrV212Text.includes('Aetherwing team partner')||/one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(scrV212Text))throw Error('Season 4 SCR story must identify Palmetto Gaming as an Aetherwing team partner appearing on Hailey’s #28.');
+if(/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(scrV212Text))throw Error('Season 4 SCR story must not describe Palmetto as a joint SCR/Aetherwing sponsorship.');
 const adminSeedV212=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
 const adminScrV212=(adminSeedV212.news||[]).find((story)=>story.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
-if(/SCR\/Aetherwing partnership|SCR × Aetherwing partnership/i.test(JSON.stringify(adminScrV212||{})))throw Error('Admin seed still contains the old Palmetto joint-partnership wording.');
+if(!JSON.stringify(adminScrV212||{}).includes('Aetherwing team partner'))throw Error('Admin seed must carry the corrected Palmetto team-partner wording.');
 const partnersV212=JSON.parse(readFileSync('src/data/partners.json','utf8'));
-const portfoliosV212=JSON.parse(readFileSync('src/data/driver-portfolios.json','utf8'));
-const palmettoV212=partnersV212.find((item)=>item.name==='Palmetto Gaming')||portfoliosV212.find((item)=>['wispy','hailey'].includes(item.profile))?.brands?.find((brand)=>brand.name==='Palmetto Gaming');
-if(!palmettoV212)throw Error('Palmetto Gaming must remain attached to Hailey’s personal program.');
-console.log('v2.0.12 verified: Palmetto Gaming is presented as Hailey Bell’s personal partner on the #28, not a joint SCR/Aetherwing sponsor.');
+const palmettoV212=partnersV212.find((item)=>item.name==='Palmetto Gaming');
+if(!palmettoV212||palmettoV212.role!=='Gaming Partner')throw Error('Palmetto Gaming must be restored as an Aetherwing team partner.');
+console.log('v2.0.12 historical Palmetto rule superseded: current canon is Aetherwing team partner + Hailey #28 appearance.');
 
 
 // v2.0.13 — separate the SCR signing from Hailey's full-time competition transition.
@@ -304,20 +303,19 @@ if(!recordsCssV214.includes('minmax(260px,320px)')||!recordsCssV214.includes('wh
 console.log('v2.0.14 verified: desktop Team Wire heroes are rebalanced and headline markers stay intact.');
 
 
-// v2.0.15 — 100 / 150 / 200 seasonal intensity ladder.
-const seasonalThemeV215=readFileSync('public/seasonal-theme.js','utf8');
-const seasonalFxV215=readFileSync('public/seasonal-effects.css','utf8');
-const adminThemePreviewV215=readFileSync('public/admin/theme-preview.js','utf8');
-const adminThemeHtmlV215=readFileSync('public/admin/index.html','utf8');
-const siteCssV215=readFileSync('src/styles/site.css','utf8');
-if(!seasonalThemeV215.includes('automaticIntensity')||!seasonalThemeV215.includes("seasonIntensity")||!seasonalThemeV215.includes("dataset.seasonIntensity")||!seasonalThemeV215.includes("intensityLevel"))throw Error('Seasonal 100/150/200 automatic intensity resolver is missing.');
-for(const value of ['100','150','200'])if(!siteCssV215.includes(`data-season-intensity="${value}"`))throw Error(`Seasonal ${value}% public UI treatment is missing.`);
-if(!siteCssV215.includes('SEASONAL INTENSITY SYSTEM')||!siteCssV215.includes('aw-season-atmosphere:before')||!siteCssV215.includes('aw-season-atmosphere:after'))throw Error('Full seasonal UI/front-glass takeover rules are missing.');
-if(!seasonalFxV215.includes('aw-season-atmosphere--intensity-150')||!seasonalFxV215.includes('aw-season-atmosphere--intensity-200'))throw Error('Seasonal atmosphere intensity amplification is missing.');
-for(const value of ['100','150','200'])if(!adminThemeHtmlV215.includes(`data-theme-intensity="${value}"`))throw Error(`Admin Theme Preview is missing the ${value}% intensity control.`);
-if(!adminThemePreviewV215.includes('automaticIntensityForDate')||!adminThemePreviewV215.includes("seasonIntensity")||!adminThemePreviewV215.includes('defaultPreviewIntensity'))throw Error('Admin Theme Preview intensity parity is incomplete.');
-if(!siteCssV215.includes(':not([data-anniversary-retro="true"])'))throw Error('Seasonal intensity rules must defer to Anniversary Week.');
-console.log('v2.0.15 verified: seasonal themes run at 100% baseline, 150% big-week intensity, and 200% holiday-day intensity with Admin preview parity.');
+// v2.0.36 — every active seasonal theme is a full 200% takeover with restrained motion.
+const seasonalThemeV236=readFileSync('public/seasonal-theme.js','utf8');
+const seasonalFxV236=readFileSync('public/seasonal-effects.css','utf8');
+const adminThemePreviewV236=readFileSync('public/admin/theme-preview.js','utf8');
+const adminThemeHtmlV236=readFileSync('public/admin/index.html','utf8');
+const siteCssV236=readFileSync('src/styles/site.css','utf8');
+if(!seasonalThemeV236.includes("return theme==='standard'?0:200")||!seasonalThemeV236.includes("dataset.seasonIntensity")||!seasonalThemeV236.includes("motionProfile")||!seasonalThemeV236.includes("visibilitychange"))throw Error('Universal 200% seasonal runtime or performance guardrails are missing.');
+if(adminThemeHtmlV236.includes('data-theme-intensity="100"')||adminThemeHtmlV236.includes('data-theme-intensity="150"')||!adminThemeHtmlV236.includes('200% · Full Takeover'))throw Error('Admin Theme Preview must expose only the universal 200% takeover mode.');
+if(!adminThemePreviewV236.includes("theme==='default'?0:200")||!adminThemePreviewV236.includes('selectedIntensity=200'))throw Error('Admin Theme Preview is not locked to the full-takeover philosophy.');
+if(!seasonalFxV236.includes('is-paused')||!seasonalFxV236.includes('aw-theme-glass-drift')||seasonalFxV236.includes('@media (prefers-reduced-motion:reduce){.aw-season-atmosphere{display:none!important}}'))throw Error('Seasonal motion performance / reduced-motion behavior is incomplete.');
+if(!siteCssV236.includes('FULL-TAKEOVER THEME SYSTEM')||!siteCssV236.includes('aw-anniversary-ambient-drift')||!siteCssV236.includes(':not([data-anniversary-retro="true"])'))throw Error('Full seasonal UI takeover or Anniversary ambient treatment is missing.');
+if(!siteCssV236.includes('Team Wire desktop canvas')||!siteCssV236.includes('1500px')||!siteCssV236.includes('minmax(0,960px)'))throw Error('Team Wire desktop width expansion is missing.');
+console.log('v2.0.36 verified: every active theme is a full 200% takeover with lightweight ambient motion, and Team Wire uses a wider desktop editorial canvas.');
 
 
 // v2.0.16 / v2.0.18 — final full-time season feature, renamed FULL HEART.
@@ -390,19 +388,18 @@ if(!championshipsSource.includes('PTS pending')||!championshipsSource.includes('
 if(!raceCalendarSource.includes('e.endAt'))throw Error('Race Calendar must honor explicit special-event end timestamps.');
 console.log('v2.0.22 verified: Kmart R8, Sunoco dual standings, and event expiration are locked without guessing NRRS R22.');
 
-// v2.0.23 — canonical Hailey identity / personal partner / Drivers hero polish.
+// v2.0.23 — canonical Hailey identity / Drivers hero polish. Palmetto placement was corrected in v2.0.35.
 const rosterV2023=JSON.parse(readFileSync('src/data/roster-profiles.json','utf8'));
 if(!rosterV2023.some(p=>p.slug==='hailey')||rosterV2023.some(p=>p.slug==='wispy'))throw Error('Hailey must use /drivers/hailey/ as the canonical roster slug.');
 if(!readFileSync('netlify.toml','utf8').includes('from = "/drivers/wispy/"')||!readFileSync('netlify.toml','utf8').includes('to = "/drivers/hailey/"'))throw Error('Legacy Wispy driver URL redirect is missing.');
 const partnersV2023=JSON.parse(readFileSync('src/data/partners.json','utf8'));
-const portfoliosV2023=JSON.parse(readFileSync('src/data/driver-portfolios.json','utf8'));
-if(partnersV2023.some(p=>p.name==='Palmetto Gaming')||!portfoliosV2023.find(p=>p.profile==='hailey')?.brands?.some(b=>b.name==='Palmetto Gaming'))throw Error('Palmetto Gaming must be Hailey-only, not a team partner.');
+if(!partnersV2023.some(p=>p.name==='Palmetto Gaming'))throw Error('Palmetto Gaming must remain in the Aetherwing Team Partners dataset.');
 const driversPageV2023=readFileSync('src/pages/drivers/index.astro','utf8');
 if(!driversPageV2023.includes('drivers-page')||!lineupCss.includes('.drivers-page .page-intro'))throw Error('Drivers-only desktop hero reduction is missing.');
 const siteDataV2023=readFileSync('netlify/lib/_site-data.cjs','utf8');
-if(!siteDataV2023.includes("profile==='hailey'")||!siteDataV2023.includes("p?.name!=='Palmetto Gaming'"))throw Error('Live site-content API must preserve canonical Hailey/Palmetto placement.');
+if(!siteDataV2023.includes('ensurePalmettoTeamPartner')||siteDataV2023.includes("filter(p=>p?.name!=='Palmetto Gaming')"))throw Error('Live site-content API must preserve Palmetto as an Aetherwing team partner.');
 if(!siteDataV2023.includes("access-control-allow-origin':'https://paint.aetherwing.net"))throw Error('Paint Booth must be allowed to read the canonical public roster API.');
-console.log('v2.0.23 verified: Hailey canonical URL, personal Palmetto placement, and Drivers hero polish are locked.');
+console.log('v2.0.23 verified: Hailey canonical URL and Drivers hero polish remain locked; Palmetto now follows corrected team-partner canon.');
 
 // v2.0.24 — Homepage Astro compiler fix.
 const homeIndexV2024=readFileSync('src/pages/index.astro','utf8');
@@ -583,3 +580,26 @@ console.log('v2.0.33 verified: Chase/playoff consistency replacement is inserted
   if(!admin.includes('Private draft saved + verified at revision'))throw Error('v2.0.34 Save Draft must clearly confirm verified persistence.');
 }
 console.log('v2.0.34 verified: Admin save/publish uses a persisted snapshot and verifies standings/results storage before clearing unsaved state.');
+
+
+// v2.0.35 — restore Palmetto Gaming as an Aetherwing team partner and stop portfolio rewrites.
+{
+  const partnersNow=JSON.parse(readFileSync('src/data/partners.json','utf8'));
+  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+  const palmetto=partnersNow.find((item)=>item?.name==='Palmetto Gaming');
+  if(!palmetto||palmetto.role!=='Gaming Partner'||!palmetto.featured)throw Error('v2.0.35 Palmetto Gaming team-partner seed is missing.');
+  if(!(adminSeed.partners||[]).some((item)=>item?.name==='Palmetto Gaming'&&item?.role==='Gaming Partner'))throw Error('v2.0.35 Admin team-partner seed must include Palmetto Gaming.');
+  const siteContent=readFileSync('src/lib/site-content.mjs','utf8');
+  const siteData=readFileSync('netlify/lib/_site-data.cjs','utf8');
+  const siteAdmin=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+  const admin=readFileSync('public/admin/content-admin.js','utf8');
+  for(const [label,source] of [['build-time site content',siteContent],['live site-data API',siteData],['Admin server',siteAdmin]]){
+    if(source.includes("filter(p=>p?.name!=='Palmetto Gaming')")||source.includes("filter((item)=>item?.name!=='Palmetto Gaming')"))throw Error(`v2.0.35 ${label} still filters Palmetto out of Team Partners.`);
+  }
+  if(siteContent.includes("brands:[{name:'Palmetto Gaming'")||siteData.includes("p.profile==='hailey'&&pal?pal:p")||siteAdmin.includes("p.profile==='hailey'&&pal?pal:p"))throw Error('v2.0.35 code must not forcibly rewrite Hailey’s driver portfolio around Palmetto.');
+  if(!siteData.includes('ensurePalmettoTeamPartner')||!siteAdmin.includes('ensurePalmettoTeamPartner')||!admin.includes("name==='partners'"))throw Error('v2.0.35 Palmetto team-partner repair path is incomplete.');
+  const scr=(JSON.parse(readFileSync('src/data/news.json','utf8'))||[]).find((story)=>story?.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
+  const scrText=JSON.stringify(scr||{});
+  if(!scrText.includes('Aetherwing team partner')||/one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(scrText))throw Error('v2.0.35 SCR story still misclassifies Palmetto Gaming.');
+}
+console.log('v2.0.35 verified: Palmetto is an Aetherwing team partner, the SCR story is corrected, and Hailey’s portfolio remains Admin-editable.');

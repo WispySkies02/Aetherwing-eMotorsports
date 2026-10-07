@@ -129,36 +129,28 @@
     return automaticObservance(partsInEastern());
   }
 
-  // v2.0.15 — seasonal intensity system. 100% is the new baseline takeover,
-  // 150% is major-week/event treatment, and 200% is reserved for the actual
-  // holiday/observance date. Manual previews can force ?seasonIntensity=100|150|200.
+  // v2.0.36 — every active theme is a full 200% visual takeover.
+  // Visual completeness is no longer tied to a 100/150/200 calendar ladder.
+  // Motion uses a separate, deliberately small performance budget so desktop and
+  // mobile keep the atmosphere without turning the site into a GPU stress test.
   function automaticIntensity(parts,theme,observance){
-    if(theme==='standard')return 0;
-    if(observance)return 200;
-    const {year,month,day}=parts,key=dateKey(year,month,day);
-    if(theme==='new-year'||theme==='st-patrick')return 200;
-    if(theme==='valentine')return day===14?200:150;
-    if(theme==='easter')return key===iso(easterSunday(year))?200:150;
-    if(theme==='memorial-day')return key===iso(memorialDay(year))?200:150;
-    if(theme==='independence-day')return month===7&&day===4?200:150;
-    if(theme==='halloween-week')return day===31?200:150;
-    if(theme==='fall'){
-      const thanks=thanksgiving(year),weekStart=addDays(thanks,-6);
-      if(between(key,iso(weekStart),iso(thanks)))return key===iso(thanks)?200:150;
-    }
-    if(theme==='christmas-week')return day>=24?200:150;
-    return 100;
+    return theme==='standard'?0:200;
   }
   function resolveIntensity(theme,observance){
-    const forced=new URLSearchParams(location.search).get('seasonIntensity');
-    if(['100','150','200'].includes(forced))return Number(forced);
-    return automaticIntensity(partsInEastern(),theme,observance);
+    return theme==='standard'?0:200;
   }
-  const intensityLevel=(value)=>value>=200?'holiday':value>=150?'event':'full';
-  const scaledDensity=(base,intensity)=>{
-    const factor=intensity>=200?1.9:intensity>=150?1.45:1;
-    const cap=window.matchMedia?.('(max-width:700px)').matches?58:84;
-    return Math.min(cap,Math.max(base,Math.round(base*factor)));
+  const intensityLevel=(value)=>value>0?'takeover':'off';
+  const motionProfile=()=>{
+    const mobile=Boolean(window.matchMedia?.('(max-width:700px)').matches);
+    const lowMemory=Number(navigator.deviceMemory||0)>0&&Number(navigator.deviceMemory)<=4;
+    const lowCpu=Number(navigator.hardwareConcurrency||0)>0&&Number(navigator.hardwareConcurrency)<=4;
+    const constrained=mobile||lowMemory||lowCpu;
+    return {mobile,constrained,scale:mobile?.34:constrained?.42:.52,cap:mobile?10:constrained?14:22};
+  };
+  const scaledDensity=(base)=>{
+    const profile=motionProfile();
+    if(!base)return 0;
+    return Math.min(profile.cap,Math.max(3,Math.round(base*profile.scale)));
   };
 
   const palette=()=>{
@@ -230,6 +222,7 @@
     document.body.appendChild(hud);
   }
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
+  function syncAtmospherePlayback(){document.querySelector('.aw-season-atmosphere')?.classList.toggle('is-paused',document.hidden);}
   function mountAtmosphere(theme,observance,intensity=100){
     const key=`${theme}|${observance}|${intensity}`;
     if(!document.body||theme==='standard'){removeAtmosphere();return;}
@@ -241,21 +234,21 @@
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset);layer.appendChild(el);}};
 
     if(!obs?.suppress){
-      const density=scaledDensity(meta.density,intensity),detail=intensity>=200?2:intensity>=150?1.5:1;
-      if(meta.effect==='haze')add('aw-fx__haze',Math.round(3*detail));
-      else if(meta.effect==='halloween'){add('aw-fx__haze',Math.round(3*detail));add('aw-fx__ember',density);add('aw-fx__bat',Math.round((theme==='halloween-week'?4:2)*detail));}
+      const density=scaledDensity(meta.density),profile=motionProfile();
+      if(meta.effect==='haze')add('aw-fx__haze',profile.mobile?1:2);
+      else if(meta.effect==='halloween'){add('aw-fx__haze',profile.mobile?1:2);add('aw-fx__ember',density);add('aw-fx__bat',profile.mobile?1:(theme==='halloween-week'?3:2));}
       else if(meta.effect==='leaves')add('aw-fx__leaf',density);
       else if(meta.effect==='snow')add('aw-fx__snow',density);
-      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',Math.round(12*detail));}
+      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',profile.mobile?4:6);}
       else if(meta.effect==='petals')add('aw-fx__petal',density);
       else if(meta.effect==='glow')add('aw-fx__glow',density);
       else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
       else if(meta.effect==='fireworks'){
         for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i,8)*76}%;--y:${10+seeded(i,9)*52}%;--delay:-${(seeded(i,10)*22).toFixed(2)}s;--dur:${(8+seeded(i,11)*8).toFixed(2)}s`;layer.appendChild(el);}
       }
-      if(obs?.add==='twinkle')add('aw-fx__twinkle',Math.round(10*detail),71);
-      if(obs?.add==='glow')add('aw-fx__glow',Math.round(8*detail),83);
-      if(obs?.add==='sunrise'){add('aw-fx__glow',Math.round(12*detail),101);add('aw-fx__twinkle',Math.round(7*detail),121);}
+      if(obs?.add==='twinkle')add('aw-fx__twinkle',profile.mobile?3:5,71);
+      if(obs?.add==='glow')add('aw-fx__glow',profile.mobile?3:5,83);
+      if(obs?.add==='sunrise'){add('aw-fx__glow',profile.mobile?4:6,101);add('aw-fx__twinkle',profile.mobile?2:4,121);}
     }
 
     if(meta.lights){
@@ -264,12 +257,12 @@
         for(let i=0;i<count;i++){const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i,20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i,21)*8)}px`);strand.appendChild(bulb);}
         layer.appendChild(strand);
       };
-      const lightFactor=intensity>=200?1.45:intensity>=150?1.2:1;makeStrand('top',Math.round(30*lightFactor));makeStrand('left',Math.round(18*lightFactor));makeStrand('right',Math.round(18*lightFactor));
+      const profile=motionProfile();makeStrand('top',profile.mobile?14:18);if(!profile.mobile){makeStrand('left',8);makeStrand('right',8);}
     }
     if(theme==='christmas-week')layer.appendChild(buildHolidayTree());
     const faithScene=buildFaithScene(theme);if(faithScene)layer.appendChild(faithScene);
     const motif=buildObservanceMotif(observance);if(motif)layer.appendChild(motif);
-    document.body.prepend(layer);mountedKey=key;
+    document.body.prepend(layer);mountedKey=key;syncAtmospherePlayback();
   }
 
   function apply(){
@@ -293,6 +286,7 @@
     mountAtmosphere(theme,observance,intensity);
   }
 
+  document.addEventListener('visibilitychange',syncAtmospherePlayback,{passive:true});
   apply();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
   setInterval(apply,60*1000);

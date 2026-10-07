@@ -4,9 +4,20 @@ function replaceFullCirclePartner(value){
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
   return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
 }
+function ensurePalmettoTeamPartner(rows=[],seedPartners=[]){
+  const list=Array.isArray(rows)?[...rows]:[];
+  const canonical=(seedPartners||[]).find((item)=>item?.name==='Palmetto Gaming');
+  if(!canonical)return list;
+  const index=list.findIndex((item)=>item?.name==='Palmetto Gaming');
+  if(index===-1){list.unshift(canonical);return list;}
+  if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
+  return list;
+}
+
 function mergeCanonical(datasets){
   const seed=seeds();
   if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);if(!fresh)return normalized;if(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text))return fresh;return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};});
+  if(Array.isArray(datasets.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);datasets.news=datasets.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(datasets.news)){const currentSlug='talladega-leaves-bell-frustrated-championship-gap-grows',fresh=(seed.news||[]).find((story)=>story?.slug===currentSlug);let hadCurrent=false;datasets.news=datasets.news.map((story)=>{if(story?.slug!==currentSlug)return story;hadCurrent=true;return fresh&&story?.contentRevision!==fresh.contentRevision?fresh:story;});if(!hadCurrent&&fresh)datasets.news.push(fresh);if(!hadCurrent)datasets.news=datasets.news.map((story)=>({...story,featured:story?.slug===currentSlug}));}
   if(Array.isArray(datasets['schedule-events'])){
     const scheduleSeedByKey=new Map((seed['schedule-events']||[]).map(e=>[`${e.date}|${e.league}|${e.title}`,e]));
@@ -26,8 +37,8 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets['driver-profiles']))datasets['driver-profiles']=normalize('driver-profiles',datasets['driver-profiles']);
   if(Array.isArray(datasets.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');datasets.charters=datasets.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
   if(Array.isArray(datasets.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));datasets.competitions=datasets.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id)||x:x);}
-  if(Array.isArray(datasets.partners))datasets.partners=datasets.partners.filter(p=>p?.name!=='Palmetto Gaming');
-  if(Array.isArray(datasets['driver-portfolios'])){const pal=(seed['driver-portfolios']||[]).find(p=>p.profile==='hailey');datasets['driver-portfolios']=normalize('driver-portfolios',datasets['driver-portfolios']).map(p=>p.profile==='hailey'&&pal?pal:p);if(!datasets['driver-portfolios'].some(p=>p.profile==='hailey')&&pal)datasets['driver-portfolios'].push(pal);}
+  if(Array.isArray(datasets.partners))datasets.partners=ensurePalmettoTeamPartner(datasets.partners,seed.partners||[]);else datasets.partners=ensurePalmettoTeamPartner([],seed.partners||[]);
+  if(Array.isArray(datasets['driver-portfolios']))datasets['driver-portfolios']=normalize('driver-portfolios',datasets['driver-portfolios']);
   return datasets;
 }
 exports.handler = async (event) => {

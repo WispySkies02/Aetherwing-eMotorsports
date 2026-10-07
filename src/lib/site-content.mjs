@@ -56,8 +56,7 @@ const obsoleteNavigation = Array.isArray(publishedNavigation) && (
 const rawNavigation = obsoleteNavigation ? navigationSeed : publishedNavigation;
 export const navigation = (Array.isArray(rawNavigation)?rawNavigation:navigationSeed).map((item)=>item?.label==='Paint Booth'&&item?.href==='/paint-booth/'?{...item,href:'https://paint.aetherwing.net/'}:item);
 export const liveryBrands = choose('livery-brands', liveryBrandsSeed);
-const palmettoPartner=partnersSeed.find((item)=>item?.name==='Palmetto Gaming');
-const normalizeDriverPortfolios=(rows=[])=>rows.map((portfolio)=>{const profile=portfolio?.profile==='wispy'?'hailey':portfolio?.profile;if(profile!=='hailey'||!palmettoPartner)return {...portfolio,profile};const brands=[...(portfolio.brands||[])].filter((brand)=>brand?.name!=='Palmetto Gaming').map((brand,index)=>({...brand,order:index+2}));return {...portfolio,profile:'hailey',brands:[{name:'Palmetto Gaming',logo:palmettoPartner.logo||'',order:1},...brands]};});
+const normalizeDriverPortfolios=(rows=[])=>rows.map((portfolio)=>({...portfolio,profile:portfolio?.profile==='wispy'?'hailey':portfolio?.profile}));
 export const driverPortfolios = normalizeDriverPortfolios(choose('driver-portfolios', driverPortfoliosSeed));
 export const pageOverrides = choose('page-overrides', pageOverridesSeed);
 const resultSlug=(value='')=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
@@ -176,7 +175,7 @@ const migrateStaleNewsStory = (story) => {
   if (!fresh) return normalized;
   if (normalized.slug === 'hailey-bell-joins-starclutch-racing-nrrs-season-4') {
     const serialized = JSON.stringify(normalized);
-    if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized)) return fresh;
+    if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership|one of her personal partners|Hailey personal partner|relationship follows Bell|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized)) return fresh;
   }
   if (normalized.slug === currentFeaturedNewsSlug && normalized.contentRevision !== fresh.contentRevision) return fresh;
   if (normalized.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4') {
@@ -215,4 +214,5 @@ export const leadership = (Array.isArray(publishedLeadership)?publishedLeadershi
   return entry;
 });
 const publishedPartners = choose('partners', partnersSeed);
-export const partners = (Array.isArray(publishedPartners)?publishedPartners:partnersSeed).filter((item)=>item?.name!=='Palmetto Gaming');
+const normalizeTeamPartners=(rows=[])=>{const list=[...rows];const canonical=partnersSeed.find((item)=>item?.name==='Palmetto Gaming');if(!canonical)return list;const index=list.findIndex((item)=>item?.name==='Palmetto Gaming');if(index===-1)return [canonical,...list];if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};return list;};
+export const partners = normalizeTeamPartners(Array.isArray(publishedPartners)?publishedPartners:partnersSeed);

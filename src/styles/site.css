@@ -305,6 +305,10 @@ html[data-anniversary-retro="true"] body:after{
     repeating-linear-gradient(180deg,rgba(255,255,255,.024) 0 1px,transparent 1px 3px)!important;
   opacity:1!important;
 }
+@keyframes aw-anniversary-ambient-drift{0%{transform:translate3d(-.45%,0,0) scale(1.015)}100%{transform:translate3d(.45%,-.35%,0) scale(1.022)}}
+html[data-anniversary-retro="true"] body:after{transform-origin:center;animation:aw-anniversary-ambient-drift 32s ease-in-out infinite alternate}
+@media(max-width:700px){html[data-anniversary-retro="true"] body:after{animation-duration:46s}}
+@media(prefers-reduced-motion:reduce){html[data-anniversary-retro="true"] body:after{animation:none!important;transform:none!important}}
 html[data-anniversary-retro="true"] .aw-season-banner{
   display:flex!important;
   min-height:31px!important;
@@ -807,10 +811,9 @@ html[data-anniversary-retro="true"] .page-intro:after{
   }
 }
 
-/* v2.0.15 — SEASONAL INTENSITY SYSTEM
-   100% = full seasonal UI takeover at all times.
-   150% = major-week/event treatment.
-   200% = actual holiday / observance day spectacle.
+/* v2.0.36 — FULL-TAKEOVER THEME SYSTEM
+   Every active theme now emits the complete 200% UI treatment immediately.
+   Animation intensity is intentionally decoupled from visual intensity and stays subtle.
    Anniversary Week remains authoritative while its throwback shell is active. */
 html[data-season-intensity]:not([data-anniversary-retro="true"]){
   --season-ui-glow:color-mix(in srgb,var(--season-primary) 22%,transparent);
@@ -864,7 +867,7 @@ html[data-season-intensity]:not([data-anniversary-retro="true"]) .site-footer:be
 html[data-season-intensity]:not([data-anniversary-retro="true"])::-webkit-scrollbar-thumb,
 html[data-season-intensity]:not([data-anniversary-retro="true"]) body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--season-secondary) 0 45%,var(--season-primary) 45% 88%,var(--season-tertiary) 88%)!important;box-shadow:0 0 12px var(--season-ui-glow)}
 
-/* Front-glass atmosphere: visible at 100%, amplified rather than introduced at higher levels. */
+/* Front-glass atmosphere: always present for an active theme; motion stays subtle. */
 html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before,
 html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{content:'';position:fixed;inset:0;pointer-events:none}
 html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before{
@@ -874,7 +877,7 @@ html[data-season-intensity]:not([data-anniversary-retro="true"]) .aw-season-atmo
   z-index:4;opacity:.18;background:linear-gradient(90deg,rgba(0,0,0,.42),transparent 9%,transparent 91%,rgba(0,0,0,.42)),linear-gradient(180deg,rgba(0,0,0,.24),transparent 12%,transparent 88%,rgba(0,0,0,.32)),repeating-linear-gradient(108deg,transparent 0 87px,rgba(255,255,255,.035) 88px 89px,transparent 90px 173px)
 }
 
-/* 150% — event/big-week layer. */
+/* Legacy 150% definitions retained for old preview URLs; current runtime never emits 150%. */
 html[data-season-intensity="150"]:not([data-anniversary-retro="true"]){--season-ui-glow:color-mix(in srgb,var(--season-primary) 34%,transparent);--season-ui-glow-2:color-mix(in srgb,var(--season-secondary) 27%,transparent)}
 html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) body:after{opacity:.46!important}
 html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .site-header{box-shadow:0 16px 46px rgba(0,0,0,.54),0 0 42px var(--season-ui-glow-2)!important}
@@ -884,7 +887,7 @@ html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) :is(.stor
 html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:before{opacity:.39}
 html[data-season-intensity="150"]:not([data-anniversary-retro="true"]) .aw-season-atmosphere:after{opacity:.27}
 
-/* 200% — holiday / one-day spectacle. Readability wins, but the site should be unmistakable. */
+/* 200% — universal active-theme treatment. Readability wins, but the site should be unmistakable. */
 html[data-season-intensity="200"]:not([data-anniversary-retro="true"]){--season-ui-glow:color-mix(in srgb,var(--season-primary) 48%,transparent);--season-ui-glow-2:color-mix(in srgb,var(--season-secondary) 38%,transparent)}
 html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) body:after{opacity:.34!important}
 html[data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(115deg,color-mix(in srgb,var(--season-secondary) 31%,#05080b),color-mix(in srgb,var(--season-primary) 24%,#08090c) 58%,#050608)!important;box-shadow:0 18px 54px rgba(0,0,0,.58),0 0 58px var(--season-ui-glow)!important}
@@ -940,7 +943,7 @@ html[data-season-ui="metallic"][data-season-intensity="200"]:not([data-anniversa
 @media(prefers-reduced-motion:reduce){
   html[data-season-intensity] .aw-season-atmosphere:before,html[data-season-intensity] .aw-season-atmosphere:after{animation:none!important}
 }
-/* Explicit baseline marker for QA: 100% is a full takeover, not a teaser mode. */
+/* Legacy baseline marker retained for compatibility; runtime now emits 200% for every active theme. */
 html[data-season-intensity="100"]:not([data-anniversary-retro="true"]){--season-intensity-label:100}
 
 /* 200% observance-day signatures stay specific to the meaning of the day. */
@@ -955,3 +958,29 @@ html[data-observance="thanksgiving"][data-season-intensity="200"]:not([data-anni
 html[data-observance="christmas-eve"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 65% 2%,rgba(255,224,128,.5),transparent 24%),radial-gradient(circle at 9% 79%,rgba(36,131,88,.48),transparent 33%),linear-gradient(145deg,#010713,#08223a 37%,#030813 64%,#19090b 100%)}
 html[data-observance="christmas-eve"][data-season-intensity="200"]:not([data-anniversary-retro="true"]) .site-header{background:linear-gradient(112deg,#010b18,#0b2b47 46%,#4a3512 75%,#060a10)!important}
 html[data-observance="christmas-day"][data-season-intensity="200"]:not([data-anniversary-retro="true"]){--site-bg-art:radial-gradient(circle at 50% -3%,rgba(255,235,153,.7),transparent 27%),radial-gradient(circle at 84% 14%,rgba(245,82,82,.58),transparent 28%),radial-gradient(circle at 10% 79%,rgba(52,209,119,.62),transparent 32%),linear-gradient(145deg,#010912 0%,#075133 36%,#030a11 61%,#430a0f 100%)}
+
+
+/* v2.0.36 — all active themes are full 200% takeovers; motion remains lightweight. */
+html[data-season]:not([data-anniversary-retro="true"]){--season-intensity-label:200}
+
+/* v2.0.36 — Team Wire desktop canvas. Use the monitor for editorial modules while
+   keeping long-form paragraph measure readable instead of stretching copy edge-to-edge. */
+@media(min-width:1100px){
+  .news-article>.wrap{width:min(calc(100% - 2*var(--gutter)),1500px);max-width:1500px}
+  .news-article__hero{padding-bottom:2rem}
+  .news-article__hero-grid{gap:clamp(2rem,3.5vw,4.5rem)}
+  .news-article__hero-grid.has-mark{grid-template-columns:minmax(0,1fr) minmax(330px,410px)}
+  .news-article__hero-grid.has-logo{grid-template-columns:minmax(0,1fr) minmax(420px,520px)}
+  .news-article__summary{max-width:920px}
+  .news-article__logo-card img{max-width:500px}
+  .news-article__body .news-metrics,.news-programs,.news-timeline{width:100%;max-width:none!important}
+  .news-pullquote{max-width:1080px}
+  .news-article__sections>section{grid-template-columns:3.6rem minmax(0,960px);gap:1.35rem;max-width:1060px!important}
+  .news-callout{max-width:1120px}
+  .news-callout p{max-width:920px}
+}
+@media(min-width:1500px){
+  .news-article h1{max-width:15ch}
+  .news-metrics>div{padding:1.35rem 1.5rem}
+  .news-timeline__rail{gap:.85rem}
+}

@@ -107,9 +107,20 @@ function replaceFullCirclePartner(value){
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
   return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
 }
+function ensurePalmettoTeamPartner(rows=[],seedPartners=[]){
+  const list=Array.isArray(rows)?[...rows]:[];
+  const canonical=(seedPartners||[]).find((item)=>item?.name==='Palmetto Gaming');
+  if(!canonical)return list;
+  const index=list.findIndex((item)=>item?.name==='Palmetto Gaming');
+  if(index===-1){list.unshift(canonical);return list;}
+  if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
+  return list;
+}
+
 function migrateKnownPublished(registry){
   const seed=seeds();
   if(Array.isArray(registry.published?.news))registry.published.news=registry.published.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);if(!fresh)return normalized;if(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text))return fresh;return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};});
+  if(Array.isArray(registry.published?.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);registry.published.news=registry.published.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(registry.published?.news)){const currentSlug='talladega-leaves-bell-frustrated-championship-gap-grows',fresh=(seed.news||[]).find((story)=>story?.slug===currentSlug);let hadCurrent=false;registry.published.news=registry.published.news.map((story)=>{if(story?.slug!==currentSlug)return story;hadCurrent=true;return fresh&&story?.contentRevision!==fresh.contentRevision?fresh:story;});if(!hadCurrent&&fresh)registry.published.news.push(fresh);if(!hadCurrent)registry.published.news=registry.published.news.map((story)=>({...story,featured:story?.slug===currentSlug}));}
   if(Array.isArray(registry.published?.['schedule-events']))registry.published['schedule-events']=registry.published['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>{if(e?.league==='nrrs'&&e?.date==='2026-09-22')return {...e,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'};if(e?.league==='iracing'&&e?.title==='Bathurst 1000'&&e?.date==='2026-10-02'){const fresh=(seed['schedule-events']||[]).find(x=>x.date===e.date&&x.league===e.league&&x.title===e.title)||{};return {...e,startAt:fresh.startAt,endAt:fresh.endAt};}return e;});
   // Results and standings are now fully live-published datasets. Do not run legacy
@@ -119,8 +130,8 @@ function migrateKnownPublished(registry){
   if(Array.isArray(registry.published?.['driver-profiles']))registry.published['driver-profiles']=normalize('driver-profiles',registry.published['driver-profiles']);
   if(Array.isArray(registry.published?.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');registry.published.charters=registry.published.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
   if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id)||x:x);}
-  if(Array.isArray(registry.published?.partners))registry.published.partners=registry.published.partners.filter(p=>p?.name!=='Palmetto Gaming');
-  if(Array.isArray(registry.published?.['driver-portfolios'])){const pal=(seed['driver-portfolios']||[]).find(p=>p.profile==='hailey');registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']).map(p=>p.profile==='hailey'&&pal?pal:p);if(!registry.published['driver-portfolios'].some(p=>p.profile==='hailey')&&pal)registry.published['driver-portfolios'].push(pal);}
+  if(Array.isArray(registry.published?.partners))registry.published.partners=ensurePalmettoTeamPartner(registry.published.partners,seed.partners||[]);
+  if(Array.isArray(registry.published?.['driver-portfolios']))registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']);
   return registry;
 }
 

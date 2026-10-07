@@ -349,7 +349,7 @@ html[data-admin-theme="anniversary"] .admin-theme-stage__card:after{content:'EST
 html[data-admin-theme="anniversary"] .admin-theme-stage__mini strong{color:#20a8ed!important;text-shadow:4px 5px 0 #002943!important}
 .admin-theme-preview__grid button[data-theme="anniversary"]{--theme-a:#008fe8;--theme-b:#00a7a0;--theme-texture:linear-gradient(135deg,rgba(0,143,232,.22),transparent 44%),linear-gradient(0deg,rgba(95,186,70,.11),transparent 46%)}
 
-/* v2.0.15 — preview the 100 / 150 / 200 seasonal intensity ladder. */
+/* v2.0.36 — every active theme previews at the full 200% takeover. */
 .admin-theme-intensity{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin:-.35rem 0 1rem;padding:.65rem;border:1px solid #34414b;background:#090d11}
 .admin-theme-intensity>span{margin-right:.2rem;color:#8d99a2;font:900 .58rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
 .admin-theme-intensity button{min-height:36px;padding:.5rem .7rem;border:1px solid #46545e;background:#11171c;color:#dfe7eb;font:900 .58rem/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}

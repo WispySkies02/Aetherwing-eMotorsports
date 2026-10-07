@@ -25,7 +25,7 @@
   let previewMode='auto';
   let selectedTheme='default';
   let selectedObservance='';
-  let selectedIntensity=100;
+  let selectedIntensity=200;
   if(!grid||!name||!reset)return;
 
   const labels=Object.fromEntries([...grid.querySelectorAll('[data-theme]')].map((button)=>[button.dataset.theme,button.querySelector('b')?.textContent?.trim()||button.dataset.theme]));
@@ -45,7 +45,7 @@
     summer:{window:'After Memorial Day–Sep 19 (except Jul 4 window)',motion:'Summer-night glow field',motionCopy:'More visible firefly-like glow, warmer horizon light, and brighter race-day accents give summer its own unmistakable atmosphere.',ui:'Revamped summer race UI',uiCopy:'Sky-blue/gold race graphics, sunlit panel edges, energetic hovers, and stronger late-evening contrast across the site.',effect:'glow',density:26},
     'independence-day':{window:'Jun 28–Jul 4',motion:'Distant fireworks',motionCopy:'Occasional small fireworks burst behind the site instead of over the content.',ui:'Patriotic race UI',uiCopy:'Red/white/blue stripe language, crisp cards, and event-style accents.',effect:'fireworks',density:10},
     'summer-end':{window:'Sep 20–24',motion:'Warm light drift',motionCopy:'Slow firefly-like light specks sit behind the workspace.',ui:'Sunset race UI',uiCopy:'Warm gold/orange accents, brighter hover energy, and sunset-lit surfaces.',effect:'glow',density:22},
-    anniversary:{window:'Every year · Oct 1–7 · Eastern Time',motion:'Static debut-era atmosphere',motionCopy:'No novelty particle effect — the throwback comes from the 2015 identity, blue/teal interface, legacy logo and era-specific site treatment.',ui:'2015 debut identity',uiCopy:'A full Anniversary Week takeover using the EST. 2015 Aetherwing mark, debut blue/teal palette, simpler mid-2010s team-site panels and BellSouth Racing heritage references.',effect:'none',density:0},
+    anniversary:{window:'Every year · Oct 1–7 · Eastern Time',motion:'Subtle broadcast drift',motionCopy:'A slow scanline/background drift keeps the 2015 race-broadcast shell alive without adding particle clutter.',ui:'2015 debut identity',uiCopy:'A full Anniversary Week takeover using the EST. 2015 Aetherwing mark, debut blue/teal palette, simpler mid-2010s team-site panels and BellSouth Racing heritage references.',effect:'none',density:0},
     'halloween-teaser':{window:'Sep 25–30',motion:'Low drifting haze',motionCopy:'Barely-there fog makes the page feel like dusk without distracting from forms.',ui:'Early spooky UI',uiCopy:'Sharper corners, orange/violet edges, and darker distressed control surfaces.',effect:'haze',density:5},
     halloween:{window:'Oct 1–24',motion:'Layered fog + embers + bats',motionCopy:'Layered fog, brighter embers, and distant bat silhouettes build a noticeably darker race-night atmosphere while staying behind the UI.',ui:'After-dark UI',uiCopy:'A full after-dark takeover with clipped corners, glowing orange race lines, violet shadows, distressed panels, and ember-lit controls.',effect:'halloween',density:32},
     'halloween-week':{window:'Oct 25–31',motion:'Full Halloween takeover',motionCopy:'Dense fog, stronger embers, and more distant bats push Halloween week to its maximum without blocking controls or copy.',ui:'Intensified Halloween UI',uiCopy:'Maximum Halloween treatment: brighter orange edges, deeper violet panels, hotter hover glow, and more dramatic race-night contrast.',effect:'halloween',density:46},
@@ -145,24 +145,8 @@
     if(m===12&&d===25)return 'christmas-day';
     return '';
   };
-  const automaticIntensityForDate=(date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date))=>{
-    if(theme==='default')return 100;if(observance)return 200;
-    const y=date.getUTCFullYear(),m=date.getUTCMonth()+1,d=date.getUTCDate(),today=key(date);
-    if(theme==='new-year'||theme==='st-patrick')return 200;
-    if(theme==='valentine')return d===14?200:150;
-    if(theme==='easter')return today===key(easterSunday(y))?200:150;
-    if(theme==='memorial-day')return today===key(memorialDay(y))?200:150;
-    if(theme==='independence-day')return m===7&&d===4?200:150;
-    if(theme==='halloween-week')return d===31?200:150;
-    if(theme==='fall'){const thanks=thanksgiving(y),start=addDays(thanks,-6);if(today>=key(start)&&today<=key(thanks))return today===key(thanks)?200:150;}
-    if(theme==='christmas-week')return d>=24?200:150;
-    return 100;
-  };
-  const defaultPreviewIntensity=(theme)=>{
-    if(['new-year','st-patrick'].includes(theme))return 200;
-    if(['valentine','easter','memorial-day','independence-day','halloween-week','christmas-week'].includes(theme))return 150;
-    return 100;
-  };
+  const automaticIntensityForDate=(date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date))=>theme==='default'?0:200;
+  const defaultPreviewIntensity=(theme)=>theme==='default'?0:200;
   const publicPreviewUrl=()=>{
     const path=pageSelect?.value||'/';
     const url=new URL(path,location.origin);
@@ -213,26 +197,26 @@
     const meta=META[theme],obs=OBS[observance];if(!meta)return null;if(meta.effect==='none'&&!observance)return null;
     const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-admin-season-fx ${stageMode?'aw-admin-season-fx--stage':'aw-admin-season-fx--page'} aw-season-atmosphere--${meta.effect} aw-season-atmosphere--intensity-${intensity}`;layer.setAttribute('aria-hidden','true');
     const css=getComputedStyle(root);layer.style.setProperty('--fx-primary',css.getPropertyValue('--preview-primary').trim()||'#f3b51d');layer.style.setProperty('--fx-secondary',css.getPropertyValue('--preview-secondary').trim()||'#12aaf5');layer.style.setProperty('--fx-tertiary',css.getPropertyValue('--preview-third').trim()||'#fff');
-    const factor=intensity>=200?1.9:intensity>=150?1.45:1;const rawDensity=Math.round(meta.density*factor);
-    const density=stageMode?Math.min(48,Math.max(rawDensity,meta.effect==='haze'?3:12)):Math.min(84,rawDensity);
+    const compact=Boolean(window.matchMedia?.('(max-width:700px)').matches);const scale=stageMode?.3:(compact?.34:.52);const rawDensity=Math.max(3,Math.round(meta.density*scale));
+    const density=stageMode?Math.min(9,rawDensity):Math.min(compact?10:22,rawDensity);
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset+(stageMode?31:0));layer.appendChild(el);}};
     if(!obs?.suppress){
-      if(meta.effect==='haze')add('aw-fx__haze',3);
-      else if(meta.effect==='halloween'){add('aw-fx__haze',3);add('aw-fx__ember',density);add('aw-fx__bat',theme==='halloween-week'?4:2);}
+      if(meta.effect==='haze')add('aw-fx__haze',stageMode?1:2);
+      else if(meta.effect==='halloween'){add('aw-fx__haze',stageMode?1:2);add('aw-fx__ember',density);add('aw-fx__bat',stageMode?1:(theme==='halloween-week'?3:2));}
       else if(meta.effect==='leaves')add('aw-fx__leaf',density);
       else if(meta.effect==='snow')add('aw-fx__snow',density);
-      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',12);}
+      else if(meta.effect==='snow-twinkle'){add('aw-fx__snow',density);add('aw-fx__twinkle',stageMode?3:6);}
       else if(meta.effect==='petals')add('aw-fx__petal',density);
       else if(meta.effect==='glow')add('aw-fx__glow',density);
       else if(meta.effect==='twinkle')add('aw-fx__twinkle',density);
       else if(meta.effect==='fireworks'){for(let i=0;i<density;i++){const el=document.createElement('i');el.className='aw-fx__burst';el.style.cssText=`--x:${12+seeded(i+(stageMode?19:0),8)*76}%;--y:${10+seeded(i+(stageMode?19:0),9)*52}%;--delay:-${(seeded(i+(stageMode?19:0),10)*12).toFixed(2)}s;--dur:${(6+seeded(i,11)*6).toFixed(2)}s`;layer.appendChild(el);}}
-      if(obs?.effectAdd==='twinkle')add('aw-fx__twinkle',10,80);
-      if(obs?.effectAdd==='glow')add('aw-fx__glow',8,90);
-      if(obs?.effectAdd==='sunrise'){add('aw-fx__glow',12,100);add('aw-fx__twinkle',7,120);}
+      if(obs?.effectAdd==='twinkle')add('aw-fx__twinkle',stageMode?2:5,80);
+      if(obs?.effectAdd==='glow')add('aw-fx__glow',stageMode?2:5,90);
+      if(obs?.effectAdd==='sunrise'){add('aw-fx__glow',stageMode?3:6,100);add('aw-fx__twinkle',stageMode?2:4,120);}
     }
     if(meta.lights){
       const makeStrand=(position,count)=>{const strand=document.createElement('div');strand.className=`aw-fx__lights aw-fx__lights--${position}`;for(let i=0;i<count;i++){const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i+(stageMode?17:0),20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i+(stageMode?17:0),21)*8)}px`);strand.appendChild(bulb);}layer.appendChild(strand);};
-      makeStrand('top',stageMode?18:30);makeStrand('left',stageMode?10:18);makeStrand('right',stageMode?10:18);
+      makeStrand('top',stageMode?10:(compact?14:18));if(!compact&&!stageMode){makeStrand('left',8);makeStrand('right',8);}
     }
     if(theme==='christmas-week')layer.appendChild(buildHolidayTree(stageMode));
     const faithScene=buildFaithScene(theme,stageMode);if(faithScene)layer.appendChild(faithScene);
@@ -278,8 +262,8 @@
   observanceGrid?.addEventListener('click',(event)=>{const button=event.target.closest('[data-observance]');if(button){selectedIntensity=200;select(button.dataset.baseTheme||OBS[button.dataset.observance]?.base||'default',button.dataset.observance,'theme');}});
   if(motionToggle)motionToggle.addEventListener('click',()=>{root.dataset.adminForceMotion='true';motionToggle.hidden=true;mountFx(selectedTheme,selectedObservance,selectedIntensity);});
   autoButton?.addEventListener('click',()=>{delete root.dataset.adminForceMotion;const date=easternToday(),theme=automaticThemeForDate(date),observance=automaticObservanceForDate(date);selectedIntensity=automaticIntensityForDate(date,theme,observance);select(theme,observance,'auto');});
-  reset.addEventListener('click',()=>{delete root.dataset.adminForceMotion;selectedIntensity=100;select('default','','plain');});
-  intensityControls?.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme-intensity]');if(!button)return;selectedIntensity=Number(button.dataset.themeIntensity)||100;select(selectedTheme,selectedObservance,previewMode==='plain'?'plain':'theme');});
+  reset.addEventListener('click',()=>{delete root.dataset.adminForceMotion;selectedIntensity=200;select('default','','plain');});
+  intensityControls?.addEventListener('click',(event)=>{const button=event.target.closest('[data-theme-intensity]');if(!button)return;selectedIntensity=200;select(selectedTheme,selectedObservance,previewMode==='plain'?'plain':'theme');});
   pageSelect?.addEventListener('change',refreshPublicPreview);
   openPreview?.addEventListener('click',()=>window.open(openPreview.dataset.previewUrl||publicPreviewUrl(),'_blank','noopener'));
   updateObservanceDates();

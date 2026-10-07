@@ -508,7 +508,7 @@
     "context": "NRRS Season 4 · StarClutch Racing Alliance",
     "kicker": "Aetherwing × StarClutch",
     "title": "Hailey Bell Joins StarClutch Racing for NRRS Season 4",
-    "summary": "StarClutch Racing owner Clutch announced on September 14 that Hailey Bell will drive the #28 for SCR in NRRS Season 4, bringing PetSmart sponsorship with her. Palmetto Gaming will continue alongside Bell as one of her personal partners on the #28, while Aetherwing plans to continue its own NRRS program with the #32, #42 and #46.",
+    "summary": "StarClutch Racing owner Clutch announced on September 14 that Hailey Bell will drive the #28 for SCR in NRRS Season 4, bringing PetSmart sponsorship with her. Aetherwing team partner Palmetto Gaming will also appear on Bell’s #28 at SCR, while Aetherwing plans to continue its own NRRS program with the #32, #42 and #46.",
     "tags": [
       "NRRS",
       "Season 4",
@@ -557,7 +557,7 @@
         "series": "SCR",
         "season": "Season 4",
         "title": "The #28 Moves With Bell",
-        "method": "Bell takes the #28 to SCR with PetSmart sponsorship. Palmetto Gaming continues alongside Bell as one of her personal partners on the program.",
+        "method": "Bell takes the #28 to SCR with PetSmart sponsorship. Aetherwing team partner Palmetto Gaming will also appear on Bell’s #28 program at SCR.",
         "date": "NRRS Season 4"
       },
       {
@@ -577,10 +577,10 @@
         ]
       },
       {
-        "heading": "Palmetto Gaming Continues With Hailey",
+        "heading": "Palmetto Gaming Remains an Aetherwing Partner",
         "paragraphs": [
-          "Palmetto Gaming will continue its relationship with Hailey as one of her personal partners and will be part of her #28 program at StarClutch Racing.",
-          "The relationship follows Bell rather than representing a joint sponsorship between StarClutch Racing and Aetherwing. Bell will race the #28 for SCR while Aetherwing continues to operate its own NRRS program separately."
+          "Palmetto Gaming remains an Aetherwing eMotorsports team partner and will also be part of Hailey Bell’s #28 program at StarClutch Racing next season.",
+          "Its presence on Bell’s SCR car does not change the broader team partnership with Aetherwing. Bell will race the #28 for SCR while Aetherwing continues to operate its own NRRS program separately."
         ]
       },
       {
@@ -594,7 +594,7 @@
     "callout": {
       "label": "Season 4 Structure",
       "title": "#28 at SCR. #32 / #42 / #46 at Aetherwing.",
-      "text": "Hailey Bell will take the #28 and PetSmart sponsorship to StarClutch Racing for NRRS Season 4, with Palmetto Gaming continuing as one of Hailey’s personal partners. Aetherwing plans to continue in NRRS with the #32, #42 and #46 as a separate team program."
+      "text": "Hailey Bell will take the #28 and PetSmart sponsorship to StarClutch Racing for NRRS Season 4. Aetherwing team partner Palmetto Gaming will also appear on Bell’s #28 at SCR, while Aetherwing continues in NRRS with the #32, #42 and #46 as a separate team program."
     },
     "programBreakdown": [
       {
@@ -604,7 +604,7 @@
         "detail": "NRRS Season 4",
         "items": [
           "PetSmart sponsorship",
-          "Palmetto Gaming · Hailey personal partner"
+          "Palmetto Gaming · Aetherwing team partner"
         ]
       },
       {
@@ -617,7 +617,8 @@
           "Separate team program from Hailey’s SCR #28"
         ]
       }
-    ]
+    ],
+    "contentRevision": "2026-10-07-palmetto-team-partner"
   },
   {
     "slug": "wispy-clinches-nrrs-s3-chase-martinsville",

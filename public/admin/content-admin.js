@@ -153,13 +153,13 @@
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
         if(normalized.slug===currentFeaturedNewsSlug&&normalized.contentRevision!==fresh.contentRevision)return structuredClone(fresh);
-        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
+        if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|one of her personal partners|Hailey personal partner|relationship follows Bell|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
         if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL HEART/i.test(serialized)||/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||!/Ironmouse/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};}
         return normalized;
       });
       return hadCurrentFeatured?normalizedStories:normalizedStories.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
     }
-    if(name==='partners'&&Array.isArray(value)){const palmettoSeed=(seeds.partners||[]).find((item)=>item?.name==='Palmetto Gaming');return value.map((item)=>item?.name==='Palmetto Gaming'&&(item.role==='Gaming Partner'||/relationship centered on retro and modern games/i.test(String(item.description||'')))?{...item,...palmettoSeed}:item);}
+    if(name==='partners'&&Array.isArray(value)){const palmettoSeed=(seeds.partners||[]).find((item)=>item?.name==='Palmetto Gaming');if(!palmettoSeed)return value;const list=[...value],index=list.findIndex((item)=>item?.name==='Palmetto Gaming');if(index===-1)list.unshift(structuredClone(palmettoSeed));else if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]=structuredClone(palmettoSeed);return list;}
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));

@@ -1,3 +1,18 @@
+## v2.0.36 — Full-Takeover Themes + Wide Team Wire
+- Retires the 100% / 150% / 200% calendar ladder: every active seasonal/holiday/observance theme now receives the complete 200% UI treatment from the moment it activates.
+- Decouples visual intensity from animation intensity. Seasonal motion now uses small device-aware particle budgets, slow compositor-friendly transform/opacity animation, background-tab pausing, and reduced-motion-safe static atmosphere instead of high-density effects.
+- Adds subtle ambient background movement to every active theme and a restrained scanline/broadcast drift to Anniversary Week.
+- Simplifies Theme Preview to one 200% Full Takeover mode so Admin matches public behavior.
+- Widens desktop Team Wire to a 1500px editorial canvas for heroes, quick facts, program/timeline modules and callouts while keeping long-form prose constrained to a readable ~960px measure.
+
+## v2.0.35 — Palmetto Team Partner Restore
+
+- Restores Palmetto Gaming as an Aetherwing eMotorsports **Team Partner** everywhere.
+- Stops the live API/Admin migration from filtering Palmetto out of Team Partners or forcibly injecting it into Hailey's driver portfolio.
+- Leaves Hailey's driver-portfolio brands fully editable in Admin instead of overwriting them with the bundled seed.
+- Corrects the NRRS Season 4 StarClutch story: Palmetto remains an Aetherwing team partner while also appearing on Hailey's #28 at SCR.
+- Preserves all v2.0.34 verified-save and earlier standings/results functionality.
+
 ## v2.0.34 — Verified Admin Save State
 
 - Standings and Race Results Save Draft / Publish now verify the saved payload by reading it back from Netlify storage before clearing the unsaved state.
