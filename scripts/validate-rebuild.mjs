@@ -436,3 +436,32 @@ if(!raceCalendarV2027.includes('const routeSlug=(e)=>')||!raceCalendarV2027.incl
 if(siteDataV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 live site-data must not overwrite Admin venue edits with the old Las Vegas R22 venue.');
 if(siteAdminV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 Admin migration must not overwrite venue edits with the old Las Vegas R22 venue.');
 console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin track/title edits and live event identity hydrates on-page.');
+
+// v2.0.28 — Talladega Round 22 Team Wire story + featured headline.
+{
+  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
+  const slug='talladega-leaves-bell-frustrated-championship-gap-grows';
+  const story=newsNow.find((item)=>item?.slug===slug);
+  if(!story)throw Error('v2.0.28 Talladega Team Wire story is missing.');
+  if(story.dateIso!=='2026-10-06'||story.title!=='Talladega Leaves Bell Frustrated as Championship Gap Grows')throw Error('v2.0.28 Talladega story metadata is incorrect.');
+  if(!story.summary?.includes('two points farther behind')||!JSON.stringify(story.sections||[]).includes('She was looking at 67.'))throw Error('v2.0.28 Talladega story body is incomplete.');
+  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.28 Talladega story must be the one featured Team Wire story.');
+  const siteContent=readFileSync('src/lib/site-content.mjs','utf8');
+  const adminUi=readFileSync('public/admin/content-admin.js','utf8');
+  const siteData=readFileSync('netlify/lib/_site-data.cjs','utf8');
+  const siteAdmin=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+  for(const [name,source] of [['site content',siteContent],['Admin UI',adminUi],['site-data API',siteData],['site-admin API',siteAdmin]])if(!source.includes(slug))throw Error(`v2.0.28 ${name} must preserve the new featured story across older published snapshots.`);
+}
+console.log('v2.0.28 verified: Talladega Round 22 story is published and featured across seed/Admin merge paths.');
+
+// v2.0.29 — revised Talladega Team Wire copy.
+{
+  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
+  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
+  if(!story||story.contentRevision!=='2026-10-06-v2')throw Error('v2.0.29 revised Talladega story revision marker is missing.');
+  if(story.summary!=='Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.')throw Error('v2.0.29 Talladega summary is not the revised copy.');
+  const body=JSON.stringify(story.sections||[]);
+  for(const required of ['Hailey Bell came to Talladega with a simple goal.','third race of the Chase','The hardest part is feeling like every time I try to find more speed','I’m looking forward to actually having teammates next season','How can a driver run near the front all night and still feel no closer to where she is trying to go?'])if(!body.includes(required))throw Error(`v2.0.29 revised Talladega body is missing: ${required}`);
+  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.29 Talladega story must remain the one featured Team Wire story.');
+}
+console.log('v2.0.29 verified: revised Talladega Team Wire article is seeded, featured, and migration-safe.');

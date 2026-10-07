@@ -1,3 +1,22 @@
+# Aetherwing Site v2.0.29 — TALLADEGA ARTICLE REVISION
+
+## v2.0.29 — Revised Talladega Team Wire story
+- Replaces the featured Talladega Round 22 article with Hailey’s revised final copy.
+- Updates the summary/embed copy to the revised wording.
+- Adds the teammate/team-environment section and revised closing question.
+- Migrates an already-published v2.0.28 Talladega article to this revision exactly once, while preserving later Admin edits that carry the new revision marker.
+- Keeps the story featured and retains all v2.0.28/v2.0.27 functionality.
+
+# Aetherwing Site v2.0.28 — TALLADEGA TEAM WIRE FEATURE
+
+## v2.0.28 — Talladega race report + featured Team Wire story
+- Adds **“Talladega Leaves Bell Frustrated as Championship Gap Grows”** as the October 6, 2026 NRRS Round 22 race report.
+- Preserves the supplied race narrative and Bell quotes while presenting the story through the existing Team Wire feature layout.
+- Makes the Talladega story the featured Homepage Team Wire headline and newest Newsroom lead.
+- Adds quick facts for P2 start, P4 finish, Stage 1 win, Stage 2 P3, most laps led, and the 67-point championship gap.
+- Ensures older Admin-published News snapshots receive the new story and feature it on first migration without permanently preventing later Admin feature changes.
+- Keeps all v2.0.27 stable Race Weekend routing and earlier mobile/data fixes intact.
+
 # Aetherwing Site v2.0.27 — STABLE RACE WEEKEND ROUTES
 
 ## v2.0.27 — Stable Race Weekend routes

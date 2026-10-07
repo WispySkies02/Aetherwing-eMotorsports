@@ -157,7 +157,8 @@ const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=
 export const charters = enforceCurrentCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
-const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4']);
+const currentFeaturedNewsSlug='talladega-leaves-bell-frustrated-championship-gap-grows';
+const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',currentFeaturedNewsSlug]);
 const newsSeedBySlug = new Map(newsSeed.map((story)=>[story.slug,story]));
 // v2.0.11 — Team Wire uses Hailey consistently in all reader-facing copy.
 // Keep legacy slugs/routes stable so old links do not break.
@@ -193,6 +194,7 @@ const migrateStaleNewsStory = (story) => {
     const serialized = JSON.stringify(normalized);
     if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized)) return fresh;
   }
+  if (normalized.slug === currentFeaturedNewsSlug && normalized.contentRevision !== fresh.contentRevision) return fresh;
   if (normalized.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4') {
     const serialized = JSON.stringify(normalized);
     if (!/FULL HEART/i.test(serialized) || /FULL CIRCLE/i.test(serialized) || !/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized) || !/Cheddar/i.test(serialized) || !/Apex Sim Racing/i.test(serialized) || !/Ironmouse/i.test(serialized) || /Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized)) return fresh;
@@ -205,9 +207,11 @@ const migrateStaleNewsStory = (story) => {
   }
   return normalized;
 };
-export const news = Array.isArray(publishedNews)
+const publishedHasCurrentFeatured=Array.isArray(publishedNews)&&publishedNews.some((item)=>item?.slug===currentFeaturedNewsSlug);
+const mergedNews=Array.isArray(publishedNews)
   ? [...publishedNews, ...newsSeed.filter((story)=>requiredNewsSlugs.has(story.slug)&&!publishedNews.some((item)=>item?.slug===story.slug))].map(migrateStaleNewsStory)
   : newsSeed;
+export const news = publishedHasCurrentFeatured ? mergedNews : mergedNews.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
 const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
 const staleCompetition = (item={}) => {
