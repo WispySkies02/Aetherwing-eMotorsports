@@ -90,23 +90,7 @@ export const results = mergedResults.map(normalizeLegacyKmartResult).map(scorePu
 }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map((result,index)=>({...result,featured:index===0}));
 export const wins = choose('wins', winsSeed);
 const publishedStandings = choose('standings', standingsSeed);
-const standingsSeedById = new Map(standingsSeed.map((board) => [board.id, board]));
-const supersededSnapshot = (board) => {
-  if (board?.id === 'nrrs') { const last=String(board.lastResultDate||''); return /After Race 20 of 25/.test(board.subtitle||'') || /After R20\/25/.test(board.subtitle||'') || (!last&&/After R21\/25/.test(board.subtitle||'')) || (last==='2026-09-22'&&board.rows?.some((row)=>row.driver==='Trent'&&Number(row.points)===2197)); }
-  if (board?.id !== 'kmart') return false;
-  const fresh = standingsSeedById.get('kmart');
-  const publishedRows = Array.isArray(board.rows) ? board.rows.length : 0;
-  const freshRows = Array.isArray(fresh?.rows) ? fresh.rows.length : 0;
-  const publishedPt = Array.isArray(board.ptEntry?.drivers) ? board.ptEntry.drivers.length : 0;
-  const freshPt = Array.isArray(fresh?.ptEntry?.drivers) ? fresh.ptEntry.drivers.length : 0;
-  const staleRound=!String(board.subtitle||'').includes('After Round 8')||String(board.lastResultDate||'')<'2026-09-28';
-  const stillHasJaxon=(board.rows||[]).some((row)=>row?.driver==='Jaxon');
-  const transferApplied=(board.appliedAdjustments||[]).some((item)=>item?.id==='KMART_TRANSFER_JAXON_TO_HAILEY_2026');
-  return /After Race 6 of 23/.test(board.subtitle || '') || staleRound || stillHasJaxon || !transferApplied || publishedRows < freshRows || publishedPt < freshPt;
-};
-export const standings = Array.isArray(publishedStandings)
-  ? publishedStandings.map((board) => supersededSnapshot(board) ? standingsSeedById.get(board.id) || board : board)
-  : standingsSeed;
+export const standings = Array.isArray(publishedStandings) ? publishedStandings : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
 const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
   if(entry?.competitionId!=='uarl-d1')return entry;

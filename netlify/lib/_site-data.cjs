@@ -17,25 +17,9 @@ function mergeCanonical(datasets){
       return e;
     });
   }
-  const canonicalResults=(seed.results||[]).filter(r=>(r.league==='nrrs'&&r.date==='2026-09-22')||(r.league==='kmart'&&r.date==='2026-09-28')||(r.league==='uarl-d2'&&r.date==='2026-09-12'));
-  if(Array.isArray(datasets.results)){
-    const live=[...datasets.results];
-    for(const official of canonicalResults){
-      const i=live.findIndex(r=>r?.league===official.league&&r?.date===official.date);
-      if(i===-1)live.push(official);
-      else if(['nrrs','kmart'].includes(official.league))live[i]={...live[i],title:official.title,track:official.track,round:official.round,status:official.status,specialTag:official.specialTag,entries:(live[i].entries||[]).length?live[i].entries:official.entries};
-    }
-    datasets.results=normalize('results',live);
-  }
-  if(Array.isArray(datasets.standings)){
-    const official=(seed.standings||[]).find(b=>b.id==='nrrs'),sunocoSeed=(seed.standings||[]).find(b=>b.id==='sunoco'),kmartSeed=(seed.standings||[]).find(b=>b.id==='kmart');
-    datasets.standings=datasets.standings.map(board=>{
-      if(board?.id==='nrrs'&&official){const last=String(board.lastResultDate||''),looksOld=(!last&&/After R(?:20|21)\/25/i.test(board.subtitle||''))||last<'2026-09-22',staleR21=last==='2026-09-22'&&board.rows?.some(r=>r.driver==='Trent'&&Number(r.points)===2197);return looksOld||staleR21?official:board;}
-      if(board?.id==='sunoco'&&sunocoSeed){const liveRows=Array.isArray(board.rows)?board.rows:[],byNumber=new Map(liveRows.map(row=>[String(row?.number||''),row])),rows=(sunocoSeed.rows||[]).map(seedRow=>{const live=byNumber.get(String(seedRow.number||''));return live?{...seedRow,...live,team:seedRow.team||live.team,manufacturer:seedRow.manufacturer||live.manufacturer}:{...seedRow};});return {...sunocoSeed,...board,title:board.title==='Sunoco Truck Series Chase'?sunocoSeed.title:board.title||sunocoSeed.title,rows,chaseRows:Array.isArray(board.chaseRows)?board.chaseRows:(sunocoSeed.chaseRows||[]),chaseActive:true};}
-      if(board?.id==='kmart'&&kmartSeed){const stale=!String(board.subtitle||'').includes('After Round 8')||String(board.lastResultDate||'')<'2026-09-28'||(board.rows||[]).some(r=>r?.driver==='Jaxon')||!(board.appliedAdjustments||[]).some(a=>a?.id==='KMART_TRANSFER_JAXON_TO_HAILEY_2026');return stale?kmartSeed:board;}
-      return board;
-    });
-  }
+  if(Array.isArray(datasets.results))datasets.results=normalize('results',datasets.results);
+  // Published standings are authoritative. Historical repair migrations belong at release time,
+  // never in the live read path, or fresh Admin edits can be silently replaced by bundled seeds.
   const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')).map(e=>{if(e?.competitionId!=='uarl-d1')return e;const k=String(e?.profile||e?.displayName||'').toLowerCase();if(k==='hailey')return {...e,number:'28',displayName:'Hailey'};if(k==='burgertown2good')return {...e,number:'32'};if(k==='gk3r')return {...e,number:'42',displayName:'GK3R'};if(k==='rocky')return {...e,number:'46'};return e;});
   if(Array.isArray(datasets.drivers))datasets.drivers=canonDrivers(datasets.drivers);
   if(Array.isArray(datasets['roster-profiles']))datasets['roster-profiles']=normalize('roster-profiles',datasets['roster-profiles']).map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug==='jaxon')}:p);

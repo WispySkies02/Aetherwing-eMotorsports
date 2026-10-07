@@ -106,7 +106,7 @@ const wins=JSON.parse(readFileSync('src/data/wins.json','utf8'));if(wins.length!
 const news=JSON.parse(readFileSync('src/data/news.json','utf8'));if(!news.some((story)=>story.dateIso==='2026-09-24'&&/North Wilkesboro/i.test(story.title)))throw Error('North Wilkesboro Chase Race 2 article is missing from Team Wire.');
 const scheduleMeta=JSON.parse(readFileSync('src/data/schedule.json','utf8'));if(scheduleMeta.find((row)=>row.id==='uarl-d1')?.time!=='20:30')throw Error('UARL D1 weekly time must remain Sundays at 8:30 PM ET.');
 if(!seasonSource.includes("'halloween-teaser'")||!seasonSource.includes('IN EVERY THING GIVE THANKS')||!seasonSource.includes('THIS IS THE DAY WHICH THE LORD HATH MADE')||!seasonSource.includes('HE IS NOT HERE: FOR HE IS RISEN'))throw Error('Seasonal controller must retain the Sep 25–30 Halloween teaser and reviewed KJV faith-banner wording.');
-if(!raceCalendarSource.includes("e.detail?.['schedule-events']")||!raceCalendarSource.includes('setInterval(tick,1000)'))throw Error('Public/Home Race Calendar must consume live Admin schedule edits and keep countdown rollover active.');
+if(!(raceCalendarSource.includes("e.detail?.['schedule-events']")||raceCalendarSource.includes("d?.['schedule-events']"))||!raceCalendarSource.includes('setInterval(tick,1000)'))throw Error('Public/Home Race Calendar must consume live Admin schedule edits and keep countdown rollover active.');
 const siteAdminSource=readFileSync('netlify/lib/_site-admin.cjs','utf8');
 if(!siteAdminSource.includes('priorResults=[]')||!siteAdminSource.includes('apply only the point delta')||!siteAdminSource.includes('Corrected ${next.title'))throw Error('Republishing the latest result must adjust standings by the corrected point delta instead of double-counting or ignoring it.');
 const partnersPageSource=readFileSync('src/pages/partners/index.astro','utf8');
@@ -458,7 +458,7 @@ console.log('v2.0.28 verified: Talladega Round 22 story is published and feature
 {
   const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
   const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
-  if(!story||!['2026-10-06-v2','2026-10-06-v3'].includes(story.contentRevision))throw Error('v2.0.29 revised Talladega story revision marker is missing.');
+  if(!story||!['2026-10-06-v2','2026-10-06-v3','2026-10-06-v4'].includes(story.contentRevision))throw Error('v2.0.29 revised Talladega story revision marker is missing.');
   if(story.summary!=='Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.')throw Error('v2.0.29 Talladega summary is not the revised copy.');
   const body=JSON.stringify(story.sections||[]);
   for(const required of ['Hailey Bell came to Talladega with a simple goal.','third race of the Chase','The hardest part is feeling like every time I try to find more speed','I’m looking forward to actually having teammates next season','How can a driver run near the front all night and still feel no closer to where she is trying to go?'])if(!body.includes(required))throw Error(`v2.0.29 revised Talladega body is missing: ${required}`);
@@ -503,7 +503,7 @@ console.log('v2.0.29 verified: revised Talladega Team Wire article is seeded, fe
 {
   const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
   const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
-  if(!story||story.contentRevision!=='2026-10-06-v3')throw Error('v2.0.31 Talladega content revision marker is missing.');
+  if(!story||!['2026-10-06-v3','2026-10-06-v4'].includes(story.contentRevision))throw Error('v2.0.31 Talladega content revision marker is missing.');
   const sections=story.sections||[];
   const teamIdx=sections.findIndex((section)=>section?.heading==='A Different Team Environment Ahead');
   const contextIdx=sections.findIndex((section)=>section?.heading==='Why 2027 Will Be the Final Full-Time Season');
@@ -514,6 +514,53 @@ console.log('v2.0.29 verified: revised Talladega Team Wire article is seeded, fe
   if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.31 Talladega story must remain the one featured Team Wire story.');
   const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
   const adminStory=(adminSeed.news||[]).find((item)=>item?.slug===story.slug);
-  if(!adminStory||adminStory.contentRevision!=='2026-10-06-v3')throw Error('v2.0.31 Admin news seed must carry the revised Talladega story.');
+  if(!adminStory||!['2026-10-06-v3','2026-10-06-v4'].includes(adminStory.contentRevision))throw Error('v2.0.31 Admin news seed must carry the revised Talladega story.');
 }
 console.log('v2.0.31 verified: final full-time context is inserted after teammates and before Three Races Remain.');
+
+// v2.0.32 — live standings/results publication propagation.
+{
+  const base=readFileSync('src/layouts/Base.astro','utf8');
+  const siteContent=readFileSync('src/lib/site-content.mjs','utf8');
+  const siteData=readFileSync('netlify/lib/_site-data.cjs','utf8');
+  const siteAdmin=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+  const champs=readFileSync('src/pages/championships/index.astro','utf8');
+  const eventPage=readFileSync('src/pages/event/[slug].astro','utf8');
+  const history=readFileSync('src/pages/history/index.astro','utf8');
+  const home=readFileSync('src/pages/index.astro','utf8');
+  const calendar=readFileSync('src/components/RaceCalendar.astro','utf8');
+  if(base.includes('aetherwing-updated-standings')||base.includes('After Race 20 of 25')||base.includes('After Race 6 of 23'))throw Error('v2.0.32 Base must not replace live standings with bundled snapshots.');
+  if(!base.includes('window.__AETHERWING_CONTENT__=data.datasets')||!base.includes("new CustomEvent('aetherwing:content'"))throw Error('v2.0.32 Base must publish the live site-content payload to every page.');
+  if(siteContent.includes('supersededSnapshot'))throw Error('v2.0.32 build-time site content must not use expired standings repair guards.');
+  if(siteData.includes('canonicalResults')||siteData.includes("After Round 8")||siteData.includes("After R(?:20|21)"))throw Error('v2.0.32 live site-data must trust published results/standings instead of legacy seed repairs.');
+  if(siteAdmin.includes("After Round 8")||siteAdmin.includes("After R(?:20|21)"))throw Error('v2.0.32 Admin reads must not rewrite newly published standings with old migration rules.');
+  if(!champs.includes('if(window.__AETHERWING_CONTENT__)applyLiveStandings'))throw Error('v2.0.32 Championships must replay an already-loaded live standings payload.');
+  if(!home.includes('if(window.__AETHERWING_CONTENT__)applyLiveHome'))throw Error('v2.0.32 Homepage must replay live standings/results even if the content event fired first.');
+  if(!history.includes('if(window.__AETHERWING_CONTENT__)applyLiveResults'))throw Error('v2.0.32 History must replay live results even if the content event fired first.');
+  if(!calendar.includes('if(window.__AETHERWING_CONTENT__)applyLiveCalendar'))throw Error('v2.0.32 Race Calendar must replay live results/schedule immediately.');
+  if(!eventPage.includes('if(window.__AETHERWING_CONTENT__)applyLiveEvent')||!eventPage.includes('roundNo(r.round)===round'))throw Error('v2.0.32 Race Weekend must immediately hydrate live results and match stable series/round identity.');
+  console.log('v2.0.32 verified: Admin-published standings and results remain authoritative and hydrate public pages immediately.');
+}
+
+
+// v2.0.33 — Talladega Chase/playoff consistency context revision.
+{
+  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
+  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
+  if(!story||story.contentRevision!=='2026-10-06-v4')throw Error('v2.0.33 Talladega content revision marker is missing.');
+  const section=(story.sections||[]).find((item)=>item?.heading==='Trying to Prove She Belongs');
+  const paras=section?.paragraphs||[];
+  const adjustmentIdx=paras.findIndex((p)=>p.startsWith('A Chase points adjustment previously restored Bell'));
+  const quoteIdx=paras.findIndex((p)=>p.startsWith('“I really want to be here,”'));
+  const replacementIdx=paras.findIndex((p)=>p.startsWith('Bell’s frustration is also tied to a pattern'));
+  const enjoymentIdx=paras.findIndex((p)=>p.startsWith('That struggle has also affected something Bell wanted to prioritize'));
+  if(!(adjustmentIdx>=0&&quoteIdx>adjustmentIdx&&replacementIdx>quoteIdx&&enjoymentIdx>replacementIdx))throw Error('v2.0.33 Chase consistency section is not in the requested placement.');
+  const body=paras.slice(replacementIdx,enjoymentIdx).join('\n');
+  for(const required of ['qualified for every Chase or playoff she has attempted','I’ve made every Chase or playoff because I show up every week','I don’t want making the Chase to only mean that I attended more races than somebody else','Talladega was painful precisely because it appeared to offer an opportunity to break that pattern','left the race two points farther from the championship lead'])if(!body.includes(required))throw Error(`v2.0.33 Chase consistency replacement is missing: ${required}`);
+  if(/showing up and existing/i.test(body))throw Error('v2.0.33 obsolete showing-up-and-existing wording must not remain in the replacement section.');
+  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+  const adminStory=(adminSeed.news||[]).find((item)=>item?.slug===story.slug);
+  if(!adminStory||adminStory.contentRevision!=='2026-10-06-v4')throw Error('v2.0.33 Admin seed must carry Talladega revision v4.');
+  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.33 Talladega story must remain the one featured Team Wire story.');
+}
+console.log('v2.0.33 verified: Chase/playoff consistency replacement is inserted before the enjoyment section and remains migration-safe.');

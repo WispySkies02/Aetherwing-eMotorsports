@@ -79,7 +79,9 @@ const initialResults = results;
     const official=recent&&resultFor(recent),driver=official?.entries?.find(e=>e.featuredDriver)||official?.entries?.[0];
     root.querySelector('[data-calendar-recent]').innerHTML=recent?`<span>${official?'✓ RESULT':'✓ RECENT'}</span><b>${esc(recent.leagueName||recent.league)} · ${esc(recent.track||recent.title)}</b><small>${dateLabel(recent)}${driver?` · #${esc(driver.number)} ${esc(driver.driver)} ${driver.finish?`P${esc(driver.finish)}`:'DNS'}`:''}</small><a href="${esc(url(recent))}">View event →</a>`:'';
   }
-  window.addEventListener('aetherwing:content',e=>{if(Array.isArray(e.detail?.['schedule-events']))events=e.detail['schedule-events'].filter(item=>!item.offWeek);if(Array.isArray(e.detail?.results))raceResults=e.detail.results;tick();});
+  const applyLiveCalendar=(d)=>{if(Array.isArray(d?.['schedule-events']))events=d['schedule-events'].filter(item=>!item.offWeek);if(Array.isArray(d?.results))raceResults=d.results;tick();};
+  window.addEventListener('aetherwing:content',e=>applyLiveCalendar(e.detail));
+  if(window.__AETHERWING_CONTENT__)applyLiveCalendar(window.__AETHERWING_CONTENT__);
   tick();setInterval(tick,1000);
 })();
 </script>

@@ -1,3 +1,18 @@
+## v2.0.33 — Talladega Chase Consistency Context
+
+- Replaces the earlier “showing up and existing” concept in the featured Talladega Team Wire story with Hailey’s revised Chase/playoff consistency section.
+- Places the new material after the Chase-adjustment / proving-belonging passage and before the article turns to enjoying racing again.
+- Bumps the Talladega story to content revision `2026-10-06-v4` so an already-published Admin copy migrates to the revised article once.
+- Preserves all v2.0.32 live standings/results propagation and v2.0.30 broadcast standings/full-results functionality.
+
+## v2.0.32 — Live Standings + Results Propagation Fix
+
+- Makes Admin-published standings and race results authoritative on the live public data API.
+- Removes expired seed-repair guards that could silently replace fresh NRRS/Kmart standings or results after publication.
+- Replays already-loaded live content on Championships, Homepage, History, Race Calendar, and Race Weekend pages so no page misses the live-data event.
+- Matches Race Weekend results by stable series + round identity as well as legacy schedule IDs, so track/title edits do not disconnect the result.
+- Clarifies Admin publishing copy: live-enabled data updates immediately; static rebuilds remain for generated HTML/routes/social metadata.
+
 ## v2.0.31 — Talladega Full-Time Context Revision
 
 - Adds the requested 2027 final full-time competition context to the featured Talladega Team Wire story.

@@ -40,31 +40,35 @@ const entries=resolveEventEntries(event,result);
 </Base>
 <script define:vars={{ eventId:eventSlug(event) }}>
   const share=document.querySelector('[data-share]');share?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);share.textContent='✓ LINK COPIED';setTimeout(()=>share.textContent='Copy event link ↗',2000);}catch{share.textContent='Copy the address bar link';}});
-  window.addEventListener('aetherwing:content',({detail:d})=>{
-    const slugify=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
-    const stableSlug=e=>{const explicit=slugify(e.routeId||e.eventId||'');if(explicit)return explicit;const league=slugify(e.league||'event')||'event',round=String(e.round||'').match(/(\d+)/);if(round)return `${league}-round-${Number(round[1])}`;return `${league}-${slugify(e.date||'tbd')||'tbd'}`;};
-    const legacySlug=e=>`${e.date||'tbd'}-${e.league||'event'}-${slugify(e.title||e.track||'scheduled-event')}`;
-    const e=d['schedule-events']?.find(v=>stableSlug(v)===eventId||legacySlug(v)===eventId);if(!e)return;
-    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const displayDate=v=>{if(v.tbd)return 'TBD';if(v.displayDate)return String(v.displayDate);if(!v.date)return 'TBD';const [year,month,day]=String(v.date).split('-').map(Number);return new Date(Date.UTC(year,month-1,day,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});};
+  const slugify=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+  const stableSlug=e=>{const explicit=slugify(e.routeId||e.eventId||'');if(explicit)return explicit;const league=slugify(e.league||'event')||'event',round=String(e.round||'').match(/(\d+)/);if(round)return `${league}-round-${Number(round[1])}`;return `${league}-${slugify(e.date||'tbd')||'tbd'}`;};
+  const legacySlug=e=>`${e.date||'tbd'}-${e.league||'event'}-${slugify(e.title||e.track||'scheduled-event')}`;
+  const roundNo=v=>String(v||'').match(/(\d+)/)?.[1]||'';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const displayDate=v=>{if(v.tbd)return 'TBD';if(v.displayDate)return String(v.displayDate);if(!v.date)return 'TBD';const [year,month,day]=String(v.date).split('-').map(Number);return new Date(Date.UTC(year,month-1,day,12)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});};
+  const resultForEvent=(results,e)=>{const rows=Array.isArray(results)?results:[],round=roundNo(e.round);return rows.find(r=>r.league===e.league&&round&&roundNo(r.round)===round)||rows.find(r=>r.scheduleId===stableSlug(e)||r.scheduleId===legacySlug(e))||rows.find(r=>r.date===e.date&&r.league===e.league&&(r.title===e.title||r.track===e.track));};
+  const applyLiveEvent=(d)=>{
+    if(!d)return;const e=d['schedule-events']?.find(v=>stableSlug(v)===eventId||legacySlug(v)===eventId);if(!e)return;
     document.querySelector('[data-event-series]').textContent=`${e.leagueName||e.league} · ${e.round||e.status||'RACE WEEKEND'}`;
     document.querySelector('[data-event-track]').textContent=e.track||e.title||'Race Weekend';
     document.querySelector('[data-event-summary]').textContent=`${e.title||e.track||'Race Weekend'} · ${displayDate(e)} · ${e.time||'TIME TBD'}`;
     document.querySelector('[data-event-title]').textContent=e.title||e.track||'Race Weekend';
     document.querySelector('[data-event-detail]').textContent=`${e.status||'Scheduled'} · ${e.track||e.title||'Track TBD'} · ${displayDate(e)}`;
     document.title=`${e.title||e.track||'Race Weekend'} · Race Weekend · Aetherwing eMotorsports`;
-    const result=d.results?.find(r=>r.date===e.date&&r.league===e.league&&(r.title===e.title||r.track===e.track||r.scheduleId===legacySlug(e)));
+    const result=resultForEvent(d.results,e);
     const leagueId=e.league==='open'?'uarl-open':e.league==='iracing'?'iracing-factory':e.league;
     const roster=Array.isArray(d.drivers)?d.drivers.filter(v=>v.competitionId===leagueId):[];
     let eventEntries=[];
     if(e.entryListMode==='custom'){
       eventEntries=(e.entries||[]).map(entry=>{const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{displayName:assignment?.displayName||entry.driver||'Entry',number:String(assignment?.number||entry.number||''),status:entry.entryStatus||'Confirmed'};}).filter(entry=>entry.displayName||entry.number);
-    } else if(result?.entries?.length){
+    }else if(result?.entries?.length){
       eventEntries=result.entries.map(entry=>{const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return assignment?{displayName:assignment.displayName||entry.driver||'Entry',number:String(assignment.number||entry.number||''),status:'Raced'}:null;}).filter(Boolean);
-    } else {
-      eventEntries=roster.map(entry=>({displayName:entry.displayName,number:String(entry.number||''),status:entry.status||'Roster'}));
-    }
+    }else eventEntries=roster.map(entry=>({displayName:entry.displayName,number:String(entry.number||''),status:entry.status||'Roster'}));
     document.querySelector('[data-event-entries]').innerHTML=eventEntries.map(v=>`<div class="profile-assignment"><span>${esc(v.displayName)}</span><strong>#${esc(v.number)}</strong><small>${esc(v.status)}</small></div>`).join('')||'<p>No team entries are currently listed for this event.</p>';
-    if(result){document.querySelector('[data-event-head]').textContent='Official Result';const rows=[...(result.entries||[])].sort((a,b)=>Number(a.finish||999)-Number(b.finish||999));document.querySelector('[data-event-result]').innerHTML=`<div class="race-result-table"><div class="race-result-table__head"><span>FIN</span><span>DRIVER</span><span>START</span><span>S1</span><span>S2</span><span>PTS</span></div>${rows.map(v=>`<div class="race-result-row${v.featuredDriver?' is-featured':''}${v.chaseDriver?' is-chase':''}"><b>P${esc(v.finish||'—')}</b><strong>${v.number?`#${esc(v.number)} · `:''}${esc(v.driver)}${v.featuredDriver?'<em>FEATURED</em>':''}${v.chaseDriver?'<em>CHASE</em>':''}</strong><span>${v.start?`P${esc(v.start)}`:'—'}</span><span>${v.stage1Finish?`P${esc(v.stage1Finish)}`:'—'}</span><span>${v.stage2Finish?`P${esc(v.stage2Finish)}`:'—'}</span><span>${Number.isFinite(Number(v.racePoints))?esc(v.racePoints):'—'}</span></div>`).join('')}</div><p>${esc(result.summary)}</p>`;}
-  });
+    const head=document.querySelector('[data-event-head]'),resultRoot=document.querySelector('[data-event-result]');
+    if(result){head.textContent='Official Result';const rows=[...(result.entries||[])].sort((a,b)=>Number(a.finish||999)-Number(b.finish||999));resultRoot.innerHTML=`<div class="race-result-table"><div class="race-result-table__head"><span>FIN</span><span>DRIVER</span><span>START</span><span>S1</span><span>S2</span><span>PTS</span></div>${rows.map(v=>`<div class="race-result-row${v.featuredDriver?' is-featured':''}${v.chaseDriver?' is-chase':''}"><b>P${esc(v.finish||'—')}</b><strong>${v.number?`#${esc(v.number)} · `:''}${esc(v.driver)}${v.featuredDriver?'<em>FEATURED</em>':''}${v.chaseDriver?'<em>CHASE</em>':''}</strong><span>${v.start?`P${esc(v.start)}`:'—'}</span><span>${v.stage1Finish?`P${esc(v.stage1Finish)}`:'—'}</span><span>${v.stage2Finish?`P${esc(v.stage2Finish)}`:'—'}</span><span>${Number.isFinite(Number(v.racePoints))?esc(v.racePoints):'—'}</span></div>`).join('')}</div><p>${esc(result.summary||'')}</p>`;}
+    else{head.textContent='Awaiting Green Flag';resultRoot.innerHTML='<p>Results appear here after the race is published.</p>';}
+  };
+  window.addEventListener('aetherwing:content',({detail})=>applyLiveEvent(detail));
+  if(window.__AETHERWING_CONTENT__)applyLiveEvent(window.__AETHERWING_CONTENT__);
 </script>
