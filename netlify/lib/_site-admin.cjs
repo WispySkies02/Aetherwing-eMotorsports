@@ -11,7 +11,7 @@ function recalcBoardRows(board) {
     const old=previous.get(`${normalizedName(row.driver)}|${String(row.number||'')}`);
     const now=index+1;
     row.position=`P${now}`;
-    if(old){const move=old-now;row.positionChange=move>0?`▲${move}`:move<0?`▼${Math.abs(move)}`:'—';}
+    if(old){const move=old-now;row.positionChange=move;}
   });
   if(board.gapMode==='cutoff'&&Number(board.cutoffAfter)>0&&ranked.length>Number(board.cutoffAfter)){
     const cutoff=Number(board.cutoffAfter),lastIn=Number(ranked[cutoff-1]?.points||0),firstOut=Number(ranked[cutoff]?.points||0);

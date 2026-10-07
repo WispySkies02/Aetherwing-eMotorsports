@@ -1,3 +1,21 @@
+## v2.0.31 — Talladega Full-Time Context Revision
+
+- Adds the requested 2027 final full-time competition context to the featured Talladega Team Wire story.
+- Places the new section after the teammates section and before “Three Races Remain.”
+- Bumps the story content revision so already-published Admin data migrates to the new copy once.
+- Preserves all v2.0.30 broadcast standings and full-field Race Results CSV functionality.
+
+## v2.0.30 — Broadcast standings + full-field results CSV
+
+Adds signed position-change standings, broadcast presentation, and full race-results CSV import using `Position,driver,start,Stage_1,Stage_2`, with automatic points for known scoring profiles and manual Featured/Chase driver flags. A dash in either stage column means outside the top five and scores zero stage points.
+
+## v2.0.30 — BROADCAST STANDINGS + POSITION CHANGE
+
+- Standings CSV now supports `Position,position_change,number,driver,points,gap`.
+- Admin stores signed movement values and public standings render green `▲` / red `▼` broadcast indicators.
+- Championships rows received a responsive race-broadcast visual treatment.
+- Legacy standings without movement data remain supported.
+
 # Aetherwing Site v2.0.29 — TALLADEGA ARTICLE REVISION
 
 ## v2.0.29 — Revised Talladega Team Wire story

@@ -458,10 +458,62 @@ console.log('v2.0.28 verified: Talladega Round 22 story is published and feature
 {
   const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
   const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
-  if(!story||story.contentRevision!=='2026-10-06-v2')throw Error('v2.0.29 revised Talladega story revision marker is missing.');
+  if(!story||!['2026-10-06-v2','2026-10-06-v3'].includes(story.contentRevision))throw Error('v2.0.29 revised Talladega story revision marker is missing.');
   if(story.summary!=='Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.')throw Error('v2.0.29 Talladega summary is not the revised copy.');
   const body=JSON.stringify(story.sections||[]);
   for(const required of ['Hailey Bell came to Talladega with a simple goal.','third race of the Chase','The hardest part is feeling like every time I try to find more speed','I’m looking forward to actually having teammates next season','How can a driver run near the front all night and still feel no closer to where she is trying to go?'])if(!body.includes(required))throw Error(`v2.0.29 revised Talladega body is missing: ${required}`);
   if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.29 Talladega story must remain the one featured Team Wire story.');
 }
 console.log('v2.0.29 verified: revised Talladega Team Wire article is seeded, featured, and migration-safe.');
+
+
+// v2.0.30 — signed position-change CSV + broadcast standings presentation.
+{
+  const admin=readFileSync('public/admin/content-admin.js','utf8');
+  const champs=readFileSync('src/pages/championships/index.astro','utf8');
+  const css=readFileSync('src/styles/records.css','utf8');
+  const boards=JSON.parse(readFileSync('src/data/standings.json','utf8'));
+  if(!admin.includes('position_change')||!admin.includes('parsePositionChange')||!admin.includes("Position change (+/-)"))throw Error('v2.0.30 Admin must support signed position_change CSV values.');
+  if(!champs.includes('standing-row__movement')||!champs.includes('positionMovement')||!champs.includes('movement.kind'))throw Error('v2.0.30 public standings movement rendering is missing.');
+  if(!css.includes('v2.0.30 — broadcast standings')||!css.includes('.standing-row__movement.is-up')||!css.includes('.standing-row__movement.is-down'))throw Error('v2.0.30 broadcast standings CSS is missing.');
+  if(!boards.some(board=>(board.rows||[]).some(row=>typeof row.positionChange==='number')))throw Error('v2.0.30 standings seed must use numeric position-change data.');
+  console.log('v2.0.30 verified: signed position-change imports and broadcast standings are locked.');
+}
+
+// v2.0.30 — full-field race result CSV importer + broadcast position movement.
+{
+  const admin=readFileSync('public/admin/content-admin.js','utf8');
+  const adminHtml=readFileSync('public/admin/index.html','utf8');
+  const eventPage=readFileSync('src/pages/event/[slug].astro','utf8');
+  const records=readFileSync('src/styles/records.css','utf8');
+  if(!adminHtml.includes('Position,driver,start,Stage_1,Stage_2')||!admin.includes('parseResultsImport')||!admin.includes('applyResultsImport'))throw Error('v2.0.30 Race Results Admin must support full-field Position,driver,start,Stage_1,Stage_2 CSV import.');
+  if(adminHtml.includes('Position,driver,start,Stage_1,Stage_2,Finish'))throw Error('v2.0.30 race-results CSV must not require a redundant Finish column.');
+  if(!admin.includes("autoResultScoringLeagues=new Set(['nrrs','kmart','uarl-d1'])")||!admin.includes("if(league==='kmart')return pos===1?55"))throw Error('v2.0.30 must auto-score imported Kmart results while preserving known NRRS/UARL profiles.');
+  if(!admin.includes("chaseDriver:'Chase driver'")||!eventPage.includes('is-chase'))throw Error('v2.0.30 must preserve a manual Chase-driver flag into full Race Weekend results.');
+  if(!admin.includes("raw==='-'||raw==='—'")||!adminHtml.includes('scores 0 stage points'))throw Error('v2.0.30 race-results CSV must treat stage dashes as outside the top five / zero stage points.');
+  if(!eventPage.includes('race-result-table')||!eventPage.includes('stage1Finish')||!eventPage.includes('stage2Finish')||!eventPage.includes('racePoints'))throw Error('v2.0.30 Race Weekend must render the full finishing order with start, stages, and points.');
+  if(!records.includes('.standing-row__movement.is-up')||!records.includes('.standing-row__movement.is-down'))throw Error('v2.0.30 standings must render green/red broadcast movement arrows.');
+  const content=readFileSync('netlify/lib/_content.cjs','utf8');
+  if(!content.includes("['nrrs','kmart','uarl-d1'].includes(race.league)")||!content.includes("if(league==='kmart')return pos===1?55"))throw Error('v2.0.30 Netlify normalization must preserve Kmart automatic scoring after publish.');
+  if(content.includes('external race participants need a driver name and car number'))throw Error('v2.0.30 five-column race CSV must not require an external car number.');
+  console.log('v2.0.30 verified: full-field race CSV, stage dashes, manual feature/Chase flags, automatic scoring, and full Race Weekend results are locked.');
+}
+
+// v2.0.31 — Talladega final full-time context revision.
+{
+  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
+  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
+  if(!story||story.contentRevision!=='2026-10-06-v3')throw Error('v2.0.31 Talladega content revision marker is missing.');
+  const sections=story.sections||[];
+  const teamIdx=sections.findIndex((section)=>section?.heading==='A Different Team Environment Ahead');
+  const contextIdx=sections.findIndex((section)=>section?.heading==='Why 2027 Will Be the Final Full-Time Season');
+  const remainingIdx=sections.findIndex((section)=>section?.heading==='Three Races Remain');
+  if(!(teamIdx>=0&&contextIdx===teamIdx+1&&remainingIdx===contextIdx+1))throw Error('v2.0.31 Talladega final full-time context is not in the requested placement.');
+  const body=JSON.stringify(sections[contextIdx]?.paragraphs||[]);
+  for(const required of ['part of Bell’s reasoning for making 2027 her final season of full-time competition','the same small group of drivers continues to control much of the winning','The biggest reason I’m stepping away from full-time competition after next season','not being treated as a farewell from racing entirely'])if(!body.includes(required))throw Error(`v2.0.31 Talladega added section is missing: ${required}`);
+  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.31 Talladega story must remain the one featured Team Wire story.');
+  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+  const adminStory=(adminSeed.news||[]).find((item)=>item?.slug===story.slug);
+  if(!adminStory||adminStory.contentRevision!=='2026-10-06-v3')throw Error('v2.0.31 Admin news seed must carry the revised Talladega story.');
+}
+console.log('v2.0.31 verified: final full-time context is inserted after teammates and before Three Races Remain.');

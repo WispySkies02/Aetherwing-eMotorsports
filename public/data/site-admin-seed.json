@@ -1923,7 +1923,7 @@
           "driver": "Will",
           "points": 2195,
           "delta": "LEADER",
-          "positionChange": "▲1",
+          "positionChange": 1,
           "chaseEligible": true,
           "highlight": false
         },
@@ -1933,7 +1933,7 @@
           "driver": "Trent",
           "points": 2182,
           "delta": "-13",
-          "positionChange": "▼1",
+          "positionChange": -1,
           "chaseEligible": true,
           "highlight": false
         },
@@ -1943,7 +1943,7 @@
           "driver": "Clutch",
           "points": 2173,
           "delta": "-22",
-          "positionChange": "—",
+          "positionChange": 0,
           "chaseEligible": true,
           "highlight": false
         },
@@ -1953,7 +1953,7 @@
           "driver": "Jaxon",
           "points": 2130,
           "delta": "-65",
-          "positionChange": "—",
+          "positionChange": 0,
           "chaseEligible": true,
           "highlight": false
         },
@@ -1963,7 +1963,7 @@
           "driver": "Outlaw",
           "points": 2128,
           "delta": "-67",
-          "positionChange": "—",
+          "positionChange": 0,
           "chaseEligible": true,
           "highlight": false
         },
@@ -1973,7 +1973,7 @@
           "driver": "Hailey",
           "points": 2087,
           "delta": "-108",
-          "positionChange": "—",
+          "positionChange": 0,
           "chaseEligible": true,
           "highlight": true,
           "note": "Listed as Wispy in league standings"
@@ -1984,7 +1984,7 @@
           "driver": "Stampy",
           "points": 403,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -1994,7 +1994,7 @@
           "driver": "Nico",
           "points": 369,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2004,7 +2004,7 @@
           "driver": "Carl",
           "points": 318,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2014,7 +2014,7 @@
           "driver": "Plarker",
           "points": 285,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2024,7 +2024,7 @@
           "driver": "Matty",
           "points": 231,
           "delta": null,
-          "positionChange": "▲1",
+          "positionChange": 1,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2034,7 +2034,7 @@
           "driver": "Eazy",
           "points": 227,
           "delta": null,
-          "positionChange": "▼1",
+          "positionChange": -1,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2044,7 +2044,7 @@
           "driver": "JDUB",
           "points": 184,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2054,7 +2054,7 @@
           "driver": "Roto",
           "points": 182,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2108,7 +2108,7 @@
           "driver": "Fysh",
           "points": 57,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2152,7 +2152,7 @@
           "driver": "Charms",
           "points": 31,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2162,7 +2162,7 @@
           "driver": "Tnfan",
           "points": 28,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2172,7 +2172,7 @@
           "driver": "froznhd",
           "points": 27,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         },
@@ -2193,7 +2193,7 @@
           "driver": "Matt",
           "points": 20,
           "delta": null,
-          "positionChange": null,
+          "positionChange": 0,
           "chaseEligible": false,
           "highlight": false
         }
@@ -2222,7 +2222,8 @@
           "delta": "+408",
           "chaseEligible": true,
           "highlight": true,
-          "note": "Jaxon’s 310 driver points transferred once after Portland; base total 223."
+          "note": "Jaxon’s 310 driver points transferred once after Portland; base total 223.",
+          "positionChange": 0
         },
         {
           "position": "P2",
@@ -2231,7 +2232,8 @@
           "points": 288,
           "delta": "+163",
           "chaseEligible": true,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P3",
@@ -2240,7 +2242,8 @@
           "points": 236,
           "delta": "+111",
           "chaseEligible": true,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P4",
@@ -2249,7 +2252,8 @@
           "points": 173,
           "delta": "+48",
           "chaseEligible": true,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P5",
@@ -2258,7 +2262,8 @@
           "points": 154,
           "delta": "+29",
           "chaseEligible": true,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P6",
@@ -2267,7 +2272,8 @@
           "points": 125,
           "delta": "0",
           "chaseEligible": true,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P7",
@@ -2276,7 +2282,8 @@
           "points": 107,
           "delta": "-18",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P8",
@@ -2285,7 +2292,8 @@
           "points": 60,
           "delta": "-65",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P9",
@@ -2294,7 +2302,8 @@
           "points": 58,
           "delta": "-67",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P10",
@@ -2303,7 +2312,8 @@
           "points": 53,
           "delta": "-72",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P11",
@@ -2312,7 +2322,8 @@
           "points": 53,
           "delta": "-72",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P12",
@@ -2321,7 +2332,8 @@
           "points": 37,
           "delta": "-88",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P13",
@@ -2330,7 +2342,8 @@
           "points": 36,
           "delta": "-89",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P14",
@@ -2339,7 +2352,8 @@
           "points": 36,
           "delta": "-89",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P15",
@@ -2348,7 +2362,8 @@
           "points": 29,
           "delta": "-96",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         },
         {
           "position": "P16",
@@ -2357,7 +2372,8 @@
           "points": 27,
           "delta": "-98",
           "chaseEligible": false,
-          "highlight": false
+          "highlight": false,
+          "positionChange": 0
         }
       ],
       "ptEntry": {
@@ -2418,7 +2434,8 @@
           "highlight": false,
           "team": "Starclutch Racing",
           "manufacturer": "RAM",
-          "chaseEligible": true
+          "chaseEligible": true,
+          "positionChange": 0
         },
         {
           "position": "P2",
@@ -2430,7 +2447,8 @@
           "highlight": false,
           "team": "Starclutch Racing",
           "manufacturer": "RAM",
-          "chaseEligible": true
+          "chaseEligible": true,
+          "positionChange": 0
         },
         {
           "position": "P4",
@@ -2442,7 +2460,8 @@
           "highlight": false,
           "team": "Starclutch Racing",
           "manufacturer": "RAM",
-          "chaseEligible": true
+          "chaseEligible": true,
+          "positionChange": 0
         },
         {
           "position": "P10",
@@ -2454,7 +2473,8 @@
           "highlight": false,
           "team": "Starclutch Racing",
           "manufacturer": "RAM",
-          "chaseEligible": false
+          "chaseEligible": false,
+          "positionChange": 0
         },
         {
           "position": "—",
@@ -3934,6 +3954,15 @@
           ]
         },
         {
+          "heading": "Why 2027 Will Be the Final Full-Time Season",
+          "paragraphs": [
+            "That frustration has also become part of Bell’s reasoning for making 2027 her final season of full-time competition.",
+            "Bell has grown increasingly discouraged by a competitive landscape in which the same small group of drivers continues to control much of the winning, while her own efforts have struggled to translate into meaningful progress. Although she plans to remain involved in racing, the pressure and commitment of competing full-time has become harder to justify when the experience itself has become increasingly difficult to enjoy.",
+            "“The biggest reason I’m stepping away from full-time competition after next season is that I’m tired of watching the same people win every week while feeling like I can’t make any progress,” Bell said. “I want racing to be something I enjoy again. Right now, it doesn’t feel that way.”",
+            "For Bell, next season is not being treated as a farewell from racing entirely. Instead, it will mark the end of her commitment to full-time competition, with the hope that stepping away from chasing every race and every point will eventually allow racing to feel enjoyable again."
+          ]
+        },
+        {
           "heading": "Three Races Remain",
           "paragraphs": [
             "Three races remain in the NRRS season: Portland, New Hampshire and Homestead.",
@@ -3953,7 +3982,7 @@
         "title": "Three races remain.",
         "text": "Portland · New Hampshire · Homestead"
       },
-      "contentRevision": "2026-10-06-v2"
+      "contentRevision": "2026-10-06-v3"
     },
     {
       "slug": "hailey-bell-to-step-back-from-full-time-competition-after-season-4",

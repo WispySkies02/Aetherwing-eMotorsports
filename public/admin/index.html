@@ -202,6 +202,25 @@
           </div>
           <p class="results-race-note">Loading a race never deletes another result. Driver pickers only include people assigned to that league in the Driver Roster.</p>
         </section>
+        <section class="standings-import-tool results-csv-import" data-results-import-tool hidden aria-labelledby="results-import-title">
+          <div class="standings-import-head">
+            <div><span>FULL FIELD CSV</span><h3 id="results-import-title">Paste complete race results</h3><p>Paste the full finishing order. Position is the finish; finishing and stage points are calculated automatically for leagues with an Aetherwing scoring profile.</p></div>
+            <strong data-results-import-race>SELECT A RACE</strong>
+          </div>
+          <div class="standings-import-controls">
+            <textarea data-results-import-text rows="8" spellcheck="false" placeholder="Position,driver,start,Stage_1,Stage_2
+1,Matty,4,2,1
+2,Will,1,1,3
+3,Hailey,2,-,2"></textarea>
+            <div class="standings-import-actions">
+              <label>Upload CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-results-import-file></label>
+              <button type="button" data-results-import-preview-button>Preview full results</button>
+              <button type="button" data-results-import-apply>Apply preview to race</button>
+            </div>
+          </div>
+          <div data-results-import-preview></div>
+          <p class="standings-import-foot">CSV columns: Position, driver, start, Stage_1, Stage_2. Use - when a driver did not finish in the top five of a stage; that displays as a dash and scores 0 stage points. Do not include a Finish-points column. Featured Driver and Chase Driver remain manual checkboxes after import.</p>
+        </section>
         <section class="results-race-tool page-scan-tool" data-page-scan-tool hidden aria-labelledby="page-scan-title">
           <div class="schedule-shift-head"><div><span>Public Page Scanner</span><h3 id="page-scan-title">Bring page content into Admin</h3><p>Enter a public page path. The scanner imports visible text, link destinations, and standalone image sources as editable Page Content records.</p></div><strong>NO CODE</strong></div>
           <div class="results-race-controls"><label>Public page path<input type="text" value="/" list="admin-page-paths" data-page-scan-path><datalist id="admin-page-paths"><option value="/"><option value="/drivers/"><option value="/schedule/"><option value="/wins-history/"><option value="/partners/"><option value="/news/"><option value="/mission-values/"><option value="/team-handbook/"><option value="/contact/"></datalist></label><button type="button" class="primary" data-page-scan>Scan page content</button></div>

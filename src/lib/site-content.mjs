@@ -72,9 +72,9 @@ const normalizeResults=(value)=>{
 };
 const publicUarlFinishPoints=[0,50,45,42,40,38,36,34,32,30,28,27,26,25,24,23,22];
 const scorePublishedRace=(race)=>{
-  if(!race||!['nrrs','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
+  if(!race||!['nrrs','kmart','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
   const stage=(finish)=>{const pos=Number(finish||0);if(race.league==='nrrs')return pos>=1&&pos<=5?11-pos:0;return pos>=1&&pos<=5?6-pos:0;};
-  const finishPoints=(finish)=>{const pos=Number(finish||0);if(pos<1)return 0;if(race.league==='nrrs')return pos===1?40:Math.max(1,37-pos);return publicUarlFinishPoints[pos]||0;};
+  const finishPoints=(finish)=>{const pos=Number(finish||0);if(pos<1)return 0;if(race.league==='nrrs')return pos===1?40:Math.max(1,37-pos);if(race.league==='kmart')return pos===1?55:Math.max(1,37-pos);return publicUarlFinishPoints[pos]||0;};
   return {...race,entries:race.entries.map((entry)=>{const stage1Points=stage(entry.stage1Finish),stage2Points=stage(entry.stage2Finish),base=finishPoints(entry.finish),bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;return {...entry,stage1Points,stage2Points,finishPoints:base,bonusPoints,pointsEligible,racePoints:pointsEligible?base+stage1Points+stage2Points+bonusPoints:0};})};
 };
 const canonicalResults=resultsSeed.filter((result)=>(result.league==='nrrs'&&result.date==='2026-09-22')||(result.league==='kmart'&&result.date==='2026-09-28')||(result.league==='uarl-d2'&&result.date==='2026-09-12'));

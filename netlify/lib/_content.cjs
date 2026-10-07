@@ -43,17 +43,18 @@ const UARL_FINISH_POINTS=[0,50,45,42,40,38,36,34,32,30,28,27,26,25,24,23,22];
 function stagePointsFor(league,finish) {
   const pos=Number(finish||0);
   if(league==='nrrs')return pos>=1&&pos<=5?11-pos:0;
-  if(league==='uarl-d1')return pos>=1&&pos<=5?6-pos:0;
+  if(['kmart','uarl-d1'].includes(league))return pos>=1&&pos<=5?6-pos:0;
   return null;
 }
 function finishPointsFor(league,finish) {
   const pos=Number(finish||0);if(pos<1)return 0;
   if(league==='nrrs')return pos===1?40:Math.max(1,37-pos);
+  if(league==='kmart')return pos===1?55:Math.max(1,37-pos);
   if(league==='uarl-d1')return UARL_FINISH_POINTS[pos]||0;
   return null;
 }
 function scoreKnownRace(race={}) {
-  if(!['nrrs','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
+  if(!['nrrs','kmart','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
   return {...race,entries:race.entries.map((entry)=>{
     const stage1=stagePointsFor(race.league,entry.stage1Finish),stage2=stagePointsFor(race.league,entry.stage2Finish),finishPoints=finishPointsFor(race.league,entry.finish);
     const bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;
@@ -158,7 +159,7 @@ function validate(key, data, registry={}) {
         const assignment=entry.assignmentId?eligible.get(entry.assignmentId):null;
         if(entry.assignmentId&&!assignment)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
         if(assignment&&(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||'')))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
-        if(!assignment&&(!String(entry.driver||'').trim()||!String(entry.number||'').trim()))return `Result ${index+1}: external race participants need a driver name and car number.`;
+        if(!assignment&&!String(entry.driver||'').trim())return `Result ${index+1}: external race participants need a driver name.`;
         for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!Number.isFinite(entry[field])||entry[field]<0)return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
       }
       if(new Set(row.entries.map((entry)=>entry.driver)).size!==row.entries.length)return `Result ${index+1}: each driver can appear only once.`;
