@@ -107,14 +107,17 @@ function replaceFullCirclePartner(value){
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
   return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
 }
-function ensurePalmettoTeamPartner(rows=[],seedPartners=[]){
+function ensureCoreTeamPartners(rows=[],seedPartners=[]){
   const list=Array.isArray(rows)?[...rows]:[];
-  const canonical=(seedPartners||[]).find((item)=>item?.name==='Palmetto Gaming');
-  if(!canonical)return list;
-  const index=list.findIndex((item)=>item?.name==='Palmetto Gaming');
-  if(index===-1){list.unshift(canonical);return list;}
-  if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
-  return list;
+  for(const name of ['Palmetto Gaming','Apex Sim Racing']){
+    const canonical=(seedPartners||[]).find((item)=>item?.name===name);
+    if(!canonical)continue;
+    const index=list.findIndex((item)=>item?.name===name);
+    if(index===-1)list.push({...canonical});
+    else if(name==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
+  }
+  const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((name,index)=>[name,index]));
+  return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));
 }
 
 function migrateKnownPublished(registry){
@@ -130,7 +133,7 @@ function migrateKnownPublished(registry){
   if(Array.isArray(registry.published?.['driver-profiles']))registry.published['driver-profiles']=normalize('driver-profiles',registry.published['driver-profiles']);
   if(Array.isArray(registry.published?.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');registry.published.charters=registry.published.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
   if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id)||x:x);}
-  if(Array.isArray(registry.published?.partners))registry.published.partners=ensurePalmettoTeamPartner(registry.published.partners,seed.partners||[]);
+  if(Array.isArray(registry.published?.partners))registry.published.partners=ensureCoreTeamPartners(registry.published.partners,seed.partners||[]);
   if(Array.isArray(registry.published?.['driver-portfolios']))registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']);
   return registry;
 }

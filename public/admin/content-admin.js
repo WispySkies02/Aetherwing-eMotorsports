@@ -159,7 +159,7 @@
       });
       return hadCurrentFeatured?normalizedStories:normalizedStories.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
     }
-    if(name==='partners'&&Array.isArray(value)){const palmettoSeed=(seeds.partners||[]).find((item)=>item?.name==='Palmetto Gaming');if(!palmettoSeed)return value;const list=[...value],index=list.findIndex((item)=>item?.name==='Palmetto Gaming');if(index===-1)list.unshift(structuredClone(palmettoSeed));else if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]=structuredClone(palmettoSeed);return list;}
+    if(name==='partners'&&Array.isArray(value)){const list=[...value];for(const partnerName of ['Palmetto Gaming','Apex Sim Racing']){const canonical=(seeds.partners||[]).find((item)=>item?.name===partnerName);if(!canonical)continue;const index=list.findIndex((item)=>item?.name===partnerName);if(index===-1)list.push(structuredClone(canonical));else if(partnerName==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]=structuredClone(canonical);}const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((partnerName,index)=>[partnerName,index]));return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));}
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));

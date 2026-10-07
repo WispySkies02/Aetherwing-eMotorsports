@@ -171,3 +171,51 @@ html[data-season="st-patrick"] .aw-fx__twinkle{opacity:.42}
 .aw-season-atmosphere:after{transform-origin:center;animation:aw-theme-glass-drift 38s ease-in-out infinite alternate}
 @media(max-width:700px){.aw-season-atmosphere--intensity-200 .aw-fx__bat{opacity:.18!important}.aw-season-atmosphere:before{animation-duration:34s}.aw-season-atmosphere:after{animation-duration:48s}}
 @media(prefers-reduced-motion:reduce){.aw-season-atmosphere:before,.aw-season-atmosphere:after{animation:none!important;transform:none!important}}
+
+/* v2.0.37 — every active theme gets visible but lightweight ambient motion.
+   One oversized gradient layer provides background movement using transform/opacity only;
+   existing theme particles remain sparse. Anniversary Week gets its own race-control motion
+   instead of leaking the October/Halloween atmosphere through the throwback takeover. */
+.aw-fx__ambient{position:absolute!important;inset:-14%!important;z-index:0;opacity:.28;background:radial-gradient(circle at 24% 22%,color-mix(in srgb,var(--fx-primary,#6dc8ff) 24%,transparent),transparent 28%),radial-gradient(circle at 76% 68%,color-mix(in srgb,var(--fx-secondary,#3e7e84) 20%,transparent),transparent 31%),linear-gradient(118deg,transparent 18%,color-mix(in srgb,var(--fx-primary,#6dc8ff) 7%,transparent) 42%,transparent 66%);transform-origin:center;animation:aw-ambient-drift 34s ease-in-out infinite alternate;will-change:transform,opacity}
+.aw-season-atmosphere--snow .aw-fx__ambient,.aw-season-atmosphere--snow-twinkle .aw-fx__ambient{opacity:.22;background:radial-gradient(ellipse at 48% 0%,rgba(210,237,255,.22),transparent 35%),radial-gradient(circle at 78% 72%,color-mix(in srgb,var(--fx-secondary,#8fbaff) 15%,transparent),transparent 30%),linear-gradient(145deg,transparent 26%,rgba(255,255,255,.045),transparent 67%)}
+.aw-season-atmosphere--petals .aw-fx__ambient{opacity:.24;background:radial-gradient(circle at 18% 28%,color-mix(in srgb,var(--fx-primary,#f2b6c6) 21%,transparent),transparent 28%),radial-gradient(circle at 82% 67%,color-mix(in srgb,var(--fx-secondary,#b9dd9a) 17%,transparent),transparent 32%)}
+.aw-season-atmosphere--leaves .aw-fx__ambient{opacity:.26;background:radial-gradient(circle at 20% 22%,color-mix(in srgb,var(--fx-primary,#d18a38) 24%,transparent),transparent 30%),radial-gradient(circle at 78% 74%,color-mix(in srgb,var(--fx-secondary,#8e4627) 20%,transparent),transparent 34%)}
+.aw-season-atmosphere--halloween .aw-fx__ambient,.aw-season-atmosphere--haze .aw-fx__ambient{opacity:.3;background:radial-gradient(ellipse at 20% 18%,color-mix(in srgb,var(--fx-primary,#f47725) 19%,transparent),transparent 30%),radial-gradient(ellipse at 82% 72%,color-mix(in srgb,var(--fx-secondary,#8d5ab4) 22%,transparent),transparent 34%),linear-gradient(120deg,transparent 20%,rgba(121,62,151,.055),transparent 66%)}
+.aw-season-atmosphere--fireworks .aw-fx__ambient{opacity:.23;background:radial-gradient(circle at 72% 16%,color-mix(in srgb,var(--fx-primary,#fff) 22%,transparent),transparent 25%),radial-gradient(circle at 22% 78%,color-mix(in srgb,var(--fx-secondary,#8fbaff) 19%,transparent),transparent 30%)}
+.aw-season-atmosphere--glow .aw-fx__ambient,.aw-season-atmosphere--twinkle .aw-fx__ambient{opacity:.25;background:radial-gradient(circle at 26% 28%,color-mix(in srgb,var(--fx-primary,#f2cc68) 24%,transparent),transparent 29%),radial-gradient(circle at 76% 66%,color-mix(in srgb,var(--fx-secondary,#6dc8ff) 16%,transparent),transparent 34%)}
+@keyframes aw-ambient-drift{0%{transform:translate3d(-2.2%,-1.1%,0) scale(1.015);opacity:.2}48%{opacity:.3}100%{transform:translate3d(2.4%,1.4%,0) scale(1.04);opacity:.26}}
+
+.aw-season-atmosphere--anniversary{--fx-primary:#33b9f3;--fx-secondary:#00a7a0;--fx-tertiary:#5fba46}
+.aw-season-atmosphere--anniversary .aw-fx__ambient{opacity:.3;background:radial-gradient(circle at 18% 20%,rgba(51,185,243,.22),transparent 30%),radial-gradient(circle at 80% 76%,rgba(0,167,160,.18),transparent 34%),linear-gradient(112deg,transparent 12%,rgba(95,186,70,.055) 43%,transparent 72%)}
+.aw-fx__anniversary{position:absolute!important;inset:0!important;z-index:1;overflow:hidden;opacity:.28}
+.aw-fx__anniversary:before{content:'';position:absolute;left:-38%;top:10%;width:176%;height:16%;background:linear-gradient(90deg,transparent 0 11%,rgba(0,143,232,.18) 11% 41%,rgba(0,167,160,.16) 41% 57%,rgba(95,186,70,.15) 57% 68%,transparent 68%);transform:skewY(-7deg);animation:aw-anniversary-sweep 28s ease-in-out infinite alternate}
+.aw-fx__anniversary:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 7px,rgba(145,222,255,.024) 8px 9px);animation:aw-anniversary-scan 18s linear infinite}
+.aw-fx__anniversary>i{position:absolute;left:-24%;width:148%;height:2px;background:linear-gradient(90deg,transparent,#008fe8 22%,#00a7a0 66%,transparent);opacity:.2;transform:rotate(-7deg);animation:aw-anniversary-line 24s ease-in-out infinite alternate}.aw-fx__anniversary>i:nth-child(1){top:28%}.aw-fx__anniversary>i:nth-child(2){top:54%;animation-delay:-8s;opacity:.14}.aw-fx__anniversary>i:nth-child(3){top:78%;animation-delay:-15s;opacity:.12}
+@keyframes aw-anniversary-sweep{from{transform:translate3d(-3%,0,0) skewY(-7deg)}to{transform:translate3d(3%,2%,0) skewY(-7deg)}}
+@keyframes aw-anniversary-scan{from{transform:translate3d(0,-12px,0)}to{transform:translate3d(0,12px,0)}}
+@keyframes aw-anniversary-line{from{transform:translate3d(-2%,0,0) rotate(-7deg)}to{transform:translate3d(2%,8px,0) rotate(-7deg)}}
+
+/* One-day observances keep motion appropriate to their tone. */
+.aw-observance-motif--palms .aw-faith-palm{animation:aw-palm-sway 18s ease-in-out infinite alternate}
+.aw-observance-motif--palms .aw-faith-palm--right{animation-delay:-7s}
+.aw-observance-motif--thorns .aw-thorns__ring{animation:aw-thorns-drift 30s ease-in-out infinite alternate}
+.aw-observance-motif--wheat .aw-wheat__stem{animation:aw-wheat-sway 17s ease-in-out infinite alternate}.aw-observance-motif--wheat .aw-wheat__stem--2{animation-delay:-6s}.aw-observance-motif--wheat .aw-wheat__stem--3{animation-delay:-11s}
+.aw-observance-motif--bethlehem .aw-bethlehem__star,.aw-faith-scene--bethlehem .aw-bethlehem__star{animation:aw-star-breathe 6.5s ease-in-out infinite}
+.aw-observance-motif--gratitude .aw-gratitude__rays{animation:aw-gratitude-drift 26s ease-in-out infinite alternate}
+@keyframes aw-palm-sway{from{rotate:-1.3deg}to{rotate:1.3deg}}
+@keyframes aw-thorns-drift{from{rotate:-13deg;opacity:.23}to{rotate:-8deg;opacity:.3}}
+@keyframes aw-wheat-sway{from{translate:-2px 0;rotate:-1deg}to{translate:3px -2px;rotate:1.2deg}}
+@keyframes aw-star-breathe{0%,100%{opacity:.58;filter:brightness(.92)}50%{opacity:.9;filter:brightness(1.22)}}
+@keyframes aw-gratitude-drift{from{transform:translate3d(-1.2%,0,0)}to{transform:translate3d(1.2%,1%,0)}}
+
+@media(max-width:700px){
+  .aw-fx__ambient{inset:-18%!important;opacity:.18;animation-duration:46s}
+  .aw-fx__anniversary{opacity:.2}.aw-fx__anniversary>i:nth-child(2),.aw-fx__anniversary>i:nth-child(3){display:none}
+  .aw-fx__anniversary:before{height:12%;opacity:.7;animation-duration:38s}.aw-fx__anniversary:after{opacity:.55;animation-duration:26s}
+  .aw-observance-motif--palms .aw-faith-palm{animation-duration:26s}.aw-observance-motif--wheat .aw-wheat__stem{animation-duration:24s}
+}
+@media(prefers-reduced-motion:reduce){
+  .aw-fx__ambient,.aw-fx__anniversary,.aw-fx__anniversary:before,.aw-fx__anniversary:after,.aw-fx__anniversary>i,
+  .aw-observance-motif--palms .aw-faith-palm,.aw-observance-motif--thorns .aw-thorns__ring,.aw-observance-motif--wheat .aw-wheat__stem,
+  .aw-observance-motif--bethlehem .aw-bethlehem__star,.aw-faith-scene--bethlehem .aw-bethlehem__star,.aw-observance-motif--gratitude .aw-gratitude__rays{animation:none!important;transform:none!important;translate:none!important;rotate:none!important}
+}

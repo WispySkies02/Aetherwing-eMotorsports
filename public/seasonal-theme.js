@@ -223,17 +223,19 @@
   }
   function removeAtmosphere(){document.querySelector('.aw-season-atmosphere')?.remove();mountedKey='';}
   function syncAtmospherePlayback(){document.querySelector('.aw-season-atmosphere')?.classList.toggle('is-paused',document.hidden);}
-  function mountAtmosphere(theme,observance,intensity=100){
-    const key=`${theme}|${observance}|${intensity}`;
-    if(!document.body||theme==='standard'){removeAtmosphere();return;}
-    const meta=THEMES[theme],obs=OBSERVANCES[observance];
+  function mountAtmosphere(theme,observance,intensity=100,anniversaryRetro=false){
+    const key=`${theme}|${observance}|${intensity}|${anniversaryRetro?'anniversary':'seasonal'}`;
+    if(!document.body||(theme==='standard'&&!anniversaryRetro)){removeAtmosphere();return;}
+    const meta=anniversaryRetro?{effect:'anniversary',density:0,lights:false}:THEMES[theme],obs=OBSERVANCES[observance];
     if(!meta||mountedKey===key)return;
     removeAtmosphere();
-    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-season-atmosphere--${meta.effect} aw-season-atmosphere--intensity-${intensity}`;layer.dataset.intensity=String(intensity);layer.setAttribute('aria-hidden','true');
+    const layer=document.createElement('div');layer.className=`aw-season-atmosphere aw-season-atmosphere--${meta.effect} aw-season-atmosphere--intensity-${intensity}${anniversaryRetro?' aw-season-atmosphere--anniversary':''}`;layer.dataset.intensity=String(intensity);layer.setAttribute('aria-hidden','true');
     const colors=palette();layer.style.setProperty('--fx-primary',colors.primary);layer.style.setProperty('--fx-secondary',colors.secondary);layer.style.setProperty('--fx-tertiary',colors.tertiary);
     const add=(cls,count,offset=0)=>{for(let i=0;i<count;i++){const el=document.createElement('i');el.className=cls;el.style.cssText=styleFor(i+offset);layer.appendChild(el);}};
+    const ambient=document.createElement('div');ambient.className='aw-fx__ambient';layer.appendChild(ambient);
+    if(anniversaryRetro){const motion=document.createElement('div');motion.className='aw-fx__anniversary';motion.innerHTML='<i></i><i></i><i></i>';layer.appendChild(motion);}
 
-    if(!obs?.suppress){
+    if(!obs?.suppress&&!anniversaryRetro){
       const density=scaledDensity(meta.density),profile=motionProfile();
       if(meta.effect==='haze')add('aw-fx__haze',profile.mobile?1:2);
       else if(meta.effect==='halloween'){add('aw-fx__haze',profile.mobile?1:2);add('aw-fx__ember',density);add('aw-fx__bat',profile.mobile?1:(theme==='halloween-week'?3:2));}
@@ -251,7 +253,7 @@
       if(obs?.add==='sunrise'){add('aw-fx__glow',profile.mobile?4:6,101);add('aw-fx__twinkle',profile.mobile?2:4,121);}
     }
 
-    if(meta.lights){
+    if(meta.lights&&!anniversaryRetro){
       const makeStrand=(position,count)=>{
         const strand=document.createElement('div');strand.className=`aw-fx__lights aw-fx__lights--${position}`;
         for(let i=0;i<count;i++){const bulb=document.createElement('b');bulb.style.setProperty('--light-delay',`${(seeded(i,20)*2.8).toFixed(2)}s`);bulb.style.setProperty('--light-lift',`${Math.round(seeded(i,21)*8)}px`);strand.appendChild(bulb);}
@@ -259,9 +261,9 @@
       };
       const profile=motionProfile();makeStrand('top',profile.mobile?14:18);if(!profile.mobile){makeStrand('left',8);makeStrand('right',8);}
     }
-    if(theme==='christmas-week')layer.appendChild(buildHolidayTree());
-    const faithScene=buildFaithScene(theme);if(faithScene)layer.appendChild(faithScene);
-    const motif=buildObservanceMotif(observance);if(motif)layer.appendChild(motif);
+    if(theme==='christmas-week'&&!anniversaryRetro)layer.appendChild(buildHolidayTree());
+    const faithScene=!anniversaryRetro?buildFaithScene(theme):null;if(faithScene)layer.appendChild(faithScene);
+    const motif=!anniversaryRetro?buildObservanceMotif(observance):null;if(motif)layer.appendChild(motif);
     document.body.prepend(layer);mountedKey=key;syncAtmospherePlayback();
   }
 
@@ -283,7 +285,7 @@
       const icon=banner.querySelector('[data-season-icon]'),title=banner.querySelector('[data-season-title]'),subtitle=banner.querySelector('[data-season-subtitle]');
       if(icon)icon.textContent=info.icon||'';if(title)title.textContent=info.title||'';if(subtitle)subtitle.textContent=info.subtitle||'';
     }
-    mountAtmosphere(theme,observance,intensity);
+    mountAtmosphere(theme,observance,intensity,anniversaryRetro);
   }
 
   document.addEventListener('visibilitychange',syncAtmospherePlayback,{passive:true});

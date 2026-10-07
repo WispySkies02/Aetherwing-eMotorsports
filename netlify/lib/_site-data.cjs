@@ -4,14 +4,17 @@ function replaceFullCirclePartner(value){
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
   return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
 }
-function ensurePalmettoTeamPartner(rows=[],seedPartners=[]){
+function ensureCoreTeamPartners(rows=[],seedPartners=[]){
   const list=Array.isArray(rows)?[...rows]:[];
-  const canonical=(seedPartners||[]).find((item)=>item?.name==='Palmetto Gaming');
-  if(!canonical)return list;
-  const index=list.findIndex((item)=>item?.name==='Palmetto Gaming');
-  if(index===-1){list.unshift(canonical);return list;}
-  if(/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
-  return list;
+  for(const name of ['Palmetto Gaming','Apex Sim Racing']){
+    const canonical=(seedPartners||[]).find((item)=>item?.name===name);
+    if(!canonical)continue;
+    const index=list.findIndex((item)=>item?.name===name);
+    if(index===-1)list.push({...canonical});
+    else if(name==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
+  }
+  const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((name,index)=>[name,index]));
+  return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));
 }
 
 function mergeCanonical(datasets){
@@ -37,7 +40,7 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets['driver-profiles']))datasets['driver-profiles']=normalize('driver-profiles',datasets['driver-profiles']);
   if(Array.isArray(datasets.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');datasets.charters=datasets.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
   if(Array.isArray(datasets.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));datasets.competitions=datasets.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id)||x:x);}
-  if(Array.isArray(datasets.partners))datasets.partners=ensurePalmettoTeamPartner(datasets.partners,seed.partners||[]);else datasets.partners=ensurePalmettoTeamPartner([],seed.partners||[]);
+  if(Array.isArray(datasets.partners))datasets.partners=ensureCoreTeamPartners(datasets.partners,seed.partners||[]);else datasets.partners=ensureCoreTeamPartners([],seed.partners||[]);
   if(Array.isArray(datasets['driver-portfolios']))datasets['driver-portfolios']=normalize('driver-portfolios',datasets['driver-portfolios']);
   return datasets;
 }

@@ -2,15 +2,17 @@
   {
     "slug": "talladega-leaves-bell-frustrated-championship-gap-grows",
     "legacyRoute": "/talladega-leaves-bell-frustrated-championship-gap-grows",
-    "category": "Race Report",
     "date": "October 6, 2026",
     "dateIso": "2026-10-06",
+    "category": "NRRS / RACE RECAP",
     "context": "NRRS Town Fair Tire Cup Series · Round 22 · Talladega",
-    "kicker": "Talladega · Championship Chase",
-    "title": "Talladega Leaves Bell Frustrated as Championship Gap Grows",
-    "summary": "Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.",
-    "cardSummary": "Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.",
-    "embedDescription": "Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.",
+    "kicker": "Talladega · Chase Race 3",
+    "title": "Talladega Gives Bell Progress on Paper — But Little Else",
+    "summary": "Hailey Bell won Stage 1, led the most laps and finished fourth at Talladega, yet remains last among the five active Chase contenders by a single point.",
+    "cardSummary": "Hailey Bell won Stage 1, led the most laps and finished fourth at Talladega, yet remains last among the five active Chase contenders by a single point.",
+    "embedDescription": "Bell won Stage 1, led the most laps and finished fourth at Talladega, but remains fifth among the five active Chase contenders by one point.",
+    "byline": "Aetherwing eMotorsports",
+    "featured": true,
     "tags": [
       "Hailey Bell",
       "NRRS",
@@ -19,133 +21,307 @@
       "Palmetto Gaming",
       "Toyota"
     ],
-    "featured": true,
-    "heroGhost": "67 BACK",
-    "headlineMark": {
-      "eyebrow": "CHAMPIONSHIP GAP",
-      "value": "−67",
-      "detail": "2 POINTS LOST · 3 RACES REMAIN"
+    "contentRevision": "2026-10-07-v5-stat-feature",
+    "featureLayout": "race-stat-feature",
+    "raceSummary": {
+      "eyebrow": "TALLADEGA • R22/25 • CHASE RACE 3",
+      "items": [
+        {
+          "label": "START",
+          "value": "P2"
+        },
+        {
+          "label": "STAGE 1",
+          "value": "P1"
+        },
+        {
+          "label": "STAGE 2",
+          "value": "P3"
+        },
+        {
+          "label": "FINISH",
+          "value": "P4"
+        }
+      ],
+      "callout": "MOST LAPS LED"
     },
-    "byline": "Aetherwing eMotorsports",
-    "metrics": [
+    "featureBlocks": [
       {
-        "label": "Start",
-        "value": "P2"
+        "type": "prose",
+        "paragraphs": [
+          "TALLADEGA — Hailey Bell needed Talladega to change the direction of her championship run.",
+          "For most of the night, it looked like it might.",
+          "Bell started second in the Palmetto Gaming No. 32 Toyota, won Stage 1, finished third in Stage 2 and led more laps than anyone else before finishing fourth in NRRS Round 22.",
+          "It was one of her strongest races of the season.",
+          "And somehow, she still left Talladega fifth out of the five active Chase contenders.",
+          "By one point.",
+          "“I ran one of the best races I’ve run all season, and I’m still last in the Chase,” Bell said. “That hurts in a completely different way.”"
+        ]
       },
       {
-        "label": "Finish",
-        "value": "P4"
+        "type": "standings",
+        "title": "CHASE STANDINGS AFTER TALLADEGA",
+        "rows": [
+          {
+            "position": 1,
+            "driver": "Will",
+            "points": "2,223",
+            "gap": ""
+          },
+          {
+            "position": 2,
+            "driver": "Trent",
+            "points": "2,192",
+            "gap": "31 BACK"
+          },
+          {
+            "position": 3,
+            "driver": "Clutch",
+            "points": "2,187",
+            "gap": "36 BACK"
+          },
+          {
+            "position": 4,
+            "driver": "Outlaw",
+            "points": "2,162",
+            "gap": "61 BACK"
+          },
+          {
+            "position": 5,
+            "driver": "Hailey",
+            "points": "2,161",
+            "gap": "62 BACK",
+            "featured": true
+          }
+        ],
+        "callout": "1 POINT SEPARATES HAILEY FROM P4"
       },
       {
-        "label": "Stage 1",
-        "value": "WIN"
+        "type": "prose",
+        "paragraphs": [
+          "Bell technically made progress toward the championship lead.",
+          "She entered Talladega 72 points back following the transfer of Jaxon’s Chase points and left only 62 behind.",
+          "But the 10-point improvement tells only part of the story.",
+          "Trent entered Talladega as the championship leader but did not compete. That allowed Bell to gain 41 points on him without racing him directly.",
+          "Against Will, who left Talladega as the new championship leader, Bell actually lost two points.",
+          "She gained seven on Clutch.",
+          "She gained two on Outlaw.",
+          "That two-point gain on Outlaw moved Bell from three points behind fourth place to just one.",
+          "“I technically gained on the championship lead, but I don’t really feel like I gained anything from racing,” Bell said. “Talladega is one of the places where I’m supposed to make up ground. If I gain a couple here and then lose 20 somewhere else, it doesn’t really help me.”"
+        ]
       },
       {
-        "label": "Stage 2",
-        "value": "P3"
+        "type": "change-strip",
+        "title": "WHAT TALLADEGA CHANGED",
+        "items": [
+          {
+            "label": "TO CHAMPIONSHIP LEAD",
+            "before": "72 BACK",
+            "after": "62 BACK",
+            "delta": "+10"
+          },
+          {
+            "label": "VS. WILL",
+            "value": "-2",
+            "tone": "down"
+          },
+          {
+            "label": "VS. CLUTCH",
+            "value": "+7",
+            "tone": "up"
+          },
+          {
+            "label": "VS. OUTLAW",
+            "value": "+2",
+            "tone": "up"
+          },
+          {
+            "label": "CHASE POSITION",
+            "before": "5TH",
+            "after": "5TH"
+          }
+        ],
+        "callout": "PROGRESS ON PAPER.\nNO POSITION GAIN."
       },
       {
-        "label": "Laps Led",
-        "value": "MOST"
+        "type": "prose",
+        "paragraphs": [
+          "That is what makes Talladega particularly difficult for Bell to accept.",
+          "Superspeedways have traditionally been one of her strongest track types, and this race represented her best opportunity to build a cushion before the schedule turned toward Portland and New Hampshire.",
+          "Instead, Bell leaves Talladega without that cushion.",
+          "“I basically needed to win,” Bell said. “I needed to gain enough here that I could afford to struggle the next two weeks and still have something left when we got to Homestead. That was the whole plan.”",
+          "Portland presents an especially difficult challenge.",
+          "Bell’s road-course finishes this season are eighth at Watkins Glen, fifth at Road America, sixth at Mexico City and seventh at COTA.",
+          "Meanwhile, several of the drivers ahead of her in the Chase have consistently run near the front on road courses.",
+          "Trent won both Mexico City and COTA."
+        ]
       },
       {
-        "label": "Championship Gap",
-        "value": "−67"
+        "type": "road-course",
+        "title": "HAILEY — ROAD COURSES",
+        "rows": [
+          {
+            "track": "Watkins Glen",
+            "finish": "P8"
+          },
+          {
+            "track": "Road America",
+            "finish": "P5"
+          },
+          {
+            "track": "Mexico City",
+            "finish": "P6"
+          },
+          {
+            "track": "COTA",
+            "finish": "P7"
+          }
+        ],
+        "stats": [
+          {
+            "label": "AVERAGE FINISH",
+            "value": "6.50"
+          },
+          {
+            "label": "STAGE POINTS",
+            "value": "0"
+          },
+          {
+            "label": "NEXT",
+            "value": "PORTLAND"
+          }
+        ]
+      },
+      {
+        "type": "prose",
+        "paragraphs": [
+          "Talladega also highlighted a larger frustration that has followed Bell throughout the season.",
+          "Bell has consistently qualified for postseason competition because she consistently shows up.",
+          "Other drivers have occasionally missed races and surrendered entire nights of points. Bell rarely does.",
+          "But once the Chase begins, Bell feels that simply showing up is no longer enough.",
+          "“I’ve made every Chase or playoff because I show up every week,” Bell said. “I don’t want that to be the only reason I’m here. I want to actually prove that I deserve to be fighting for something.”",
+          "The season-long statistics help explain that frustration."
+        ]
+      },
+      {
+        "type": "numbers",
+        "title": "BY THE NUMBERS",
+        "groups": [
+          {
+            "title": "AVERAGE FINISH",
+            "rows": [
+              {
+                "label": "Trent",
+                "value": "2.69"
+              },
+              {
+                "label": "Will",
+                "value": "2.95"
+              },
+              {
+                "label": "Clutch",
+                "value": "3.59"
+              },
+              {
+                "label": "Outlaw",
+                "value": "5.42"
+              },
+              {
+                "label": "Hailey",
+                "value": "5.65",
+                "featured": true
+              }
+            ]
+          },
+          {
+            "title": "STAGE POINTS",
+            "rows": [
+              {
+                "label": "Will",
+                "value": "131"
+              },
+              {
+                "label": "Trent",
+                "value": "117"
+              },
+              {
+                "label": "Clutch",
+                "value": "79"
+              },
+              {
+                "label": "Outlaw",
+                "value": "74"
+              },
+              {
+                "label": "Hailey",
+                "value": "17",
+                "featured": true
+              }
+            ]
+          },
+          {
+            "title": "TALLADEGA",
+            "rows": [
+              {
+                "label": "Start",
+                "value": "P2"
+              },
+              {
+                "label": "Stage 1",
+                "value": "P1"
+              },
+              {
+                "label": "Stage 2",
+                "value": "P3"
+              },
+              {
+                "label": "Finish",
+                "value": "P4"
+              },
+              {
+                "label": "Laps Led",
+                "value": "MOST"
+              },
+              {
+                "label": "Stage Points",
+                "value": "8"
+              }
+            ]
+          }
+        ],
+        "note": "8 of Hailey’s 17 stage points this season came at Talladega."
+      },
+      {
+        "type": "prose",
+        "paragraphs": [
+          "Eight of Bell’s 17 stage points this season came at Talladega alone.",
+          "That made Tuesday night one of the rare races where Bell consistently scored alongside the championship leaders throughout the event.",
+          "But even then, the final result was not enough to move her out of fifth.",
+          "“I want to feel like I matter,” Bell said. “I want to feel like I belong here. I don’t want to just show up and collect points. I want to actually accomplish something.”",
+          "Next season will bring a different environment.",
+          "Bell will move to Starclutch Racing for her final full-time campaign, giving her a larger teammate structure than she has had this season.",
+          "She is looking forward to finally having teammates around her on track, but she does not expect that alone to fix the problems she has struggled with.",
+          "“I can’t wait to actually have teammates next season,” Bell said. “But if they’re running at the front and I’m in the back, they can’t help me. I still have to get myself there.”",
+          "Bell has also cited the same small group of drivers repeatedly controlling races as one of the biggest reasons she plans to step away from full-time competition after 2027.",
+          "She wants racing to become something she can enjoy again.",
+          "For most of Talladega, it was.",
+          "Then the points were counted.",
+          "Bell won a stage.",
+          "She led the most laps.",
+          "She finished fourth.",
+          "She cut the championship deficit by 10 points.",
+          "She gained seven on Clutch.",
+          "She gained two on Outlaw.",
+          "And after all of it, Hailey Bell remains fifth in the Chase.",
+          "By one point."
+        ]
+      },
+      {
+        "type": "pull-quote",
+        "text": "I ran one of the best races I’ve run all season,\nand I’m still last in the Chase.\n\nThat hurts in a completely different way.",
+        "attribution": "HAILEY BELL"
       }
-    ],
-    "sections": [
-      {
-        "heading": "One Point Closer",
-        "paragraphs": [
-          "TALLADEGA — Hailey Bell came to Talladega with a simple goal.",
-          "She did not expect to erase a 65-point championship deficit in one night. She did not even need a dramatic swing.",
-          "She just wanted to leave one point closer.",
-          "Instead, after spending nearly the entire race at the front of the field, Bell left NRRS Round 22 two points farther behind.",
-          "Bell finished fourth in the Palmetto Gaming No. 32 Toyota in the third race of the Chase after starting from the outside of the front row. She won Stage 1, finished third in Stage 2 and led more laps than any other driver.",
-          "For most of the race, Bell never ran outside the top three.",
-          "Then a late incident reshuffled the running order, and when the race was over, the number Bell cared about most had once again moved in the wrong direction.",
-          "She entered Talladega 65 points behind the championship leader. She leaves 67 points back after the championship leader finished second."
-        ]
-      },
-      {
-        "heading": "A Strong Race, Almost No Movement",
-        "paragraphs": [
-          "“Losing two points is better than losing 20, but Talladega was the race where I wanted to finally gain something,” Bell said. “I didn’t need some huge swing. I just wanted to leave one point closer. I can point to stage finishes and laps led, but none of that changes the standings. I came here needing to gain ground, and I didn’t.”",
-          "That made an otherwise strong Talladega performance difficult for Bell to appreciate.",
-          "Superspeedway racing has traditionally been one of her strongest disciplines, making Talladega one of the most realistic opportunities remaining for Bell to make progress in the championship.",
-          "Instead, one of her strongest races of the Chase produced almost no movement at all.",
-          "Matty won the race, followed by the championship leader in second and Outlaw in third. Bell completed the top four."
-        ]
-      },
-      {
-        "heading": "Trying to Prove She Belongs",
-        "paragraphs": [
-          "For Bell, however, the frustration stretches beyond one race or one finishing position.",
-          "A Chase points adjustment previously restored Bell to a position where the championship was again within reach. Since then, she has wanted more than simply to appear in the standings. She has wanted to prove through her own performances that she belongs in the fight.",
-          "“I really want to be here,” Bell said. “I want to feel like I matter and like I belong racing with these guys. I want to prove that I’m good enough to be here. But it’s hard to feel that way when every race it feels like I’m digging the hole deeper because I can’t make up the points I need.”",
-          "Bell’s frustration is also tied to a pattern that has followed her across multiple series.",
-          "She has qualified for every Chase or playoff she has attempted, aided in large part by one of her greatest strengths: consistently showing up. While other competitors have lost significant ground by missing races entirely, Bell has rarely surrendered points through absence.",
-          "But once the postseason begins, Bell feels that consistency alone stops being enough.",
-          "“I’ve made every Chase or playoff because I show up every week,” Bell said. “Other people miss races and get nothing, while I’m there collecting points. But then we actually get into the championship fight, and I’m usually sitting at or near the bottom because everybody else starts gaining a bunch of points every race and I’m getting close to the minimum.”",
-          "For Bell, that has created a difficult distinction between qualifying for a championship fight and feeling competitive once she gets there.",
-          "During the regular season, simply being present every week can provide enough consistency to remain in contention. In the Chase, however, Bell feels she has repeatedly struggled to turn that consistency into the finishes necessary to keep pace with the drivers around her.",
-          "“I don’t want making the Chase to only mean that I attended more races than somebody else,” Bell said. “I want to get there and actually prove that I deserve to be fighting for something. When everybody else is gaining points and I’m running near the back getting the minimum, it makes it really hard for me to feel like I’m making any progress.”",
-          "That cycle has become one of the biggest sources of Bell’s frustration with full-time competition. Showing up has consistently put her in position to compete for championships, but once those championship fights begin, she has struggled to find the performance necessary to turn qualification into contention.",
-          "Talladega was painful precisely because it appeared to offer an opportunity to break that pattern.",
-          "Instead, even after spending most of the night near the front, Bell left the race two points farther from the championship lead.",
-          "That struggle has also affected something Bell wanted to prioritize as the season progressed: enjoying racing again.",
-          "For most of Talladega, she did.",
-          "Then the championship standings came back into focus.",
-          "“I came into tonight wanting to have fun, and for most of the race I did,” Bell said. “But it’s hard to have fun when I’m trying to be good at something and I keep watching the gap go the wrong way. I can have a good race, but if I’m not actually gaining anything, it’s difficult for me to feel good about it.”"
-        ]
-      },
-      {
-        "heading": "Searching for More",
-        "paragraphs": [
-          "Bell has also been candid about another source of frustration: the feeling that attempts to improve at other track types have not produced the progress she wants.",
-          "“The hardest part is feeling like every time I try to find more speed, I lose something somewhere else,” Bell said. “I want to feel like I belong here and that I’m contributing, but right now I’m struggling to see that in the results.”"
-        ]
-      },
-      {
-        "heading": "A Different Team Environment Ahead",
-        "paragraphs": [
-          "Next season will at least bring a different team environment, with Bell expecting to have more teammates around her on track.",
-          "She is not treating that as an automatic solution.",
-          "“I’m looking forward to actually having teammates next season, because right now there are a lot of races where I feel like I’m on my own,” Bell said. “But I also know that having teammates isn’t suddenly going to fix everything for me. If they’re running at the front and I’m in the back, there’s not much they can do for me anyway. I still have to find a way to put myself in position first, and that’s the part I’ve been struggling with.”",
-          "For Bell, that makes the hope of having teammates less about expecting someone else to rescue her races and more about wanting the opportunity to finally be part of a group when she is in position to contribute.",
-          "But after another night where a strong performance failed to translate into meaningful championship progress, even that future possibility feels difficult for Bell to lean on as reassurance."
-        ]
-      },
-      {
-        "heading": "Why 2027 Will Be the Final Full-Time Season",
-        "paragraphs": [
-          "That frustration has also become part of Bell’s reasoning for making 2027 her final season of full-time competition.",
-          "Bell has grown increasingly discouraged by a competitive landscape in which the same small group of drivers continues to control much of the winning, while her own efforts have struggled to translate into meaningful progress. Although she plans to remain involved in racing, the pressure and commitment of competing full-time has become harder to justify when the experience itself has become increasingly difficult to enjoy.",
-          "“The biggest reason I’m stepping away from full-time competition after next season is that I’m tired of watching the same people win every week while feeling like I can’t make any progress,” Bell said. “I want racing to be something I enjoy again. Right now, it doesn’t feel that way.”",
-          "For Bell, next season is not being treated as a farewell from racing entirely. Instead, it will mark the end of her commitment to full-time competition, with the hope that stepping away from chasing every race and every point will eventually allow racing to feel enjoyable again."
-        ]
-      },
-      {
-        "heading": "Three Races Remain",
-        "paragraphs": [
-          "Three races remain in the NRRS season: Portland, New Hampshire and Homestead.",
-          "The upcoming schedule makes Talladega particularly difficult to leave behind. Portland and New Hampshire represent two of Bell’s weaker track types from a performance standpoint, leaving one of her strongest opportunities for a championship gain behind her without the progress she hoped to make.",
-          "On paper, Talladega was one of Bell’s strongest races of the Chase.",
-          "She started second. She won a stage. She finished inside the top three in both stages. She led the most laps. She finished fourth.",
-          "But those were not the numbers Bell was looking at afterward.",
-          "She was looking at 67.",
-          "“I wanted to prove something tonight,” Bell said. “I wanted to leave knowing I had actually made progress. I didn’t. That’s what hurts.”",
-          "With three races remaining, Bell leaves Talladega less concerned with finding positives in a strong performance than with one question that has followed her throughout the Chase:",
-          "How can a driver run near the front all night and still feel no closer to where she is trying to go?"
-        ]
-      }
-    ],
-    "callout": {
-      "label": "NRRS CHASE",
-      "title": "Three races remain.",
-      "text": "Portland · New Hampshire · Homestead"
-    },
-    "contentRevision": "2026-10-06-v4"
+    ]
   },
   {
     "slug": "hailey-bell-to-step-back-from-full-time-competition-after-season-4",

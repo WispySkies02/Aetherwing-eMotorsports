@@ -6,9 +6,10 @@ export function getStaticPaths(){return news.map(story=>({params:{slug:story.slu
 const {story}=Astro.props;
 const compactDescription=(value='',limit=170)=>{const clean=String(value||'').replace(/\s+/g,' ').trim();if(clean.length<=limit)return clean;const slice=clean.slice(0,limit+1);const cut=slice.lastIndexOf(' ');return `${slice.slice(0,cut>90?cut:limit).replace(/[.,;:!?-]+$/,'')}…`;};
 const shareDescription=story.embedDescription || compactDescription(story.summary);
+const isRaceFeature=story.featureLayout==='race-stat-feature';
 ---
 <Base title={story.title} description={shareDescription} image={story.socialImage || story.image}>
-  <article class="news-article" data-news-story-root data-story-slug={story.slug}>
+  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature}]} data-news-story-root data-story-slug={story.slug}>
     <div class="wrap">
       <header class="news-article__hero">
         <a class="news-article__back" href="/news/">← Team Newsroom</a>
@@ -18,7 +19,7 @@ const shareDescription=story.embedDescription || compactDescription(story.summar
           <span>{story.byline || 'Aetherwing eMotorsports'}</span>
         </div>
 
-        <div class:list={['news-article__hero-grid',{'has-mark':story.articleLogo || story.headlineMark?.value || story.heroGhost,'has-logo':story.articleLogo}]}>
+        <div class:list={['news-article__hero-grid',{'has-mark':story.articleLogo || story.headlineMark?.value || story.heroGhost,'has-logo':story.articleLogo}] }>
           <div class="news-article__headline">
             <p class="news-article__kicker">{story.kicker}</p>
             <h1>{story.title}</h1>
@@ -40,7 +41,7 @@ const shareDescription=story.embedDescription || compactDescription(story.summar
           ) : null}
         </div>
 
-        {story.tags?.length>0 && (
+        {!isRaceFeature && story.tags?.length>0 && (
           <div class="news-article__tags" aria-label="Story tags">
             {story.tags.map(tag=><span>{tag}</span>)}
           </div>
@@ -48,67 +49,118 @@ const shareDescription=story.embedDescription || compactDescription(story.summar
       </header>
 
       <div class="news-article__body">
-        {story.metrics?.length>0&&(
-          <section class="news-metrics" aria-label="Story quick facts">
-            {story.metrics.map(m=><div><b class:list={['news-metric__value',{'is-long':String(m.value || '').length > 8}]}>{m.value}</b><small>{m.label}</small></div>)}
-          </section>
-        )}
-
-        {story.programBreakdown?.length>0&&(
-          <section class="news-programs" aria-label="Season 4 program breakdown">
-            <header><span>SEASON 4 PROGRAMS</span><h2>How the NRRS Lineup Splits</h2></header>
-            <div class="news-programs__grid">
-              {story.programBreakdown.map(program=><article>
-                <small>{program.eyebrow}</small>
-                <div class="news-programs__number">{program.number}</div>
-                <h3>{program.title}</h3>
-                <p>{program.detail}</p>
-                {program.items?.length>0&&<ul>{program.items.map(item=><li>{item}</li>)}</ul>}
-              </article>)}
-            </div>
-          </section>
-        )}
-
-        {story.quote?.text&&(
-          <blockquote class="news-pullquote">
-            “{story.quote.text}”
-            <cite>{story.quote.attribution}</cite>
-          </blockquote>
-        )}
-
-        {story.timeline?.length>0&&(
-          <section class="news-timeline" aria-label="Story timeline">
-            <header><span>THE TIMELINE</span><h2>How We Got Here</h2></header>
-            <div class="news-timeline__rail">
-              {story.timeline.map((item,index)=><article>
-                <b>{String(index+1).padStart(2,'0')}</b>
-                <div>
-                  <small>{item.series}{item.season?` · ${item.season}`:''}</small>
-                  <h3>{item.title}</h3>
-                  <p>{item.method}</p>
-                  <time>{item.date}</time>
+        {isRaceFeature ? (
+          <>
+            {story.raceSummary && (
+              <section class="news-race-strip" aria-label="Talladega race summary">
+                <div class="news-race-strip__eyebrow">{story.raceSummary.eyebrow}</div>
+                <div class="news-race-strip__grid">
+                  {story.raceSummary.items?.map(item=><div><small>{item.label}</small><b>{item.value}</b></div>)}
+                  {story.raceSummary.callout&&<strong class="news-race-strip__callout">{story.raceSummary.callout}</strong>}
                 </div>
-              </article>)}
-            </div>
-          </section>
-        )}
+              </section>
+            )}
 
-        <div class="news-article__sections">
-          {story.sections?.map((section,index)=><section>
-            <div class="news-section-index" aria-hidden="true">{String(index+1).padStart(2,'0')}</div>
-            <div>
-              <h2>{section.heading}</h2>
-              {section.paragraphs?.map(paragraph=><p>{paragraph}</p>)}
+            <div class="news-feature-flow">
+              {story.featureBlocks?.map(block => block.type==='prose' ? (
+                <section class="news-feature-prose">{block.paragraphs?.map(paragraph=><p>{paragraph}</p>)}</section>
+              ) : block.type==='standings' ? (
+                <section class="news-stat-card news-stat-card--standings" aria-label={block.title}>
+                  <header><small>NRRS CHASE</small><h2>{block.title}</h2></header>
+                  <div class="news-standing-card__rows">
+                    {block.rows?.map(row=><div class:list={['news-standing-card__row',{'is-featured':row.featured}]}><b class="pos">{row.position}</b><strong>{row.driver}</strong><span>{row.points}</span>{row.gap&&<small>{row.gap}</small>}</div>)}
+                  </div>
+                  {block.callout&&<div class="news-stat-card__callout">{block.callout}</div>}
+                </section>
+              ) : block.type==='change-strip' ? (
+                <section class="news-stat-card news-stat-card--changes" aria-label={block.title}>
+                  <header><small>POINTS DELTA</small><h2>{block.title}</h2></header>
+                  <div class="news-change-grid">
+                    {block.items?.map(item=><div><small>{item.label}</small>{item.before&&item.after?<b>{item.before}<i>→</i>{item.after}</b>:<b class:list={[{'is-up':item.tone==='up','is-down':item.tone==='down'}]}>{item.value}</b>}{item.delta&&<strong>{item.delta}</strong>}</div>)}
+                  </div>
+                  {block.callout&&<div class="news-stat-card__callout is-large">{block.callout}</div>}
+                </section>
+              ) : block.type==='road-course' ? (
+                <section class="news-stat-card news-stat-card--road" aria-label={block.title}>
+                  <header><small>NEXT TEST</small><h2>{block.title}</h2></header>
+                  <div class="news-road-grid"><div class="news-road-results">{block.rows?.map(row=><div><span>{row.track}</span><b>{row.finish}</b></div>)}</div><div class="news-road-stats">{block.stats?.map(stat=><div><small>{stat.label}</small><b>{stat.value}</b></div>)}</div></div>
+                </section>
+              ) : block.type==='numbers' ? (
+                <section class="news-stat-card news-stat-card--numbers" aria-label={block.title}>
+                  <header><small>SEASON SNAPSHOT</small><h2>{block.title}</h2></header>
+                  <div class="news-numbers-grid">{block.groups?.map(group=><div><h3>{group.title}</h3>{group.rows?.map(row=><div class:list={['news-number-row',{'is-featured':row.featured}]}><span>{row.label}</span><b>{row.value}</b></div>)}</div>)}</div>
+                  {block.note&&<div class="news-stat-card__note">{block.note}</div>}
+                </section>
+              ) : block.type==='pull-quote' ? (
+                <blockquote class="news-feature-final-quote"><span>{block.text}</span><cite>— {block.attribution}</cite></blockquote>
+              ) : null)}
             </div>
-          </section>)}
-        </div>
+          </>
+        ) : (
+          <>
+            {story.metrics?.length>0&&(
+              <section class="news-metrics" aria-label="Story quick facts">
+                {story.metrics.map(m=><div><b class:list={['news-metric__value',{'is-long':String(m.value || '').length > 8}]}>{m.value}</b><small>{m.label}</small></div>)}
+              </section>
+            )}
 
-        {story.callout?.title&&(
-          <aside class="news-callout">
-            <small>{story.callout.label || 'Team Wire'}</small>
-            <h2>{story.callout.title}</h2>
-            <p>{story.callout.text}</p>
-          </aside>
+            {story.programBreakdown?.length>0&&(
+              <section class="news-programs" aria-label="Season 4 program breakdown">
+                <header><span>SEASON 4 PROGRAMS</span><h2>How the NRRS Lineup Splits</h2></header>
+                <div class="news-programs__grid">
+                  {story.programBreakdown.map(program=><article>
+                    <small>{program.eyebrow}</small>
+                    <div class="news-programs__number">{program.number}</div>
+                    <h3>{program.title}</h3>
+                    <p>{program.detail}</p>
+                    {program.items?.length>0&&<ul>{program.items.map(item=><li>{item}</li>)}</ul>}
+                  </article>)}
+                </div>
+              </section>
+            )}
+
+            {story.quote?.text&&(
+              <blockquote class="news-pullquote">
+                “{story.quote.text}”
+                <cite>{story.quote.attribution}</cite>
+              </blockquote>
+            )}
+
+            {story.timeline?.length>0&&(
+              <section class="news-timeline" aria-label="Story timeline">
+                <header><span>THE TIMELINE</span><h2>How We Got Here</h2></header>
+                <div class="news-timeline__rail">
+                  {story.timeline.map((item,index)=><article>
+                    <b>{String(index+1).padStart(2,'0')}</b>
+                    <div>
+                      <small>{item.series}{item.season?` · ${item.season}`:''}</small>
+                      <h3>{item.title}</h3>
+                      <p>{item.method}</p>
+                      <time>{item.date}</time>
+                    </div>
+                  </article>)}
+                </div>
+              </section>
+            )}
+
+            <div class="news-article__sections">
+              {story.sections?.map((section,index)=><section>
+                <div class="news-section-index" aria-hidden="true">{String(index+1).padStart(2,'0')}</div>
+                <div>
+                  <h2>{section.heading}</h2>
+                  {section.paragraphs?.map(paragraph=><p>{paragraph}</p>)}
+                </div>
+              </section>)}
+            </div>
+
+            {story.callout?.title&&(
+              <aside class="news-callout">
+                <small>{story.callout.label || 'Team Wire'}</small>
+                <h2>{story.callout.title}</h2>
+                <p>{story.callout.text}</p>
+              </aside>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -122,24 +174,40 @@ const shareDescription=story.embedDescription || compactDescription(story.summar
     const slug=root.dataset.storySlug||'';
     const esc=(value)=>String(value??'').replace(/[&<>"']/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const compactDescription=(value='',limit=170)=>{const clean=String(value||'').replace(/\s+/g,' ').trim();if(clean.length<=limit)return clean;const slice=clean.slice(0,limit+1);const cut=slice.lastIndexOf(' ');return `${slice.slice(0,cut>90?cut:limit).replace(/[.,;:!?-]+$/,'')}…`;};
+    const featureBlockHtml=(block)=>{
+      if(block?.type==='prose')return `<section class="news-feature-prose">${(block.paragraphs||[]).map(p=>`<p>${esc(p)}</p>`).join('')}</section>`;
+      if(block?.type==='standings')return `<section class="news-stat-card news-stat-card--standings" aria-label="${esc(block.title)}"><header><small>NRRS CHASE</small><h2>${esc(block.title)}</h2></header><div class="news-standing-card__rows">${(block.rows||[]).map(row=>`<div class="news-standing-card__row${row.featured?' is-featured':''}"><b class="pos">${esc(row.position)}</b><strong>${esc(row.driver)}</strong><span>${esc(row.points)}</span>${row.gap?`<small>${esc(row.gap)}</small>`:''}</div>`).join('')}</div>${block.callout?`<div class="news-stat-card__callout">${esc(block.callout)}</div>`:''}</section>`;
+      if(block?.type==='change-strip')return `<section class="news-stat-card news-stat-card--changes" aria-label="${esc(block.title)}"><header><small>POINTS DELTA</small><h2>${esc(block.title)}</h2></header><div class="news-change-grid">${(block.items||[]).map(item=>`<div><small>${esc(item.label)}</small>${item.before&&item.after?`<b>${esc(item.before)}<i>→</i>${esc(item.after)}</b>`:`<b class="${item.tone==='up'?'is-up':item.tone==='down'?'is-down':''}">${esc(item.value)}</b>`}${item.delta?`<strong>${esc(item.delta)}</strong>`:''}</div>`).join('')}</div>${block.callout?`<div class="news-stat-card__callout is-large">${esc(block.callout).replace(/\n/g,'<br>')}</div>`:''}</section>`;
+      if(block?.type==='road-course')return `<section class="news-stat-card news-stat-card--road" aria-label="${esc(block.title)}"><header><small>NEXT TEST</small><h2>${esc(block.title)}</h2></header><div class="news-road-grid"><div class="news-road-results">${(block.rows||[]).map(row=>`<div><span>${esc(row.track)}</span><b>${esc(row.finish)}</b></div>`).join('')}</div><div class="news-road-stats">${(block.stats||[]).map(stat=>`<div><small>${esc(stat.label)}</small><b>${esc(stat.value)}</b></div>`).join('')}</div></div></section>`;
+      if(block?.type==='numbers')return `<section class="news-stat-card news-stat-card--numbers" aria-label="${esc(block.title)}"><header><small>SEASON SNAPSHOT</small><h2>${esc(block.title)}</h2></header><div class="news-numbers-grid">${(block.groups||[]).map(group=>`<div><h3>${esc(group.title)}</h3>${(group.rows||[]).map(row=>`<div class="news-number-row${row.featured?' is-featured':''}"><span>${esc(row.label)}</span><b>${esc(row.value)}</b></div>`).join('')}</div>`).join('')}</div>${block.note?`<div class="news-stat-card__note">${esc(block.note)}</div>`:''}</section>`;
+      if(block?.type==='pull-quote')return `<blockquote class="news-feature-final-quote"><span>${esc(block.text)}</span><cite>— ${esc(block.attribution)}</cite></blockquote>`;
+      return '';
+    };
+    const featureHtml=(s)=>{
+      const rs=s.raceSummary||{};
+      const strip=rs.eyebrow?`<section class="news-race-strip" aria-label="Race summary"><div class="news-race-strip__eyebrow">${esc(rs.eyebrow)}</div><div class="news-race-strip__grid">${(rs.items||[]).map(item=>`<div><small>${esc(item.label)}</small><b>${esc(item.value)}</b></div>`).join('')}${rs.callout?`<strong class="news-race-strip__callout">${esc(rs.callout)}</strong>`:''}</div></section>`:'';
+      return `${strip}<div class="news-feature-flow">${(s.featureBlocks||[]).map(featureBlockHtml).join('')}</div>`;
+    };
     const storyHtml=(s)=>{
       const mark=s.articleLogo
         ? `<aside class="news-article__logo-card" aria-label="Story logo"><img src="${esc(s.articleLogo)}" alt="${esc(s.articleLogoAlt||`${s.title} logo`)}" loading="eager" decoding="async"></aside>`
         : s.headlineMark?.value
           ? `<aside class="news-headline-mark" aria-label="Story headline marker"><small>${esc(s.headlineMark.eyebrow||s.kicker)}</small><strong>${esc(s.headlineMark.value)}</strong><span>${esc(s.headlineMark.detail)}</span></aside>`
           : s.heroGhost ? `<aside class="news-headline-ghost" aria-hidden="true">${esc(s.heroGhost)}</aside>` : '';
-      const tags=(s.tags||[]).length?`<div class="news-article__tags" aria-label="Story tags">${s.tags.map(tag=>`<span>${esc(tag)}</span>`).join('')}</div>`:'';
+      const tags=s.featureLayout==='race-stat-feature'?'':(s.tags||[]).length?`<div class="news-article__tags" aria-label="Story tags">${s.tags.map(tag=>`<span>${esc(tag)}</span>`).join('')}</div>`:'';
       const metrics=(s.metrics||[]).length?`<section class="news-metrics" aria-label="Story quick facts">${s.metrics.map(m=>`<div><b class="news-metric__value ${String(m.value||'').length>8?'is-long':''}">${esc(m.value)}</b><small>${esc(m.label)}</small></div>`).join('')}</section>`:'';
       const programs=(s.programBreakdown||[]).length?`<section class="news-programs" aria-label="Season 4 program breakdown"><header><span>SEASON 4 PROGRAMS</span><h2>How the NRRS Lineup Splits</h2></header><div class="news-programs__grid">${s.programBreakdown.map(program=>`<article><small>${esc(program.eyebrow)}</small><div class="news-programs__number">${esc(program.number)}</div><h3>${esc(program.title)}</h3><p>${esc(program.detail)}</p>${(program.items||[]).length?`<ul>${program.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`:''}</article>`).join('')}</div></section>`:'';
       const quote=s.quote?.text?`<blockquote class="news-pullquote">“${esc(s.quote.text)}”<cite>${esc(s.quote.attribution)}</cite></blockquote>`:'';
       const timeline=(s.timeline||[]).length?`<section class="news-timeline" aria-label="Story timeline"><header><span>THE TIMELINE</span><h2>How We Got Here</h2></header><div class="news-timeline__rail">${s.timeline.map((item,index)=>`<article><b>${String(index+1).padStart(2,'0')}</b><div><small>${esc(item.series)}${item.season?` · ${esc(item.season)}`:''}</small><h3>${esc(item.title)}</h3><p>${esc(item.method)}</p><time>${esc(item.date)}</time></div></article>`).join('')}</div></section>`:'';
       const sections=`<div class="news-article__sections">${(s.sections||[]).map((section,index)=>`<section><div class="news-section-index" aria-hidden="true">${String(index+1).padStart(2,'0')}</div><div><h2>${esc(section.heading)}</h2>${(section.paragraphs||[]).map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</div></section>`).join('')}</div>`;
       const callout=s.callout?.title?`<aside class="news-callout"><small>${esc(s.callout.label||'Team Wire')}</small><h2>${esc(s.callout.title)}</h2><p>${esc(s.callout.text)}</p></aside>`:'';
-      return `<div class="wrap"><header class="news-article__hero"><a class="news-article__back" href="/news/">← Team Newsroom</a><div class="news-article__meta"><p class="eyebrow">${esc(s.category)} · ${esc(s.date)}</p><span>${esc(s.context)}</span><span>${esc(s.byline||'Aetherwing eMotorsports')}</span></div><div class="news-article__hero-grid ${(s.articleLogo||s.headlineMark?.value||s.heroGhost)?'has-mark':''} ${s.articleLogo?'has-logo':''}"><div class="news-article__headline"><p class="news-article__kicker">${esc(s.kicker)}</p><h1>${esc(s.title)}</h1><p class="news-article__summary">${esc(s.summary)}</p></div>${mark}</div>${tags}</header><div class="news-article__body">${metrics}${programs}${quote}${timeline}${sections}${callout}</div></div>`;
+      const body=s.featureLayout==='race-stat-feature'?featureHtml(s):`${metrics}${programs}${quote}${timeline}${sections}${callout}`;
+      return `<div class="wrap"><header class="news-article__hero"><a class="news-article__back" href="/news/">← Team Newsroom</a><div class="news-article__meta"><p class="eyebrow">${esc(s.category)} · ${esc(s.date)}</p><span>${esc(s.context)}</span><span>${esc(s.byline||'Aetherwing eMotorsports')}</span></div><div class="news-article__hero-grid ${(s.articleLogo||s.headlineMark?.value||s.heroGhost)?'has-mark':''} ${s.articleLogo?'has-logo':''}"><div class="news-article__headline"><p class="news-article__kicker">${esc(s.kicker)}</p><h1>${esc(s.title)}</h1><p class="news-article__summary">${esc(s.summary)}</p></div>${mark}</div>${tags}</header><div class="news-article__body">${body}</div></div>`;
     };
     const apply=(datasets)=>{
       const live=(datasets?.news||[]).find((item)=>item?.slug===slug);
       if(!live)return;
+      root.classList.toggle('news-article--race-feature',live.featureLayout==='race-stat-feature');
       root.innerHTML=storyHtml(live);
       document.title=`${live.title} | Aetherwing eMotorsports`;
       const shareDescription=live.embedDescription||compactDescription(live.summary||'');

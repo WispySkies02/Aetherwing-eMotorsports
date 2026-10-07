@@ -397,7 +397,7 @@ if(!partnersV2023.some(p=>p.name==='Palmetto Gaming'))throw Error('Palmetto Gami
 const driversPageV2023=readFileSync('src/pages/drivers/index.astro','utf8');
 if(!driversPageV2023.includes('drivers-page')||!lineupCss.includes('.drivers-page .page-intro'))throw Error('Drivers-only desktop hero reduction is missing.');
 const siteDataV2023=readFileSync('netlify/lib/_site-data.cjs','utf8');
-if(!siteDataV2023.includes('ensurePalmettoTeamPartner')||siteDataV2023.includes("filter(p=>p?.name!=='Palmetto Gaming')"))throw Error('Live site-content API must preserve Palmetto as an Aetherwing team partner.');
+if(!siteDataV2023.includes('ensureCoreTeamPartners')||siteDataV2023.includes("filter(p=>p?.name!=='Palmetto Gaming')"))throw Error('Live site-content API must preserve Palmetto and Apex as Aetherwing team partners.');
 if(!siteDataV2023.includes("access-control-allow-origin':'https://paint.aetherwing.net"))throw Error('Paint Booth must be allowed to read the canonical public roster API.');
 console.log('v2.0.23 verified: Hailey canonical URL and Drivers hero polish remain locked; Palmetto now follows corrected team-partner canon.');
 
@@ -434,34 +434,12 @@ if(siteDataV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {..
 if(siteAdminV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 Admin migration must not overwrite venue edits with the old Las Vegas R22 venue.');
 console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin track/title edits and live event identity hydrates on-page.');
 
-// v2.0.28 — Talladega Round 22 Team Wire story + featured headline.
-{
-  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
-  const slug='talladega-leaves-bell-frustrated-championship-gap-grows';
-  const story=newsNow.find((item)=>item?.slug===slug);
-  if(!story)throw Error('v2.0.28 Talladega Team Wire story is missing.');
-  if(story.dateIso!=='2026-10-06'||story.title!=='Talladega Leaves Bell Frustrated as Championship Gap Grows')throw Error('v2.0.28 Talladega story metadata is incorrect.');
-  if(!story.summary?.includes('two points farther behind')||!JSON.stringify(story.sections||[]).includes('She was looking at 67.'))throw Error('v2.0.28 Talladega story body is incomplete.');
-  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.28 Talladega story must be the one featured Team Wire story.');
-  const siteContent=readFileSync('src/lib/site-content.mjs','utf8');
-  const adminUi=readFileSync('public/admin/content-admin.js','utf8');
-  const siteData=readFileSync('netlify/lib/_site-data.cjs','utf8');
-  const siteAdmin=readFileSync('netlify/lib/_site-admin.cjs','utf8');
-  for(const [name,source] of [['site content',siteContent],['Admin UI',adminUi],['site-data API',siteData],['site-admin API',siteAdmin]])if(!source.includes(slug))throw Error(`v2.0.28 ${name} must preserve the new featured story across older published snapshots.`);
-}
-console.log('v2.0.28 verified: Talladega Round 22 story is published and featured across seed/Admin merge paths.');
+// v2.0.28 — Talladega Team Wire route/feature baseline; article copy is superseded by v2.0.37.
+{ const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');if(!story||!story.featured||newsNow.filter((item)=>item?.featured).length!==1)throw Error('Talladega Team Wire feature route/featured state regressed.'); }
+console.log('v2.0.28 baseline verified: Talladega story route remains featured; current copy is validated by v2.0.37.');
 
-// v2.0.29 — revised Talladega Team Wire copy.
-{
-  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
-  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
-  if(!story||!['2026-10-06-v2','2026-10-06-v3','2026-10-06-v4'].includes(story.contentRevision))throw Error('v2.0.29 revised Talladega story revision marker is missing.');
-  if(story.summary!=='Bell wins Stage 1, leads the most laps and finishes fourth, but leaves one of her strongest tracks two points farther behind in the NRRS championship.')throw Error('v2.0.29 Talladega summary is not the revised copy.');
-  const body=JSON.stringify(story.sections||[]);
-  for(const required of ['Hailey Bell came to Talladega with a simple goal.','third race of the Chase','The hardest part is feeling like every time I try to find more speed','I’m looking forward to actually having teammates next season','How can a driver run near the front all night and still feel no closer to where she is trying to go?'])if(!body.includes(required))throw Error(`v2.0.29 revised Talladega body is missing: ${required}`);
-  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.29 Talladega story must remain the one featured Team Wire story.');
-}
-console.log('v2.0.29 verified: revised Talladega Team Wire article is seeded, featured, and migration-safe.');
+// v2.0.29 Talladega prose revision is superseded by the v2.0.37 replacement feature.
+console.log('v2.0.29 historical Talladega prose revision superseded by v2.0.37.');
 
 
 // v2.0.30 — signed position-change CSV + broadcast standings presentation.
@@ -496,24 +474,8 @@ console.log('v2.0.29 verified: revised Talladega Team Wire article is seeded, fe
   console.log('v2.0.30 verified: full-field race CSV, stage dashes, manual feature/Chase flags, automatic scoring, and full Race Weekend results are locked.');
 }
 
-// v2.0.31 — Talladega final full-time context revision.
-{
-  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
-  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
-  if(!story||!['2026-10-06-v3','2026-10-06-v4'].includes(story.contentRevision))throw Error('v2.0.31 Talladega content revision marker is missing.');
-  const sections=story.sections||[];
-  const teamIdx=sections.findIndex((section)=>section?.heading==='A Different Team Environment Ahead');
-  const contextIdx=sections.findIndex((section)=>section?.heading==='Why 2027 Will Be the Final Full-Time Season');
-  const remainingIdx=sections.findIndex((section)=>section?.heading==='Three Races Remain');
-  if(!(teamIdx>=0&&contextIdx===teamIdx+1&&remainingIdx===contextIdx+1))throw Error('v2.0.31 Talladega final full-time context is not in the requested placement.');
-  const body=JSON.stringify(sections[contextIdx]?.paragraphs||[]);
-  for(const required of ['part of Bell’s reasoning for making 2027 her final season of full-time competition','the same small group of drivers continues to control much of the winning','The biggest reason I’m stepping away from full-time competition after next season','not being treated as a farewell from racing entirely'])if(!body.includes(required))throw Error(`v2.0.31 Talladega added section is missing: ${required}`);
-  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.31 Talladega story must remain the one featured Team Wire story.');
-  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
-  const adminStory=(adminSeed.news||[]).find((item)=>item?.slug===story.slug);
-  if(!adminStory||!['2026-10-06-v3','2026-10-06-v4'].includes(adminStory.contentRevision))throw Error('v2.0.31 Admin news seed must carry the revised Talladega story.');
-}
-console.log('v2.0.31 verified: final full-time context is inserted after teammates and before Three Races Remain.');
+// v2.0.31 Talladega context revision is superseded by the v2.0.37 replacement feature.
+console.log('v2.0.31 historical Talladega context revision superseded by v2.0.37.');
 
 // v2.0.32 — live standings/results publication propagation.
 {
@@ -540,27 +502,8 @@ console.log('v2.0.31 verified: final full-time context is inserted after teammat
 }
 
 
-// v2.0.33 — Talladega Chase/playoff consistency context revision.
-{
-  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
-  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
-  if(!story||story.contentRevision!=='2026-10-06-v4')throw Error('v2.0.33 Talladega content revision marker is missing.');
-  const section=(story.sections||[]).find((item)=>item?.heading==='Trying to Prove She Belongs');
-  const paras=section?.paragraphs||[];
-  const adjustmentIdx=paras.findIndex((p)=>p.startsWith('A Chase points adjustment previously restored Bell'));
-  const quoteIdx=paras.findIndex((p)=>p.startsWith('“I really want to be here,”'));
-  const replacementIdx=paras.findIndex((p)=>p.startsWith('Bell’s frustration is also tied to a pattern'));
-  const enjoymentIdx=paras.findIndex((p)=>p.startsWith('That struggle has also affected something Bell wanted to prioritize'));
-  if(!(adjustmentIdx>=0&&quoteIdx>adjustmentIdx&&replacementIdx>quoteIdx&&enjoymentIdx>replacementIdx))throw Error('v2.0.33 Chase consistency section is not in the requested placement.');
-  const body=paras.slice(replacementIdx,enjoymentIdx).join('\n');
-  for(const required of ['qualified for every Chase or playoff she has attempted','I’ve made every Chase or playoff because I show up every week','I don’t want making the Chase to only mean that I attended more races than somebody else','Talladega was painful precisely because it appeared to offer an opportunity to break that pattern','left the race two points farther from the championship lead'])if(!body.includes(required))throw Error(`v2.0.33 Chase consistency replacement is missing: ${required}`);
-  if(/showing up and existing/i.test(body))throw Error('v2.0.33 obsolete showing-up-and-existing wording must not remain in the replacement section.');
-  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
-  const adminStory=(adminSeed.news||[]).find((item)=>item?.slug===story.slug);
-  if(!adminStory||adminStory.contentRevision!=='2026-10-06-v4')throw Error('v2.0.33 Admin seed must carry Talladega revision v4.');
-  if(newsNow.filter((item)=>item?.featured).length!==1||!story.featured)throw Error('v2.0.33 Talladega story must remain the one featured Team Wire story.');
-}
-console.log('v2.0.33 verified: Chase/playoff consistency replacement is inserted before the enjoyment section and remains migration-safe.');
+// v2.0.33 Talladega Chase-context revision is superseded by the v2.0.37 replacement feature.
+console.log('v2.0.33 historical Talladega Chase-context revision superseded by v2.0.37.');
 
 // v2.0.34 — verified Admin save-state + persistence readback.
 {
@@ -597,9 +540,46 @@ console.log('v2.0.34 verified: Admin save/publish uses a persisted snapshot and 
     if(source.includes("filter(p=>p?.name!=='Palmetto Gaming')")||source.includes("filter((item)=>item?.name!=='Palmetto Gaming')"))throw Error(`v2.0.35 ${label} still filters Palmetto out of Team Partners.`);
   }
   if(siteContent.includes("brands:[{name:'Palmetto Gaming'")||siteData.includes("p.profile==='hailey'&&pal?pal:p")||siteAdmin.includes("p.profile==='hailey'&&pal?pal:p"))throw Error('v2.0.35 code must not forcibly rewrite Hailey’s driver portfolio around Palmetto.');
-  if(!siteData.includes('ensurePalmettoTeamPartner')||!siteAdmin.includes('ensurePalmettoTeamPartner')||!admin.includes("name==='partners'"))throw Error('v2.0.35 Palmetto team-partner repair path is incomplete.');
+  if(!siteData.includes('ensureCoreTeamPartners')||!siteAdmin.includes('ensureCoreTeamPartners')||!admin.includes("name==='partners'"))throw Error('v2.0.35 core team-partner repair path is incomplete.');
   const scr=(JSON.parse(readFileSync('src/data/news.json','utf8'))||[]).find((story)=>story?.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4');
   const scrText=JSON.stringify(scr||{});
   if(!scrText.includes('Aetherwing team partner')||/one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(scrText))throw Error('v2.0.35 SCR story still misclassifies Palmetto Gaming.');
 }
 console.log('v2.0.35 verified: Palmetto is an Aetherwing team partner, the SCR story is corrected, and Hailey’s portfolio remains Admin-editable.');
+
+
+// v2.0.37 — core team partners + Talladega stat feature + visible lightweight motion for every theme.
+{
+  const partnersNow=JSON.parse(readFileSync('src/data/partners.json','utf8'));
+  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+  for(const name of ['Palmetto Gaming','Apex Sim Racing']){
+    if(!partnersNow.some((item)=>item?.name===name))throw Error(`v2.0.37 team partner missing from source seed: ${name}`);
+    if(!(adminSeed.partners||[]).some((item)=>item?.name===name))throw Error(`v2.0.37 team partner missing from Admin seed: ${name}`);
+  }
+  const siteContent=readFileSync('src/lib/site-content.mjs','utf8');
+  const siteData=readFileSync('netlify/lib/_site-data.cjs','utf8');
+  const siteAdmin=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+  const adminUi=readFileSync('public/admin/content-admin.js','utf8');
+  for(const [label,source] of [['build-time content',siteContent],['site-data API',siteData],['site-admin API',siteAdmin],['Admin UI',adminUi]]){
+    for(const name of ['Palmetto Gaming','Apex Sim Racing'])if(!source.includes(name))throw Error(`v2.0.37 ${label} must preserve ${name} as a core team partner.`);
+  }
+  const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
+  const story=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
+  if(!story||story.title!=='Talladega Gives Bell Progress on Paper — But Little Else'||story.contentRevision!=='2026-10-07-v5-stat-feature')throw Error('v2.0.37 Talladega replacement headline/revision is missing.');
+  if(story.featureLayout!=='race-stat-feature'||story.image||story.articleLogo||story.headlineMark||story.heroGhost)throw Error('v2.0.37 Talladega must be a no-image stat feature.');
+  const blockTypes=(story.featureBlocks||[]).map((block)=>block.type);
+  for(const type of ['standings','change-strip','road-course','numbers','pull-quote'])if(!blockTypes.includes(type))throw Error(`v2.0.37 Talladega feature block missing: ${type}`);
+  if(!JSON.stringify(story.featureBlocks).includes('1 POINT SEPARATES HAILEY FROM P4')||!JSON.stringify(story.featureBlocks).includes('PROGRESS ON PAPER.')||!JSON.stringify(story.featureBlocks).includes('8 of Hailey’s 17 stage points'))throw Error('v2.0.37 Talladega stat callouts are incomplete.');
+  const newsPage=readFileSync('src/pages/news/[slug].astro','utf8');
+  const records=readFileSync('src/styles/records.css','utf8');
+  if(!newsPage.includes('news-race-strip')||!newsPage.includes('news-stat-card--standings')||!newsPage.includes('news-feature-final-quote'))throw Error('v2.0.37 Team Wire stat-feature renderer is missing.');
+  if(!records.includes('v2.0.37 — Talladega typography + stats feature')||!records.includes('.news-change-grid')||!records.includes('.news-numbers-grid'))throw Error('v2.0.37 Team Wire stat-feature styling is missing.');
+  const seasonalTheme=readFileSync('public/seasonal-theme.js','utf8');
+  const seasonalFx=readFileSync('public/seasonal-effects.css','utf8');
+  const themePreview=readFileSync('public/admin/theme-preview.js','utf8');
+  if(!seasonalTheme.includes("ambient.className='aw-fx__ambient'")||!seasonalTheme.includes("aw-fx__anniversary")||!seasonalTheme.includes('mountAtmosphere(theme,observance,intensity,anniversaryRetro)'))throw Error('v2.0.37 every-theme ambient/Anniversary runtime motion is missing.');
+  if(!themePreview.includes("effect:'anniversary'")||!themePreview.includes("ambient.className='aw-fx__ambient'")||!themePreview.includes("aw-fx__anniversary"))throw Error('v2.0.37 Admin Theme Preview must show the same ambient/Anniversary motion.');
+  for(const required of ['@keyframes aw-ambient-drift','@keyframes aw-anniversary-sweep','@keyframes aw-palm-sway','@keyframes aw-thorns-drift','@keyframes aw-wheat-sway'])if(!seasonalFx.includes(required))throw Error(`v2.0.37 theme animation missing: ${required}`);
+  if(!seasonalFx.includes('@media(prefers-reduced-motion:reduce)'))throw Error('v2.0.37 theme motion must honor reduced-motion preferences.');
+}
+console.log('v2.0.37 verified: Palmetto + Apex coexist, Talladega is a no-image stat feature, and every active theme has lightweight visible motion.');

@@ -1,3 +1,11 @@
+## v2.0.37 — Core Partners + Talladega Stat Feature + Theme Motion
+
+- Keeps **Palmetto Gaming** and **Apex Sim Racing** together as Aetherwing team partners across seed, Admin, build-time, and live API data.
+- Replaces the featured Talladega Team Wire story with **Talladega Gives Bell Progress on Paper — But Little Else**, using no hero image and a typography/stats-first race feature layout.
+- Adds visible, lightweight ambient background animation to every active theme, including an Anniversary-specific broadcast drift that suppresses Halloween atmosphere during Oct. 1–7.
+- Keeps mobile motion lighter and honors `prefers-reduced-motion` without removing the themed visual takeover.
+- Preserves v2.0.36 wide desktop Team Wire canvas and all prior live Admin/standings/results fixes.
+
 ## v2.0.36 — Full-Takeover Themes + Wide Team Wire
 - Retires the 100% / 150% / 200% calendar ladder: every active seasonal/holiday/observance theme now receives the complete 200% UI treatment from the moment it activates.
 - Decouples visual intensity from animation intensity. Seasonal motion now uses small device-aware particle budgets, slow compositor-friendly transform/opacity animation, background-tab pausing, and reduced-motion-safe static atmosphere instead of high-density effects.
