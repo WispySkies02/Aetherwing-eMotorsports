@@ -15,7 +15,7 @@ const owner=leadership[0];
   <FaithSignature field="faithMissionLine" label="Our foundation"/>
   <section class="section"><div class="wrap">
     <div class="section-head"><div><p class="eyebrow">Current operation</p><h2 class="section-title">At a Glance</h2></div><p class="lede">Only active programs and competition relationships are counted here.</p></div>
-    <div class="mission-counts">
+    <div class="mission-counts" data-mission-counts>
       <article class="story-panel"><strong>{aetherwing.length}</strong><span>Aetherwing Programs</span></article>
       <article class="story-panel"><strong>{alliance.length}</strong><span>Alliance Series</span></article>
       <article class="story-panel"><strong>{active.length}</strong><span>Competition Relationships</span></article>
@@ -23,7 +23,7 @@ const owner=leadership[0];
   </div></section>
   <section class="section"><div class="wrap">
     <div class="section-head"><div><p class="eyebrow">Active programs</p><h2 class="section-title">Where We Compete</h2></div><p class="lede">Current-season information only. Historical programs remain in the record book.</p></div>
-    <div class="story-grid mission-programs">
+    <div class="story-grid mission-programs" data-mission-programs>
       {active.map(program=><article class="story-panel mission-program">
         <p class="eyebrow">{program.label}</p><h3>{program.name}</h3>
         {program.series&&<p class="mission-program__series">{program.series}</p>}
@@ -41,3 +41,6 @@ const owner=leadership[0];
   <section class="section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Current leadership</p><h2 class="section-title">Team Direction</h2></div></div><div class="story-grid">{leadership.map(person=><article class="story-panel"><h3>{person.name}</h3><div class="mission-roster">{(person.roles||[]).map(role=><span>{role}</span>)}</div></article>)}</div></div></section>
   <section class="section former-program"><div class="wrap"><article class="story-panel"><p class="eyebrow">Former program / historical archive</p><h3>UARL Division 2 · NFFF Grand National Series</h3><p>Closed September 15, 2026. Division 2 is no longer counted as an active Aetherwing program. Historical race results and paints remain preserved in History and archive surfaces.</p><a href="/history/">View team history →</a></article></div></section>
 </Base>
+<script>
+(()=>{const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const render=d=>{if(!Array.isArray(d?.competitions)||!Array.isArray(d?.drivers))return;const active=d.competitions.filter(p=>p?.id!=='uarl-d2'),aem=active.filter(p=>p?.type==='aetherwing'),alliance=active.filter(p=>p?.type==='alliance');const counts=document.querySelector('[data-mission-counts]');if(counts)counts.innerHTML=`<article class="story-panel"><strong>${aem.length}</strong><span>Aetherwing Programs</span></article><article class="story-panel"><strong>${alliance.length}</strong><span>Alliance Series</span></article><article class="story-panel"><strong>${active.length}</strong><span>Competition Relationships</span></article>`;const root=document.querySelector('[data-mission-programs]');if(root)root.innerHTML=active.map(p=>{const roster=d.drivers.filter(x=>x?.competitionId===p.id&&x?.displayName&&!/^open$/i.test(x.displayName));return `<article class="story-panel mission-program"><p class="eyebrow">${esc(p.label)}</p><h3>${esc(p.name)}</h3>${p.series?`<p class="mission-program__series">${esc(p.series)}</p>`:''}<p><b>Race time:</b> ${esc(p.schedule)}</p><p><b>Platform:</b> ${esc(p.platform)}</p><div class="mission-roster">${roster.map(x=>`<span>#${esc(x.number)} ${esc(x.displayName)}</span>`).join('')}</div><a href="/programs/${esc(p.id)}/">Open program →</a></article>`}).join('');};window.addEventListener('aetherwing:content',({detail})=>render(detail));if(window.__AETHERWING_CONTENT__)render(window.__AETHERWING_CONTENT__);})();
+</script>

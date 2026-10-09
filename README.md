@@ -1,3 +1,11 @@
+## v2.0.39 — Current Deployment Canon + Live Program Surfaces
+
+- Canonicalizes published Admin roster/program data before Astro build so stale #52/#92/Cadillac/Jaxon competition data cannot be baked back into static pages.
+- Programs, Program detail, Mission & Values, and Team Handbook now hydrate from the same live Admin dataset used by Drivers/Home/Championships.
+- Preserves both Palmetto Gaming and Apex Sim Racing as Aetherwing team partners.
+- Does not invent or seed-repair unpublished race results or standings; official competition data remains Admin-authoritative.
+- Retains v2.0.38 theme preview motion fixes and all prior functionality.
+
 ## v2.0.38 — Admin Theme Preview Motion Fix
 
 - Manual Theme Preview choices now explicitly force the requested seasonal motion inside Admin.

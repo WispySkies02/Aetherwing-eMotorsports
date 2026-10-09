@@ -599,3 +599,18 @@ console.log('v2.0.37 verified: Palmetto + Apex coexist, Talladega is a no-image 
   if(siteCssV2038.includes('html[data-anniversary-retro="true"] .aw-season-atmosphere{display:none!important}'))throw Error('v2.0.38 Anniversary must not hide the seasonal atmosphere layer.');
 }
 console.log('v2.0.38 verified: Admin Theme Preview visibly animates every selected theme, including explicit motion preview overrides.');
+
+// v2.0.39 — build-time canon + live program/mission/handbook hydration.
+{
+  const sync=readFileSync('scripts/sync-admin-content.mjs','utf8');
+  const programs=readFileSync('src/pages/programs/index.astro','utf8');
+  const program=readFileSync('src/pages/programs/[id].astro','utf8');
+  const mission=readFileSync('src/pages/mission-values/index.astro','utf8');
+  const handbook=readFileSync('src/pages/team-handbook/index.astro','utf8');
+  if(!sync.includes('canonicalizeBuildContent')||!sync.includes("['uarl-d1','kmart']")||!sync.includes("competitionId==='kmart'&&entry?.profile==='jaxon'"))throw Error('v2.0.39 build sync must canonicalize current UARL D1/Kmart roster data before Astro renders.');
+  if(!sync.includes("['Palmetto Gaming','Apex Sim Racing']"))throw Error('v2.0.39 build sync must preserve both core team partners.');
+  for(const [label,source] of [['Programs',programs],['Program detail',program],['Mission',mission],['Handbook',handbook]]){
+    if(!source.includes('aetherwing:content')||!source.includes('__AETHERWING_CONTENT__'))throw Error(`v2.0.39 ${label} must hydrate from live Admin content.`);
+  }
+}
+console.log('v2.0.39 verified: build-time canon and live program surfaces share the current Admin source.');
