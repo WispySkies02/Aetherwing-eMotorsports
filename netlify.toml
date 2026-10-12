@@ -56,8 +56,8 @@
   status = 200
 
 [[redirects]]
-  from = "/api/paint-3d-texture/:id.png"
-  to = "/.netlify/functions/paint-3d-texture?id=:id"
+  from = "/api/paint-3d-texture/*"
+  to = "/.netlify/functions/paint-3d-texture?id=:splat"
   status = 200
 
 [[headers]]
