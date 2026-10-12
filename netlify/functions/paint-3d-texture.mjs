@@ -2,7 +2,9 @@
 // Existing public URL remains /api/paint-3d-texture/:hash.png.
 export default async (request) => {
   if (request.method !== 'GET') return new Response('GET only.', { status: 405, headers: { allow: 'GET' } });
-  const name = (new URL(request.url).searchParams.get('id') || '').replace(/\.png$/, '');
+  const url = new URL(request.url);
+  const pathFile = url.pathname.match(/\/([a-f0-9]{64}\.png)$/)?.[1] || '';
+  const name = (url.searchParams.get('id') || pathFile).replace(/\.png$/, '');
   if (!/^[a-f0-9]{64}$/.test(name)) return new Response('Not found.', { status: 404 });
   try {
     const { getStore } = await import('@netlify/blobs');
