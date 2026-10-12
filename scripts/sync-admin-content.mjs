@@ -51,18 +51,17 @@ async function canonicalizeBuildContent(payload){
   // Build-time pages must never resurrect retired roster/manufacturer data from an older
   // Admin publication. Results and standings remain fully authoritative Admin datasets.
   const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows)
-    .filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon'))
+    .filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r')))
     .map((entry)=>{
       if(entry?.competitionId!=='uarl-d1')return entry;
       const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
       if(key==='hailey')return {...entry,number:'28',displayName:'Hailey'};
       if(key==='burgertown2good')return {...entry,number:'32',displayName:'BurgerTown2Good'};
-      if(key==='gk3r')return {...entry,number:'42',displayName:'GK3R'};
       if(key==='rocky')return {...entry,number:'46',displayName:'Rocky'};
       return entry;
     });
   if(Array.isArray(d.drivers))d.drivers=canonDrivers(d.drivers);
-  if(Array.isArray(d['roster-profiles']))d['roster-profiles']=normalize('roster-profiles',d['roster-profiles']).map((profile)=>profile?.slug==='jaxon'?{...profile,...(seed['roster-profiles']||[]).find((item)=>item.slug==='jaxon')}:profile);
+  if(Array.isArray(d['roster-profiles']))d['roster-profiles']=normalize('roster-profiles',d['roster-profiles']).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags').map((profile)=>profile?.slug==='jaxon'?{...profile,...(seed['roster-profiles']||[]).find((item)=>item.slug===profile.slug)}:profile);
   if(Array.isArray(d['driver-profiles']))d['driver-profiles']=normalize('driver-profiles',d['driver-profiles']);
   if(Array.isArray(d.charters)){
     const current=(seed.charters||[]).find((board)=>board.id==='uarl-d1');

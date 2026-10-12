@@ -125,7 +125,7 @@ const currentNumbers={
   'uarl-d1':new Set(drivers.filter((d)=>d.competitionId==='uarl-d1').map((d)=>String(d.number))),
   nrrs:new Set(drivers.filter((d)=>d.competitionId==='nrrs').map((d)=>String(d.number)))
 };
-if(!['28','32','42','46'].every((number)=>currentNumbers['uarl-d1'].has(number)))throw Error('Current UARL D1 assigned-driver roster must contain #28/#32/#42/#46.');
+if(!['28','32','46'].every((number)=>currentNumbers['uarl-d1'].has(number))||currentNumbers['uarl-d1'].has('42'))throw Error('Current UARL D1 assigned-driver roster must contain #28/#32/#46 and exclude departed #42 GK3R.');
 const uarlCharter=charters.find((board)=>board.id==='uarl-d1');
 if(!(uarlCharter?.fullTime||[]).some((slot)=>String(slot.number)==='56'&&String(slot.driver||'').toUpperCase()==='OPEN'))throw Error('Current UARL D1 charter set must contain #56 OPEN.');
 if(currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season NRRS #42/#46/#56 numbers must stay out of the current NRRS roster until the season changes.');
@@ -159,7 +159,7 @@ const missionSource=readFileSync('src/pages/mission-values/index.astro','utf8');
 const handbookSource=readFileSync('src/pages/team-handbook/index.astro','utf8');
 if(!missionSource.includes('aetherwing.length')||!missionSource.includes('alliance.length')||!missionSource.includes('active.length'))throw Error('Mission & Values counters must be derived from active competition data.');
 if(!missionSource.includes('Former program / historical archive')||!handbookSource.includes('UARL D2 is closed'))throw Error('Closed UARL D2 must be historical-only on Mission and Handbook pages.');
-if(!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#32 BurgerTown2Good')||!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#42 GK3R'))throw Error('UARL D1 current roster is incomplete.');
+if(!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#32 BurgerTown2Good')||competitions.find((item)=>item.id==='uarl-d1')?.roster?.some((entry)=>/GK3R|#42\b/i.test(entry)))throw Error('UARL D1 current roster must include BurgerTown2Good and exclude departed GK3R/#42.');
 if(competitions.some((item)=>item.id==='uarl-d2'))throw Error('UARL D2 must stay out of active competitions.');
 if(competitions.find((item)=>item.id==='uarl-d1')?.schedule!=='Sundays · 8:30 PM ET')throw Error('UARL D1 must race Sundays at 8:30 PM ET.');
 if(!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Hailey')||!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Plarker'))throw Error('NRRS active roster must use Hailey and Plarker identities.');
@@ -362,7 +362,7 @@ console.log('v2.0.20 verified: Team Wire shows the FULL HEART logo in-article, u
 // v2.0.21 — October 4 shared roster canon
 {
  const comps=JSON.parse(readFileSync('src/data/competitions.json','utf8')), d1=comps.find(x=>x.id==='uarl-d1'), km=comps.find(x=>x.id==='kmart');
- if(!d1||d1.machine!=='BBR Next-Gen Toyota'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#32 BurgerTown2Good','#42 GK3R','#46 Rocky','#56 OPEN','AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT'])) throw Error('v2.0.21 UARL D1 canon mismatch.');
+ if(!d1||d1.machine!=='BBR Next-Gen Toyota'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#32 BurgerTown2Good','#46 Rocky','#56 OPEN','AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT'])) throw Error('Current UARL D1 canon mismatch after GK3R departure.');
  if((km?.roster||[]).some(x=>/Jaxon/i.test(x))) throw Error('v2.0.21 Jaxon must not remain in active Kmart roster.');
  const drivers=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
  if(drivers.some(x=>x.id==='jaxon-kmart')) throw Error('v2.0.21 Jaxon active assignment still present.');
@@ -614,3 +614,24 @@ console.log('v2.0.38 verified: Admin Theme Preview visibly animates every select
   }
 }
 console.log('v2.0.39 verified: build-time canon and live program surfaces share the current Admin source.');
+
+// v2.0.40 — GK3R / @sealsntags left the league; historical profile remains, active assignment does not.
+{
+  const drivers40=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
+  const comps40=JSON.parse(readFileSync('src/data/competitions.json','utf8'));
+  const charters40=JSON.parse(readFileSync('src/data/charters.json','utf8'));
+  const profiles40=JSON.parse(readFileSync('src/data/roster-profiles.json','utf8'));
+  if(drivers40.some((entry)=>entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||entry?.handle==='@sealsntags'||entry?.displayName==='GK3R')))throw Error('v2.0.40 departed GK3R assignment must not remain active.');
+  const d140=comps40.find((item)=>item.id==='uarl-d1');
+  if((d140?.roster||[]).some((entry)=>/GK3R|#42\b/i.test(entry)))throw Error('v2.0.40 UARL D1 public roster still contains departed GK3R/#42.');
+  const c140=charters40.find((item)=>item.id==='uarl-d1');
+  if((c140?.fullTime||[]).some((slot)=>String(slot.number)==='42'||slot.driver==='GK3R'))throw Error('v2.0.40 UARL D1 active charter board still assigns #42 to GK3R.');
+  if(profiles40.some((profile)=>profile.slug==='gk3r'||String(profile.handle||'').toLowerCase()==='@sealsntags'))throw Error('v2.0.41: no Aetherwing driver profile for a non-starter.');
+  for(const file of ['src/lib/site-content.mjs','scripts/sync-admin-content.mjs','netlify/lib/_site-data.cjs','netlify/lib/_site-admin.cjs']){
+    const source=readFileSync(file,'utf8');
+    if(!source.includes("profile==='gk3r'")&&!source.includes("profile==='gk3r'".replace('profile','entry?.profile')))throw Error(`v2.0.40 ${file} must explicitly suppress the departed GK3R active assignment.`);
+  }
+}
+console.log('v2.0.40/41 verified: #42 absent from current UARL D1; GK3R never started and is not listed as former.');
+{const seed41=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));if(seed41['roster-profiles'].some(p=>p.slug==='gk3r')||seed41.drivers.some(d=>d.profile==='gk3r')||seed41.charters.find(c=>c.id==='uarl-d1')?.fullTime?.some(c=>String(c.number)==='42'))throw Error('v2.0.41 admin seed must not resurrect GK3R/#42');for(const file of ['scripts/sync-admin-content.mjs','netlify/lib/_site-data.cjs','netlify/lib/_site-admin.cjs','src/lib/site-content.mjs']){const source=readFileSync(file,'utf8');if(!source.includes("slug!=='gk3r'"))throw Error('v2.0.41 must filter outdated published GK3R roster profiles in '+file);}}
+

@@ -65,20 +65,6 @@
     "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
   },
   {
-    "slug": "gk3r",
-    "name": "GK3R",
-    "handle": "@sealsntags",
-    "role": "Driver",
-    "affiliation": "aetherwing",
-    "numbers": "42",
-    "programs": [
-      "UARL D1"
-    ],
-    "feature": "UARL D1",
-    "signatureLogo": "",
-    "bio": "Full-time Aetherwing UARL Division 1 driver in the #42."
-  },
-  {
     "slug": "will",
     "name": "Will",
     "handle": "@Raceartstudios",
@@ -97,7 +83,7 @@
     "slug": "jaxon",
     "name": "Jaxon",
     "handle": "@Arctic_Blitzzzz",
-    "role": "Media Specialist \u00b7 Former Driver",
+    "role": "Media Specialist · Former Driver",
     "affiliation": "alliance",
     "numbers": "34",
     "programs": [

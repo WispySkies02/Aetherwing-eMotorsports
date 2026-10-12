@@ -36,7 +36,7 @@
     "subtitle": "Aetherwing Program · LL Bean Cup Series",
     "bodyTag": "D1 Toyota",
     "color": "#ff5eb8",
-    "description": "Current UARL Division 1 Toyota charter board: five full-time charters plus one shared Aetherwing Open Charter. Historical uploaded schemes stay with the season, number, and manufacturer they originally ran.",
+    "description": "Current UARL Division 1 Toyota roster and shared Aetherwing Open Charter. Historical uploaded schemes stay with the season, number, driver, and manufacturer they originally ran.",
     "drivers": [
       {
         "name": "Hailey",
@@ -46,11 +46,6 @@
       {
         "name": "BurgerTown2Good",
         "username": "@uhhbzb",
-        "role": "Driver"
-      },
-      {
-        "name": "GK3R",
-        "username": "@sealsntags",
         "role": "Driver"
       },
       {

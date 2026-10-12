@@ -48,11 +48,16 @@ exports.handler = async (event, context) => {
     const action = input.action;
 
     if (action === 'savePaint') {
-      const paint = sanitizePaint(input.paint);
+      const priorSlug = String(input.priorSlug || '');
+      const original = [...seedPaints(), ...registry.paints].find((item) => item.slug === (priorSlug || input.paint?.slug));
+      const paint = sanitizePaint({ ...original, ...input.paint,
+        bodyModel: input.paint?.bodyModel ?? original?.bodyModel,
+        textureKey: input.paint?.textureKey ?? original?.textureKey,
+        liveryTexture: input.paint?.liveryTexture ?? original?.liveryTexture
+      });
       const validation = validatePaint(paint);
       if (validation) return respond(400, { error: validation });
       const status = input.status === 'draft' ? 'draft' : 'published';
-      const priorSlug = String(input.priorSlug || '');
       const seedSlugs = new Set(seedPaints().map((item) => item.slug));
       const editingSeed = Boolean(priorSlug && seedSlugs.has(priorSlug));
       if (editingSeed && paint.slug !== priorSlug) {
@@ -72,6 +77,24 @@ exports.handler = async (event, context) => {
         }
       }
       addRevision(registry, status === 'draft' ? 'draft.saved' : 'paint.published', paint.slug, user);
+    } else if (action === 'save3dSettings') {
+      const slug = String(input.slug || '');
+      const seed = seedPaints();
+      const existing = registry.paints.find(p=>p.slug===slug) || seed.find(p=>p.slug===slug);
+      if (!existing || existing.archived) return respond(404, {error:'This paint is not in the published library.'});
+      const bodyModel = String(input.bodyModel || '');
+      if (bodyModel && !['nrrs-toyota','oreilly-chevy','sunoco-truck'].includes(bodyModel)) return respond(400,{error:'Unknown 3D body model.'});
+      // Late Models and iRacing are not valid for the Roblox model library.
+      if ((existing.leagues || []).some(l=>['uarl-open','iracing','uarl-d2'].includes(l)) && bodyModel) return respond(400,{error:'This paint requires a different body library; 3D cannot be enabled yet.'});
+      const {getStore} = await import('@netlify/blobs');
+      const assets = getStore({name:'aetherwing-3d-textures',consistency:'strong'});
+      let textureKey = input.textureKey === '' ? '' : String(input.textureKey || existing.textureKey || '');
+      if (textureKey && !/^[a-f0-9]{64}$/.test(textureKey)) return respond(400,{error:'Invalid 3D texture reference.'});
+      if (textureKey && !(await assets.get('textures/'+textureKey))) return respond(400,{error:'The PNG upload is not stored yet; try uploading again.'});
+      const next = {...existing, bodyModel, textureKey, liveryTexture:textureKey?'':(input.clearTexture?'':existing.liveryTexture||'')};
+      registry.paints=registry.paints.filter(p=>p.slug!==slug);
+      registry.paints.push({...next, status:'published', source: seed.some(p=>p.slug===slug)?'seed-override':'admin', updatedAt:new Date().toISOString()});
+      addRevision(registry,'3d.settings.saved',slug,user);
     } else if (action === 'setFeature') {
       const feature = sanitizeFeature(input.feature);
       if (!feature.slugs.length || !feature.series || !feature.race || !feature.track || !feature.date) {

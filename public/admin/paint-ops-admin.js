@@ -127,7 +127,8 @@
   function localAction(action, payload) {
     const next = structuredClone(registry);
     if (action === 'savePaint') {
-      const paint = payload.paint;
+      const existing=libraryPaints().find(p=>p.slug===(payload.priorSlug || payload.paint.slug));
+      const paint={...payload.paint,bodyModel:existing?.bodyModel||'',textureKey:existing?.textureKey||'',liveryTexture:existing?.liveryTexture||''};
       const status = payload.status === 'draft' ? 'draft' : 'published';
       const priorSlug = payload.priorSlug || '';
       const editingSeed = Boolean(priorSlug && seedSlugs().has(priorSlug));
@@ -146,6 +147,15 @@
         }
       }
       return { registry: localWrite(next, status === 'draft' ? 'draft.saved' : 'paint.published', paint.slug) };
+    }
+    if (action === 'save3dSettings') {
+      const original=libraryPaints().find(p=>p.slug===payload.slug);
+      if(!original)throw new Error('Paint not found');
+      const nextPaint={...original,bodyModel:payload.bodyModel||'',textureKey:payload.textureKey ?? original.textureKey ?? '',liveryTexture:payload.liveryTexture ?? original.liveryTexture ?? ''};
+      next.paints=(next.paints||[]).filter(p=>p.slug!==payload.slug);
+      next.drafts=(next.drafts||[]).filter(p=>p.slug!==payload.slug);
+      next.paints.push({...nextPaint,status:'published',source:seedSlugs().has(payload.slug)?'seed-override':'admin'});
+      return {registry:localWrite(next,'3d.settings.saved',payload.slug)};
     }
     if (action === 'setFeature') {
       const slugs = [...new Set(payload.feature.slugs?.length ? payload.feature.slugs : payload.feature.slug ? [payload.feature.slug] : [])];
@@ -184,6 +194,7 @@
 
   function showWorkspace(account) {
     user = account || { email: 'Local preview' };
+    window.dispatchEvent(new Event('aetherwing:paint-admin-refresh'));
     $('[data-auth-gate]').hidden = true;
     $('[data-workspace]').hidden = false;
     $('[data-account]').hidden = false;
@@ -372,6 +383,7 @@
   }
 
   function refreshAll() {
+    window.dispatchEvent(new Event('aetherwing:paint-admin-refresh'));
     populatePaintSelect();
     hydrateFeature();
     renderLibrary();
@@ -512,6 +524,13 @@
     });
   }
 
+  window.AetherwingPaintAdmin={
+    getPaints:()=>libraryPaints(),
+    getUser:()=>user,
+    getToken:token,
+    request,
+    refresh:async()=>{await loadRegistry();refreshAll();}
+  };
   function init() {
     $('[data-league-select]').innerHTML = leagues.map(([id, name]) => `<option value="${id}">${name}</option>`).join('');
     const identitySubline = $('[data-paint-form] [name="username"]');

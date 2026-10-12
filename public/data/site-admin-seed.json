@@ -3008,20 +3008,6 @@
       "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
     },
     {
-      "slug": "gk3r",
-      "name": "GK3R",
-      "handle": "@sealsntags",
-      "role": "Driver",
-      "affiliation": "aetherwing",
-      "numbers": "42",
-      "programs": [
-        "UARL D1"
-      ],
-      "feature": "UARL D1",
-      "signatureLogo": "",
-      "bio": "Full-time Aetherwing UARL Division 1 driver in the #42."
-    },
-    {
       "slug": "will",
       "name": "Will",
       "handle": "@Raceartstudios",
@@ -3343,18 +3329,6 @@
       "status": "Full-Time",
       "affiliation": "aetherwing",
       "numberImage": ""
-    },
-    {
-      "id": "gk3r-uarl-d1",
-      "profile": "gk3r",
-      "displayName": "GK3R",
-      "handle": "@sealsntags",
-      "number": "42",
-      "competition": "UARL Division 1",
-      "competitionId": "uarl-d1",
-      "status": "Full-Time",
-      "affiliation": "aetherwing",
-      "numberImage": ""
     }
   ],
   "charters": [
@@ -3420,11 +3394,6 @@
           "numberImage": ""
         },
         {
-          "number": "42",
-          "driver": "GK3R",
-          "numberImage": ""
-        },
-        {
           "number": "46",
           "driver": "Rocky",
           "numberImage": ""
@@ -3439,7 +3408,7 @@
         {
           "id": "uarl-d1-open-1",
           "label": "Aetherwing Open Charter",
-          "slotLabel": "6TH CHARTER",
+          "slotLabel": "SHARED CHARTER",
           "active": true,
           "uses": [
             {
@@ -3520,7 +3489,6 @@
       "roster": [
         "#28 Hailey",
         "#32 BurgerTown2Good",
-        "#42 GK3R",
         "#46 Rocky",
         "#56 OPEN",
         "AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT"

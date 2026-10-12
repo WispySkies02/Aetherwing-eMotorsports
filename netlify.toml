@@ -55,6 +55,11 @@
   to = "/.netlify/functions/paint-data"
   status = 200
 
+[[redirects]]
+  from = "/api/paint-3d-texture/:id.png"
+  to = "/.netlify/functions/paint-3d-texture?id=:id"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]

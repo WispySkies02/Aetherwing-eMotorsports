@@ -21,9 +21,9 @@ const publicTeamHighlights={
   nrrs:new Set(['hailey','plarker']),
   kmart:new Set(['will','jaxon','wispy','eazy','clutch','matty']),
   sunoco:new Set(['wispy','clutch','will','eazy']),
-  uarl:new Set(['rocky','wispy','burgertown','gk3r']),
-  'uarl-d1':new Set(['rocky','wispy','burgertown','gk3r']),
-  'uarl-open':new Set(['rocky','wispy','burgertown','gk3r'])
+  uarl:new Set(['rocky','wispy','burgertown']),
+  'uarl-d1':new Set(['rocky','wispy','burgertown']),
+  'uarl-open':new Set(['rocky','wispy','burgertown'])
 };
 const normalizeDriver=(value='',league='')=>{
   let raw=String(value||'').toLowerCase().replace(/^@/,'').replace(/[^a-z0-9]/g,'');
@@ -144,7 +144,7 @@ const positionMovement=(value)=>{if(value==null||value===''||value==='—')retur
     sunoco:{'54':'RAM','42':'RAM','46':'RAM','27':'RAM','61':'Chevrolet','3':'Chevrolet','13':'Chevrolet','18':'Chevrolet','21':'Chevrolet','51':'Chevrolet','77':'Chevrolet','67':'Chevrolet','22':'RAM','7':'Ford','69':'Ford','31':'Chevrolet','41':'Chevrolet'}
   };
   const manufacturerIconPaths={chevrolet:'/images/manufacturers/chevrolet.png',ford:'/images/manufacturers/ford.png',toyota:'/images/manufacturers/toyota.png','dodge-kmart':'/images/manufacturers/dodge-kmart.png','ram-sunoco':'/images/manufacturers/ram-sunoco.png',cadillac:'/images/manufacturers/cadillac.png',honda:'/images/manufacturers/honda.png'};
-  const publicTeamHighlights={nrrs:['hailey','plarker'],kmart:['will','jaxon','wispy','eazy','clutch','matty'],sunoco:['wispy','clutch','will','eazy'],uarl:['rocky','wispy','burgertown','gk3r'],'uarl-d1':['rocky','wispy','burgertown','gk3r'],'uarl-open':['rocky','wispy','burgertown','gk3r']};
+  const publicTeamHighlights={nrrs:['hailey','plarker'],kmart:['will','jaxon','wispy','eazy','clutch','matty'],sunoco:['wispy','clutch','will','eazy'],uarl:['rocky','wispy','burgertown'],'uarl-d1':['rocky','wispy','burgertown'],'uarl-open':['rocky','wispy','burgertown']};
   const sunocoRoster=[['54','Hailey','Starclutch Racing','RAM'],['42','Will','Starclutch Racing','RAM'],['46','Clutch','Starclutch Racing','RAM'],['27','Eazy','Starclutch Racing','RAM'],['61','Carl','Sky Motorsports','Chevrolet'],['3','Cod','Sky Motorsports','Chevrolet'],['13','Stampy','Team Hog Racing','Chevrolet'],['18','Nico','Team Hog Racing','Chevrolet'],['21','Outlaw','Team Hog Racing','Chevrolet'],['51','Matty','Campbell Garage','Chevrolet'],['77','Jaxon','Spire Motorsports','Chevrolet'],['67','Ryan','Sunset Motorsports','Chevrolet'],['22','Flamingo','Facemob Racing','RAM'],['7','Trent','Big D Motorsports','Ford'],['69','AJ','Big D Motorsports','Ford'],['31','Hotline','Vice Motorsports','Chevrolet'],['41','Tnfan','Vice Motorsports','Chevrolet']].map(([number,driver,team,manufacturer])=>({number,driver,team,manufacturer}));
   const norm=(value='',league='')=>{let raw=String(value||'').toLowerCase().replace(/^@/,'').replace(/[^a-z0-9]/g,'');const aliases={aokikoto:'wispy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',player13:'carl',player138164:'carl',sbnjc:'nico',sbnjco:'nico',evilcharms:'ryan',emoflamingo:'flamingo',tnfanracing:'tnfan',uhhbzb:'burgertown',sealsntags:'gk3r'};raw=aliases[raw]||raw;if(['kmart','sunoco','uarl','uarl-d1','uarl-open'].includes(league)&&raw==='hailey')return'wispy';if(league==='nrrs'&&raw==='wispy')return'hailey';if(raw.startsWith('burgertown'))return'burgertown';return raw;};
   const teamDriver=(board,row)=>{const league=board?.league||board?.id||'',set=publicTeamHighlights[league]||[];return set.includes(norm(row?.driver||row?.displayName||'',league));};

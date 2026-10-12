@@ -16,7 +16,8 @@
       "special": [
         "prized"
       ],
-      "note": "Hailey's prized NRRS / UARL D1 car."
+      "note": "Hailey's prized NRRS / UARL D1 car.",
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-home-depot",
@@ -32,7 +33,8 @@
       "schemeId": "135363294132228",
       "image": "https://i.ibb.co/kbKx0CN/20-Home-Depot-Pepsi400-v1.png",
       "special": [],
-      "note": "Special #20 Home Depot scheme for the NRRS Season 3 Pepsi 400."
+      "note": "Special #20 Home Depot scheme for the NRRS Season 3 Pepsi 400.",
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "nrrs-ridgid-home-depot-1999",
@@ -50,7 +52,8 @@
       "special": [
         "throwback"
       ],
-      "note": "Throwback to Tony Stewart’s primary Pontiac for Joe Gibbs Racing from 1999–2001."
+      "note": "Throwback to Tony Stewart’s primary Pontiac for Joe Gibbs Racing from 1999–2001.",
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-ghost-merica",
@@ -67,7 +70,8 @@
       "image": "https://i.ibb.co/s9sGdy3s/Ghost-Merica-Pop-Toyota.png",
       "special": [
         "patriotic"
-      ]
+      ],
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-columbia",
@@ -85,7 +89,8 @@
       "special": [
         "concept"
       ],
-      "note": "IRL Concept — imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing’s livery style with a real-world NASCAR presentation."
+      "note": "IRL Concept — imagined as a Columbia Sportswear entry for 23XI Racing, blending Aetherwing’s livery style with a real-world NASCAR presentation.",
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-friskies",
@@ -100,7 +105,8 @@
       "body": "BBR D1 Toyota",
       "schemeId": "121812441355064",
       "image": "https://i.ibb.co/LXJRB3Z4/Friskies-Party-Packd-NG.png",
-      "special": []
+      "special": [],
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-xfinity-mobile",
@@ -115,7 +121,8 @@
       "body": "BBR D1 Toyota",
       "schemeId": "124576944916357",
       "image": "https://i.ibb.co/ccJpRpTq/Wispy-Xfinity-Mobile.png",
-      "special": []
+      "special": [],
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-hardees",
@@ -130,7 +137,8 @@
       "body": "BBR D1 Toyota",
       "schemeId": "130704640741912",
       "image": "https://i.ibb.co/FbL4Ny7X/Wispy-Hardees.png",
-      "special": []
+      "special": [],
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-chumba",
@@ -145,7 +153,8 @@
       "body": "BBR D1 Toyota",
       "schemeId": "86023205741921",
       "image": "https://i.ibb.co/FbKD7bwS/Chumba-Colored.png",
-      "special": []
+      "special": [],
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-pokemon-30th-anniversary-tcg",
@@ -161,7 +170,8 @@
       "schemeId": "73989394735008",
       "image": "https://i.ibb.co/XfdtNDxd/Pokemon-30th-TCG.png",
       "special": [],
-      "specialBadgeIcon": "https://i.ibb.co/qL1KRxtH/800px-30th-Anniversary-logo.png"
+      "specialBadgeIcon": "https://i.ibb.co/qL1KRxtH/800px-30th-Anniversary-logo.png",
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "d1-mobil1",
@@ -180,7 +190,8 @@
         "patriotic"
       ],
       "note": "Historical UARL D1 #32 Cadillac Mobil 1 Patriotic scheme from the Season 5 Texas race. Preserved with its original number and manufacturer.",
-      "historical": true
+      "historical": true,
+      "bodyModel": "nrrs-toyota"
     },
     {
       "slug": "kmart-petsmart",
@@ -197,7 +208,8 @@
       "image": "https://i.ibb.co/Z1kQH6HT/Kmart-Pet-Smart-Dodge.png",
       "special": [
         "starclutch"
-      ]
+      ],
+      "bodyModel": "oreilly-chevy"
     },
     {
       "slug": "kmart-petsmart-patriotic",
@@ -215,7 +227,8 @@
       "special": [
         "patriotic",
         "starclutch"
-      ]
+      ],
+      "bodyModel": "oreilly-chevy"
     },
     {
       "slug": "kmart-ghost-peaches",
@@ -232,7 +245,8 @@
       "image": "https://i.ibb.co/Ngcpz1vF/Ghost-Peaches-D2.png",
       "special": [
         "starclutch"
-      ]
+      ],
+      "bodyModel": "oreilly-chevy"
     },
     {
       "slug": "kmart-2005-home-depot",
@@ -251,7 +265,8 @@
         "throwback",
         "starclutch"
       ],
-      "note": "Throwback to Tony Stewart’s 2005 Cup Series scheme."
+      "note": "Throwback to Tony Stewart’s 2005 Cup Series scheme.",
+      "bodyModel": "oreilly-chevy"
     },
     {
       "slug": "kmart-clutch-sinder",
@@ -268,7 +283,8 @@
       "image": "https://i.ibb.co/zV26LQkF/Clutch-Kmart-Sinder.png",
       "special": [
         "starclutch"
-      ]
+      ],
+      "bodyModel": "oreilly-chevy"
     },
     {
       "slug": "d2-mobil1-toyota-supra",
@@ -318,7 +334,8 @@
       "image": "https://i.ibb.co/LDs91FwQ/Wispy-Ghost-Warped-Tour-Truck.png",
       "special": [
         "starclutch"
-      ]
+      ],
+      "bodyModel": "sunoco-truck"
     },
     {
       "slug": "truck-petsmart-patriotic",
@@ -337,7 +354,8 @@
         "patriotic",
         "tribute",
         "starclutch"
-      ]
+      ],
+      "bodyModel": "sunoco-truck"
     },
     {
       "slug": "truck-heatwave",
@@ -356,7 +374,8 @@
         "starclutch",
         "racewinner"
       ],
-      "note": "Race Winner — won at Rockingham on May 2, 2026."
+      "note": "Race Winner — won at Rockingham on May 2, 2026.",
+      "bodyModel": "sunoco-truck"
     },
     {
       "slug": "truck-mopar-starclutch-racing",
@@ -373,7 +392,8 @@
       "image": "https://i.ibb.co/zhDzKvt1/SCR-Mopar-RAM-2.png",
       "special": [
         "starclutch"
-      ]
+      ],
+      "bodyModel": "sunoco-truck"
     },
     {
       "slug": "iracing-ghost-sour-patch-red-berry",
@@ -577,6 +597,106 @@
       "image": "https://i.ibb.co/Jw6Tqmcf/i-Racing-com-Simulator-10-12-2025-11-42-56-PM.png",
       "special": [],
       "note": "Team endurance livery inspired by Lando Norris’ special-edition Monster Energy can design."
+    },
+    {
+      "slug": "lab-nrrs-mobil1-32",
+      "driver": "Hailey",
+      "username": "@Aokikoto",
+      "leagues": [
+        "nrrs"
+      ],
+      "number": "32",
+      "sponsor": "Mobil 1 / Home Depot (3D Lab)",
+      "manufacturer": "Toyota",
+      "body": "BBR D1 Toyota",
+      "bodyModel": "nrrs-toyota",
+      "liveryTexture": "https://paint.aetherwing.net/assets/3d/lab-nrrs-mobil1-32.webp",
+      "schemeId": "",
+      "image": "https://paint.aetherwing.net/assets/3d/lab-nrrs-mobil1-32-preview.png",
+      "special": [
+        "concept"
+      ],
+      "note": "3D beta demonstration. Toyota body; Mobil 1 paint; The Home Depot and Interstate Batteries rear-quarter decals. This entry has no verified Roblox Scheme ID."
+    },
+    {
+      "slug": "lab-nrrs-palmetto-32",
+      "driver": "Hailey",
+      "username": "@Aokikoto",
+      "leagues": [
+        "nrrs"
+      ],
+      "number": "32",
+      "sponsor": "Palmetto Gaming (3D Lab)",
+      "manufacturer": "Toyota",
+      "body": "BBR D1 Toyota",
+      "bodyModel": "nrrs-toyota",
+      "liveryTexture": "https://paint.aetherwing.net/assets/3d/lab-nrrs-palmetto-32.webp",
+      "schemeId": "",
+      "image": "https://paint.aetherwing.net/assets/3d/lab-nrrs-palmetto-32-preview.png",
+      "special": [
+        "concept"
+      ],
+      "note": "3D beta demonstration. Toyota body; blue/white Palmetto Gaming paint. This entry has no verified Roblox Scheme ID."
+    },
+    {
+      "slug": "lab-nrrs-cadillac-32",
+      "driver": "Hailey",
+      "username": "@Aokikoto",
+      "leagues": [
+        "nrrs"
+      ],
+      "number": "32",
+      "sponsor": "Cadillac Racing (3D Lab)",
+      "manufacturer": "Cadillac",
+      "body": "BBR D1 Toyota",
+      "bodyModel": "nrrs-toyota",
+      "liveryTexture": "https://paint.aetherwing.net/assets/3d/lab-nrrs-cadillac-32.webp",
+      "schemeId": "",
+      "image": "https://paint.aetherwing.net/assets/3d/lab-nrrs-cadillac-32-preview.png",
+      "special": [
+        "concept"
+      ],
+      "note": "3D beta demonstration. Cadillac-branded scheme on the Toyota geometry; no separate Cadillac 3D body. This entry has no verified Roblox Scheme ID."
+    },
+    {
+      "slug": "lab-sunoco-craftsman-54",
+      "driver": "Hailey",
+      "username": "@Aokikoto",
+      "leagues": [
+        "sunoco-truck"
+      ],
+      "number": "54",
+      "sponsor": "Craftsman / RAM (3D Lab)",
+      "manufacturer": "RAM",
+      "body": "CWS15 RAM",
+      "bodyModel": "sunoco-truck",
+      "liveryTexture": "https://paint.aetherwing.net/assets/3d/lab-sunoco-craftsman-54.webp",
+      "schemeId": "",
+      "image": "https://paint.aetherwing.net/assets/3d/lab-sunoco-craftsman-54-preview.png",
+      "special": [
+        "concept"
+      ],
+      "note": "3D beta demonstration. Truck geometry and Craftsman RAM paint from the 3D lab. This entry has no verified Roblox Scheme ID."
+    },
+    {
+      "slug": "lab-oreilly-dodge-15",
+      "driver": "Hailey",
+      "username": "@Aokikoto",
+      "leagues": [
+        "kmart"
+      ],
+      "number": "15",
+      "sponsor": "Mobil 1 Dodge (3D Lab)",
+      "manufacturer": "Dodge",
+      "body": "BBR D2 Chevy",
+      "bodyModel": "oreilly-chevy",
+      "liveryTexture": "https://paint.aetherwing.net/assets/3d/lab-oreilly-dodge-15.webp",
+      "schemeId": "",
+      "image": "https://paint.aetherwing.net/assets/3d/lab-oreilly-dodge-15-preview.png",
+      "special": [
+        "concept"
+      ],
+      "note": "3D beta demonstration. Dodge-branded paint on the O’Reilly Chevrolet body; custom v6 wheel alignment. This entry has no verified Roblox Scheme ID."
     }
   ],
   "leagues": [
@@ -617,7 +737,7 @@
       "subtitle": "Aetherwing Program · LL Bean Cup Series",
       "bodyTag": "D1 Toyota",
       "color": "#ff5eb8",
-      "description": "Current UARL Division 1 Toyota charter board: five full-time charters plus one shared Aetherwing Open Charter. Historical uploaded schemes stay with the season, number, and manufacturer they originally ran.",
+      "description": "Current UARL Division 1 Toyota roster and shared Aetherwing Open Charter. Historical uploaded schemes stay with the season, number, driver, and manufacturer they originally ran.",
       "drivers": [
         {
           "name": "Hailey",
@@ -627,11 +747,6 @@
         {
           "name": "BurgerTown2Good",
           "username": "@uhhbzb",
-          "role": "Driver"
-        },
-        {
-          "name": "GK3R",
-          "username": "@sealsntags",
           "role": "Driver"
         },
         {
@@ -847,9 +962,6 @@
     "iracing::Hailey Bell": [
       "28",
       "97"
-    ],
-    "uarl-d1::GK3R": [
-      "42"
     ],
     "uarl-d1::Rocky": [
       "46"

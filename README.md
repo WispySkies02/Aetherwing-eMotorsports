@@ -1,4 +1,18 @@
-## v2.0.39 — Current Deployment Canon + Live Program Surfaces
+## v2.0.41 — NON-STARTER DIRECTORY CORRECTION
+
+- GK3R never started a race for Aetherwing: remove the incorrect **Former Driver** profile entirely.
+- Keep #42 out of the current UARL D1 charter and active lineup; no replacement or OPEN status.
+- Remove stale #42 assignment/profile from bundled Admin seed, published data normalization, and old Admin drafts so it cannot reappear after rebuild.
+- Do not edit historical racing results, media, or independent #42 records. Remove obsolete team-driver paint override, which wrongly implied a race entry.
+- Preserve all v2.0.40 partner, theme, article, standings, and roster fixes.
+
+## v2.0.40 — SEALS ACTIVE ROSTER EXIT
+
+- GK3R / @sealsntags has left UARL D1 and is removed from active driver, program, charter, and live-published roster surfaces.
+- The #42 seat is not automatically relabeled OPEN; no replacement is invented.
+- GK3R remains as a former/historical driver profile so prior results and archive references stay intact.
+- Paint Booth fallback metadata is synchronized separately in v84.
+
 
 - Canonicalizes published Admin roster/program data before Astro build so stale #52/#92/Cadillac/Jaxon competition data cannot be baked back into static pages.
 - Programs, Program detail, Mission & Values, and Team Handbook now hydrate from the same live Admin dataset used by Drivers/Home/Championships.

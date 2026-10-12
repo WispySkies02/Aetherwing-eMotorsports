@@ -8,6 +8,8 @@ async function getBlobsModule() {
 
 const STORE_NAME = 'aetherwing-paint-ops';
 const REGISTRY_KEY = 'registry.json';
+const BODY_IDS = ['nrrs-toyota','oreilly-chevy','sunoco-truck'];
+const assetUrl = key => `https://aetherwing.net/api/paint-3d-texture/${key}.png`;
 const EMPTY = Object.freeze({ version: 1, paints: [], drafts: [], feature: null, revisions: [] });
 const PRIMARY_PAINT_TAGS = ['starclutch','dash4cash','chase','throwback','special'];
 const CLASSIFICATION_TAGS = ['patriotic','racewinner','concept','tribute','prized','legacy','crownjewel','championship','allstar','anniversary','charity','holiday','memorial','alternate'];
@@ -94,7 +96,8 @@ function publicRegistry(registry) {
   const feature = registry.feature && (!registry.feature.expiresAt || Date.parse(registry.feature.expiresAt) > now)
     ? registry.feature : null;
   const paints=mergedPublishedPaints(registry).map((paint)=>{
-    const {robloxAssetId,robloxUploaderAccount,robloxUploadDate,robloxModerationStatus,robloxReplacementAssetId,robloxSourceBackup,robloxAssetNotes,...publicPaint}=paint;
+    const {robloxAssetId,robloxUploaderAccount,robloxUploadDate,robloxModerationStatus,robloxReplacementAssetId,robloxSourceBackup,robloxAssetNotes,textureKey,...publicPaint}=paint;
+    if (typeof textureKey === "string" && /^[a-f0-9]{64}$/.test(textureKey)) publicPaint.liveryTexture = assetUrl(textureKey);
     return publicPaint;
   });
   return { version: 1, paints, feature };
@@ -173,7 +176,10 @@ function sanitizePaint(input) {
     robloxModerationStatus: ['Approved','Pending','Moderated','Rejected','Replaced','Archived'].includes(text(input?.robloxModerationStatus, 20)) ? text(input.robloxModerationStatus, 20) : '',
     robloxReplacementAssetId: text(input?.robloxReplacementAssetId, 40).replace(/[^0-9]/g, ''),
     robloxSourceBackup: text(input?.robloxSourceBackup, 500),
-    robloxAssetNotes: text(input?.robloxAssetNotes, 800)
+    robloxAssetNotes: text(input?.robloxAssetNotes, 800),
+    bodyModel: BODY_IDS.includes(text(input?.bodyModel, 40)) ? text(input?.bodyModel, 40) : '',
+    textureKey: /^[a-f0-9]{64}$/.test(text(input?.textureKey, 64)) ? text(input.textureKey, 64) : '',
+    liveryTexture: safeUrl(input?.liveryTexture)
   };
 }
 

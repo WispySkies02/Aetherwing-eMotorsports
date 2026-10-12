@@ -61,11 +61,6 @@
         "numberImage": ""
       },
       {
-        "number": "42",
-        "driver": "GK3R",
-        "numberImage": ""
-      },
-      {
         "number": "46",
         "driver": "Rocky",
         "numberImage": ""
@@ -80,7 +75,7 @@
       {
         "id": "uarl-d1-open-1",
         "label": "Aetherwing Open Charter",
-        "slotLabel": "6TH CHARTER",
+        "slotLabel": "SHARED CHARTER",
         "active": true,
         "uses": [
           {

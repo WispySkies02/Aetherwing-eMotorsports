@@ -91,12 +91,11 @@ export const wins = choose('wins', winsSeed);
 const publishedStandings = choose('standings', standingsSeed);
 export const standings = Array.isArray(publishedStandings) ? publishedStandings : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
-const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
+const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
   if(entry?.competitionId!=='uarl-d1')return entry;
   const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
   if(key==='wispy'||key==='hailey')return {...entry,number:'28',displayName:'Hailey'};
   if(key==='burgertown2good')return {...entry,number:'32'};
-  if(key==='gk3r')return {...entry,number:'42',displayName:'GK3R'};
   if(key==='rocky')return {...entry,number:'46'};
   return entry;
 });
@@ -105,7 +104,7 @@ const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',
   kmart:'Kmart', sunoco:'Sunoco'
 };
-const rosterBase = choose('roster-profiles', rosterSeed);
+const rosterBase = choose('roster-profiles', rosterSeed).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags');
 export const rosterProfiles = rosterBase.map((sourceProfile) => {
   const profile=sourceProfile?.slug==='wispy'?{...sourceProfile,slug:'hailey'}:sourceProfile;
   const assignments = drivers.filter((entry) => entry.profile === profile.slug && entry.competitionId !== 'iracing-factory');
@@ -132,10 +131,9 @@ const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=
   return {...board,fullTime:[
     {number:'28',driver:'Hailey',numberImage:board.fullTime?.find(x=>String(x.number)==='28')?.numberImage||''},
     {number:'32',driver:'BurgerTown2Good',numberImage:board.fullTime?.find(x=>String(x.number)==='32')?.numberImage||''},
-    {number:'42',driver:'GK3R',numberImage:board.fullTime?.find(x=>['42','52'].includes(String(x.number)))?.numberImage||''},
     {number:'46',driver:'Rocky',numberImage:board.fullTime?.find(x=>['46','92'].includes(String(x.number)))?.numberImage||''},
     {number:'56',driver:'Open',numberImage:board.fullTime?.find(x=>['56','54'].includes(String(x.number)))?.numberImage||''}
-  ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:'6TH CHARTER',uses:[{...(charter.uses||[]).find(u=>String(u.number)==='62'),number:'62',label:'Part-Time',active:true},{...(charter.uses||[]).find(u=>String(u.number)==='82'),number:'82',label:'Development',active:true}]}))};
+  ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:'SHARED CHARTER',uses:[{...(charter.uses||[]).find(u=>String(u.number)==='62'),number:'62',label:'Part-Time',active:true},{...(charter.uses||[]).find(u=>String(u.number)==='82'),number:'82',label:'Development',active:true}]}))};
 });
 export const charters = enforceCurrentCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
@@ -199,7 +197,7 @@ const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
 const staleCompetition = (item={}) => {
   if(item.id==='uarl-d2') return true;
-  if(item.id==='uarl-d1') return /Saturday/i.test(item.schedule||'') || /Cadillac/i.test(item.machine||'') || !['#28 Hailey','#32 BurgerTown2Good','#42 GK3R','#46 Rocky','#56 OPEN'].every((entry)=>(item.roster||[]).includes(entry));
+  if(item.id==='uarl-d1') return /Saturday/i.test(item.schedule||'') || /Cadillac/i.test(item.machine||'') || !['#28 Hailey','#32 BurgerTown2Good','#46 Rocky','#56 OPEN'].every((entry)=>(item.roster||[]).includes(entry)) || (item.roster||[]).some((entry)=>/GK3R|#42\b/i.test(entry));
   if(item.id==='kmart' && (item.roster||[]).some((entry)=>/Jaxon/i.test(entry))) return true;
   if(item.id==='nrrs') return (item.roster||[]).some((entry)=>/#32\s+Wispy|#43\s+Parker/i.test(entry));
   if(item.id==='iracing-factory') return (item.roster||[]).some((entry)=>/Nicholas Waggoner/i.test(entry));
