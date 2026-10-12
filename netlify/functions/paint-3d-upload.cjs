@@ -10,7 +10,8 @@ exports.handler=async(event,context)=>{
   if(event.httpMethod!=='POST')return respond(405,{error:'POST only.'});
   try{
     const input=JSON.parse(event.body||'{}');
-    const {getStore}=await import('@netlify/blobs');
+    const {connectLambda,getStore}=await import('@netlify/blobs');
+    connectLambda(event);
     const store=getStore({name:STORE,consistency:'strong'});
     if(input.action==='start'){
       const size=Number(input.bytes);
