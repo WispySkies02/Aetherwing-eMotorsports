@@ -1188,7 +1188,15 @@
     $('[data-content-editor]').hidden=true;
     hideThemePreview();
     const internal=document.querySelector(`[data-tab="${name}"]`);
-    if(internal)internal.click();
+    if(internal){
+      internal.click();
+    }else{
+      // The 3D Viewer has a sidebar entry and a panel, but intentionally no
+      // legacy paint-operations subtab. It must still be activated explicitly.
+      hidePaintPanels();
+      const target=document.querySelector(`[data-panel="${name}"]`);
+      if(target)target.hidden=false;
+    }
     setActiveAdminTab('paint',name);
     document.querySelector(`[data-panel="${name}"]`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
