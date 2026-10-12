@@ -12,7 +12,7 @@ exports.handler=async(event,context)=>{
     const input=JSON.parse(event.body||'{}');
     const {connectLambda,getStore}=await import('@netlify/blobs');
     connectLambda(event);
-    const store=getStore({name:STORE,consistency:'strong'});
+    const store=getStore(STORE);
     if(input.action==='start'){
       const size=Number(input.bytes);
       if(!Number.isSafeInteger(size)||size<100||size>MAX_PNG_BYTES)return respond(400,{error:'PNG must be 100 bytes to 16 MB (16 MiB).'});
