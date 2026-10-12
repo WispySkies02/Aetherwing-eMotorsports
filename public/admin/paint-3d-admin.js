@@ -7,6 +7,7 @@
   const ids=['nrrs-toyota','oreilly-chevy','sunoco-truck'];
   const bodyNames={'nrrs-toyota':'NRRS / D1 Toyota','oreilly-chevy':'O’Reilly Chevy body (Dodge graphics okay)','sunoco-truck':'Sunoco RAM Truck'};
   const api=()=>window.AetherwingPaintAdmin;
+  const MAX_PNG_BYTES=16*1024*1024; // Keep in sync with the upload function (16 MiB).
   const available=p=>!(p.leagues||[]).some(l=>['iracing','uarl-open','uarl-d2'].includes(l));
   function suggested(p){
     const league=p.leagues?.[0]||'';
@@ -64,11 +65,11 @@
   }
   async function uploadPng(file,slug){
     if(!file||file.type!=='image/png'||!file.name.toLowerCase().endsWith('.png'))throw Error('Choose an actual PNG file, not a JPEG or finished car screenshot.');
-    if(file.size>4*1024*1024||file.size<100)throw Error('PNG must be between 100 bytes and 4 MB.');
+    if(file.size>MAX_PNG_BYTES||file.size<100)throw Error('PNG must be between 100 bytes and 16 MB (16 MiB).');
     if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){
       const url=URL.createObjectURL(file);
       // Local preview mode does not write to production Netlify Blobs.
-      return {key:'',liveryTexture:url,preview:true};
+      return {textureKey:'',liveryTexture:url,preview:true};
     }
     const start=await postChunk({action:'start',bytes:file.size});
     for(let i=0;i<start.count;i++){
@@ -77,7 +78,7 @@
       showStatus(`Uploading ${slug}: ${i+1}/${start.count} chunks…`);
     }
     const result=await postChunk({action:'finish',id:start.id});
-    return {key:result.key,liveryTexture:''};
+    return {textureKey:result.key,liveryTexture:''};
   }
   async function save(row,clear=false){
     const slug=row.dataset['3dRow'];

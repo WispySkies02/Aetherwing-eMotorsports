@@ -90,7 +90,7 @@ exports.handler = async (event, context) => {
       const assets = getStore({name:'aetherwing-3d-textures',consistency:'strong'});
       let textureKey = input.textureKey === '' ? '' : String(input.textureKey || existing.textureKey || '');
       if (textureKey && !/^[a-f0-9]{64}$/.test(textureKey)) return respond(400,{error:'Invalid 3D texture reference.'});
-      if (textureKey && !(await assets.get('textures/'+textureKey))) return respond(400,{error:'The PNG upload is not stored yet; try uploading again.'});
+      if (textureKey && !(await assets.getMetadata('textures/'+textureKey))) return respond(400,{error:'The PNG upload is not stored yet; try uploading again.'});
       const next = {...existing, bodyModel, textureKey, liveryTexture:textureKey?'':(input.clearTexture?'':existing.liveryTexture||'')};
       registry.paints=registry.paints.filter(p=>p.slug!==slug);
       registry.paints.push({...next, status:'published', source: seed.some(p=>p.slug===slug)?'seed-override':'admin', updatedAt:new Date().toISOString()});
