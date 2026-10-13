@@ -356,6 +356,20 @@
 
       <section class="ops-panel" data-panel="3d" hidden>
         <div class="panel-heading"><span>22</span><div><h2>3D Viewer · Texture Library</h2><p>Match flat PNG paint templates to each scheme’s reusable 3D body. Missing items are marked below; 2D renders remain available until the 3D record is ready.</p></div></div>
+        <section class="aw3d-preview">
+          <header class="aw3d-preview-head">
+            <div><span>DESIGN WORKBENCH · PREVIEW ONLY</span><h3>Try a Paint in 3D</h3><p>Choose a flat PNG and the matching body, then rotate and inspect your scheme. This is a local preview — it does not upload or publish your paint.</p></div>
+            <a href="https://paint.aetherwing.net/admin-preview/" target="_blank" rel="noopener noreferrer" class="secondary">Open larger preview ↗</a>
+          </header>
+          <iframe
+            class="aw3d-preview-frame"
+            src="https://paint.aetherwing.net/admin-preview/"
+            title="3D paint workbench — local PNG preview"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-downloads"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <p class="aw3d-preview-help">Nothing gets published from this workbench. Once you're happy with the design, upload the same PNG using <strong>Upload &amp; save 3D</strong> in the texture library below. Templates must match the chosen vehicle's UV layout.</p>
+        </section>
         <div class="aw3d-tools"><input data-3d-search type="search" placeholder="Search schemes or division" aria-label="Search 3D paints"><select data-3d-filter aria-label="Filter 3D status"><option value="all">All paints</option><option value="missing">Needs attention</option><option value="ready">3D ready</option><option value="unsupported">Body not available</option></select><button type="button" class="secondary" data-3d-refresh>Refresh statuses</button></div>
         <div class="aw3d-count" data-3d-count aria-live="polite">Loading paint records…</div>
         <div class="aw3d-list" data-3d-list></div>
