@@ -143,21 +143,23 @@
   const base = (name) => {
     const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
     if(name==='news'&&Array.isArray(value)){
-      const currentFeaturedNewsSlug='talladega-leaves-bell-frustrated-championship-gap-grows';
-      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',currentFeaturedNewsSlug]);
-      const hadCurrentFeatured=value.some((item)=>item?.slug===currentFeaturedNewsSlug);
+      const currentFeaturedNewsSlug='bells-road-course-struggles-deepen-at-portland';
+      const priorFeaturedNewsSlug='talladega-leaves-bell-frustrated-championship-gap-grows';
+      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',priorFeaturedNewsSlug,currentFeaturedNewsSlug]);
+      // Portlands feature selection is canonical until the next editorial update.
       const seedBySlug=new Map((seeds.news||[]).map((story)=>[story.slug,story]));
       const merged=[...value];
       for(const story of (seeds.news||[]))if(requiredNewsSlugs.has(story.slug)&&!merged.some((item)=>item?.slug===story.slug))merged.push(structuredClone(story));
       const normalizedStories=merged.map((story)=>{
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
-        if(normalized.slug===currentFeaturedNewsSlug&&normalized.contentRevision!==fresh.contentRevision)return structuredClone(fresh);
+        if([currentFeaturedNewsSlug,priorFeaturedNewsSlug].includes(normalized.slug)&&normalized.contentRevision!==fresh.contentRevision)return structuredClone(fresh);
         if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|one of her personal partners|Hailey personal partner|relationship follows Bell|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
         if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL HEART/i.test(serialized)||/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||!/Ironmouse/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};}
         return normalized;
       });
-      return hadCurrentFeatured?normalizedStories:normalizedStories.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
+      // Keep one canonical featured article even when a previously published snapshot selects Talladega.
+      return normalizedStories.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
     }
     if(name==='partners'&&Array.isArray(value)){const list=[...value];for(const partnerName of ['Palmetto Gaming','Apex Sim Racing']){const canonical=(seeds.partners||[]).find((item)=>item?.name===partnerName);if(!canonical)continue;const index=list.findIndex((item)=>item?.name===partnerName);if(index===-1)list.push(structuredClone(canonical));else if(partnerName==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]=structuredClone(canonical);}const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((partnerName,index)=>[partnerName,index]));return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));}
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
