@@ -21,7 +21,21 @@ function mergeCanonical(datasets){
   const seed=seeds();
   if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);if(!fresh)return normalized;if(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text))return fresh;return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};});
   if(Array.isArray(datasets.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);datasets.news=datasets.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
-  if(Array.isArray(datasets.news)){const currentSlug='talladega-leaves-bell-frustrated-championship-gap-grows',fresh=(seed.news||[]).find((story)=>story?.slug===currentSlug);let hadCurrent=false;datasets.news=datasets.news.map((story)=>{if(story?.slug!==currentSlug)return story;hadCurrent=true;return fresh&&story?.contentRevision!==fresh.contentRevision?fresh:story;});if(!hadCurrent&&fresh)datasets.news.push(fresh);if(!hadCurrent)datasets.news=datasets.news.map((story)=>({...story,featured:story?.slug===currentSlug}));}
+  if(Array.isArray(datasets.news)){
+    // Keep both race articles visible when an older Admin snapshot has not yet been republished.
+    // Portland replaces Talladega as the single featured story and homepage lead.
+    const featuredSlug='bells-road-course-struggles-deepen-at-portland';
+    const raceSlugs=['talladega-leaves-bell-frustrated-championship-gap-grows',featuredSlug];
+    const seedBySlug=new Map((seed.news||[]).map((story)=>[story.slug,story]));
+    for(const slug of raceSlugs){
+      if(!datasets.news.some((story)=>story?.slug===slug)&&seedBySlug.has(slug))datasets.news.push(seedBySlug.get(slug));
+    }
+    datasets.news=datasets.news.map((story)=>{
+      const fresh=seedBySlug.get(story?.slug);
+      const next=raceSlugs.includes(story?.slug)&&fresh&&story?.contentRevision!==fresh.contentRevision?fresh:story;
+      return {...next,featured:next?.slug===featuredSlug};
+    });
+  }
   if(Array.isArray(datasets['schedule-events'])){
     const scheduleSeedByKey=new Map((seed['schedule-events']||[]).map(e=>[`${e.date}|${e.league}|${e.title}`,e]));
     datasets['schedule-events']=datasets['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>{

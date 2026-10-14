@@ -1,5 +1,300 @@
 [
   {
+    "slug": "bells-road-course-struggles-deepen-at-portland",
+    "legacyRoute": "/bells-road-course-struggles-deepen-at-portland",
+    "date": "October 13, 2026",
+    "dateIso": "2026-10-13",
+    "category": "NRRS / RACE RECAP",
+    "context": "NRRS Town Fair Tire Cup Series · Round 23 · Portland International Raceway",
+    "kicker": "Portland · Chase Race 4",
+    "title": "Bell's Road-Course Struggles Deepen as Championship Gap Widens at Portland",
+    "summary": "Hailey Bell finished eighth at Portland after struggling to maintain pace, losing 44 points to championship leader Will and falling 106 points behind with two races remaining.",
+    "cardSummary": "P8 at Portland. No stage points. Bell rises to fourth in the Chase but falls 106 points behind the leader with two races left.",
+    "embedDescription": "A difficult Portland road-course night leaves Hailey Bell P8, 106 points behind leader Will with just two NRRS Cup races remaining.",
+    "byline": "Aetherwing eMotorsports",
+    "featured": true,
+    "tags": [
+      "Hailey Bell",
+      "NRRS",
+      "Portland",
+      "Chase Race 4",
+      "Road Course",
+      "Aetherwing eMotorsports"
+    ],
+    "contentRevision": "2026-10-13-v1-portland-postrace",
+    "featureLayout": "race-stat-feature",
+    "sections": [],
+    "raceSummary": {
+      "eyebrow": "PORTLAND • R23/25 • CHASE RACE 4",
+      "items": [
+        {
+          "label": "FINISH",
+          "value": "P8"
+        },
+        {
+          "label": "STAGE POINTS",
+          "value": "0"
+        },
+        {
+          "label": "CHASE POSITION",
+          "value": "P4"
+        },
+        {
+          "label": "GAP TO LEADER",
+          "value": "−106"
+        }
+      ],
+      "callout": "44-POINT SWING · TWO RACES LEFT"
+    },
+    "featureBlocks": [
+      {
+        "type": "prose",
+        "paragraphs": [
+          "PORTLAND, Ore. — Hailey Bell arrived at Portland International Raceway knowing the fourth round of the NRRS Chase would present one of her most difficult challenges of the season.",
+          "Unfortunately, the race played out much as she had feared.",
+          "After a frustrating fourth-place finish at Talladega the previous week, Bell needed to maintain contact with the championship leaders as the series transitioned from superspeedway competition to the technical, 12-turn Portland road course.",
+          "Instead, the No. 32 struggled to keep pace throughout the evening.",
+          "Bell steadily lost ground to the competition, unable to match the lap times needed to stay competitive. With no significant recovery in pace, the race became another difficult chapter in a season marked by very different performances across track types.",
+          "She ultimately finished eighth, collecting 29 championship points without earning any stage bonuses. Meanwhile, championship leader Will captured his sixth victory of the season."
+        ]
+      },
+      {
+        "type": "numbers",
+        "title": "PORTLAND · BY THE NUMBERS",
+        "groups": [
+          {
+            "title": "BELL · NO. 32",
+            "rows": [
+              {
+                "label": "Finish",
+                "value": "P8",
+                "featured": true
+              },
+              {
+                "label": "Race points",
+                "value": "29"
+              },
+              {
+                "label": "Stage points",
+                "value": "0"
+              }
+            ]
+          },
+          {
+            "title": "CHAMPIONSHIP LEADER",
+            "rows": [
+              {
+                "label": "Winner",
+                "value": "Will"
+              },
+              {
+                "label": "Points earned",
+                "value": "73"
+              },
+              {
+                "label": "Season victories",
+                "value": "6"
+              }
+            ]
+          }
+        ],
+        "note": "Will outscored Bell by 44 points at Portland."
+      },
+      {
+        "type": "prose",
+        "paragraphs": [
+          "PORTLAND EXPOSES A FAMILIAR WEAKNESS — Road courses have consistently been among Bell's weakest track types during the 2026 campaign.",
+          "Her results entering Portland illustrated the challenge: eighth at Watkins Glen, fifth at Road America, sixth at Mexico City and seventh at Circuit of the Americas.",
+          "Portland added another eighth-place finish to that record."
+        ]
+      },
+      {
+        "type": "road-course",
+        "title": "HAILEY BELL · 2026 ROAD COURSES",
+        "rows": [
+          {
+            "track": "Watkins Glen",
+            "finish": "P8"
+          },
+          {
+            "track": "Road America",
+            "finish": "P5"
+          },
+          {
+            "track": "Mexico City",
+            "finish": "P6"
+          },
+          {
+            "track": "Circuit of the Americas",
+            "finish": "P7"
+          },
+          {
+            "track": "Portland",
+            "finish": "P8"
+          }
+        ],
+        "stats": [
+          {
+            "label": "AVERAGE FINISH",
+            "value": "6.80"
+          },
+          {
+            "label": "BEST FINISH",
+            "value": "P5"
+          },
+          {
+            "label": "ROAD COURSE STARTS",
+            "value": "5"
+          }
+        ]
+      },
+      {
+        "type": "prose",
+        "paragraphs": [
+          "The issue at Portland was not a single incident that derailed a promising run. Bell simply struggled to produce competitive lap times, watching the distance to other drivers grow throughout the race.",
+          "That distinction made the result especially difficult. At Talladega, Bell had the speed to challenge for a victory but failed to capitalize on the opportunity. At Portland, she never found the pace needed to enter that conversation.",
+          "A CHAMPIONSHIP GAP THAT KEEPS GROWING — Bell entered Portland 62 points behind leader Will. She leaves 106 points back.",
+          "Will's victory and strong stage performances produced 73 championship points compared with Bell's 29 — a 44-point swing that places even greater distance between the No. 32 and the lead."
+        ]
+      },
+      {
+        "type": "standings",
+        "title": "CHASE STANDINGS AFTER PORTLAND",
+        "rows": [
+          {
+            "position": 1,
+            "driver": "Will",
+            "points": "2,296",
+            "gap": "LEADER"
+          },
+          {
+            "position": 2,
+            "driver": "Clutch",
+            "points": "2,234",
+            "gap": "62 BACK"
+          },
+          {
+            "position": 3,
+            "driver": "Trent",
+            "points": "2,192",
+            "gap": "104 BACK"
+          },
+          {
+            "position": 4,
+            "driver": "Hailey",
+            "points": "2,190",
+            "gap": "106 BACK",
+            "featured": true
+          },
+          {
+            "position": 5,
+            "driver": "Outlaw",
+            "points": "2,162",
+            "gap": "134 BACK"
+          }
+        ],
+        "callout": "TWO POINTS BETWEEN HAILEY AND P3"
+      },
+      {
+        "type": "change-strip",
+        "title": "WHAT PORTLAND CHANGED",
+        "items": [
+          {
+            "label": "GAP TO LEADER",
+            "before": "62 BACK",
+            "after": "106 BACK",
+            "delta": "−44"
+          },
+          {
+            "label": "CHASE POSITION",
+            "before": "P5",
+            "after": "P4"
+          },
+          {
+            "label": "VS. TRENT",
+            "before": "31 BACK",
+            "after": "2 BACK"
+          },
+          {
+            "label": "VS. OUTLAW",
+            "before": "1 BACK",
+            "after": "28 AHEAD"
+          }
+        ],
+        "callout": "ONE POSITION GAINED.\n44 MORE POINTS BEHIND."
+      },
+      {
+        "type": "prose",
+        "paragraphs": [
+          "Bell gained a position in the Chase standings, moving from fifth to fourth after Outlaw missed the race. She also closed to within two points of Trent, who did not compete at Portland.",
+          "Neither development changes the larger picture. Bell moved forward in the standings while falling substantially further behind the championship leader.",
+          "For a driver who entered the Chase hoping to challenge for a title, the difference is difficult to ignore.",
+          "A DIFFICULT STRETCH AT THE WRONG TIME — The frustration surrounding Portland extends beyond one disappointing finish.",
+          "At Talladega, Bell won Stage 1, finished third in Stage 2, led the most laps and spent much of the race fighting at the front. Yet fourth place provided far less of a cushion than she had hoped to carry into the road-course round.",
+          "Portland demonstrated why that cushion mattered. In the span of two Chase races, Bell went from leading the field at one of her strongest track types to struggling at one of her weakest.",
+          "Through 23 rounds, Bell has recorded an average finish of 5.76 across 21 starts. Her consistency in showing up has kept her in the postseason conversation, but she has struggled to match the front-running pace of the championship leaders often enough.",
+          "For Bell, the challenge now is not simply collecting points. It is finding the competitive performance she wants to carry into the final stages of her full-time career."
+        ]
+      },
+      {
+        "type": "numbers",
+        "title": "THE TWO-RACE OUTLOOK",
+        "groups": [
+          {
+            "title": "CHAMPIONSHIP",
+            "rows": [
+              {
+                "label": "Leader",
+                "value": "Will"
+              },
+              {
+                "label": "Bell's deficit",
+                "value": "106",
+                "featured": true
+              },
+              {
+                "label": "Rounds remaining",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "title": "POSITION BATTLES",
+            "rows": [
+              {
+                "label": "To Trent · P3",
+                "value": "−2"
+              },
+              {
+                "label": "Over Outlaw · P5",
+                "value": "+28"
+              },
+              {
+                "label": "Bell's rank",
+                "value": "P4",
+                "featured": true
+              }
+            ]
+          }
+        ],
+        "note": "New Hampshire and Homestead remain on the NRRS calendar."
+      },
+      {
+        "type": "prose",
+        "paragraphs": [
+          "TWO RACES. ONE FINAL OPPORTUNITY TO RESPOND. — The NRRS season now moves to New Hampshire before concluding at Homestead.",
+          "With Will holding a 106-point advantage over Bell, the championship has moved considerably further out of reach. But Bell remains only two points behind Trent for third in the Chase standings and 28 points ahead of Outlaw; both position battles remain in play.",
+          "Next season will bring a new chapter for Bell, who is scheduled to join Starclutch Racing for her final full-time NRRS campaign in 2027.",
+          "Before that transition arrives, there are still two races left to complete with her current program.",
+          "Portland did not provide the recovery Bell needed. It offered another reminder of the areas where improvement remains necessary.",
+          "At Talladega, she had the speed but not the result. At Portland, she struggled to find either.",
+          "Two races remain. The championship picture has changed, but Bell's season is not finished.",
+          "AETHERWING eMOTORSPORTS · Born to Soar. Built to Fight."
+        ]
+      }
+    ]
+  },
+  {
     "slug": "talladega-leaves-bell-frustrated-championship-gap-grows",
     "legacyRoute": "/talladega-leaves-bell-frustrated-championship-gap-grows",
     "date": "October 6, 2026",
@@ -12,7 +307,7 @@
     "cardSummary": "Hailey Bell won Stage 1, led the most laps and finished fourth at Talladega, yet remains last among the five active Chase contenders by a single point.",
     "embedDescription": "Bell won Stage 1, led the most laps and finished fourth at Talladega, but remains fifth among the five active Chase contenders by one point.",
     "byline": "Aetherwing eMotorsports",
-    "featured": true,
+    "featured": false,
     "tags": [
       "Hailey Bell",
       "NRRS",
@@ -321,7 +616,8 @@
         "text": "I ran one of the best races I’ve run all season,\nand I’m still last in the Chase.\n\nThat hurts in a completely different way.",
         "attribution": "HAILEY BELL"
       }
-    ]
+    ],
+    "sections": []
   },
   {
     "slug": "hailey-bell-to-step-back-from-full-time-competition-after-season-4",
