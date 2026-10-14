@@ -250,3 +250,28 @@ html[data-anniversary-retro="true"] :is(.news-race-strip__eyebrow,.news-stat-car
   .news-road-grid{grid-template-columns:1fr}.news-road-results{border-right:0;border-bottom:1px solid #35414a}
   .news-numbers-grid{grid-template-columns:1fr}.news-feature-final-quote span{font-size:clamp(1.8rem,9vw,2.8rem)}
 }
+
+/* Portland Chase recap layout refinements — reuse the stat card shell without phantom columns. */
+.news-numbers-grid.is-two-column{grid-template-columns:repeat(2,minmax(0,1fr))}
+.news-standing-card__row strong.news-standing-card__driver{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .5rem;min-width:0}
+.news-standing-card__movement{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:2.15rem;padding:.27rem .38rem;border:1px solid #4a5660;border-radius:3px;background:#1b242b;color:#aebbc3;font:900 .65rem/1 var(--font-mono);letter-spacing:0;font-style:normal}
+.news-standing-card__movement.is-up{border-color:#32654b;background:#102b20;color:#62e0a1}
+.news-standing-card__movement.is-down{border-color:#79474a;background:#341c21;color:#ff8e93}
+.news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid>div{min-width:0;min-height:100px;gap:.35rem;padding:.85rem 1rem}
+.news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid b{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .4rem;max-width:100%;margin-top:.35rem;white-space:normal;overflow-wrap:anywhere;font-size:clamp(1.14rem,1.75vw,1.55rem);line-height:1.16}
+.news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid b i{margin:0 .05rem;flex:none}
+.news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid strong{position:static;justify-self:start;color:#ff8e93;margin-top:.3rem;font-size:.7rem}
+.news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-stat-card__callout.is-large{padding:.85rem 1rem;text-align:center;white-space:normal;font-size:clamp(1.15rem,2vw,1.7rem);line-height:1.12}
+@media(max-width:900px){
+  .news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid>div{grid-column:auto;min-height:92px;border-right:1px solid #2d373f;border-bottom:1px solid #2d373f}
+  .news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid>div:nth-child(2n){border-right:0}
+}
+@media(max-width:760px){
+  .news-numbers-grid.is-two-column{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:460px){
+  .news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid{grid-template-columns:minmax(0,1fr)}
+  .news-article[data-story-slug="bells-road-course-struggles-deepen-at-portland"] .news-change-grid>div{min-height:76px;border-right:0}
+}

@@ -445,6 +445,17 @@ console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin trac
   const leader=Number(standings.find((row)=>row.driver==='Will')?.points?.replace(/,/g,''));
   const bell=Number(standings.find((row)=>row.driver==='Hailey')?.points?.replace(/,/g,''));
   if(leader!==2296||bell!==2190||leader-bell!==106)throw Error('Portland Chase standings must reflect the official 106-point deficit.');
+  const oldPositions=new Map(talladega.featureBlocks.find((b)=>b.type==='standings').rows.map((row)=>[row.driver,Number(row.position)]));
+  for(const row of standings){
+    if(!oldPositions.has(row.driver)||row.positionChange!==oldPositions.get(row.driver)-Number(row.position))throw Error(`Portland Chase position movement incorrect for ${row.driver}.`);
+  }
+  const road=portland.featureBlocks.find((block)=>block.type==='road-course');
+  if(road?.title!=='HAILEY BELL · NRRS SEASON 3 ROAD COURSES')throw Error('Portland road-course heading must identify NRRS Season 3.');
+  for(const numbers of portland.featureBlocks.filter((block)=>block.type==='numbers'))if(numbers.groups?.length!==2)throw Error('Portland two-column stat blocks lost their two-group layout.');
+  const articleView=readFileSync('src/pages/news/[slug].astro','utf8');
+  const articleCss=readFileSync('src/styles/records.css','utf8');
+  if((articleView.match(/news-standing-card__movement/g)||[]).length!==2||(articleView.match(/is-two-column/g)||[]).length!==2)throw Error('Portland stat cards or movement display missing in a static/runtime renderer.');
+  if(!articleCss.includes('.news-numbers-grid.is-two-column')||!articleCss.includes('Portland Chase recap layout refinements'))throw Error('Portland stat layout fixes missing.');
   const siteContent=readFileSync('src/lib/site-content.mjs','utf8');
   const siteData=readFileSync('netlify/lib/_site-data.cjs','utf8');
   const admin=readFileSync('public/admin/content-admin.js','utf8');

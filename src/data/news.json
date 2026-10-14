@@ -21,7 +21,7 @@
       "Road Course",
       "Aetherwing eMotorsports"
     ],
-    "contentRevision": "2026-10-13-v1-portland-postrace",
+    "contentRevision": "2026-10-13-v2-portland-layout-movement",
     "featureLayout": "race-stat-feature",
     "sections": [],
     "raceSummary": {
@@ -110,7 +110,7 @@
       },
       {
         "type": "road-course",
-        "title": "HAILEY BELL · 2026 ROAD COURSES",
+        "title": "HAILEY BELL · NRRS SEASON 3 ROAD COURSES",
         "rows": [
           {
             "track": "Watkins Glen",
@@ -165,32 +165,37 @@
             "position": 1,
             "driver": "Will",
             "points": "2,296",
-            "gap": "LEADER"
+            "gap": "LEADER",
+            "positionChange": 0
           },
           {
             "position": 2,
             "driver": "Clutch",
             "points": "2,234",
-            "gap": "62 BACK"
+            "gap": "62 BACK",
+            "positionChange": 1
           },
           {
             "position": 3,
             "driver": "Trent",
             "points": "2,192",
-            "gap": "104 BACK"
+            "gap": "104 BACK",
+            "positionChange": -1
           },
           {
             "position": 4,
             "driver": "Hailey",
             "points": "2,190",
             "gap": "106 BACK",
-            "featured": true
+            "featured": true,
+            "positionChange": 1
           },
           {
             "position": 5,
             "driver": "Outlaw",
             "points": "2,162",
-            "gap": "134 BACK"
+            "gap": "134 BACK",
+            "positionChange": -1
           }
         ],
         "callout": "TWO POINTS BETWEEN HAILEY AND P3"
@@ -221,7 +226,7 @@
             "after": "28 AHEAD"
           }
         ],
-        "callout": "ONE POSITION GAINED.\n44 MORE POINTS BEHIND."
+        "callout": "ONE POSITION GAINED · 44 MORE POINTS BEHIND"
       },
       {
         "type": "prose",
