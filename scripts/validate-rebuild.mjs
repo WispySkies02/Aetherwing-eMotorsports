@@ -660,3 +660,17 @@ console.log('v2.0.39 verified: build-time canon and live program surfaces share 
 console.log('v2.0.40/41 verified: #42 absent from current UARL D1; GK3R never started and is not listed as former.');
 {const seed41=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));if(seed41['roster-profiles'].some(p=>p.slug==='gk3r')||seed41.drivers.some(d=>d.profile==='gk3r')||seed41.charters.find(c=>c.id==='uarl-d1')?.fullTime?.some(c=>String(c.number)==='42'))throw Error('v2.0.41 admin seed must not resurrect GK3R/#42');for(const file of ['scripts/sync-admin-content.mjs','netlify/lib/_site-data.cjs','netlify/lib/_site-admin.cjs','src/lib/site-content.mjs']){const source=readFileSync(file,'utf8');if(!source.includes("slug!=='gk3r'"))throw Error('v2.0.41 must filter outdated published GK3R roster profiles in '+file);}}
 
+// Hailey Bell driver file: personal broadcast styling is scoped and CMS-compatible.
+{
+  const profilePage=readFileSync('src/pages/drivers/[slug].astro','utf8');
+  const profileCss=readFileSync('src/styles/records.css','utf8');
+  const people=JSON.parse(readFileSync('src/data/roster-profiles.json','utf8'));
+  const hailey=people.find((person)=>person.slug==='hailey');
+  if(!hailey)throw Error('Hailey driver profile missing from roster seed.');
+  if(!profilePage.includes("const isHailey=person.slug==='hailey';")||!profilePage.includes("isHailey ? (")||!profilePage.includes('profile-hero--bell'))throw Error('Hailey-only driver file design or generic fallback missing.');
+  for(const part of ['data-profile-name','data-profile-identity','data-profile-bio','data-profile-number','data-profile-assignments','data-profile-stats','data-profile-partners'])if(!profilePage.includes(part))throw Error('Profile CMS hook missing: '+part);
+  for(const marker of ['data-profile-mark-fallback','fallback.hidden=!!person.signatureLogo','data-profile-primary-program',"program.textContent=entry.competition"])if(!profilePage.includes(marker))throw Error('Hailey signature/program live data hook missing: '+marker);
+  if(!profilePage.includes("location.replace('/drivers/')"))throw Error('Departed driver redirect must still work.');
+  for(const marker of ['.profile-hero--bell','.profile-grid--bell','.bell-driver-partners','@media(max-width:760px)','@media(max-width:480px)'])if(!profileCss.includes(marker))throw Error('Hailey-specific desktop/mobile style missing: '+marker);
+}
+console.log('Driver file verified: Hailey broadcast branding, generic driver fallback, and live Admin hooks.');
