@@ -307,7 +307,7 @@ html[data-anniversary-retro="true"] :is(.news-race-strip__eyebrow,.news-stat-car
 .profile-hero--bell .profile-hero__signature img{max-height:78px;max-width:min(100%,440px)}
 .bell-driver-hero__script{padding:0 0 .5rem;color:#f6f8ff;font:400 clamp(2rem,3vw,3rem)/1 'Permanent Marker',var(--font-brush),cursive;transform:rotate(-3deg);letter-spacing:-.04em}
 .bell-driver-hero__script[hidden],.profile-hero--bell .profile-hero__signature[hidden]{display:none!important}
-.profile-hero--bell p.bell-driver-hero__bio{max-width:58ch;margin:.35rem 0 1.5rem;color:#c6d4e1;font:500 clamp(.93rem,1.2vw,1.04rem)/1.68 var(--font-body,inherit)}
+.profile-hero--bell p.bell-driver-hero__bio{max-width:58ch;margin:.35rem 0 1.5rem;color:#c6d4e1;font-family:var(--font-body,Arial,sans-serif);font-weight:500;font-size:clamp(.93rem,1.2vw,1.04rem);line-height:1.68}
 .bell-driver-hero__micro{display:flex;flex-wrap:wrap;gap:.55rem 1.1rem;margin-top:auto}
 .bell-driver-hero__micro span{display:inline-flex;align-items:center;gap:.55rem;padding:.46rem .75rem;border:1px solid #38496b;background:#101b2b;color:#a5bcdb;font:900 .58rem/1.2 var(--font-mono);letter-spacing:.12em}
 .bell-driver-hero__micro i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--bell-blue);box-shadow:0 0 9px rgba(74,111,255,.65)}
