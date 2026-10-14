@@ -52,7 +52,7 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
         {isRaceFeature ? (
           <>
             {story.raceSummary && (
-              <section class="news-race-strip" aria-label="Talladega race summary">
+              <section class="news-race-strip" aria-label="Race summary">
                 <div class="news-race-strip__eyebrow">{story.raceSummary.eyebrow}</div>
                 <div class="news-race-strip__grid">
                   {story.raceSummary.items?.map(item=><div><small>{item.label}</small><b>{item.value}</b></div>)}
@@ -82,7 +82,7 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
                 </section>
               ) : block.type==='road-course' ? (
                 <section class="news-stat-card news-stat-card--road" aria-label={block.title}>
-                  <header><small>NEXT TEST</small><h2>{block.title}</h2></header>
+                  <header><small>ROAD COURSE RECORD</small><h2>{block.title}</h2></header>
                   <div class="news-road-grid"><div class="news-road-results">{block.rows?.map(row=><div><span>{row.track}</span><b>{row.finish}</b></div>)}</div><div class="news-road-stats">{block.stats?.map(stat=><div><small>{stat.label}</small><b>{stat.value}</b></div>)}</div></div>
                 </section>
               ) : block.type==='numbers' ? (
@@ -178,7 +178,7 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
       if(block?.type==='prose')return `<section class="news-feature-prose">${(block.paragraphs||[]).map(p=>`<p>${esc(p)}</p>`).join('')}</section>`;
       if(block?.type==='standings')return `<section class="news-stat-card news-stat-card--standings" aria-label="${esc(block.title)}"><header><small>NRRS CHASE</small><h2>${esc(block.title)}</h2></header><div class="news-standing-card__rows">${(block.rows||[]).map(row=>`<div class="news-standing-card__row${row.featured?' is-featured':''}"><b class="pos">${esc(row.position)}</b><strong>${esc(row.driver)}</strong><span>${esc(row.points)}</span>${row.gap?`<small>${esc(row.gap)}</small>`:''}</div>`).join('')}</div>${block.callout?`<div class="news-stat-card__callout">${esc(block.callout)}</div>`:''}</section>`;
       if(block?.type==='change-strip')return `<section class="news-stat-card news-stat-card--changes" aria-label="${esc(block.title)}"><header><small>POINTS DELTA</small><h2>${esc(block.title)}</h2></header><div class="news-change-grid">${(block.items||[]).map(item=>`<div><small>${esc(item.label)}</small>${item.before&&item.after?`<b>${esc(item.before)}<i>→</i>${esc(item.after)}</b>`:`<b class="${item.tone==='up'?'is-up':item.tone==='down'?'is-down':''}">${esc(item.value)}</b>`}${item.delta?`<strong>${esc(item.delta)}</strong>`:''}</div>`).join('')}</div>${block.callout?`<div class="news-stat-card__callout is-large">${esc(block.callout).replace(/\n/g,'<br>')}</div>`:''}</section>`;
-      if(block?.type==='road-course')return `<section class="news-stat-card news-stat-card--road" aria-label="${esc(block.title)}"><header><small>NEXT TEST</small><h2>${esc(block.title)}</h2></header><div class="news-road-grid"><div class="news-road-results">${(block.rows||[]).map(row=>`<div><span>${esc(row.track)}</span><b>${esc(row.finish)}</b></div>`).join('')}</div><div class="news-road-stats">${(block.stats||[]).map(stat=>`<div><small>${esc(stat.label)}</small><b>${esc(stat.value)}</b></div>`).join('')}</div></div></section>`;
+      if(block?.type==='road-course')return `<section class="news-stat-card news-stat-card--road" aria-label="${esc(block.title)}"><header><small>ROAD COURSE RECORD</small><h2>${esc(block.title)}</h2></header><div class="news-road-grid"><div class="news-road-results">${(block.rows||[]).map(row=>`<div><span>${esc(row.track)}</span><b>${esc(row.finish)}</b></div>`).join('')}</div><div class="news-road-stats">${(block.stats||[]).map(stat=>`<div><small>${esc(stat.label)}</small><b>${esc(stat.value)}</b></div>`).join('')}</div></div></section>`;
       if(block?.type==='numbers')return `<section class="news-stat-card news-stat-card--numbers" aria-label="${esc(block.title)}"><header><small>SEASON SNAPSHOT</small><h2>${esc(block.title)}</h2></header><div class="news-numbers-grid">${(block.groups||[]).map(group=>`<div><h3>${esc(group.title)}</h3>${(group.rows||[]).map(row=>`<div class="news-number-row${row.featured?' is-featured':''}"><span>${esc(row.label)}</span><b>${esc(row.value)}</b></div>`).join('')}</div>`).join('')}</div>${block.note?`<div class="news-stat-card__note">${esc(block.note)}</div>`:''}</section>`;
       if(block?.type==='pull-quote')return `<blockquote class="news-feature-final-quote"><span>${esc(block.text)}</span><cite>— ${esc(block.attribution)}</cite></blockquote>`;
       return '';
