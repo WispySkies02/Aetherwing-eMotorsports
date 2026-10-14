@@ -674,3 +674,13 @@ console.log('v2.0.40/41 verified: #42 absent from current UARL D1; GK3R never st
   for(const marker of ['.profile-hero--bell','.profile-grid--bell','.bell-driver-partners','@media(max-width:760px)','@media(max-width:480px)'])if(!profileCss.includes(marker))throw Error('Hailey-specific desktop/mobile style missing: '+marker);
 }
 console.log('Driver file verified: Hailey broadcast branding, generic driver fallback, and live Admin hooks.');
+// Hailey's understated trans-pride treatment must remain personal and content-first.
+{
+  const markup=readFileSync('src/pages/drivers/[slug].astro','utf8');
+  const style=readFileSync('src/styles/records.css','utf8');
+  const special=markup.slice(markup.indexOf('{isHailey ? ('),markup.indexOf(') : (\n      <div class="wrap">'));
+  const generic=markup.slice(markup.indexOf(') : (\n      <div class="wrap">'),markup.indexOf('</section>',markup.indexOf(') : (\n      <div class="wrap">')));
+  if(!special.includes('bell-driver-hero__pride-note')||!special.includes('PROUDLY ME')||generic.includes('PROUDLY ME'))throw Error('Personal identity detail must appear only on Hailey driver profile.');
+  for(const accent of ['--bell-blue:#4a6fff','--bell-pride-blue:#5bcffa','--bell-pink:#f5a9b8','--bell-pride-white:#f6f8fa','.bell-driver-hero__signature-slot:after','.bell-driver-hero__pride-note'])if(!style.includes(accent))throw Error('Subtle Hailey profile identity accent missing: '+accent);
+}
+console.log('Hailey identity accents verified: subtle, profile-only, and compatible with original broadcast layout.');
