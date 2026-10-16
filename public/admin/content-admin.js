@@ -551,12 +551,19 @@
     const entries=await Promise.all(Object.entries(standingsManufacturerIconPaths).map(async ([key,src])=>[key,await loadCanvasImage(src)]));
     return Object.fromEntries(entries);
   }
+  function standingsPngCutoff(board){
+    // NRRS graphics have a five-driver Chase. Older saved Admin snapshots may
+    // still contain the historical P6 cutoff; graphics must not inherit it.
+    return board?.league==='nrrs'||board?.id==='nrrs'?5:Number(board?.cutoffAfter||0);
+  }
   function isChaseDriver(board,row,index){
     if(board?.chaseActive!==true)return false;
     const explicit=String(row?.chaseStatus||'').trim().toUpperCase();
-    if(explicit==='CHASE')return true;
     if(explicit.includes('NOT IN CHASE')||explicit.includes('ELIMINATED'))return false;
-    const cutoff=Number(board?.cutoffAfter||0);return cutoff>0&&index<cutoff&&row?.chaseEligible!==false;
+    const cutoff=standingsPngCutoff(board);
+    if(board?.league==='nrrs'||board?.id==='nrrs')return index<cutoff&&row?.chaseEligible!==false;
+    if(explicit==='CHASE')return true;
+    return cutoff>0&&index<cutoff&&row?.chaseEligible!==false;
   }
   function drawContained(ctx,image,x,y,width,height){
     if(!image?.naturalWidth||!image?.naturalHeight)return;
@@ -576,7 +583,7 @@
     const raw=String(value).trim();let numeric=Number(raw.replace(/^\+/,''));if(/^▲/.test(raw))numeric=Number(raw.replace(/[^0-9]/g,''));if(/^▼/.test(raw))numeric=-Number(raw.replace(/[^0-9]/g,''));if(!Number.isFinite(numeric)||numeric===0)return {value:0,label:'—',kind:'neutral'};return numeric>0?{value:numeric,label:`▲ ${numeric}`,kind:'up'}:{value:numeric,label:`▼ ${Math.abs(numeric)}`,kind:'down'};
   }
   function paintStandingRow(ctx,row,x,y,w,h,index,board,manufacturerIcons={}){
-    const chaseDriver=isChaseDriver(board,row,index),outsideCut=Number(board.cutoffAfter)>0&&index>=Number(board.cutoffAfter),manufacturer=standingManufacturer(board,row),manufacturerKey=standingManufacturerIconKey(board,manufacturer),manufacturerImage=manufacturerIcons[manufacturerKey]||null;
+    const chaseDriver=isChaseDriver(board,row,index),cutoff=standingsPngCutoff(board),outsideCut=cutoff>0&&index>=cutoff,manufacturer=standingManufacturer(board,row),manufacturerKey=standingManufacturerIconKey(board,manufacturer),manufacturerImage=manufacturerIcons[manufacturerKey]||null;
     ctx.save();roundedRect(ctx,x,y,w,h-6,8);ctx.fillStyle=chaseDriver?'rgba(65,54,27,.96)':outsideCut?'rgba(10,12,14,.92)':'rgba(15,19,23,.94)';ctx.fill();
     if(chaseDriver){ctx.fillStyle='#e0c891';ctx.fillRect(x,y,7,h-6);ctx.strokeStyle='rgba(224,200,145,.48)';ctx.lineWidth=1.5;roundedRect(ctx,x+.75,y+.75,w-1.5,h-7.5,8);ctx.stroke();}
     const pad=22,posX=x+pad,moveX=x+86,numX=x+154,iconX=x+232,iconW=70,iconH=36,nameX=x+(manufacturerImage?318:235),pointsX=x+w-190,deltaX=x+w-24,midY=y+(h-6)/2,movement=standingMovement(row.positionChange);
@@ -631,7 +638,7 @@
       const x=margin+col*(colWidth+columnGap),start=col*rowsPerColumn,end=Math.min(rows.length,start+rowsPerColumn);
       for(let i=start;i<end;i++){
         const local=i-start,y=bodyY+local*rowHeight;
-        if(Number(board.cutoffAfter)>0&&i===Number(board.cutoffAfter)){
+        if(standingsPngCutoff(board)>0&&i===standingsPngCutoff(board)){
           ctx.save();ctx.strokeStyle=accentColor;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-4);ctx.lineTo(x+colWidth,y-4);ctx.stroke();ctx.fillStyle=accentColor;ctx.font='900 13px Arial, sans-serif';ctx.textAlign='right';ctx.fillText(String(board.cutoffLabel||'CHASE CUTOFF').toUpperCase(),x+colWidth,y-11);ctx.restore();
         }
         paintStandingRow(ctx,rows[i],x,y,colWidth,rowHeight,i,board,manufacturerIcons);
