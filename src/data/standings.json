@@ -287,7 +287,7 @@
         "highlight": false
       }
     ],
-    "cutoffAfter": 6,
+    "cutoffAfter": 5,
     "cutoffLabel": "Chase cutoff · Top 6",
     "pointsContext": "Chase gaps are measured from the championship leader. Published race points can advance this board automatically.",
     "autoPoints": true,
