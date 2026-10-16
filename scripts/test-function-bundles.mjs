@@ -1,14 +1,33 @@
+import assert from 'node:assert/strict';
 import { zipFunctions } from '@netlify/zip-it-and-ship-it';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
+import { mkdtempSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { findPaintProject } from './paint-project.mjs';
+
 const root=fileURLToPath(new URL('../',import.meta.url));
-const destination=fileURLToPath(new URL('../../admin-function-bundles/',import.meta.url));
-const main=await zipFunctions(fileURLToPath(new URL('../netlify/functions/',import.meta.url)),destination,{basePath:root,config:{'*':{nodeBundler:'esbuild',nodeVersion:'22',includedFiles:['data/paint-seed.json','src/data/*.json'],includedFilesBasePath:root}}});
-if(main.length!==4)throw new Error(`Expected exactly 4 main functions, found ${main.length}`);
-for(const fn of main){if(fn.runtimeAPIVersion!==2)throw new Error(`${fn.name} is not a modern function`);console.log(`Bundled ${fn.name} (modern API)`);}
-const boothSource=fileURLToPath(new URL('../../aetherwing_paint_public/netlify/functions/',import.meta.url));
-if(existsSync(boothSource)) {
-  const booth=await zipFunctions(boothSource,fileURLToPath(new URL('../../booth-function-bundles/',import.meta.url)),{config:{'*':{nodeBundler:'esbuild',nodeVersion:'22'}}});
-  if(booth.length!==2)throw new Error('Expected exactly two read-only Booth functions.');
-  console.log('PASS: packaged all 4 main-site functions and 2 read-only Paint Booth functions.');
-} else console.log('PASS: packaged all 4 main-site functions. Booth bundle check skipped because the separate Booth project is not present.');
+const destination=mkdtempSync(join(tmpdir(),'aetherwing-functions-'));
+function verify(functions,expected) {
+  assert.deepEqual(functions.map((fn)=>fn.name).sort(),Object.keys(expected).sort(),'Package exactly the deployed function names');
+  for(const fn of functions) {
+    assert.equal(fn.runtimeAPIVersion,expected[fn.name],`${fn.name} must retain its deployed function API`);
+    assert.ok(statSync(fn.path).size>0,`${fn.name} bundle must exist and contain data`);
+    console.log(`Bundled ${fn.name} (API v${fn.runtimeAPIVersion})`);
+  }
+}
+try {
+  const main=await zipFunctions(join(root,'netlify/functions'),join(destination,'main'),{
+    basePath:root,
+    config:{'*':{nodeBundler:'esbuild',nodeVersion:'24',includedFiles:['data/paint-seed.json','src/data/*.json'],includedFilesBasePath:root}}
+  });
+  verify(main,{'driver-art':2,'paint-3d-texture':2,'paint-3d-upload':1,'paint-admin':2,'paint-data':2,'site-admin':2,'site-data':2});
+  const boothRoot=findPaintProject();
+  if(boothRoot) {
+    const booth=await zipFunctions(join(boothRoot,'netlify/functions'),join(destination,'booth'),{config:{'*':{nodeBundler:'esbuild',nodeVersion:'22'}}});
+    verify(booth,{'paint-data':1});
+    console.log('PASS: packaged all 7 main-site functions and the read-only Paint Booth proxy.');
+  } else console.log('PASS: packaged all 7 main-site functions. SKIP: separate Paint Booth checkout absent; set AETHERWING_PAINT_PROJECT to include it.');
+} finally {
+  rmSync(destination,{recursive:true,force:true});
+}

@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { findPaintProject } from './paint-project.mjs';
 const require=createRequire(import.meta.url);
 const root=new URL('../',import.meta.url);
+const seedPaints=require('../data/paint-seed.json').paints;
+const seedCount=seedPaints.length;
 const storage=new Map();
 let storageDown=false, etagCounter=0, buildCount=0, storageWriteFault='';
 globalThis.netlifyBlobsContext=Buffer.from(JSON.stringify({siteID:'test-site',token:'fixture-token',edgeURL:'https://blobs.fixture',uncachedEdgeURL:'https://blobs.fixture'})).toString('base64');
@@ -57,10 +59,11 @@ assert.equal(response.body.registry.drafts[0].throwback,true);assert.ok(response
 assert.equal(response.body.registry.drafts[0].specialPaint,true);assert.ok(response.body.registry.drafts[0].special.includes('special'));
 assert.ok(response.body.registry.drafts[0].special.includes('patriotic'));assert.ok(response.body.registry.drafts[0].special.includes('crownjewel'));
 assert.equal((await call(paintAdmin)).body.registry.drafts.length,1);
-assert.equal((await call(paintData,undefined,null)).body.paints.length,35);
+const unpublished=(await call(paintData,undefined,null)).body.paints;
+assert.deepEqual(unpublished.map((item)=>item.slug).sort(),seedPaints.map((item)=>item.slug).sort(),'Private drafts must not change the public seed catalog');
 response=await call(paintAdmin,{action:'savePaint',paint,priorSlug:paint.slug,status:'published'},'paint-admin');
 assert.equal(response.status,200);
-assert.equal((await call(paintData,undefined,null)).body.paints.length,36);
+assert.equal((await call(paintData,undefined,null)).body.paints.length,seedCount+1);
 assert.equal((await call(paintData,undefined,null)).body.paints.find((item)=>item.slug===paint.slug).scrAffiliate,true);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint})).status,409);
 assert.equal((await call(paintAdmin,{action:'setFeature',feature:{slugs:[paint.slug,'d1-ironmouse'],series:'NRRS',race:'Fixture 400',track:'Fixture Raceway',date:'2099-01-01'}})).status,200);
@@ -68,14 +71,14 @@ assert.deepEqual((await call(paintData,undefined,null)).body.feature.slugs,[pain
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...paint,slug:'fixture-renamed'},priorSlug:paint.slug})).status,200);
 assert.deepEqual((await call(paintData,undefined,null)).body.feature.slugs,['fixture-renamed','d1-ironmouse']);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:'fixture-renamed'})).status,200);
-response=await call(paintData,undefined,null);assert.equal(response.body.paints.length,35);assert.deepEqual(response.body.feature.slugs,['d1-ironmouse']);
+response=await call(paintData,undefined,null);assert.equal(response.body.paints.length,seedCount);assert.ok(!response.body.paints.some((item)=>item.slug==='fixture-renamed'));assert.deepEqual(response.body.feature.slugs,['d1-ironmouse']);
 assert.equal((await call(paintAdmin,{action:'clearFeature'})).status,200);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:'fixture-renamed',archived:false})).status,200);
 const seedPaint=require('../data/paint-seed.json').paints.find((item)=>item.slug==='d1-ironmouse');
 const editedSeed={...seedPaint,sponsor:'Ironmouse Admin Edit',leagueName:'NRRS'};
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:editedSeed,priorSlug:seedPaint.slug,status:'published'})).status,200);
 response=await call(paintData,undefined,null);
-assert.equal(response.body.paints.length,36);
+assert.equal(response.body.paints.length,seedCount+1);
 assert.equal(response.body.paints.find((item)=>item.slug===seedPaint.slug).sponsor,'Ironmouse Admin Edit');
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...editedSeed,slug:'renamed-seed'},priorSlug:seedPaint.slug,status:'published'})).status,400);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:seedPaint.slug})).status,400);
@@ -84,6 +87,32 @@ response=await call(siteAdmin);assert.equal(response.status,200);
 const seeds=response.body.seeds;
 const content=require('../netlify/lib/_content.cjs');
 for(const [key,data] of Object.entries(seeds))assert.equal(content.validate(key,data),'',key);
+// Historical race identities survive active-roster exits, but cannot be reused
+// to bypass the current roster for another race or a changed name/number.
+const historicalRace=structuredClone(seeds.results.find((race)=>race.entries.some((entry)=>entry.assignmentId==='jaxon-kmart')));
+assert.ok(historicalRace,'Keep the canonical former-driver result as a regression fixture');
+assert.equal(content.validate('results',[historicalRace]),'','Canonical historical results remain editable after roster exits');
+for(const change of [{scheduleId:'new-fixture-race'},{date:'2099-02-01'},{league:'nrrs',leagueName:'NRRS'}]) {
+  assert.notEqual(content.validate('results',[{...historicalRace,...change}]),'','Recorded identities must not grant access to a new race/date/league');
+}
+for(const change of [{driver:'Invented Historical Driver'},{number:'999'},{assignmentId:'unknown-fixture-assignment'}]) {
+  const altered=structuredClone(historicalRace);
+  Object.assign(altered.entries.find((entry)=>entry.assignmentId==='jaxon-kmart'),change);
+  assert.notEqual(content.validate('results',[altered]),'','Historical identity must match the official recorded entry');
+}
+const currentRace=structuredClone(historicalRace);
+currentRace.scheduleId='new-fixture-race';currentRace.date='2099-02-01';
+currentRace.entries=currentRace.entries.filter((entry)=>entry.assignmentId==='clutch-kmart');
+assert.equal(content.validate('results',[currentRace]),'','Current assignments remain valid for new races');
+currentRace.entries[0].number='999';
+assert.notEqual(content.validate('results',[currentRace]),'','Current assignments still require matching car numbers');
+const publishedHistory=structuredClone(historicalRace);
+publishedHistory.scheduleId='published-fixture-history';publishedHistory.date='2025-01-01';
+const historicalRegistry={published:{results:[publishedHistory]}};
+assert.equal(content.validate('results',[publishedHistory],historicalRegistry),'','Previously published history also survives roster exits');
+const changedHistory=structuredClone(publishedHistory);
+changedHistory.entries.find((entry)=>entry.assignmentId==='jaxon-kmart').number='999';
+assert.notEqual(content.validate('results',[changedHistory],historicalRegistry),'','Previously published history does not authorize changed identities');
 const numberArtDrivers=structuredClone(seeds.drivers);numberArtDrivers[0].numberImage='https://example.test/number-32.png';
 assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept HTTPS number artwork');
 numberArtDrivers[0].numberImage='data:image/webp;base64,UklGRg==';assert.equal(content.validate('drivers',numberArtDrivers),'','Driver assignments should accept uploaded WebP artwork');
@@ -155,8 +184,8 @@ assert.equal((await call(paintAdmin)).status,500);
 assert.equal((await call(siteData,undefined,null)).status,503);storageDown=false;console.error=oldConsole;
 // The read-only Paint Booth must consume central publication without owning individual share routes.
 const publicRegistry=(await call(paintData,undefined,null)).body;
-const boothRoot=process.env.AETHERWING_PAINT_PROJECT?path.resolve(process.env.AETHERWING_PAINT_PROJECT):fileURLToPath(new URL('../../aetherwing_paint_public/',import.meta.url));
-if (fs.existsSync(path.join(boothRoot,'netlify/functions/paint-data.cjs'))) {
+const boothRoot=findPaintProject();
+if (boothRoot) {
 globalThis.fetch=async(input)=>{assert.equal(String(input),'https://aetherwing.net/api/paints');return Response.json(publicRegistry);};
 const boothData=require(path.join(boothRoot,'netlify/functions/paint-data.cjs'));
 assert.equal((await boothData.handler({httpMethod:'GET'})).statusCode,200);

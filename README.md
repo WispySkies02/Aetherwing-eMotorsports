@@ -339,6 +339,12 @@ npm test
 npm run dev
 ```
 
+Use Node 24 or newer. Run `npm run test:all` for the content validator, Admin API/DOM and 3D upload tests, development-route smoke test, isolated publication/rebuild test, and function packaging checks. The publication and packaging tests use temporary directories and clean up their generated files.
+
+Keep the separate Paint Booth checkout at `../aetherwing-paint`, or set `AETHERWING_PAINT_PROJECT` to its root to include its proxy integration and bundle checks. The legacy `../aetherwing_paint_public` path is also recognized. An explicitly configured invalid path fails the checks; an absent optional checkout is reported as skipped. Run `npm run check` and `npm run preview` from the Paint Booth checkout itself; that project is static and has no production build step.
+
+The development server serves the existing Admin shell at `/admin/`, including `?login=1`. It does not emulate Netlify Identity, Functions, or Blobs; local Admin tests use mock authentication and storage. The production build still prepares the bundled Admin seed and content overlay, so review generated changes before committing.
+
 Netlify uses `npm run build` and publishes `dist`. The existing Admin remains at `/admin/`, using the original verified account roles and content API. Do not deploy a ZIP by itself: deploy the extracted project with its Netlify Functions and configuration.
 
 ## Public routes
