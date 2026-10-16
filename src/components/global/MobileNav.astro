@@ -1,0 +1,231 @@
+---
+// Phone/tablet navigation: a thumb-reach tab dock plus a "Pit Wall" sheet that
+// holds every Admin-managed navigation link. Desktop (>980px) never renders it.
+import { navigation, siteSettings, scheduleEvents, results } from '../../lib/site-content.mjs';
+import '../../styles/mobile-nav.css';
+import { buildRaceFeed } from '../../lib/race-clock.mjs';
+const path = Astro.url.pathname;
+const groups = ['Team', 'Race', 'Connect']
+  .map((label) => ({ label, links: navigation.filter((item) => item.group === label) }))
+  .filter((group) => group.links.length);
+const isActive = (href = '') => href.startsWith('/') && (href === '/' ? path === '/' : path.startsWith(href));
+const isExternal = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
+const fromDate = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
+const feed = buildRaceFeed(scheduleEvents, results, { from: fromDate }).slice(0, 40);
+const dock = [
+  { key: 'home', label: 'Home', href: '/', match: (p) => p === '/' },
+  { key: 'schedule', label: 'Schedule', href: '/schedule/', match: (p) => p.startsWith('/schedule/') || p.startsWith('/event/') },
+  { key: 'standings', label: 'Standings', href: '/championships/', match: (p) => p.startsWith('/championships/') },
+  { key: 'drivers', label: 'Drivers', href: '/drivers/', match: (p) => p.startsWith('/drivers/') }
+];
+const dockActive = dock.find((item) => item.match(path))?.key || 'more';
+---
+<script is:inline type="application/json" id="aw-race-feed" set:html={JSON.stringify(feed)} />
+
+<nav class="aw-dock" aria-label="Quick navigation" data-aw-dock>
+  {dock.map((item) => (
+    <a href={item.href} class="aw-dock__item" aria-current={dockActive === item.key ? 'page' : undefined}>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        {item.key === 'home' && <path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5" />}
+        {item.key === 'schedule' && <><path d="M5 21V3.5M5 4h14v9H5" /><path class="is-fill" d="M5 4h4.7v4.5H5zM14.3 4H19v4.5h-4.7zM9.7 8.5h4.6V13H9.7z" /></>}
+        {item.key === 'standings' && <path d="M4 20h16M6 20v-6h4v6M10 20V8h4v12M14 20v-9h4v9" />}
+        {item.key === 'drivers' && <path d="M3.5 15.5a8.5 8.5 0 0 1 17-1.6V18H7a3.5 3.5 0 0 1-3.5-2.5zM12.5 10.5h8M20.5 14.5h-5" />}
+      </svg>
+      <span>{item.label}</span>
+    </a>
+  ))}
+  <button type="button" class="aw-dock__item" data-sheet-open aria-haspopup="dialog" aria-controls="aw-sheet" aria-expanded="false" aria-current={dockActive === 'more' ? 'page' : undefined}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" /></svg>
+    <span>More</span>
+  </button>
+</nav>
+
+<dialog class="aw-sheet" id="aw-sheet" aria-labelledby="aw-sheet-title" data-aw-sheet>
+  <div class="aw-sheet__panel" data-sheet-panel>
+    <div class="aw-sheet__grab" data-sheet-grab aria-hidden="true"><i></i></div>
+    <header class="aw-sheet__head">
+      <div><span>AETHERWING / PIT WALL</span><h2 id="aw-sheet-title">Navigate the team</h2></div>
+      <button type="button" class="aw-sheet__close" data-sheet-close aria-label="Close navigation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
+    </header>
+    <a class="aw-sheet__next" href="/schedule/" data-sheet-next hidden>
+      <span class="aw-sheet__next-logo"><img alt="" data-next-logo width="56" height="42" /></span>
+      <span class="aw-sheet__next-copy"><small data-next-kicker>ON TRACK NEXT</small><strong data-next-track></strong><em data-next-when></em></span>
+      <b class="aw-sheet__next-clock" data-next-clock></b>
+    </a>
+    <div class="aw-sheet__groups" data-sheet-groups>
+      {groups.map((group) => (
+        <section class="aw-sheet__group">
+          <h3>{group.label}</h3>
+          <ul>
+            {group.links.map((item, index) => (
+              <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><small>{String(index + 1).padStart(2, '0')}</small><span>{item.label}</span>{isExternal(item.href) && <b aria-label="(external)">↗</b>}</a></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+    <a class="aw-sheet__discord" href={siteSettings.discordUrl}><span>Join the team Discord</span><b aria-hidden="true">↗</b></a>
+    <p class="aw-sheet__sign"><strong>{siteSettings.tagline}</strong><span>To God be the glory · {siteSettings.faithVerse || 'Matthew 17:20'}</span></p>
+  </div>
+</dialog>
+
+<script>
+  import { subscribeFeed, nextRace, compactCountdown, whenLabel, seriesLogo } from '../../lib/race-clock.mjs';
+
+  const sheet = document.querySelector('[data-aw-sheet]');
+  const panel = sheet?.querySelector('[data-sheet-panel]');
+  const opener = document.querySelector('[data-sheet-open]');
+  const groupsRoot = sheet?.querySelector('[data-sheet-groups]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let lastTrigger = null;
+
+  const setExpanded = (open) => document.querySelectorAll('[data-sheet-open]').forEach((btn) => btn.setAttribute('aria-expanded', String(open)));
+
+  const openSheet = (trigger) => {
+    if (!(sheet instanceof HTMLDialogElement) || sheet.open) return;
+    lastTrigger = trigger || document.activeElement;
+    sheet.showModal();
+    sheet.classList.remove('is-closing');
+    document.documentElement.classList.add('aw-sheet-open');
+    setExpanded(true);
+    sheet.querySelector('[data-sheet-close]')?.focus();
+  };
+
+  const finishClose = () => {
+    if (!(sheet instanceof HTMLDialogElement)) return;
+    sheet.classList.remove('is-closing');
+    if (panel instanceof HTMLElement) panel.style.transform = '';
+    if (sheet.open) sheet.close();
+  };
+
+  const closeSheet = () => {
+    if (!(sheet instanceof HTMLDialogElement) || !sheet.open || sheet.classList.contains('is-closing')) return;
+    if (reduceMotion.matches) return finishClose();
+    sheet.classList.add('is-closing');
+    window.setTimeout(finishClose, 220);
+  };
+
+  if (sheet instanceof HTMLDialogElement) {
+    document.addEventListener('click', (event) => {
+      const trigger = event.target instanceof Element ? event.target.closest('[data-sheet-open]') : null;
+      if (trigger) openSheet(trigger);
+    });
+    sheet.addEventListener('close', () => {
+      document.documentElement.classList.remove('aw-sheet-open');
+      setExpanded(false);
+      if (lastTrigger instanceof HTMLElement && lastTrigger.isConnected) lastTrigger.focus();
+    });
+    // Escape: animate out instead of the dialog's abrupt default close.
+    sheet.addEventListener('cancel', (event) => { event.preventDefault(); closeSheet(); });
+    sheet.addEventListener('click', (event) => {
+      if (event.target === sheet) return closeSheet();
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('[data-sheet-close]')) return closeSheet();
+      if (target?.closest('a[href]')) finishClose();
+    });
+    window.addEventListener('pageshow', finishClose);
+    window.matchMedia('(min-width: 981px)').addEventListener('change', (query) => { if (query.matches) finishClose(); });
+
+    // Drag the grab handle (or the header) down to dismiss.
+    const grabZones = sheet.querySelectorAll('[data-sheet-grab], .aw-sheet__head');
+    let dragStart = null, dragDelta = 0;
+    grabZones.forEach((zone) => {
+      zone.addEventListener('pointerdown', (event) => {
+        if (!(panel instanceof HTMLElement) || (event.target instanceof Element && event.target.closest('button'))) return;
+        dragStart = event.clientY; dragDelta = 0;
+        panel.style.transition = 'none';
+        zone.setPointerCapture(event.pointerId);
+      });
+      zone.addEventListener('pointermove', (event) => {
+        if (dragStart === null || !(panel instanceof HTMLElement)) return;
+        dragDelta = Math.max(0, event.clientY - dragStart);
+        panel.style.transform = `translateY(${dragDelta}px)`;
+      });
+      const release = () => {
+        if (dragStart === null || !(panel instanceof HTMLElement)) return;
+        dragStart = null;
+        panel.style.transition = '';
+        if (dragDelta > Math.min(140, panel.offsetHeight * 0.25)) closeSheet();
+        else panel.style.transform = '';
+      };
+      zone.addEventListener('pointerup', release);
+      zone.addEventListener('pointercancel', release);
+    });
+  }
+
+  // Admin-published navigation replaces the build-time links.
+  const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const here = () => location.pathname.replace(/\/+$/, '/') || '/';
+  const active = (href = '') => href.startsWith('/') && (href === '/' ? here() === '/' : here().startsWith(href));
+  const external = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
+  const renderGroups = (items) => {
+    if (!(groupsRoot instanceof HTMLElement) || !Array.isArray(items) || !items.length) return;
+    const publicItems = items.map((item) => item?.label === 'Paint Booth' && item?.href === '/paint-booth/' ? { ...item, href: 'https://paint.aetherwing.net/' } : item);
+    groupsRoot.innerHTML = ['Team', 'Race', 'Connect']
+      .map((label) => ({ label, links: publicItems.filter((item) => item?.group === label) }))
+      .filter((group) => group.links.length)
+      .map((group) => `<section class="aw-sheet__group"><h3>${esc(group.label)}</h3><ul>${group.links.map((item, index) => `<li><a href="${esc(item.href)}"${active(item.href) ? ' aria-current="page"' : ''}><small>${String(index + 1).padStart(2, '0')}</small><span>${esc(item.label)}</span>${external(item.href) ? '<b aria-label="(external)">↗</b>' : ''}</a></li>`).join('')}</ul></section>`)
+      .join('');
+  };
+  window.addEventListener('aetherwing:content', (event) => renderGroups(event.detail?.navigation));
+  if (window.__AETHERWING_CONTENT__) renderGroups(window.__AETHERWING_CONTENT__.navigation);
+
+  // Header chip + sheet card share one ticking clock.
+  const chip = document.querySelector('[data-race-chip]');
+  const card = sheet?.querySelector('[data-sheet-next]');
+  let current = null;
+  const paint = () => {
+    const now = new Date();
+    const race = current ? nextRace(current, now) : null;
+    if (!race) {
+      if (chip instanceof HTMLElement) chip.hidden = true;
+      if (card instanceof HTMLElement) card.hidden = true;
+      return;
+    }
+    const clock = compactCountdown(race, now);
+    const live = clock === 'LIVE';
+    const series = { nrrs: 'NRRS', kmart: 'KMART', sunoco: 'SUNOCO', 'uarl-d1': 'UARL D1', open: 'OPEN', iracing: 'IRACING' }[race.league] || race.leagueName;
+    if (chip instanceof HTMLAnchorElement) {
+      chip.hidden = false;
+      chip.href = race.url;
+      chip.classList.toggle('is-live', live);
+      chip.querySelector('[data-chip-series]').textContent = live ? `LIVE · ${series}` : `NEXT · ${series}`;
+      chip.querySelector('[data-chip-clock]').textContent = live ? (race.track || 'ON TRACK') : clock;
+      chip.setAttribute('aria-label', live ? `${race.leagueName} is live now at ${race.track}` : `Next race: ${race.leagueName} at ${race.track}, starts in ${clock.toLowerCase()}`);
+    }
+    if (card instanceof HTMLAnchorElement) {
+      card.hidden = false;
+      card.href = race.url;
+      card.classList.toggle('is-live', live);
+      const logo = card.querySelector('[data-next-logo]');
+      if (logo instanceof HTMLImageElement && seriesLogo[race.league] && logo.getAttribute('src') !== seriesLogo[race.league]) logo.src = seriesLogo[race.league];
+      card.querySelector('[data-next-kicker]').textContent = live ? `LIVE NOW · ${series}` : `ON TRACK NEXT · ${series}`;
+      card.querySelector('[data-next-track]').textContent = race.track;
+      card.querySelector('[data-next-when]').textContent = whenLabel(race);
+      card.querySelector('[data-next-clock]').textContent = clock;
+    }
+  };
+  subscribeFeed((feed) => { current = feed; paint(); });
+  let timer = window.setInterval(paint, 1000);
+  document.addEventListener('visibilitychange', () => {
+    window.clearInterval(timer);
+    if (!document.hidden) { paint(); timer = window.setInterval(paint, 1000); }
+  });
+
+  // Phones get the header out of the way while reading and back on scroll-up.
+  const header = document.querySelector('[data-site-header]');
+  const compact = window.matchMedia('(max-width: 980px)');
+  let lastY = window.scrollY, ticking = false;
+  const onScroll = () => {
+    ticking = false;
+    const y = window.scrollY;
+    const hide = compact.matches && y > 160 && y > lastY + 4 && !document.documentElement.classList.contains('aw-sheet-open');
+    if (hide) header?.classList.add('is-tucked');
+    else if (y < lastY - 4 || y <= 160) header?.classList.remove('is-tucked');
+    lastY = y;
+  };
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  header?.addEventListener('focusin', () => header.classList.remove('is-tucked'));
+</script>

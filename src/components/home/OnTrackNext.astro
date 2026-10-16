@@ -1,0 +1,95 @@
+---
+// Broadcast lower-third for the mobile hero: the next Aetherwing session with a
+// live countdown, both clocks, and a one-tap calendar file. Reads the shared
+// race feed that MobileNav prints, so live Admin schedule edits apply here too.
+import { scheduleEvents, results } from '../../lib/site-content.mjs';
+import { buildRaceFeed, nextRace, countdownParts, whenLabel, seriesLogo, seriesShort, pad } from '../../lib/race-clock.mjs';
+const now = new Date();
+const race = nextRace(buildRaceFeed(scheduleEvents, results, { from: new Date(now.getTime() - 3 * 86400000).toISOString().slice(0, 10) }), now);
+const parts = race ? countdownParts(race, now) : null;
+---
+<article class="aw-next" data-on-track-next aria-labelledby="aw-next-track" hidden={!race}>
+  <header class="aw-next__bug">
+    <span class="aw-next__state"><i aria-hidden="true"></i><b data-next-state>{parts?.live ? 'LIVE NOW' : 'ON TRACK NEXT'}</b></span>
+    <span data-next-series>{race ? `${seriesShort[race.league] || race.leagueName} · ${race.round}` : ''}</span>
+  </header>
+  <div class="aw-next__body">
+    <div class="aw-next__copy">
+      <h2 id="aw-next-track" data-next-track>{race?.track}</h2>
+      <p data-next-title>{race?.title && race.title !== race.track ? race.title : race?.leagueName}</p>
+    </div>
+    <span class="aw-next__logo"><img src={race ? seriesLogo[race.league] : undefined} alt={race?.leagueName || ''} data-next-logo width="72" height="54" loading="eager" decoding="async" /></span>
+  </div>
+  <div class="aw-next__clock" role="timer" aria-live="off" data-next-clock>
+    {[['d', 'Days'], ['h', 'Hrs'], ['m', 'Min'], ['s', 'Sec']].map(([key, label]) => (
+      <span><b data-unit={key}>{parts ? pad(parts[key]) : '--'}</b><small>{label}</small></span>
+    ))}
+    <strong class="aw-next__live" aria-hidden="true">Green flag</strong>
+  </div>
+  <p class="aw-next__when"><span data-next-when>{race ? whenLabel(race) : ''}</span><em data-next-local></em></p>
+  <div class="aw-next__actions">
+    <a href={race?.url || '/schedule/'} data-next-link>Race weekend <span aria-hidden="true">→</span></a>
+    <button type="button" data-next-ics>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5M12 13v5M9.5 15.5h5" /></svg>
+      Add to calendar
+    </button>
+  </div>
+</article>
+
+<script>
+  import { subscribeFeed, nextRace, countdownParts, whenLabel, localTimeLabel, calendarFile, seriesLogo, seriesShort, pad } from '../../lib/race-clock.mjs';
+
+  const card = document.querySelector('[data-on-track-next]');
+  if (card instanceof HTMLElement) {
+    let feed = [];
+    let shown = '';
+    const q = (selector) => card.querySelector(selector);
+    const units = ['d', 'h', 'm', 's'].map((key) => [key, q(`[data-unit="${key}"]`)]);
+
+    const render = () => {
+      const now = new Date();
+      const race = nextRace(feed, now);
+      card.hidden = !race;
+      if (!race) return;
+      const parts = countdownParts(race, now);
+      card.classList.toggle('is-live', parts.live);
+      q('[data-next-state]').textContent = parts.live ? 'LIVE NOW' : 'ON TRACK NEXT';
+      units.forEach(([key, node]) => { if (node) node.textContent = pad(parts[key]); });
+      const clock = q('[data-next-clock]');
+      clock?.setAttribute('aria-label', parts.live ? 'Session is live now' : `Starts in ${parts.d} days, ${parts.h} hours, ${parts.m} minutes`);
+      if (shown === race.url) return;
+      shown = race.url;
+      q('[data-next-series]').textContent = `${seriesShort[race.league] || race.leagueName} · ${race.round}`;
+      q('[data-next-track]').textContent = race.track;
+      q('[data-next-title]').textContent = race.title && race.title !== race.track ? race.title : race.leagueName;
+      q('[data-next-when]').textContent = whenLabel(race);
+      q('[data-next-local]').textContent = localTimeLabel(race);
+      const logo = q('[data-next-logo]');
+      if (logo instanceof HTMLImageElement) {
+        if (seriesLogo[race.league]) logo.src = seriesLogo[race.league];
+        logo.alt = race.leagueName;
+      }
+      const link = q('[data-next-link]');
+      if (link instanceof HTMLAnchorElement) link.href = race.url;
+    };
+
+    q('[data-next-ics]')?.addEventListener('click', () => {
+      const race = nextRace(feed, new Date());
+      if (!race) return;
+      const blob = new Blob([calendarFile(race, location.origin)], { type: 'text/calendar;charset=utf-8' });
+      const href = URL.createObjectURL(blob);
+      const anchor = Object.assign(document.createElement('a'), { href, download: `aetherwing-${race.url.split('/').filter(Boolean).pop()}.ics` });
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(href), 4000);
+    });
+
+    subscribeFeed((next) => { feed = next; shown = ''; render(); });
+    let timer = window.setInterval(render, 1000);
+    document.addEventListener('visibilitychange', () => {
+      window.clearInterval(timer);
+      if (!document.hidden) { render(); timer = window.setInterval(render, 1000); }
+    });
+  }
+</script>
