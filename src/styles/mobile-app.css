@@ -45,7 +45,7 @@
     min-height:60px;border-radius:11px;text-decoration:none;color:#B7B7BD;
     font:800 10px/1.1 var(--font-condensed);letter-spacing:.045em;
   }
-  .aw-app__tab-icon{font:700 25px/1 system-ui,sans-serif;height:29px;display:grid;place-items:center}
+  .aw-app__tab-icon{display:block;width:25px;height:29px;flex-shrink:0}
   .aw-app__tab.is-active,.aw-app__tab[aria-expanded=true]{background:#321517;color:#FF8D8D}
   .aw-app__tab:focus-visible,.aw-app__race:focus-visible,.aw-app__sheet a:focus-visible{outline:3px solid #FF8D8D;outline-offset:2px}
   .aw-app__scrim{position:fixed;inset:0;z-index:720;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
