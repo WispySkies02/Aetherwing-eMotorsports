@@ -44,6 +44,7 @@ async function call(handler,body,role='admin',method=body?'POST':'GET') {
   return {status:response.status,body:await response.json()};
 }
 const paint={slug:'fixture-paint',sponsor:'Fixture Paint',leagues:['nrrs'],leagueName:'NRRS',driver:'Hailey',username:'@Aokikoto',number:'32',manufacturer:'Toyota',body:'Camry',image:'https://example.test/paint.png',schemeId:'123456789',tags:[],special:['patriotic','crownjewel'],scrAffiliate:true,dash4Cash:true,chase:true,throwback:true,specialPaint:true};
+const baselinePaintCount=(await call(paintData,undefined,null)).body.paints.length;
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},null)).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'fake-role')).status,403);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint},'expired')).status,403);
@@ -57,10 +58,10 @@ assert.equal(response.body.registry.drafts[0].throwback,true);assert.ok(response
 assert.equal(response.body.registry.drafts[0].specialPaint,true);assert.ok(response.body.registry.drafts[0].special.includes('special'));
 assert.ok(response.body.registry.drafts[0].special.includes('patriotic'));assert.ok(response.body.registry.drafts[0].special.includes('crownjewel'));
 assert.equal((await call(paintAdmin)).body.registry.drafts.length,1);
-assert.equal((await call(paintData,undefined,null)).body.paints.length,35);
+assert.equal((await call(paintData,undefined,null)).body.paints.length,baselinePaintCount);
 response=await call(paintAdmin,{action:'savePaint',paint,priorSlug:paint.slug,status:'published'},'paint-admin');
 assert.equal(response.status,200);
-assert.equal((await call(paintData,undefined,null)).body.paints.length,36);
+assert.equal((await call(paintData,undefined,null)).body.paints.length,baselinePaintCount+1);
 assert.equal((await call(paintData,undefined,null)).body.paints.find((item)=>item.slug===paint.slug).scrAffiliate,true);
 assert.equal((await call(paintAdmin,{action:'savePaint',paint})).status,409);
 assert.equal((await call(paintAdmin,{action:'setFeature',feature:{slugs:[paint.slug,'d1-ironmouse'],series:'NRRS',race:'Fixture 400',track:'Fixture Raceway',date:'2099-01-01'}})).status,200);
@@ -68,14 +69,14 @@ assert.deepEqual((await call(paintData,undefined,null)).body.feature.slugs,[pain
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...paint,slug:'fixture-renamed'},priorSlug:paint.slug})).status,200);
 assert.deepEqual((await call(paintData,undefined,null)).body.feature.slugs,['fixture-renamed','d1-ironmouse']);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:'fixture-renamed'})).status,200);
-response=await call(paintData,undefined,null);assert.equal(response.body.paints.length,35);assert.deepEqual(response.body.feature.slugs,['d1-ironmouse']);
+response=await call(paintData,undefined,null);assert.equal(response.body.paints.length,baselinePaintCount);assert.deepEqual(response.body.feature.slugs,['d1-ironmouse']);
 assert.equal((await call(paintAdmin,{action:'clearFeature'})).status,200);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:'fixture-renamed',archived:false})).status,200);
 const seedPaint=require('../data/paint-seed.json').paints.find((item)=>item.slug==='d1-ironmouse');
 const editedSeed={...seedPaint,sponsor:'Ironmouse Admin Edit',leagueName:'NRRS'};
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:editedSeed,priorSlug:seedPaint.slug,status:'published'})).status,200);
 response=await call(paintData,undefined,null);
-assert.equal(response.body.paints.length,36);
+assert.equal(response.body.paints.length,baselinePaintCount+1);
 assert.equal(response.body.paints.find((item)=>item.slug===seedPaint.slug).sponsor,'Ironmouse Admin Edit');
 assert.equal((await call(paintAdmin,{action:'savePaint',paint:{...editedSeed,slug:'renamed-seed'},priorSlug:seedPaint.slug,status:'published'})).status,400);
 assert.equal((await call(paintAdmin,{action:'archivePaint',slug:seedPaint.slug})).status,400);

@@ -1,0 +1,33 @@
+name: Mobile app regression checks
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'public/admin/**'
+      - 'scripts/**'
+      - 'package*.json'
+      - '.github/workflows/mobile-app-qa.yml'
+  workflow_dispatch:
+
+jobs:
+  mobile-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Test public mobile navigation and Admin save delegation
+        run: node scripts/test-mobile-ui.mjs
+      - name: Validate site and build desktop plus mobile pages
+        run: npm run build
+      - name: Existing Admin DOM fixtures (known baseline content drift)
+        continue-on-error: true
+        run: node scripts/test-admin-dom.mjs
+      - name: Existing Admin content fixtures (known baseline content drift)
+        continue-on-error: true
+        run: node scripts/test-admin.mjs

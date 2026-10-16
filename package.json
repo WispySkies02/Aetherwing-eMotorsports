@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-rebuild.mjs",
-    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs",
+    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-mobile-ui.mjs",
     "build": "npm run validate && node scripts/prepare-admin.mjs && node scripts/sync-admin-content.mjs && astro build",
     "preview": "astro preview"
   },

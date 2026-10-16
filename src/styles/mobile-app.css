@@ -1,0 +1,169 @@
+/* Aetherwing Mobile 2.0 — public-site app shell.
+   Desktop (>980px) is intentionally untouched. Seasonal takeovers still work. */
+.aw-app{display:none}
+@media(max-width:980px){
+  :root{
+    --aw-mobile-red:#D50102;
+    --aw-mobile-white:#F7F7F7;
+    --aw-mobile-silver:#A5A5A8;
+    --aw-mobile-gunmetal:#414247;
+    --aw-mobile-black:#0A0B0D;
+    --blue:#D50102;
+    --gold:#A5A5A8;
+    --red:#D50102;
+    --aw-blue:#D50102;
+    --aw-gold:#A5A5A8;
+    --gutter:clamp(14px,4vw,24px);
+  }
+  html{scroll-padding-top:78px}
+  body{min-width:320px;overflow-x:clip;padding-bottom:calc(78px + env(safe-area-inset-bottom,0px));background:#0A0B0D}
+  body:before{opacity:.24}
+  .site-header,.mobile-scrim,.mobile-menu{display:none!important}
+  .aw-app{display:contents}
+  .aw-app__header{
+    position:sticky;top:0;z-index:405;display:flex;align-items:center;gap:10px;
+    height:68px;padding:9px max(14px,env(safe-area-inset-left,0px));
+    background:rgba(10,11,13,.97);border-bottom:2px solid #D50102;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);backdrop-filter:blur(16px);
+  }
+  .aw-app__logo{width:77px;height:46px;display:flex;align-items:center;flex:0 0 77px;overflow:hidden}
+  .aw-app__logo img{width:100%;height:100%;object-fit:contain;object-position:center}
+  .aw-app__page{min-width:0;display:grid;gap:2px;flex:1}
+  .aw-app__page small{font:800 9px/1.25 var(--font-condensed);letter-spacing:.13em;color:#A5A5A8;text-transform:uppercase}
+  .aw-app__page strong{font:900 clamp(17px,4.5vw,23px)/1.05 var(--font-condensed);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#F7F7F7}
+  .aw-app__race{height:40px;min-width:42px;display:grid;place-items:center;text-decoration:none;background:#211315;border:1px solid #723237;border-radius:11px;font-size:19px}
+  .aw-app__nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:710;
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:start;
+    height:calc(71px + env(safe-area-inset-bottom,0px));
+    padding:5px max(7px,env(safe-area-inset-left,0px)) env(safe-area-inset-bottom,0px) max(7px,env(safe-area-inset-right,0px));
+    background:rgba(14,15,18,.985);border-top:1px solid #414247;box-shadow:0 -12px 32px rgba(0,0,0,.5);
+    backdrop-filter:blur(18px);
+  }
+  .aw-app__tab{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;
+    min-height:60px;border-radius:11px;text-decoration:none;color:#B7B7BD;
+    font:800 10px/1.1 var(--font-condensed);letter-spacing:.045em;
+  }
+  .aw-app__tab-icon{display:block;width:25px;height:29px;flex-shrink:0}
+  .aw-app__tab.is-active,.aw-app__tab[aria-expanded=true]{background:#321517;color:#FF8D8D}
+  .aw-app__tab:focus-visible,.aw-app__race:focus-visible,.aw-app__sheet a:focus-visible{outline:3px solid #FF8D8D;outline-offset:2px}
+  .aw-app__scrim{position:fixed;inset:0;z-index:720;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
+  .aw-app__sheet{
+    position:fixed;left:0;right:0;bottom:calc(71px + env(safe-area-inset-bottom,0px));z-index:725;
+    max-height:min(70dvh,690px);overflow:auto;overscroll-behavior:contain;
+    padding:8px 16px 20px;background:#131416;border:1px solid #414247;border-bottom:0;
+    border-radius:20px 20px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,.6);
+  }
+  .aw-app__sheet-grip{height:4px;width:44px;margin:0 auto 15px;background:#6C6C71;border-radius:10px}
+  .aw-app__sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+  .aw-app__sheet-head small{font:800 10px/1 var(--font-mono);letter-spacing:.12em;color:#F08B8B}
+  .aw-app__sheet-head h2{margin:6px 0 0;color:#F7F7F7;font:900 28px/1 var(--font-condensed);text-transform:uppercase}
+  .aw-app__sheet-head button{min-height:44px;min-width:44px;color:#F7F7F7;background:#27282D;border:1px solid #414247;border-radius:12px;font-size:29px}
+  .aw-app__sheet-links{display:grid;gap:7px}
+  .aw-app__sheet-links a{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    min-height:51px;padding:12px 15px;text-decoration:none;background:#1D1E22;
+    border:1px solid #414247;border-radius:11px;color:#F7F7F7;
+    font:800 15px/1.1 var(--font-condensed);letter-spacing:.025em;
+  }
+  .aw-app__sheet-links a b{color:#FF8D8D;font-size:19px}
+  html.aw-app-open,html.aw-app-open body{overflow:hidden}
+  /* Consistent mobile card and reading rhythm across the existing routes. */
+  main{min-width:0;overflow:clip}
+  main .wrap,main .shell{width:calc(100% - 2*var(--gutter));max-width:100%}
+  main :is(.section,.page-section){scroll-margin-top:82px}
+  main :is(.section-head,.home-programs__head){gap:12px;flex-wrap:wrap;align-items:flex-start}
+  main :is(.section-title,.page-intro h1){max-width:100%;overflow-wrap:break-word}
+  main :is(.section-head>a,.home-programs__head>a){min-height:44px;display:inline-flex;align-items:center}
+  main :is(button,input,select,textarea){max-width:100%}
+  main :is(.card,.result-card,.news-card,.event-card){min-width:0}
+  main :is(.page-intro,.page-hero){border-bottom-color:#414247}
+  main :is(.eyebrow,.kicker){letter-spacing:.11em}
+  main :is(.btn,.btn--ghost){min-height:44px;align-items:center;justify-content:center}
+  main :is(.news-article,.news-article__body){overflow-wrap:anywhere}
+  main :is(.news-article__body img,.news-article__body video,.news-article__body iframe){max-width:100%}
+  main :is(.news-article__body table,.standings-table,table){max-width:100%}
+  main :is(.home-hero,.home-programs,.home-battle,.home-people,.home-after,.home-story,.home-sponsors){scroll-margin-top:84px}
+  .site-footer{border-top:3px solid #D50102}
+  .site-footer .footer-grid{gap:1.2rem}
+  /* Homepage: broadcast feature header, then compact app cards. */
+  .home-hero{min-height:0!important;border-bottom:2px solid #D50102!important}
+  .home-hero__inner{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:33px 0 27px!important;gap:20px!important}
+  .home-hero h1{font-size:clamp(64px,15vw,108px)!important;line-height:.75!important;letter-spacing:-.065em!important;margin:20px 0!important}
+  .home-hero h1 em{color:#F7F7F7;text-shadow:3px 3px 0 #D50102}
+  .home-hero__lead{font-size:clamp(17px,5vw,25px)!important;line-height:1.25}
+  .home-hero__actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px!important;gap:8px}
+  .home-hero__actions .btn{padding:12px 8px!important;min-width:0;text-align:center;font-size:12px}
+  .home-hero aside{min-height:120px!important;padding:15px!important;transform:none!important;border:1px solid #414247!important;border-top:3px solid #D50102!important;border-radius:13px;box-shadow:none!important}
+  .home-hero aside img{max-height:94px;object-fit:contain}
+  .home-programs__rail{display:flex;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .home-programs__rail>a{scroll-snap-align:start;min-width:min(76vw,295px)}
+  .home-battle__grid,.home-people__grid,.home-after__card{min-width:0}
+  .home-people__tile,.home-story__feature,.home-after__card{border-radius:13px}
+  .home-people__tile{overflow:hidden}
+  .home-story__feature{padding:clamp(18px,5vw,28px)}
+  .home-faith{padding-bottom:20px}
+  @media(max-width:600px){
+    main :is(.news-article__hero-grid,.home-battle__grid,.home-after__card){grid-template-columns:minmax(0,1fr)!important}
+    .home-people__grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .home-people__tile{padding:12px!important}
+  }
+}
+@media(max-width:359px){
+  .aw-app__logo{width:56px;flex-basis:56px}
+  .aw-app__page strong{font-size:16px}
+  .aw-app__tab{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .aw-app__sheet,.aw-app__nav{scroll-behavior:auto}
+}
+
+/* Consistent app-style treatments for interior pages; never active on desktop. */
+@media(max-width:980px){
+  /* Standings, schedules, results, and program switchers stay scrollable instead of clipping content. */
+  :is(.championship-filter,.aw-calendar__filters,.aw-lineup__filters,.partner-select){
+    max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:5px;
+  }
+  :is(.championship-filter,.aw-calendar__filters,.aw-lineup__filters,.partner-select) button{
+    min-height:44px;flex-shrink:0;border-radius:10px;
+  }
+  .standings-board,.standings-chase-panel,.standings-context,.results-list>article,.story-panel,.profile-stat,.profile-assignment{
+    min-width:0;border-radius:13px;overflow-wrap:anywhere;
+  }
+  .standings-board{border-color:#414247;background:rgba(19,20,24,.94)}
+  .standings-context{padding-inline:clamp(12px,3vw,22px)}
+  .standings-cutoff{border-color:#D50102!important}
+  .results-list{display:grid;gap:11px}
+  .results-list>article{border:1px solid #414247;background:#191A1E;padding:clamp(15px,4vw,22px)}
+  /* Team Wire: readable one-column feed and comfortable long-form stories. */
+  .news-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:13px}
+  .news-grid .news-tile{min-width:0;border:1px solid #414247;border-radius:15px;padding:clamp(17px,5vw,28px)}
+  .news-tile h2{overflow-wrap:break-word;line-height:1.12}
+  .news-article__hero{padding-top:23px}
+  .news-article__headline{font-size:clamp(33px,9vw,62px);line-height:.98;overflow-wrap:break-word}
+  .news-article__summary{font-size:clamp(15px,4vw,18px);line-height:1.6}
+  .news-article__body p{line-height:1.7}
+  .news-article__back,.bell-driver-hero__back{display:inline-flex;align-items:center;min-height:44px}
+  .news-article :is(.news-metrics,.news-race-strip,.news-stat-card,.news-callout){max-width:100%;min-width:0}
+  .news-article__body :is(blockquote,.news-pullquote){max-width:100%;overflow-wrap:break-word}
+  /* Driver pages and profile cards keep all custom artwork intact. */
+  .drivers-page,.profile-hero,.bell-driver-hero,.profile-hero__body{min-width:0;max-width:100%}
+  .bell-driver-hero__top{gap:12px;flex-wrap:wrap}
+  .bell-driver-hero__identity,.bell-driver-hero__car{min-width:0}
+  .bell-driver-hero__script{max-width:100%;overflow-wrap:anywhere}
+  .aw-lineup{max-width:100%}
+  .story-grid,.program-grid{gap:11px}
+  .program-card,.story-panel{border-color:#414247}
+  .program-card__logo img{object-fit:contain}
+  .team-partners,.partner-logos{max-width:100%}
+  .team-partner{border-radius:12px}
+  /* Multi-section pages stay tap friendly even at narrow phone widths. */
+  :is(.race-result-table,.standings-board__rows,.news-race-strip__grid){max-width:100%}
+  .race-result-row{min-width:0}
+  .page-intro{padding-block:clamp(23px,6vw,38px)}
+  .page-intro h1{font-size:clamp(36px,10vw,63px)!important;line-height:1!important}
+  .page-intro .btn{margin-top:12px}
+  .site-footer .footnote{gap:8px;flex-wrap:wrap;padding-bottom:20px}
+}
