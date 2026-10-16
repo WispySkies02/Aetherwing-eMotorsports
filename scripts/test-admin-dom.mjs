@@ -1,14 +1,18 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import { JSDOM } from 'jsdom';
 const root=new URL('../',import.meta.url);
+// Match prepare-admin.mjs without requiring a build to rewrite tracked seeds.
+const {seeds}=createRequire(import.meta.url)('../netlify/lib/_content.cjs');
+const adminSeeds=seeds();
 const dom=new JSDOM(fs.readFileSync(new URL('public/admin/index.html',root),'utf8'),{url:'http://localhost/admin/',runScripts:'outside-only',pretendToBeVisual:true});
 const {window}=dom;
 window.structuredClone=structuredClone;
 window.matchMedia=()=>({matches:true});
 window.HTMLElement.prototype.scrollIntoView=()=>{};
 window.confirm=()=>true;
-window.fetch=async(url)=>new Response(fs.readFileSync(new URL(`public${url}`,root),'utf8'),{headers:{'content-type':'application/json'}});
+window.fetch=async(url)=>String(url)==='/data/site-admin-seed.json'?Response.json(adminSeeds):new Response(fs.readFileSync(new URL(`public${url}`,root),'utf8'),{headers:{'content-type':'application/json'}});
 for(const script of ['paint-ops-admin.js','content-admin.js'])window.eval(fs.readFileSync(new URL(`public/admin/${script}`,root),'utf8'));
 const $=(s)=>window.document.querySelector(s);
 const tick=()=>new Promise((resolve)=>setTimeout(resolve,20));
@@ -42,7 +46,12 @@ saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));assert.eq
 click('[data-admin-dataset="roster-profiles"]');await tick();input(['name'],'DOM TEST driver');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts['roster-profiles'][0].name,'DOM TEST driver');
 click('[data-admin-dataset="drivers"]');await tick();assert.ok($('[data-number-image-upload]'),'Driver League Assignments need a number art file picker');input(['numberImage'],'https://example.test/number-art.png');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.drivers[0].numberImage,'https://example.test/number-art.png','Driver League Assignments should save reusable number artwork');
 click('[data-admin-dataset="driver-portfolios"]');await tick();assert.equal($('[data-content-add]').textContent,'Add driver portfolio');assert.ok($('[data-portfolio-logo-upload]'),'Portfolio brands should accept logo file uploads');input(['brands',0,'logo'],'https://example.test/brand-logo.png');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts['driver-portfolios'][0].brands[0].logo,'https://example.test/brand-logo.png');click('[data-content-add]');const portfolioId=Array.from(window.document.querySelectorAll('[data-field-path]')).find((el)=>el.dataset.fieldPath==='["id"]');assert.ok(/^driver-/.test(portfolioId?.value||''),'New driver portfolio should receive a stable ID');
-click('[data-admin-dataset="news"]');await tick();input(['sections',0,'heading'],'DOM TEST story section');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.news[0].sections[0].heading,'DOM TEST story section');
+click('[data-admin-dataset="news"]');await tick();
+// The current lead story has no sections. Add one through the editor instead
+// of depending on a particular published story's nested content.
+const addSection=Array.from(window.document.querySelectorAll('[data-array-add]')).find((button)=>button.dataset.arrayAdd==='["sections"]');
+assert.ok(addSection,'Stories must support adding a section to an empty list');addSection.click();
+input(['sections',0,'heading'],'DOM TEST story section');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.news[0].sections[0].heading,'DOM TEST story section');
 // Standings rows support drag/reorder controls and explicit Aetherwing highlighting.
 click('[data-admin-dataset="standings"]');await tick();
 assert.ok($('[data-standing-drag]'),'Standings rows should be draggable');

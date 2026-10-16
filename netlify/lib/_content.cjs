@@ -167,10 +167,15 @@ function validate(key, data, registry={}) {
       if(row.entries.filter((entry)=>entry.featuredDriver).length!==1)return `Result ${index+1}: choose exactly one featured driver.`;
       const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seeds().drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
       const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
+      // Published history retains the identity recorded for that specific race.
+      // Roster exits/number changes must not make an unchanged official result
+      // unpublishable. This does not authorize stale assignments in new races.
+      const historical=[...seed,...(registry.published?.results||[])].filter((race)=>race.scheduleId===row.scheduleId&&race.league===row.league&&race.date===row.date);
       for(const entry of row.entries){
         const assignment=entry.assignmentId?eligible.get(entry.assignmentId):null;
-        if(entry.assignmentId&&!assignment)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
-        if(assignment&&(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||'')))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
+        const recorded=entry.assignmentId&&historical.some((race)=>race.entries?.some((prior)=>prior.assignmentId===entry.assignmentId&&prior.driver===entry.driver&&String(prior.number)===String(entry.number)));
+        if(entry.assignmentId&&!assignment&&!recorded)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
+        if(assignment&&!recorded&&(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||'')))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
         if(!assignment&&!String(entry.driver||'').trim())return `Result ${index+1}: external race participants need a driver name.`;
         for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!Number.isFinite(entry[field])||entry[field]<0)return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
       }
