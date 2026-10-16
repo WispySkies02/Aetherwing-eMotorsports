@@ -63,7 +63,7 @@
     border-top:1px solid #414247;background:rgba(12,13,16,.985);box-shadow:0 -11px 29px #0009;
   }
   .aw-admin-mobile-nav button{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;min-width:0;min-height:60px;padding:6px 2px;border:0;border-radius:10px;background:none;color:#B9B9BE;font:800 10px/1 'Saira Condensed',sans-serif;cursor:pointer}
-  .aw-admin-mobile-nav button .icon{font:700 25px/1 system-ui,sans-serif}
+  .aw-admin-mobile-nav button .icon{display:block;width:25px;height:27px;flex-shrink:0}
   .aw-admin-mobile-nav button.is-active,.aw-admin-mobile-nav button[aria-expanded=true]{background:#341517;color:#FF9292}
   .aw-admin-mobile-overlay{display:block;position:fixed;inset:0;z-index:720;background:#000b;backdrop-filter:blur(2px)}
   .aw-admin-mobile-sheet{
