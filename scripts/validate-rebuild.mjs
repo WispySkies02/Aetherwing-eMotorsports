@@ -684,3 +684,23 @@ console.log('Driver file verified: Hailey broadcast branding, generic driver fal
   for(const accent of ['--bell-blue:#4a6fff','--bell-pride-blue:#5bcffa','--bell-pink:#f5a9b8','--bell-pride-white:#f6f8fa','.bell-driver-hero__signature-slot:after','.bell-driver-hero__pride-note'])if(!style.includes(accent))throw Error('Subtle Hailey profile identity accent missing: '+accent);
 }
 console.log('Hailey identity accents verified: subtle, profile-only, and compatible with original broadcast layout.');
+
+// Main-site Admin durability + NRRS Chase cutoff exported after P5.
+{
+  const dataLayer=readFileSync('netlify/lib/_content.cjs','utf8');
+  const adminHandler=readFileSync('netlify/lib/_site-admin.cjs','utf8');
+  const adminUi=readFileSync('public/admin/content-admin.js','utf8');
+  const bundled=JSON.parse(readFileSync('src/data/standings.json','utf8'));
+  const adminSeed=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));
+  for(const boards of [bundled,adminSeed.standings]){
+    const nrrs=boards.find(board=>board.id==='nrrs');
+    if(nrrs?.cutoffAfter!==5)throw Error('NRRS default Chase cutoff must follow P5, not P6.');
+    const kmart=boards.find(board=>board.id==='kmart');
+    if(kmart?.cutoffAfter!==6)throw Error('Kmart cutoff must remain after P6.');
+  }
+  if(!dataLayer.includes("result?.modified !== true")||!dataLayer.includes("result.etag.trim()")||!dataLayer.includes("confirmed.etag !== result.etag")||!dataLayer.includes("JSON.stringify(confirmed.data) !== JSON.stringify(registry)"))throw Error('Admin writes must verify durable storage readback.');
+  if(!adminHandler.includes('STORAGE_WRITE_UNVERIFIED'))throw Error('Admin must report unverified storage writes as failures.');
+  if(!adminUi.includes("function standingsPngCutoff(board)")||!adminUi.includes("?5:Number(board?.cutoffAfter||0)")||!adminUi.includes("i===standingsPngCutoff(board)"))throw Error('NRRS PNG cutoff must remain at P5 even for older published boards.');
+  if(!adminUi.includes('verifyPublicRevision(expectedRevision,dataset,publishedData)')||!adminUi.includes('public site is NOT confirmed updated'))throw Error('Admin must check the live content feed after publishing.');
+}
+console.log('Main-site Admin verified: durable storage writes, public-feed checks, and NRRS P5 PNG cutoff.');
