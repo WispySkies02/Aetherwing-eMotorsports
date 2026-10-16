@@ -85,6 +85,25 @@ assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-paint-ops')).fea
 click('[data-tab="library"]');
 const existingScrEdit=$('[data-edit-paint="kmart-petsmart"]');assert.ok(existingScrEdit,'Existing SCR paint should be available to edit');existingScrEdit.click();
 assert.equal(form.elements.namedItem('scrAffiliate').checked,true,'Existing StarClutch classification should hydrate the SCR Affiliate checkbox');
+// A successful Standings publish must reset the unsaved guard. The browser may
+// later normalize a generated control without an actual user input event;
+// tab changes must not interpret that as a fresh edit.
+click('[data-admin-dataset="standings"]');await tick();
+input(['rows',0,'points'],3210);click('[data-content-publish]');await tick();
+const publishedStandings=JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).published.standings;
+assert.equal(publishedStandings[0].rows[0].points,3210,'Standings points should publish before switching tabs');
+const untouchedControl=Array.from(window.document.querySelectorAll('[data-field-path]')).find(el=>el.dataset.fieldPath==='["rows",0,"points"]');
+assert.ok(untouchedControl);
+untouchedControl.value='3211'; // Simulate a browser-only value normalization; no input/change event.
+const pendingPrompts=[],beforeConfirm=window.confirm;
+window.confirm=(message)=>{pendingPrompts.push(String(message));return true;};
+click('[data-admin-dataset="wins"]');await tick();
+assert.equal(pendingPrompts.filter(message=>message.includes('Leave unsaved changes in this tab?')).length,0,'A just-published Standings page must not warn about phantom unsaved changes');
+click('[data-admin-dataset="standings"]');await tick();
+input(['rows',0,'points'],3212);
+click('[data-admin-dataset="wins"]');await tick();
+assert.equal(pendingPrompts.filter(message=>message.includes('Leave unsaved changes in this tab?')).length,1,'A real unsaved standings edit must still prompt before changing tabs');
+window.confirm=beforeConfirm;
 // Recovery/invite login event must never dismiss the password dialog automatically.
 const recovery=new JSDOM(fs.readFileSync(new URL('public/admin/index.html',root),'utf8'),{url:'https://aetherwing.net/admin/#recovery_token=fixture',runScripts:'outside-only'});
 const w=recovery.window,callbacks={};let closeCount=0;
