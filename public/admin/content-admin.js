@@ -739,6 +739,29 @@
     if (!response.ok) throw new Error(body.error || `Site editor returned ${response.status}.`);
     return body;
   }
+  async function verifyPublicRevision(expectedRevision,dataset,publishedData) {
+    if(local)return { verified:true, local:true };
+    const exactSections=new Set(['standings','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles']);
+    let problem='The public content feed has not confirmed this publication.';
+    for(let attempt=0;attempt<3;attempt++){
+      try {
+        const url='/api/site-content?admin_verify='+encodeURIComponent(expectedRevision)+'-'+attempt;
+        const response=await fetch(url,{cache:'no-store',headers:{'cache-control':'no-cache'},signal:AbortSignal.timeout(6000)});
+        if(!response.ok){problem='The public content feed returned HTTP '+response.status+'.';}
+        else {
+          const live=await response.json();
+          if(Number(live?.revision)>=Number(expectedRevision)&&Object.prototype.hasOwnProperty.call(live?.datasets||{},dataset)){
+            if(!exactSections.has(dataset)||JSON.stringify(live.datasets[dataset])===JSON.stringify(publishedData)){
+              return { verified:true, revision:live.revision };
+            }
+            problem='The public feed has revision '+live.revision+' but its '+dataset+' data differs from what Admin saved.';
+          }else problem='The public feed has not reached revision '+expectedRevision+' for '+dataset+'.';
+        }
+      }catch(error){problem='The public content feed could not be checked ('+(error?.message||'network error')+').';}
+      if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
+    }
+    return { verified:false, message:problem };
+  }
   async function load() {
     if (!authorized()) throw new Error('Main-site editors require the admin role.');
     if (local) {
@@ -1415,7 +1438,10 @@
       } else dirty=false;
       if(name==='publish') {
         const publication=response.publication;
-        if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
+        const liveCheck=await verifyPublicRevision(publication?.revision||registry.revision,key,registry.published[key]);
+        if(!liveCheck.verified){
+          status('Saved revision '+(publication?.revision||registry.revision)+' to Admin storage, but the public site is NOT confirmed updated. '+liveCheck.message+' Check /api/site-content and Netlify function/deploy logs before trying another edit.');
+        }else if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
         else if(key==='news') status(publication?.queued
           ? `Published revision ${publication.revision}. Team Wire article edits are live immediately; a rebuild is also queued for static HTML and social metadata.`
           : `Published revision ${publication?.revision||registry.revision}. Team Wire article edits are live immediately. The static HTML/social metadata will catch up on the next deploy${publication?.message?`: ${publication.message}`:'.'}`);
@@ -1443,7 +1469,12 @@
       if(!count)return $('[data-admin-publish-status]').textContent='There are no saved drafts to publish.';
       if(!confirm(`Publish all ${count} saved section draft${count===1?'':'s'} in one revision and queue one site rebuild?`))return;
       const result=await api('publishAll');registry=result.registry;updateControlCenterStatus(result.publication);
-      $('[data-admin-publish-status]').textContent=result.publication?.queued
+      const publishedSections=result.publication?.datasets||[];
+      const checks=await Promise.all(publishedSections.map(section=>verifyPublicRevision(result.publication?.revision||registry.revision,section,registry.published?.[section])));
+      const failed=checks.find(check=>!check.verified);
+      $('[data-admin-publish-status]').textContent=failed
+        ? 'Saved all drafts at revision '+(result.publication?.revision||registry.revision)+', but the public site is NOT confirmed updated. '+failed.message
+        : result.publication?.queued
         ? `Published revision ${result.publication.revision}. All saved drafts are now public and one rebuild is queued.`
         : `Published revision ${result.publication?.revision||registry.revision}. Data is public, but the rebuild was not queued: ${result.publication?.message||'retry the site build.'}`;
     } catch(error) { $('[data-admin-publish-status]').textContent=error.message; }
