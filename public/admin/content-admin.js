@@ -551,12 +551,19 @@
     const entries=await Promise.all(Object.entries(standingsManufacturerIconPaths).map(async ([key,src])=>[key,await loadCanvasImage(src)]));
     return Object.fromEntries(entries);
   }
+  function standingsPngCutoff(board){
+    // NRRS graphics have a five-driver Chase. Older saved Admin snapshots may
+    // still contain the historical P6 cutoff; graphics must not inherit it.
+    return board?.league==='nrrs'||board?.id==='nrrs'?5:Number(board?.cutoffAfter||0);
+  }
   function isChaseDriver(board,row,index){
     if(board?.chaseActive!==true)return false;
     const explicit=String(row?.chaseStatus||'').trim().toUpperCase();
-    if(explicit==='CHASE')return true;
     if(explicit.includes('NOT IN CHASE')||explicit.includes('ELIMINATED'))return false;
-    const cutoff=Number(board?.cutoffAfter||0);return cutoff>0&&index<cutoff&&row?.chaseEligible!==false;
+    const cutoff=standingsPngCutoff(board);
+    if(board?.league==='nrrs'||board?.id==='nrrs')return index<cutoff&&row?.chaseEligible!==false;
+    if(explicit==='CHASE')return true;
+    return cutoff>0&&index<cutoff&&row?.chaseEligible!==false;
   }
   function drawContained(ctx,image,x,y,width,height){
     if(!image?.naturalWidth||!image?.naturalHeight)return;
@@ -576,7 +583,7 @@
     const raw=String(value).trim();let numeric=Number(raw.replace(/^\+/,''));if(/^▲/.test(raw))numeric=Number(raw.replace(/[^0-9]/g,''));if(/^▼/.test(raw))numeric=-Number(raw.replace(/[^0-9]/g,''));if(!Number.isFinite(numeric)||numeric===0)return {value:0,label:'—',kind:'neutral'};return numeric>0?{value:numeric,label:`▲ ${numeric}`,kind:'up'}:{value:numeric,label:`▼ ${Math.abs(numeric)}`,kind:'down'};
   }
   function paintStandingRow(ctx,row,x,y,w,h,index,board,manufacturerIcons={}){
-    const chaseDriver=isChaseDriver(board,row,index),outsideCut=Number(board.cutoffAfter)>0&&index>=Number(board.cutoffAfter),manufacturer=standingManufacturer(board,row),manufacturerKey=standingManufacturerIconKey(board,manufacturer),manufacturerImage=manufacturerIcons[manufacturerKey]||null;
+    const chaseDriver=isChaseDriver(board,row,index),cutoff=standingsPngCutoff(board),outsideCut=cutoff>0&&index>=cutoff,manufacturer=standingManufacturer(board,row),manufacturerKey=standingManufacturerIconKey(board,manufacturer),manufacturerImage=manufacturerIcons[manufacturerKey]||null;
     ctx.save();roundedRect(ctx,x,y,w,h-6,8);ctx.fillStyle=chaseDriver?'rgba(65,54,27,.96)':outsideCut?'rgba(10,12,14,.92)':'rgba(15,19,23,.94)';ctx.fill();
     if(chaseDriver){ctx.fillStyle='#e0c891';ctx.fillRect(x,y,7,h-6);ctx.strokeStyle='rgba(224,200,145,.48)';ctx.lineWidth=1.5;roundedRect(ctx,x+.75,y+.75,w-1.5,h-7.5,8);ctx.stroke();}
     const pad=22,posX=x+pad,moveX=x+86,numX=x+154,iconX=x+232,iconW=70,iconH=36,nameX=x+(manufacturerImage?318:235),pointsX=x+w-190,deltaX=x+w-24,midY=y+(h-6)/2,movement=standingMovement(row.positionChange);
@@ -631,7 +638,7 @@
       const x=margin+col*(colWidth+columnGap),start=col*rowsPerColumn,end=Math.min(rows.length,start+rowsPerColumn);
       for(let i=start;i<end;i++){
         const local=i-start,y=bodyY+local*rowHeight;
-        if(Number(board.cutoffAfter)>0&&i===Number(board.cutoffAfter)){
+        if(standingsPngCutoff(board)>0&&i===standingsPngCutoff(board)){
           ctx.save();ctx.strokeStyle=accentColor;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-4);ctx.lineTo(x+colWidth,y-4);ctx.stroke();ctx.fillStyle=accentColor;ctx.font='900 13px Arial, sans-serif';ctx.textAlign='right';ctx.fillText(String(board.cutoffLabel||'CHASE CUTOFF').toUpperCase(),x+colWidth,y-11);ctx.restore();
         }
         paintStandingRow(ctx,rows[i],x,y,colWidth,rowHeight,i,board,manufacturerIcons);
@@ -731,6 +738,29 @@
     const body=await response.json().catch(()=>({}));
     if (!response.ok) throw new Error(body.error || `Site editor returned ${response.status}.`);
     return body;
+  }
+  async function verifyPublicRevision(expectedRevision,dataset,publishedData) {
+    if(local)return { verified:true, local:true };
+    const exactSections=new Set(['standings','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles']);
+    let problem='The public content feed has not confirmed this publication.';
+    for(let attempt=0;attempt<3;attempt++){
+      try {
+        const url='/api/site-content?admin_verify='+encodeURIComponent(expectedRevision)+'-'+attempt;
+        const response=await fetch(url,{cache:'no-store',headers:{'cache-control':'no-cache'},signal:AbortSignal.timeout(6000)});
+        if(!response.ok){problem='The public content feed returned HTTP '+response.status+'.';}
+        else {
+          const live=await response.json();
+          if(Number(live?.revision)>=Number(expectedRevision)&&Object.prototype.hasOwnProperty.call(live?.datasets||{},dataset)){
+            if(!exactSections.has(dataset)||JSON.stringify(live.datasets[dataset])===JSON.stringify(publishedData)){
+              return { verified:true, revision:live.revision };
+            }
+            problem='The public feed has revision '+live.revision+' but its '+dataset+' data differs from what Admin saved.';
+          }else problem='The public feed has not reached revision '+expectedRevision+' for '+dataset+'.';
+        }
+      }catch(error){problem='The public content feed could not be checked ('+(error?.message||'network error')+').';}
+      if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
+    }
+    return { verified:false, message:problem };
   }
   async function load() {
     if (!authorized()) throw new Error('Main-site editors require the admin role.');
@@ -1408,7 +1438,10 @@
       } else dirty=false;
       if(name==='publish') {
         const publication=response.publication;
-        if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
+        const liveCheck=await verifyPublicRevision(publication?.revision||registry.revision,key,registry.published[key]);
+        if(!liveCheck.verified){
+          status('Saved revision '+(publication?.revision||registry.revision)+' to Admin storage, but the public site is NOT confirmed updated. '+liveCheck.message+' Check /api/site-content and Netlify function/deploy logs before trying another edit.');
+        }else if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
         else if(key==='news') status(publication?.queued
           ? `Published revision ${publication.revision}. Team Wire article edits are live immediately; a rebuild is also queued for static HTML and social metadata.`
           : `Published revision ${publication?.revision||registry.revision}. Team Wire article edits are live immediately. The static HTML/social metadata will catch up on the next deploy${publication?.message?`: ${publication.message}`:'.'}`);
@@ -1436,7 +1469,12 @@
       if(!count)return $('[data-admin-publish-status]').textContent='There are no saved drafts to publish.';
       if(!confirm(`Publish all ${count} saved section draft${count===1?'':'s'} in one revision and queue one site rebuild?`))return;
       const result=await api('publishAll');registry=result.registry;updateControlCenterStatus(result.publication);
-      $('[data-admin-publish-status]').textContent=result.publication?.queued
+      const publishedSections=result.publication?.datasets||[];
+      const checks=await Promise.all(publishedSections.map(section=>verifyPublicRevision(result.publication?.revision||registry.revision,section,registry.published?.[section])));
+      const failed=checks.find(check=>!check.verified);
+      $('[data-admin-publish-status]').textContent=failed
+        ? 'Saved all drafts at revision '+(result.publication?.revision||registry.revision)+', but the public site is NOT confirmed updated. '+failed.message
+        : result.publication?.queued
         ? `Published revision ${result.publication.revision}. All saved drafts are now public and one rebuild is queued.`
         : `Published revision ${result.publication?.revision||registry.revision}. Data is public, but the rebuild was not queued: ${result.publication?.message||'retry the site build.'}`;
     } catch(error) { $('[data-admin-publish-status]').textContent=error.message; }

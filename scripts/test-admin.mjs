@@ -7,7 +7,7 @@ import path from 'node:path';
 const require=createRequire(import.meta.url);
 const root=new URL('../',import.meta.url);
 const storage=new Map();
-let storageDown=false, etagCounter=0, buildCount=0;
+let storageDown=false, etagCounter=0, buildCount=0, storageWriteFault='';
 globalThis.netlifyBlobsContext=Buffer.from(JSON.stringify({siteID:'test-site',token:'fixture-token',edgeURL:'https://blobs.fixture',uncachedEdgeURL:'https://blobs.fixture'})).toString('base64');
 process.env.AETHERWING_BUILD_HOOK='https://api.netlify.com/build_hooks/fixture';
 const nativeFetch=globalThis.fetch;
@@ -24,6 +24,8 @@ globalThis.fetch=async(input,options={})=>{
     if(storageDown)return new Response('Fixture storage unavailable',{status:400});
     const key=url.pathname,prior=storage.get(key);
     if(options.method?.toUpperCase()==='PUT') {
+      if(storageWriteFault==='503')return new Response('Temporary blob outage',{status:503});
+      if(storageWriteFault==='phantom-success')return new Response('',{status:200,headers:{etag:'phantom-write-etag'}});
       if(headers.get('if-none-match')==='*'&&prior || headers.has('if-match')&&headers.get('if-match')!==prior?.etag)return new Response('',{status:412});
       const value=JSON.parse(options.body),etag=`fixture-${++etagCounter}`;
       storage.set(key,{value,etag});return new Response('',{status:200,headers:{etag}});
@@ -133,7 +135,22 @@ assert.equal(buildCount,Object.keys(seeds).length+2);
 assert.equal((await call(siteAdmin,{action:'saveDraft',dataset:'wins',data:seeds.wins,revision:0})).status,409);
 assert.notEqual(content.validate('news',seeds.news.map((s)=>({...s,featured:false}))), '');
 assert.notEqual(content.validate('roster-profiles', [{...seeds['roster-profiles'][0],name:'<script>alert(1)</script>'}]),'');
-const oldConsole=console.error;console.error=()=>{};storageDown=true;
+// Regression: failed conditional Blobs writes must NEVER return a fake successful Admin save.
+const oldConsole=console.error;
+console.error=()=>{};
+const saveRevision=revision, previousHistory=(await call(siteAdmin)).body.registry.history.length, previousBuilds=buildCount;
+for(const fault of ['503','phantom-success']){
+  storageWriteFault=fault;
+  const failed=await call(siteAdmin,{action:'publish',dataset:'wins',data:seeds.wins,revision:saveRevision});
+  assert.equal(failed.status,500,'A '+fault+' storage write cannot be reported as published');
+  storageWriteFault='';
+  const afterFailure=(await call(siteAdmin)).body.registry;
+  assert.equal(afterFailure.revision,saveRevision,'Failed writes cannot advance the stored revision');
+  assert.equal(afterFailure.history.length,previousHistory,'Failed writes cannot create history entries');
+  assert.equal(buildCount,previousBuilds,'Failed writes must not trigger a Netlify rebuild');
+}
+console.error=oldConsole;
+console.error=()=>{};storageDown=true;
 assert.equal((await call(paintAdmin)).status,500);
 assert.equal((await call(siteData,undefined,null)).status,503);storageDown=false;console.error=oldConsole;
 // The read-only Paint Booth must consume central publication without owning individual share routes.

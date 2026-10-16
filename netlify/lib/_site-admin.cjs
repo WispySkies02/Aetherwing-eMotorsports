@@ -208,7 +208,11 @@ exports.handler = async (event, context) => {
     return json(200, { registry, publication });
   } catch (error) {
     console.error('site-admin', error);
-    return json(error.message === 'CONFLICT' ? 409 : 500, { error:error.message === 'CONFLICT' ? 'Another session saved first. Refresh before saving.' : 'Site content could not be saved. Check Netlify function logs.' });
+    return json(error.message === 'CONFLICT' ? 409 : 500, { error:
+      error.message === 'CONFLICT' ? 'Another session saved first. Refresh saved data before editing again.' :
+      error.message === 'STORAGE_WRITE_UNVERIFIED' ? 'Netlify storage did not confirm this save. Your changes have not been marked published. Refresh saved data and check the latest revision before retrying.' :
+      'Site content could not be saved. Check Netlify function logs.'
+    });
   }
 };
 
