@@ -846,6 +846,11 @@
   function rememberPersistedState(){persistedSnapshot=editorSnapshot();dirty=false;}
   function refreshDirtyState(){
     if(!key||data===null){dirty=false;return false;}
+    // Only reconcile the form if something actually changed after loading/saving.
+    // Re-reading every generated control on tab exit could coerce a blank,
+    // optional, or browser-normalized field and incorrectly flag a freshly
+    // published Standings section as unsaved.
+    if(!dirty)return false;
     commit();dirty=editorSnapshot()!==persistedSnapshot;return dirty;
   }
   function editorValue(name,value){
