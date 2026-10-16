@@ -91,6 +91,18 @@ async function write(registry, etag) {
   const contentStore = await store();
   const result = await contentStore.setJSON('content.json', registry, etag ? { onlyIfMatch: etag } : { onlyIfNew: true });
   if (result?.modified === false) throw new Error('CONFLICT');
+  // Some Netlify Blobs SDK versions incorrectly report modified:true after a failed
+  // conditional write (503/500), returning an empty ETag. Never claim a save landed
+  // unless the provider supplies a real new ETag and a strong read confirms the bytes.
+  if (result?.modified !== true || typeof result.etag !== 'string' || !result.etag.trim()) {
+    console.error('site-content: conditional write was not acknowledged with an ETag');
+    throw new Error('STORAGE_WRITE_UNVERIFIED');
+  }
+  const confirmed = await contentStore.getWithMetadata('content.json', { type:'json', consistency:'strong' });
+  if (!confirmed || confirmed.etag !== result.etag || JSON.stringify(confirmed.data) !== JSON.stringify(registry)) {
+    console.error('site-content: write acknowledgement did not match read-back');
+    throw new Error('STORAGE_WRITE_UNVERIFIED');
+  }
 }
 function validate(key, data, registry={}) {
   if (!FILES.includes(key)) return 'Unknown content section.';
