@@ -842,6 +842,12 @@
       assign(current(),path,value);
     });
   }
+  const adminEditorVersion='2026-10-16.2';
+  function saveFeedback(message,state='neutral'){
+    const el=$('[data-content-save-feedback]');if(!el)return;
+    el.dataset.state=state;
+    el.textContent=message+' · Editor '+adminEditorVersion;
+  }
   const editorSnapshot=()=>JSON.stringify(data);
   function rememberPersistedState(){persistedSnapshot=editorSnapshot();dirty=false;}
   function refreshDirtyState(){
@@ -1195,6 +1201,7 @@
     const select=$('[data-content-dataset]');
     if(select)select.value=key;
     render();refreshScheduleShiftTool();refreshResultsRaceOptions();refreshPageScanTool();
+    saveFeedback(registry.drafts[key]?'PRIVATE DRAFT · not published':registry.published[key]?'Published data loaded · revision '+registry.revision:'Bundled data loaded · revision '+registry.revision,'neutral');
     status(`${registry.drafts[key]?'PRIVATE SAVED DRAFT':registry.published[key]?'PUBLISHED OVERRIDE':'BUNDLED BASELINE'} · Revision ${registry.revision}. Save Draft never changes the public site; Publish updates live-enabled public data immediately and also queues a static rebuild when configured.`);
     updateControlCenterStatus();
   }
@@ -1267,7 +1274,17 @@
   $('[data-page-scan]').addEventListener('click',()=>scanPublicPage().catch((error)=>status(error.message)));
   $('[data-content-search]').addEventListener('input',renderList);
   $('[data-content-list]').addEventListener('click',(event)=>{const button=event.target.closest('[data-entry]');if(button){commit();if(key==='results')resultsImportPreview=[];index=Number(button.dataset.entry);render();if(key==='results')refreshResultsRaceOptions(current()?.scheduleId||'');}});
-  $('[data-content-form]').addEventListener('input',()=>{dirty=true;});
+  // Only changes to persisted dataset fields can make a section dirty.
+  // The Standings CSV textbox, file pickers and PNG preview are helper tools:
+  // editing/using them does not change the public standings until Apply.
+  // Their input events used to flag the entire form as edited on mobile Safari.
+  const markDatasetFieldDirty=(event)=>{
+    if(!event.target?.closest?.('[data-field-path]'))return;
+    dirty=true;
+    saveFeedback('UNSAVED EDIT · publish or save a draft before leaving','warning');
+  };
+  $('[data-content-form]').addEventListener('input',markDatasetFieldDirty);
+  $('[data-content-form]').addEventListener('change',markDatasetFieldDirty);
   $('[data-content-fields]').addEventListener('change',async(event)=>{
     const scoreField=event.target.closest?.('[data-field-path]');
     if(scoreField&&key==='results'&&['nrrs','kmart','uarl-d1'].includes(current()?.league)){
@@ -1444,6 +1461,12 @@
       if(name==='publish') {
         const publication=response.publication;
         const liveCheck=await verifyPublicRevision(publication?.revision||registry.revision,key,registry.published[key]);
+        saveFeedback(local
+          ? 'LOCAL TEST ONLY · no public site was changed'
+          : liveCheck.verified
+            ? 'PUBLISHED · revision '+(publication?.revision||registry.revision)+' · public feed verified'
+            : 'PUBLISHED TO ADMIN ONLY · public feed NOT confirmed · revision '+(publication?.revision||registry.revision),
+          local?'neutral':liveCheck.verified?'success':'warning');
         if(!liveCheck.verified){
           status('Saved revision '+(publication?.revision||registry.revision)+' to Admin storage, but the public site is NOT confirmed updated. '+liveCheck.message+' Check /api/site-content and Netlify function/deploy logs before trying another edit.');
         }else if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
@@ -1453,7 +1476,10 @@
         else {const removed=Number(publication?.driverRemovalCascade?.removedAssignments||0),removedNote=removed?` Removed ${removed} current league assignment${removed===1?'':'s'} for the deleted driver profile${removed===1?'':'s'}; historical results were kept.`:'';status(publication?.queued
           ? `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication.revision}. Live public data is updated immediately; a static rebuild is also queued.${removedNote}`
           : `${autoPlaced?'Calendar sorted by date, start time, and league. ':''}Published revision ${publication?.revision||registry.revision}. Public data is updated, but the site rebuild was not queued: ${publication?.message||'use Retry site rebuild.'}${removedNote}`);}
-      } else status(response.publication?.message||(name==='saveDraft'?(autoPlaced?`Calendar sorted and private draft saved + verified at revision ${registry.revision}. No unsaved changes remain; nothing public changed.`:`Private draft saved + verified at revision ${registry.revision}. No unsaved changes remain; nothing public changed.`):'Section updated.'));
+      } else {
+        if(name==='saveDraft')saveFeedback('PRIVATE DRAFT SAVED · revision '+registry.revision+' · not public','neutral');
+        status(response.publication?.message||(name==='saveDraft'?(autoPlaced?`Calendar sorted and private draft saved + verified at revision ${registry.revision}. No unsaved changes remain; nothing public changed.`:`Private draft saved + verified at revision ${registry.revision}. No unsaved changes remain; nothing public changed.`):'Section updated.'));
+      }
       updateControlCenterStatus(response.publication);
     } finally { busy=false; $('[data-content-editor]').inert=false; }
   }
@@ -1462,7 +1488,10 @@
     commit();
     const prompt=key==='navigation'?`${dirty?'Save and publish the current navigation changes':'Publish this navigation section'}? The public menu reads these links live.`:`${dirty?'Save and publish the current changes':'Publish this section'}? Existing Team Wire articles and other live-enabled content update immediately; a site rebuild is queued when configured.`;
     if(!confirm(prompt))return;
-    try{await action('publish');}catch(error){status(error.message);}
+    try{await action('publish');}catch(error){
+      saveFeedback('PUBLISH NOT CONFIRMED · '+(error?.message||'Save failed'),'error');
+      status(error.message);
+    }
   });
   $('[data-content-discard]').addEventListener('click',async()=>{if(!confirm('Discard this saved section draft and return to published content?'))return;try{await action('discardDraft');chooseDataset(key);status('Draft discarded. Published content is unchanged.');}catch(error){status(error.message);}});
   $('[data-content-refresh]').addEventListener('click',async()=>{if(refreshDirtyState()&&!confirm('Replace unsaved changes with saved data?'))return;try{await load();chooseDataset(key);}catch(error){status(error.message);}});

@@ -407,3 +407,15 @@ html[data-admin-theme] .admin-theme-stage .aw-fx__burst{animation-play-state:run
   html[data-admin-theme] .admin-theme-stage:before{inset:-42%;opacity:.32;animation-duration:13s}
   html[data-admin-theme] .admin-theme-stage .aw-fx__ambient{opacity:.32!important;animation-duration:16s!important}
 }
+
+/* Main-site content Admin: an always-visible publication receipt beside the form actions. */
+[data-content-form] .admin-save-feedback{
+  margin:1rem 0 .55rem;padding:.75rem .9rem;
+  border:1px solid #354658;border-left:3px solid #6dc8ff;
+  background:#111a23;color:#b7cddd;
+  font:800 .68rem/1.5 var(--font-mono,"Share Tech Mono",monospace);
+  letter-spacing:.035em;overflow-wrap:anywhere;
+}
+[data-content-form] .admin-save-feedback[data-state="success"]{border-left-color:#7fd9a5;color:#a7ebcb}
+[data-content-form] .admin-save-feedback[data-state="warning"]{border-left-color:#f3b51d;color:#ffe0a0}
+[data-content-form] .admin-save-feedback[data-state="error"]{border-left-color:#ff808c;color:#ffb5bd}
