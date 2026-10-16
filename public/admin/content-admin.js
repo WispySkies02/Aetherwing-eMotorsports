@@ -1461,10 +1461,12 @@
       if(name==='publish') {
         const publication=response.publication;
         const liveCheck=await verifyPublicRevision(publication?.revision||registry.revision,key,registry.published[key]);
-        saveFeedback(liveCheck.verified
-          ? 'PUBLISHED · revision '+(publication?.revision||registry.revision)+' · public feed verified'
-          : 'PUBLISHED TO ADMIN ONLY · public feed NOT confirmed · revision '+(publication?.revision||registry.revision),
-          liveCheck.verified?'success':'warning');
+        saveFeedback(local
+          ? 'LOCAL TEST ONLY · no public site was changed'
+          : liveCheck.verified
+            ? 'PUBLISHED · revision '+(publication?.revision||registry.revision)+' · public feed verified'
+            : 'PUBLISHED TO ADMIN ONLY · public feed NOT confirmed · revision '+(publication?.revision||registry.revision),
+          local?'neutral':liveCheck.verified?'success':'warning');
         if(!liveCheck.verified){
           status('Saved revision '+(publication?.revision||registry.revision)+' to Admin storage, but the public site is NOT confirmed updated. '+liveCheck.message+' Check /api/site-content and Netlify function/deploy logs before trying another edit.');
         }else if(key==='navigation') status(`Published revision ${publication?.revision||registry.revision}. Navigation is live data and will update on the public site without a rebuild${publication?.queued?' (a rebuild was also queued).':'.'}`);
