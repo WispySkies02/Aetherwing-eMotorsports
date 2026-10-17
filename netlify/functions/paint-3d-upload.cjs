@@ -25,6 +25,8 @@ exports.handler=async(event,context)=>{
     if(!/^[a-f0-9-]{36}$/.test(id))return respond(400,{error:'Bad upload session.'});
     const meta=await store.get(`uploads/${id}/meta`,{type:'json'});
     if(!meta||meta.owner!==(user.id||user.email)||meta.until<Date.now())return respond(403,{error:'Upload expired. Restart it.'});
+    // A repeated finish (its first reply was lost on the way back) returns the same texture.
+    if(input.action==='finish'&&meta.key)return respond(200,{ok:true,key:meta.key,width:meta.width,height:meta.height,bytes:meta.bytes});
     if(input.action==='chunk'){
       const index=Number(input.index);const data=String(input.data||'');
       if(!Number.isInteger(index)||index<0||index>=meta.count||data.length>Math.ceil(CHUNK_BYTES/3)*4||!/^[a-zA-Z0-9+/]*={0,2}$/.test(data))return respond(400,{error:'Invalid PNG chunk.'});
@@ -37,7 +39,9 @@ exports.handler=async(event,context)=>{
     if(input.action==='finish'){
       const chunks=[];
       for(let i=0;i<meta.count;i++){
-        const data=await store.get(`uploads/${id}/part/${i}`);
+        // This store reads with eventual consistency; a just-written piece can lag briefly.
+        let data=await store.get(`uploads/${id}/part/${i}`);
+        for(let retry=0;!data&&retry<3;retry++){await new Promise(r=>setTimeout(r,400));data=await store.get(`uploads/${id}/part/${i}`);}
         if(!data)return respond(400,{error:`Upload incomplete: chunk ${i} missing.`});
         chunks.push(Buffer.from(data,'base64'));
       }
@@ -48,8 +52,10 @@ exports.handler=async(event,context)=>{
       if(width<64||height<64||width>8192||height>8192)return respond(400,{error:'PNG dimensions must be between 64 and 8192 pixels.'});
       const key=createHash('sha256').update(png).digest('hex');
       await store.set(`textures/${key}`,png.buffer.slice(png.byteOffset,png.byteOffset+png.byteLength));
-      // Upload sessions are temporary. Clean up successfully transferred parts.
-      await Promise.allSettled([store.delete(`uploads/${id}/meta`),...Array.from({length:meta.count},(_,i)=>store.delete(`uploads/${id}/part/${i}`))]);
+      // Keep the small session record (with the result) so a retried finish
+      // still succeeds; the transferred parts are no longer needed.
+      await store.setJSON(`uploads/${id}/meta`,{...meta,key,width,height});
+      await Promise.allSettled(Array.from({length:meta.count},(_,i)=>store.delete(`uploads/${id}/part/${i}`)));
       return respond(200,{ok:true,key,width,height,bytes:png.length});
     }
     return respond(400,{error:'Unknown upload operation.'});

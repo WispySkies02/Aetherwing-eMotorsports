@@ -18,15 +18,17 @@ const button=new FakeElement();button.hasAttribute=()=>false;button.disabled=fal
 const row={dataset:{'3dRow':'fixture-paint'},querySelector:q=>q==='[data-3d-body]'?{value:'nrrs-toyota'}:q==='[data-3d-file]'?{files:[file]}:null};
 const hash='b'.repeat(64);
 const requests=[];
+let dropNextChunk=false;
 const fetch=async(url,options)=>{
  assert.equal(url,'/.netlify/functions/paint-3d-upload');assert.match(options.headers.authorization,/^Bearer /);
  const body=JSON.parse(options.body);requests.push(body);
  if(body.action==='start')return {ok:true,json:async()=>({id:'a'.repeat(36),count:1,chunkSize:8192})};
+ if(body.action==='chunk'&&dropNextChunk){dropNextChunk=false;throw new TypeError('Load failed');}
  if(body.action==='chunk')return {ok:true,json:async()=>({ok:true,index:0})};
  if(body.action==='finish')return {ok:true,json:async()=>({ok:true,key:hash})};
  throw Error('Unexpected upload request');
 };
-const context=createContext({window:{AetherwingPaintAdmin:api,addEventListener:()=>{}},document:{querySelector:q=>q==='[data-panel="3d"]'?root:null},location:{hostname:'aetherwing.net'},URL,Element:FakeElement,fetch,btoa,console});
+const context=createContext({window:{AetherwingPaintAdmin:api,addEventListener:()=>{}},document:{querySelector:q=>q==='[data-panel="3d"]'?root:null},location:{hostname:'aetherwing.net'},URL,Element:FakeElement,fetch,btoa,console,TypeError,setTimeout:(fn)=>setTimeout(fn,0)});
 new Script(source,{filename:'paint-3d-admin.js'}).runInContext(context);
 await handlers.click({target:button});
 assert.equal(requests.map(r=>r.action).join(','),'start,chunk,finish');
@@ -35,4 +37,9 @@ assert.equal(savedPayload.textureKey,hash,'The uploaded content hash must be sen
 assert.ok(!Object.hasOwn(savedPayload,'key'),'The backend does not recognize an unqualified key field');
 assert.equal(savedPayload.bodyModel,'nrrs-toyota');
 assert.equal(savedPayload.liveryTexture,'');
-console.log('PASS: 3D Admin upload sends the correct textureKey to save3dSettings after uploading.');
+// A dropped request (Safari: "Load failed") is retried instead of ending the upload.
+requests.length=0;savedPayload=null;dropNextChunk=true;button.disabled=false;
+await handlers.click({target:button});
+assert.equal(requests.map(r=>r.action).join(','),'start,chunk,chunk,finish','A dropped chunk is sent again');
+assert.ok(savedPayload,'The upload still saves after a dropped request');
+console.log('PASS: 3D Admin upload sends the correct textureKey to save3dSettings after uploading, and retries dropped requests.');
