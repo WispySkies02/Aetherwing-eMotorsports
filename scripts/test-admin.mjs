@@ -129,6 +129,14 @@ for(const [slug,name,user] of [['jayden-fixture','Jayden','@Kanevme'],['hayden-f
 assert.equal(content.validate('roster-profiles',identityProfiles),'','Roster editor must accept newly added drivers and Roblox usernames');
 const portfolioFixture=structuredClone(seeds['driver-portfolios']);portfolioFixture.push({id:'jayden-fixture',profile:'jayden-fixture',name:'Jayden',handle:'@Kanevme',label:'Driver Brand / Livery Portfolio',order:99,brands:[{name:'Fixture Brand',logo:'https://example.test/fixture.png',order:1}]});
 assert.equal(content.validate('driver-portfolios',portfolioFixture),'','Newly added drivers must support published personal-partner portfolios');
+for(const title of ['', 'Primary Sponsor', 'Travel & Apparel Partner']){
+  portfolioFixture.at(-1).brands[0].sponsorTitle=title;
+  assert.equal(content.validate('driver-portfolios',portfolioFixture),'','Sponsor titles should be optional plain text');
+}
+for(const title of [null,42,false,[],{},'<b>Sponsor</b>']){
+  portfolioFixture.at(-1).brands[0].sponsorTitle=title;
+  assert.notEqual(content.validate('driver-portfolios',portfolioFixture),'','Sponsor titles must reject invalid types and HTML');
+}
 const partnerFixture=structuredClone(seeds.partners);partnerFixture[0].logo='data:image/webp;base64,UklGRg==';assert.equal(content.validate('partners',partnerFixture),'','Team partner logo uploads must validate through the publication API');
 let revision=response.body.registry.revision;
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.

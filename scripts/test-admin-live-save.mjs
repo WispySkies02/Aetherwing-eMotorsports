@@ -39,7 +39,7 @@ sunoco.rows[0].positionChange='—';
 const initial={version:1,revision:10,published:{standings:boards,drivers:content.normalize('drivers',seeds.drivers),results:seeds.results},drafts:{},history:[]};
 initial.published.drivers[0].numberImage='https://example.test/legacy-number.png';
 initial.published.drivers[0].numberImageBackup='data:image/png;base64,bGVnYWN5';
-const storage=new Map();let etag=0,writeFailure=false,publicStale=false;
+const storage=new Map();let etag=0,writeFailure=false,publicStale=false,portfolioStale=false;
 globalThis.netlifyBlobsContext=Buffer.from(JSON.stringify({siteID:'test-site',token:'fixture-token',edgeURL:'https://blobs.fixture',uncachedEdgeURL:'https://blobs.fixture'})).toString('base64');
 delete process.env.AETHERWING_BUILD_HOOK;
 const nativeFetch=globalThis.fetch;
@@ -79,7 +79,10 @@ w.fetch=async(url,options={})=>{
     return admin(new Request(target,options));
   }
   assert.equal(target.pathname,'/api/site-content','Unexpected browser request');
-  return publicStale?Response.json({revision:0,datasets:{}}):publicData(new Request(target));
+  if(publicStale)return Response.json({revision:0,datasets:{}});
+  const response=await publicData(new Request(target));
+  if(portfolioStale){const body=await response.json();body.datasets['driver-portfolios'][0].brands[0].sponsorTitle='Outdated fixture title';return Response.json(body);}
+  return response;
 };
 const $=(selector)=>w.document.querySelector(selector);
 const waitFor=async(predicate,label)=>{
@@ -191,6 +194,24 @@ try {
   assert.equal($('[data-number-image-source]').textContent,'Current source: image link');
   assert.equal($('img.driver-number-preview').getAttribute('src'),'https://example.test/replacement-number.png','Reopening Admin must retain the active published source');
   assert.ok(!prompts.some((message)=>message.includes('Leave unsaved changes')),'Verified assignment publication must not trigger the unsaved guard');
+  $('[data-admin-dataset="driver-portfolios"]').click();
+  await waitFor(()=>field(['brands',0,'sponsorTitle']),'Existing driver partners must expose an optional sponsor title');
+  const portfolioFeed=async()=>(await (await publicData(new Request('https://aetherwing.net/api/site-content'))).json()).datasets['driver-portfolios'];
+  const beforePortfolio=await portfolioFeed();
+  field(['brands',0,'sponsorTitle']).value='Primary & Apparel Partner';
+  field(['brands',0,'sponsorTitle']).dispatchEvent(new w.Event('input',{bubbles:true}));
+  $('[data-content-form]').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await waitFor(()=>!$('[data-content-editor]').inert,'Sponsor title draft must finish');
+  assert.deepEqual(await portfolioFeed(),beforePortfolio,'Sponsor titles in private drafts must stay off the public feed');
+  await publish();
+  assert.equal((await portfolioFeed())[0].brands[0].sponsorTitle,'Primary & Apparel Partner','Sponsor title must reach the public feed');
+  portfolioStale=true;await publish(false);portfolioStale=false;
+  assert.match(feedback(),/NOT confirmed/,'A current revision with the wrong sponsor title must not be reported as verified');
+  $('[data-admin-dataset="wins"]').click();$('[data-admin-dataset="driver-portfolios"]').click();
+  await waitFor(()=>field(['brands',0,'sponsorTitle']),'Sponsor editor must reopen');
+  assert.equal(field(['brands',0,'sponsorTitle']).value,'Primary & Apparel Partner','Sponsor title must survive Admin readback');
+  field(['brands',0,'sponsorTitle']).value='';field(['brands',0,'sponsorTitle']).dispatchEvent(new w.Event('input',{bubbles:true}));
+  await publish();assert.equal((await portfolioFeed())[0].brands[0].sponsorTitle,'','Clearing the title must publish without removing the sponsor');
   $('[data-admin-dataset="standings"]').click();
   await waitFor(()=>field(['rows',0,'points']),'Standings must reopen after assignment checks');
 

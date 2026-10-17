@@ -219,6 +219,7 @@ function validate(key, data, registry={}) {
     if (key === 'driver-portfolios') {
       if (!Array.isArray(row.brands) || !row.brands.length) return `Driver portfolio ${index + 1}: add at least one brand.`;
       if (row.brands.some((brand) => !String(brand?.name || '').trim() || !Number.isFinite(brand?.order))) return `Driver portfolio ${index + 1}: every brand needs a name and numeric display order.`;
+      if (row.brands.some((brand) => brand.sponsorTitle!==undefined && typeof brand.sponsorTitle!=='string')) return `Driver portfolio ${index + 1}: sponsor titles must be plain text or left blank.`;
       if (row.brands.some((brand) => !validLogoImage(brand.logo||''))) return `Driver portfolio ${index + 1}: logos must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
     }
     if(key==='navigation'&&!/^(\/|https:\/\/)/.test(row.href))return `Navigation entry ${index+1}: use a site-relative path or HTTPS URL.`;

@@ -52,7 +52,7 @@
     site:{name:'Organization name',founded:'Founded year',description:'Organization description',url:'Main site URL',logo:'Main logo URL',discordUrl:'Discord invite URL',tagline:'Public tagline',footerEyebrow:'Footer eyebrow',faithEyebrow:'Faith section eyebrow',faithTitle:'Faith section headline',faithStatement:'Faith statement',faithVerse:'Faith verse reference',faithDriversLine:'Drivers page faith line',faithScheduleLine:'Schedule page faith line',faithHistoryLine:'History page faith line',faithRaceDayLine:'Race weekend faith line',legalNotice:'Footer legal notice',mobileSummary:'Mobile navigation summary',featuredPartners:'Featured partner count',verifiedWins:'Verified win count',estimatedStarts:'Estimated starts',competitionRelationships:'Competition relationship count',activeRoRacingDrivers:'Active RoRacing driver count',aetherwingDrivers:'Aetherwing driver count',allianceOnlyDrivers:'Alliance-only driver count'},
     navigation:{label:'Link label',href:'Destination URL / path',group:'Navigation group'},
     'page-overrides':{id:'Content rule ID',page:'Public page path',type:'Content type',label:'Admin label',original:'Current page value',value:'Published replacement',enabled:'Apply this replacement'},
-    'driver-portfolios':{id:'Portfolio ID',profile:'Linked Driver Directory profile',name:'Driver display name',handle:'Driver handle / username',label:'Portfolio label',order:'Driver display order',brands:'Individual partners / brands',logo:'Optional logo URL'},
+    'driver-portfolios':{id:'Portfolio ID',profile:'Linked Driver Directory profile',name:'Driver display name',handle:'Driver handle / username',label:'Portfolio label',order:'Driver display order',brands:'Individual partners / brands',logo:'Optional logo URL',sponsorTitle:'Sponsor title (optional)'},
     news:{slug:'Story slug / URL',legacyRoute:'Legacy route',category:'Category',date:'Display date',dateIso:'Publish date',context:'Context label',kicker:'Kicker',title:'Headline',summary:'Story summary',tags:'Tags',featured:'Homepage featured story',heroGhost:'Hero ghost text',headlineMark:'Headline stat treatment',byline:'Byline',metrics:'Metric cards',quote:'Pull quote',sections:'Story sections',callout:'Closing callout',timeline:'Story timeline',programBreakdown:'Program comparison cards',embedDescription:'Embed / share description',socialImage:'Embed / social image URL',articleLogo:'Article hero logo URL'}
   };
   const fieldHelp = {
@@ -100,7 +100,8 @@
     chaseActive:'Controls Chase highlighting in exported standings graphics. Turn this on only after the league has actually entered its Chase/playoff period.',
     slotLabel:'Optional public slot label such as “4TH CHARTER” or “OPEN CHARTER 2”.',
     active:'Turn this charter or number identity on/off without deleting it.',
-    brands:'Add, remove, rename, reorder, or attach an optional logo to every individual driver brand.',
+    brands:'Add, remove, rename, reorder, or attach an optional logo and sponsor title to every individual driver brand.',
+    sponsorTitle:'Describe this sponsor’s relationship with the driver, such as Primary Sponsor, Apparel Partner, or Personal Partner. Leave blank to hide the title.',
     entryListMode:'Auto uses the official published result after the race; before results exist it falls back to the current league roster. Choose Custom to control exactly who appears for this event.',
     entries:'The race-specific driver list. Use the roster picker, or fill it from the league roster / published result with the buttons in this block.',
     entryStatus:'Optional public note such as Confirmed, Expected, Raced, Withdrawn, or Substitute.'
@@ -741,7 +742,7 @@
   }
   async function verifyPublicRevision(expectedRevision,dataset,publishedData) {
     if(local)return { verified:true, local:true };
-    const exactSections=new Set(['standings','drivers','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles']);
+    const exactSections=new Set(['standings','drivers','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles','driver-portfolios']);
     let problem='The public content feed has not confirmed this publication.';
     for(let attempt=0;attempt<3;attempt++){
       try {
@@ -842,7 +843,7 @@
       assign(current(),path,value);
     });
   }
-  const adminEditorVersion='2026-10-17.3';
+  const adminEditorVersion='2026-10-17.4';
   function saveFeedback(message,state='neutral'){
     const el=$('[data-content-save-feedback]');if(!el)return;
     el.dataset.state=state;
@@ -876,6 +877,8 @@
     rememberPersistedState();
   }
   function fields(value,path=[]) {
+    // Older portfolios and newly added brands may omit this optional field.
+    if(key==='driver-portfolios'&&path.length===2&&path[0]==='brands')value={...value,sponsorTitle:value.sponsorTitle??''};
     const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
     return Object.entries(value).map(([k,v])=>{
       if(key==='drivers'&&k==='numberImageBackup')return '';
