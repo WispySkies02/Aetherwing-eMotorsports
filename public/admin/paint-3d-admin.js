@@ -50,14 +50,34 @@
       </article>`;
     }).join('')||'<p>No paints match the search or status filter.</p>';
   }
-  async function postChunk(body){
-    const jwt=await api().getToken();
-    const response=await fetch('/.netlify/functions/paint-3d-upload',{
-      method:'POST',headers:{'content-type':'application/json','authorization':`Bearer ${jwt}`},body:JSON.stringify(body)
+  // Phone connections drop requests now and then; Safari reports that as
+  // "Load failed". Every upload step is safe to repeat, so a dropped or
+  // briefly unavailable request is retried before the upload gives up.
+  const RETRY_DELAYS=[800,2000,4500];
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  const transient=status=>[429,502,503,504].includes(status);
+  async function withRetry(step,attempt){
+    for(let tryNo=0;;tryNo++){
+      try{return await attempt();}
+      catch(err){
+        const retryable=err?.retryable||err instanceof TypeError;
+        if(!retryable)throw err;
+        if(tryNo>=RETRY_DELAYS.length)throw Error(`Upload stopped while ${step}: ${err.retryable?err.message:'the connection dropped'}. Check the connection and press Upload & save 3D again.`);
+        showStatus(`Connection hiccup while ${step} — retrying (${tryNo+1}/${RETRY_DELAYS.length})…`);
+        await wait(RETRY_DELAYS[tryNo]);
+      }
+    }
+  }
+  function postChunk(body,step){
+    return withRetry(step,async()=>{
+      const jwt=await api().getToken();
+      const response=await fetch('/.netlify/functions/paint-3d-upload',{
+        method:'POST',headers:{'content-type':'application/json','authorization':`Bearer ${jwt}`},body:JSON.stringify(body)
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok){const err=Error(data.error||`Texture upload failed (${response.status})`);err.retryable=transient(response.status);throw err;}
+      return data;
     });
-    const data=await response.json().catch(()=>({}));
-    if(!response.ok)throw Error(data.error||'Texture upload failed');
-    return data;
   }
   function encodeBytes(bytes){
     let value='';for(let i=0;i<bytes.length;i+=8192)value+=String.fromCharCode(...bytes.subarray(i,i+8192));
@@ -71,13 +91,13 @@
       // Local preview mode does not write to production Netlify Blobs.
       return {textureKey:'',liveryTexture:url,preview:true};
     }
-    const start=await postChunk({action:'start',bytes:file.size});
+    const start=await postChunk({action:'start',bytes:file.size},'starting the upload');
     for(let i=0;i<start.count;i++){
       const buffer=await file.slice(i*start.chunkSize,(i+1)*start.chunkSize).arrayBuffer();
-      await postChunk({action:'chunk',id:start.id,index:i,data:encodeBytes(new Uint8Array(buffer))});
+      await postChunk({action:'chunk',id:start.id,index:i,data:encodeBytes(new Uint8Array(buffer))},`sending piece ${i+1} of ${start.count}`);
       showStatus(`Uploading ${slug}: ${i+1}/${start.count} chunks…`);
     }
-    const result=await postChunk({action:'finish',id:start.id});
+    const result=await postChunk({action:'finish',id:start.id},'finishing the upload');
     return {textureKey:result.key,liveryTexture:''};
   }
   async function save(row,clear=false){
@@ -93,7 +113,7 @@
     busy=slug;
     showStatus(`Saving ${slug}…`);
     const payload={slug,bodyModel, ...reference, clearTexture:clear};
-    await api().request('save3dSettings',payload);
+    await withRetry('saving the 3D settings',()=>api().request('save3dSettings',payload));
     busy='';
     render();
     showStatus(`${slug}: ${clear?'texture cleared':'3D settings saved and published'} · Refresh the Paint Booth to see the update.`);
