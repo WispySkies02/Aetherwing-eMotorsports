@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-rebuild.mjs",
-    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-3d-client-contract.mjs",
+    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-3d-client-contract.mjs",
     "test:dev": "node scripts/test-dev.mjs",
     "test:publication": "node scripts/test-publication.mjs",
     "test:functions": "node scripts/test-function-bundles.mjs",

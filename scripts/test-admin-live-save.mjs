@@ -37,6 +37,8 @@ boards[0].rows[1].positionChange='NEW';
 const sunoco=boards.find((board)=>board.id==='sunoco');
 sunoco.rows[0].positionChange='—';
 const initial={version:1,revision:10,published:{standings:boards,drivers:content.normalize('drivers',seeds.drivers),results:seeds.results},drafts:{},history:[]};
+initial.published.drivers[0].numberImage='https://example.test/legacy-number.png';
+initial.published.drivers[0].numberImageBackup='data:image/png;base64,bGVnYWN5';
 const storage=new Map();let etag=0,writeFailure=false,publicStale=false;
 globalThis.netlifyBlobsContext=Buffer.from(JSON.stringify({siteID:'test-site',token:'fixture-token',edgeURL:'https://blobs.fixture',uncachedEdgeURL:'https://blobs.fixture'})).toString('base64');
 delete process.env.AETHERWING_BUILD_HOOK;
@@ -169,6 +171,8 @@ try {
   $('[data-admin-dataset="drivers"]').click();
   await waitFor(()=>field(['number']),'Assignments must load');
   const assignments=content.normalize('drivers',seeds.drivers);
+  $('[data-number-image-url]').value='https://example.test/replacement-number.png';
+  $('[data-number-image-use-url]').click();
   for(const [id,number] of editedNumbers) {
     const index=assignments.findIndex((entry)=>entry.id===id);assert.notEqual(index,-1,`Missing assignment ${id}`);
     $(`[data-content-list] [data-entry="${index}"]`).click();
@@ -176,12 +180,16 @@ try {
   }
   await publish();
   const driverFeed=await (await publicData(new Request('https://aetherwing.net/api/site-content'))).json();
+  assert.equal(driverFeed.datasets.drivers[0].numberImage,'https://example.test/replacement-number.png','Explicit URL must reach the public feed');
+  assert.equal(driverFeed.datasets.drivers[0].numberImageBackup,'','A legacy upload must not override the new public URL');
   for(const [id,number] of editedNumbers)assert.equal(driverFeed.datasets.drivers.find((entry)=>entry.id===id).number,number,`${id} must retain its published number`);
   assert.equal(JSON.stringify(driverFeed.datasets.results),historyBefore,'Assignment edits must not rewrite historical race numbers');
   $('[data-admin-dataset="wins"]').click();
   $('[data-admin-dataset="drivers"]').click();
   await waitFor(()=>field(['number']),'Assignments must reopen');
   assert.equal(field(['number']).value,'08','Leading-zero numbers must survive reopening Admin');
+  assert.equal($('[data-number-image-source]').textContent,'Current source: image link');
+  assert.equal($('img.driver-number-preview').getAttribute('src'),'https://example.test/replacement-number.png','Reopening Admin must retain the active published source');
   assert.ok(!prompts.some((message)=>message.includes('Leave unsaved changes')),'Verified assignment publication must not trigger the unsaved guard');
   $('[data-admin-dataset="standings"]').click();
   await waitFor(()=>field(['rows',0,'points']),'Standings must reopen after assignment checks');

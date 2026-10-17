@@ -5,7 +5,7 @@ const {dev}=await import('astro');
 const server=await dev({root:new URL('../',import.meta.url),server:{host:'127.0.0.1',port:0},logLevel:'error'});
 const base=`http://127.0.0.1:${server.address.port}`;
 try {
-  for(const path of ['/admin/','/admin/?login=1','/admin/index.html']) {
+  for(const path of ['/admin/','/admin/?login=1','/admin/?section=drivers','/admin/index.html']) {
     const response=await fetch(`${base}${path}`,{redirect:'manual'});
     assert.equal(response.status,200,`${path} must serve the Admin shell without a redirect`);
     assert.match(response.headers.get('content-type'),/text\/html/);
