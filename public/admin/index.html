@@ -8,19 +8,21 @@
   <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Saira+Condensed:wght@600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Barlow:wght@400;500;600;700&family=Saira+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/paint-ops-admin.css">
   <link rel="stylesheet" href="/admin/paint-3d-admin.css">
   <link rel="stylesheet" href="/admin/control-center.css">
   <link rel="stylesheet" href="/admin/fresh-admin.css">
   <link rel="stylesheet" href="/seasonal-effects.css">
+<link rel="stylesheet" href="/admin/admin-ux.css">
   <title>Aetherwing Admin — Aetherwing eMotorsports</title>
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to Aetherwing Admin</a>
   <header class="ops-header">
     <a href="/" class="ops-brand"><img src="/images/brand/aetherwing-logo.png" alt="Aetherwing eMotorsports"><span><b>Aetherwing Admin</b><small>Private control center</small></span></a>
-    <div class="ops-account" data-account hidden><span data-account-email></span><button type="button" data-logout>Sign out</button></div>
+    <div class="adm-crumb" aria-live="polite"><small data-adm-lane-name>Control center</small><b data-adm-current>Overview</b></div>
+  <div class="ops-account" data-account hidden><span data-account-email></span><button type="button" data-logout>Sign out</button></div>
   </header>
 
   <main id="workspace">
@@ -39,31 +41,36 @@
       </header>
 
       <nav class="admin-workspace-tabs" aria-label="Aetherwing Admin workspaces" data-admin-tabs>
-        <button class="is-active" type="button" data-admin-tab="overview" aria-selected="true"><small>00</small>Overview</button>
-        <button type="button" data-admin-dataset="schedule-events"><small>01</small>Calendar</button>
-        <button type="button" data-admin-dataset="results"><small>02</small>Race Results</button>
-        <button type="button" data-admin-dataset="wins"><small>03</small>Wins</button>
-        <button type="button" data-admin-dataset="standings"><small>04</small>Standings</button>
-        <button type="button" data-admin-dataset="milestones"><small>05</small>Milestones</button>
-        <button type="button" data-admin-dataset="drivers"><small>06</small>Assignments</button>
-        <button type="button" data-admin-dataset="roster-profiles"><small>07</small>Driver Directory</button>
-        <button type="button" data-admin-dataset="driver-profiles"><small>08</small>Driver Profiles</button>
-        <button type="button" data-admin-dataset="charters"><small>09</small>Charters</button>
-        <button type="button" data-admin-dataset="iracing-garage"><small>10</small>iRacing Roster</button>
-        <button type="button" data-admin-dataset="competitions"><small>11</small>Leagues</button>
-        <button type="button" data-admin-dataset="leadership"><small>12</small>Leadership</button>
-        <button type="button" data-admin-dataset="partners"><small>13</small>Partners</button>
-        <button type="button" data-admin-dataset="site"><small>14</small>Site Settings</button>
-        <button type="button" data-admin-dataset="navigation"><small>15</small>Navigation</button>
-        <button type="button" data-admin-dataset="page-overrides"><small>16</small>Page Content</button>
-        <button type="button" data-admin-dataset="driver-portfolios"><small>17</small>Driver Portfolios</button>
-        <button type="button" data-admin-dataset="news"><small>18</small>Team Wire</button>
-        <button type="button" data-admin-paint-tab="feature"><small>19</small>Paint Feature</button>
-        <button type="button" data-admin-paint-tab="add"><small>20</small>Paint Editor</button>
-        <button type="button" data-admin-paint-tab="library"><small>21</small>Paint Library</button>
-        <button type="button" data-admin-paint-tab="3d"><small>22</small>3D Viewer</button>
-        <button type="button" data-admin-tab="theme-preview"><small>23</small>Theme Preview</button>
-      </nav>
+        <button data-adm-lane="overview" class="is-active" type="button" data-admin-tab="overview" aria-selected="true"><small>00</small>Overview</button>
+        <h2 class="adm-lane" data-adm-lane="race">Race Ops</h2>
+        <button data-adm-lane="race" type="button" data-admin-dataset="schedule-events"><small>01</small>Calendar</button>
+        <button data-adm-lane="race" type="button" data-admin-dataset="results"><small>02</small>Race Results</button>
+        <button data-adm-lane="race" type="button" data-admin-dataset="wins"><small>03</small>Wins</button>
+        <button data-adm-lane="race" type="button" data-admin-dataset="standings"><small>04</small>Standings</button>
+        <button data-adm-lane="race" type="button" data-admin-dataset="milestones"><small>05</small>Milestones</button>
+        <h2 class="adm-lane" data-adm-lane="people">People & Programs</h2>
+        <button data-adm-lane="people" type="button" data-admin-dataset="drivers"><small>06</small>Assignments</button>
+        <button data-adm-lane="people" type="button" data-admin-dataset="roster-profiles"><small>07</small>Driver Directory</button>
+        <button data-adm-lane="people" type="button" data-admin-dataset="driver-profiles"><small>08</small>Driver Profiles</button>
+        <button data-adm-lane="people" type="button" data-admin-dataset="charters"><small>09</small>Charters</button>
+        <button data-adm-lane="people" type="button" data-admin-dataset="iracing-garage"><small>10</small>iRacing Roster</button>
+        <button data-adm-lane="people" type="button" data-admin-dataset="competitions"><small>11</small>Leagues</button>
+        <button data-adm-lane="people" type="button" data-admin-dataset="leadership"><small>12</small>Leadership</button>
+        <h2 class="adm-lane" data-adm-lane="news">Newsroom & Partners</h2>
+        <button data-adm-lane="news" type="button" data-admin-dataset="news"><small>18</small>Team Wire</button>
+        <button data-adm-lane="news" type="button" data-admin-dataset="partners"><small>13</small>Partners</button>
+        <button data-adm-lane="news" type="button" data-admin-dataset="driver-portfolios"><small>17</small>Driver Portfolios</button>
+        <h2 class="adm-lane" data-adm-lane="paint">Paint Shop</h2>
+        <button data-adm-lane="paint" type="button" data-admin-paint-tab="feature"><small>19</small>Paint Feature</button>
+        <button data-adm-lane="paint" type="button" data-admin-paint-tab="add"><small>20</small>Paint Editor</button>
+        <button data-adm-lane="paint" type="button" data-admin-paint-tab="library"><small>21</small>Paint Library</button>
+        <button data-adm-lane="paint" type="button" data-admin-paint-tab="3d"><small>22</small>3D Viewer</button>
+        <h2 class="adm-lane" data-adm-lane="site">Site & Brand</h2>
+        <button data-adm-lane="site" type="button" data-admin-dataset="site"><small>14</small>Site Settings</button>
+        <button data-adm-lane="site" type="button" data-admin-dataset="navigation"><small>15</small>Navigation</button>
+        <button data-adm-lane="site" type="button" data-admin-dataset="page-overrides"><small>16</small>Page Content</button>
+        <button data-adm-lane="site" type="button" data-admin-tab="theme-preview"><small>23</small>Theme Preview</button>
+        </nav>
 
       <section class="admin-overview" data-admin-overview>
         <div class="control-center__heading"><span>00</span><div><h2>Admin map</h2><p>Pick a tab above. Each tab owns one job.</p></div></div>
@@ -375,7 +382,15 @@
         <div class="aw3d-list" data-3d-list></div>
         <p class="field-help">Upload the original flat 3D paint template PNG (up to 16 MB), not a screenshot or static render. The PNG is stored securely on the main Aetherwing site; the public Paint Booth loads it after publishing. Late Models stay 2D-only during this beta, and iRacing vehicles need matching geometry before 3D can be enabled.</p>
       </section>
-      <div class="ops-toast" data-toast role="status" aria-live="polite" hidden></div>
+      <div class="adm-scrim" data-adm-scrim hidden></div>
+  <nav class="adm-dock" aria-label="Admin sections" data-adm-dock hidden>
+    <button type="button" data-adm-open="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5"/></svg><span>Overview</span></button>
+    <button type="button" data-adm-open="race" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3.5M5 4h14v9H5"/><path class="is-fill" d="M5 4h4.7v4.5H5zM14.3 4H19v4.5h-4.7zM9.7 8.5h4.6V13H9.7z"/></svg><span>Race</span></button>
+    <button type="button" data-adm-open="people" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.3a3.5 3.5 0 0 1 0 6.4M21.5 20a6.5 6.5 0 0 0-4-6"/></svg><span>People</span></button>
+    <button type="button" data-adm-open="paint" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5c0-1.5 1-2.5 2.5-2.5h11c1.5 0 2.5 1 2.5 2.5V18H4zM6 14l2.2-5.2A2 2 0 0 1 10 7.5h4a2 2 0 0 1 1.8 1.3L18 14M7 18v2M17 18v2"/></svg><span>Paint</span></button>
+    <button type="button" data-adm-open="more" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg><span>More</span></button>
+  </nav>
+  <div class="ops-toast" data-toast role="status" aria-live="polite" hidden></div>
     </section>
   </main>
 
@@ -383,6 +398,7 @@
   <script src="/admin/paint-ops-admin.js" defer></script>
   <script src="/admin/paint-3d-admin.js" defer></script>
   <script src="/admin/theme-preview.js" defer></script>
-  <script src="/admin/content-admin.js?v=20261017-2" defer></script>
+  <script src="/admin/admin-shell.js" defer></script>
+<script src="/admin/content-admin.js?v=20261017-2" defer></script>
 </body>
 </html>
