@@ -12,7 +12,7 @@ const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && 
     <em data-tower-context>{board?.subtitle?.split(' · ').find((part) => /after/i.test(part)) || ''}</em>
   </header>
   <ol class="aw-tower__rows" data-tower-rows></ol>
-  <p class="aw-tower__note"><span class="aw-tower__key" aria-hidden="true"></span>Aetherwing car <span class="aw-tower__cut-key" aria-hidden="true"></span><span data-tower-cut>{board?.cutoffLabel || 'Chase cutoff'}</span></p>
+  <p class="aw-tower__note"><span class="aw-tower__key" aria-hidden="true"></span>Aetherwing car <span class="aw-tower__cut-key" aria-hidden="true"></span><span data-tower-cut>Chase cutoff · Top 5</span></p>
 </div>
 <script is:inline type="application/json" data-tower-seed set:html={JSON.stringify(board || null)} />
 
@@ -27,7 +27,8 @@ const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && 
       tower.hidden = !rows.length;
       if (!rows.length) return;
       const isTeam = (row) => row.highlight || teamNumbers.has(String(row.number));
-      const cutoff = Number(board.cutoffAfter) || 0;
+      // This tower is NRRS-only; older saved boards still contain Top 6.
+      const cutoff = 5;
       const showTop = Math.max(cutoff + 1, 6);
       const picked = rows.map((row, index) => ({ row, index })).filter(({ row, index }) => index < showTop || isTeam(row));
       const leaderPts = Number(rows[0]?.points) || 0;
@@ -44,7 +45,7 @@ const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && 
       tower.querySelector('[data-tower-status]').textContent = board.status || 'STANDINGS';
       tower.querySelector('[data-tower-title]').textContent = board.title || 'NRRS Championship';
       tower.querySelector('[data-tower-context]').textContent = String(board.subtitle || '').split(' · ').find((part) => /after/i.test(part)) || '';
-      tower.querySelector('[data-tower-cut]').textContent = board.cutoffLabel || 'Chase cutoff';
+      tower.querySelector('[data-tower-cut]').textContent = 'Chase cutoff · Top 5';
       tower.querySelector('.aw-tower__cut-key').hidden = !cutoff;
       tower.querySelector('[data-tower-cut]').hidden = !cutoff;
     };

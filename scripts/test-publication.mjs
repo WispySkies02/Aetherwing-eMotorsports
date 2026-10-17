@@ -84,6 +84,27 @@ try {
     }
     assert.equal(championships.window.document.querySelector('[data-board="nrrs"] .standings-cutoff').textContent,'Chase cutoff · Top 5');
     championships.window.close();
+    // The homepage has its own timing tower. Exercise its actual built markup
+    // with an older Top 6 board, including both live-data loading orders.
+    const towerScript=fs.readFileSync(join(cwd,'src/components/home/TimingTower.astro'),'utf8').match(/<script>([\s\S]*?)<\/script>/)?.[1];
+    assert.ok(towerScript,'Homepage timing-tower script must be present');
+    for(const mode of ['seed','cached','event']) {
+      const home=new JSDOM(read('index.html'),{runScripts:'outside-only'});
+      assert.equal(home.window.document.querySelector('[data-tower-cut]').textContent,'Chase cutoff · Top 5','Server-rendered legend must use Top 5');
+      if(mode==='cached')home.window.__AETHERWING_CONTENT__=data;
+      home.window.eval(towerScript);
+      if(mode==='event')home.window.dispatchEvent(new home.window.CustomEvent('aetherwing:content',{detail:data}));
+      const tower=home.window.document.querySelector('[data-timing-tower]');
+      const cut=tower.querySelector('.is-cut');
+      assert.equal(tower.querySelectorAll('.is-cut').length,1,`${mode}: show one cutoff line`);
+      assert.equal(cut.previousElementSibling.querySelector('.aw-tower__pos').textContent,'5',`${mode}: divider must follow P5`);
+      assert.equal(cut.querySelector('.aw-tower__pos').textContent,'6',`${mode}: divider must precede P6`);
+      assert.equal(tower.querySelector('[data-tower-cut]').textContent,'Chase cutoff · Top 5',`${mode}: old metadata must not restore Top 6`);
+      const teamNumbers=new Set(data.drivers.filter((entry)=>entry.competitionId==='nrrs'&&entry.affiliation==='aetherwing').map((entry)=>String(entry.number)));
+      const expected=nrrs.rows.filter((row,index)=>index<6||row.highlight||teamNumbers.has(String(row.number))).map((row)=>String(row.position).replace(/^P/i,''));
+      assert.deepEqual(Array.from(tower.querySelectorAll('.aw-tower__pos'),(node)=>node.textContent),expected,`${mode}: retain leaders and Aetherwing cars below the cutoff`);
+      home.window.close();
+    }
     for(const path of ['news/index.html','news/publication-fixture-story/index.html'])assert.ok(read(path).includes('Publication Fixture Story'),`${path} must render the published story`);
     for(const path of ['index.html',`news/${lead.slug}/index.html`])assert.ok(read(path).includes('Publication Fixture Lead'),`${path} must render edits to the canonical featured story`);
     assert.ok(read('index.html').includes(`/news/${lead.slug}/`),'Homepage must still link to the canonical lead');
