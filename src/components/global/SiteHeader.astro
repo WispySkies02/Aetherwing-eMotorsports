@@ -1,11 +1,76 @@
 ---
-// Phone/tablet top bar (<1100px). Keeps the .site-header hook so the seasonal
-// header treatments in site.css still apply; desktop uses AppRail instead.
-import { siteSettings } from '../../lib/site-content.mjs';
+// Site header. Desktop (≥1100px): brand, Admin-managed pages grouped into
+// Team / Race / Connect dropdowns across the top, and the live race chip.
+// Phones and tablets: brand + race chip, with MobileNav's dock and sheet.
+// Keeps the .site-header hook so seasonal header treatments still apply.
+import { navigation, siteSettings } from '../../lib/site-content.mjs';
 import MobileNav from './MobileNav.astro';
+const path = Astro.url.pathname;
+const isActive = (href = '') => href.startsWith('/') && (href === '/' ? path === '/' : path.startsWith(href));
+const isExternal = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
+const home = navigation.find((item) => item.group === 'Home') ?? { label: 'Home', href: '/' };
+const groups = ['Team', 'Race', 'Connect']
+  .map((label) => ({ label, links: navigation.filter((item) => item.group === label) }))
+  .filter((group) => group.links.length);
 ---
 <header class="site-header ux-topbar" data-site-header>
   <a class="ux-topbar__brand" href="/" aria-label={`${siteSettings.name} home`}><img src={siteSettings.logo} alt={siteSettings.name} width="170" height="42" /></a>
+  <nav class="ux-topnav" aria-label="Primary navigation" data-top-nav>
+    <a class="ux-topnav__link" href={home.href} aria-current={isActive(home.href) ? 'page' : undefined}>{home.label}</a>
+    {groups.map((group, index) => (
+      <div class="ux-topnav__group" data-nav-group>
+        <button type="button" class="ux-topnav__link" aria-expanded="false" aria-controls={`ux-topnav-${index}`} data-current={group.links.some((item) => isActive(item.href)) ? 'true' : undefined}>{group.label}<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg></button>
+        <ul class="ux-topnav__menu" id={`ux-topnav-${index}`}>
+          {group.links.map((item) => <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}{isExternal(item.href) && <small aria-label="(external)">↗</small>}</a></li>)}
+        </ul>
+      </div>
+    ))}
+  </nav>
   <a class="header-chip" href="/schedule/" data-race-chip hidden><i aria-hidden="true"></i><span><small data-chip-series>NEXT</small><b data-chip-clock></b></span></a>
 </header>
 <MobileNav />
+
+<script>
+  const nav = document.querySelector('[data-top-nav]');
+  if (nav instanceof HTMLElement) {
+    const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    const here = () => location.pathname.replace(/\/+$/, '/') || '/';
+    const active = (href = '') => href.startsWith('/') && (href === '/' ? here() === '/' : here().startsWith(href));
+    const external = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
+    const current = (flag) => (flag ? ' aria-current="page"' : '');
+
+    const closeAll = (except = null) => nav.querySelectorAll('[data-nav-group] > button[aria-expanded="true"]').forEach((button) => {
+      if (button !== except) button.setAttribute('aria-expanded', 'false');
+    });
+
+    // Click/tap toggles a menu; hover and keyboard focus open it too (CSS).
+    nav.addEventListener('click', (event) => {
+      const button = event.target instanceof Element ? event.target.closest('[data-nav-group] > button') : null;
+      if (!(button instanceof HTMLButtonElement)) return;
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      closeAll(button);
+      button.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', (event) => { if (!(event.target instanceof Node) || !nav.contains(event.target)) closeAll(); });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const open = nav.querySelector('[data-nav-group] > button[aria-expanded="true"]');
+      closeAll();
+      if (open instanceof HTMLElement && nav.contains(document.activeElement)) open.focus();
+    });
+    nav.addEventListener('focusout', (event) => { if (!(event.relatedTarget instanceof Node) || !nav.contains(event.relatedTarget)) closeAll(); });
+
+    // Admin-published navigation replaces the build-time links.
+    const renderNavigation = (items) => {
+      if (!Array.isArray(items) || !items.length) return;
+      const publicItems = items.map((item) => item?.label === 'Paint Booth' && item?.href === '/paint-booth/' ? { ...item, href: 'https://paint.aetherwing.net/' } : item);
+      const home = publicItems.find((item) => item?.group === 'Home') || { label: 'Home', href: '/' };
+      const groups = ['Team', 'Race', 'Connect']
+        .map((label) => ({ label, links: publicItems.filter((item) => item?.group === label) }))
+        .filter((group) => group.links.length);
+      nav.innerHTML = `<a class="ux-topnav__link" href="${esc(home.href)}"${current(active(home.href))}>${esc(home.label)}</a>` + groups.map((group, index) => `<div class="ux-topnav__group" data-nav-group><button type="button" class="ux-topnav__link" aria-expanded="false" aria-controls="ux-topnav-${index}"${group.links.some((item) => active(item.href)) ? ' data-current="true"' : ''}>${esc(group.label)}<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><ul class="ux-topnav__menu" id="ux-topnav-${index}">${group.links.map((item) => `<li><a href="${esc(item.href)}"${current(active(item.href))}>${esc(item.label)}${external(item.href) ? '<small aria-label="(external)">↗</small>' : ''}</a></li>`).join('')}</ul></div>`).join('');
+    };
+    window.addEventListener('aetherwing:content', (event) => renderNavigation(event.detail?.navigation));
+    if (window.__AETHERWING_CONTENT__) renderNavigation(window.__AETHERWING_CONTENT__.navigation);
+  }
+</script>
