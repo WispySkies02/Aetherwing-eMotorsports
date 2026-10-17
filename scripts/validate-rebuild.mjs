@@ -539,7 +539,7 @@ console.log('v2.0.33 historical Talladega Chase-context revision superseded by v
     "persistedSnapshot=''",
     'function rememberPersistedState()',
     'function refreshDirtyState()',
-    "['standings','results'].includes(key)",
+    "['standings','results','drivers'].includes(key)",
     'const verification=await api()',
     'Save verification failed.',
     'loadPersistedEditorValue(key,persisted,selectedIdentity)',

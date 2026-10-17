@@ -49,15 +49,15 @@ async function canonicalizeBuildContent(payload){
   const d=next.datasets;
 
   // Build-time pages must never resurrect retired roster/manufacturer data from an older
-  // Admin publication. Results and standings remain fully authoritative Admin datasets.
+  // Admin publication. Results, standings and assignment numbers remain Admin-authoritative.
   const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows)
     .filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r')))
     .map((entry)=>{
       if(entry?.competitionId!=='uarl-d1')return entry;
       const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
-      if(key==='hailey')return {...entry,number:'28',displayName:'Hailey'};
-      if(key==='burgertown2good')return {...entry,number:'32',displayName:'BurgerTown2Good'};
-      if(key==='rocky')return {...entry,number:'46',displayName:'Rocky'};
+      if(key==='hailey')return {...entry,displayName:'Hailey'};
+      if(key==='burgertown2good')return {...entry,displayName:'BurgerTown2Good'};
+      if(key==='rocky')return {...entry,displayName:'Rocky'};
       return entry;
     });
   if(Array.isArray(d.drivers))d.drivers=canonDrivers(d.drivers);

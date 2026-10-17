@@ -36,7 +36,7 @@ boards[0].rows[0].positionChange='';
 boards[0].rows[1].positionChange='NEW';
 const sunoco=boards.find((board)=>board.id==='sunoco');
 sunoco.rows[0].positionChange='—';
-const initial={version:1,revision:10,published:{standings:boards},drafts:{},history:[]};
+const initial={version:1,revision:10,published:{standings:boards,drivers:content.normalize('drivers',seeds.drivers),results:seeds.results},drafts:{},history:[]};
 const storage=new Map();let etag=0,writeFailure=false,publicStale=false;
 globalThis.netlifyBlobsContext=Buffer.from(JSON.stringify({siteID:'test-site',token:'fixture-token',edgeURL:'https://blobs.fixture',uncachedEdgeURL:'https://blobs.fixture'})).toString('base64');
 delete process.env.AETHERWING_BUILD_HOOK;
@@ -142,6 +142,49 @@ try {
     assert.ok(page.window.document.querySelector('[data-board="nrrs"]').textContent.includes((points+1).toLocaleString('en-US')+' PTS'));
     page.window.close();
   }
+  // Older publications still carry Top 6 for NRRS. Verify actual DOM placement
+  // in both hydration orders and retain Kmart's separate six-driver cutoff.
+  for(const cached of [false,true]) {
+    const legacy=structuredClone(seeds.standings);
+    const nrrs=legacy.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
+    const page=new JSDOM('<div data-standings-root></div>',{runScripts:'outside-only'});
+    const datasets={standings:legacy};
+    if(cached)page.window.__AETHERWING_CONTENT__=datasets;
+    page.window.eval(widgetScript);
+    if(!cached)page.window.dispatchEvent(new page.window.CustomEvent('aetherwing:content',{detail:datasets}));
+    for(const [id,position] of [['nrrs',5],['kmart',6]]) {
+      const cutoff=page.window.document.querySelector(`[data-board="${id}"] .standings-cutoff`);
+      assert.ok(cutoff,`${id} cutoff must be visible`);
+      assert.equal(cutoff.previousElementSibling.querySelector('.standing-row__position').textContent,`P${position}`);
+      assert.equal(cutoff.nextElementSibling.querySelector('.standing-row__position').textContent,`P${position+1}`);
+    }
+    assert.equal(page.window.document.querySelector('[data-board="nrrs"] .standings-cutoff').textContent,'Chase cutoff · Top 5');
+    page.window.close();
+  }
+
+  // A number published in Assignments must survive Admin readback and public
+  // hydration, including UARL identities previously overwritten by migrations.
+  const historyBefore=JSON.stringify((await (await publicData(new Request('https://aetherwing.net/api/site-content'))).json()).datasets.results);
+  const editedNumbers=new Map([['wispy-nrrs','08'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
+  $('[data-admin-dataset="drivers"]').click();
+  await waitFor(()=>field(['number']),'Assignments must load');
+  const assignments=content.normalize('drivers',seeds.drivers);
+  for(const [id,number] of editedNumbers) {
+    const index=assignments.findIndex((entry)=>entry.id===id);assert.notEqual(index,-1,`Missing assignment ${id}`);
+    $(`[data-content-list] [data-entry="${index}"]`).click();
+    field(['number']).value=number;field(['number']).dispatchEvent(new w.Event('input',{bubbles:true}));
+  }
+  await publish();
+  const driverFeed=await (await publicData(new Request('https://aetherwing.net/api/site-content'))).json();
+  for(const [id,number] of editedNumbers)assert.equal(driverFeed.datasets.drivers.find((entry)=>entry.id===id).number,number,`${id} must retain its published number`);
+  assert.equal(JSON.stringify(driverFeed.datasets.results),historyBefore,'Assignment edits must not rewrite historical race numbers');
+  $('[data-admin-dataset="wins"]').click();
+  $('[data-admin-dataset="drivers"]').click();
+  await waitFor(()=>field(['number']),'Assignments must reopen');
+  assert.equal(field(['number']).value,'08','Leading-zero numbers must survive reopening Admin');
+  assert.ok(!prompts.some((message)=>message.includes('Leave unsaved changes')),'Verified assignment publication must not trigger the unsaved guard');
+  $('[data-admin-dataset="standings"]').click();
+  await waitFor(()=>field(['rows',0,'points']),'Standings must reopen after assignment checks');
 
   // A stale public response must not be reported as verified publication.
   publicStale=true;
@@ -159,7 +202,7 @@ try {
   assert.equal((await publicStandings())[0].rows[0].points,points+1,'Failed storage writes must not change public standings');
   $('[data-admin-dataset="wins"]').click();
   assert.ok(prompts.some((message)=>message.includes('Leave unsaved changes')),'Real failed saves must retain the unsaved guard');
-  console.log('PASS: authenticated NRRS CSV preview/apply/publish, storage readback, public standings hydration, private drafts, stale-feed detection and failed-save warnings. No live content changed.');
+  console.log('PASS: authenticated NRRS CSV and assignment-number publication, storage readback, public hydration, private drafts, stale-feed detection and failed-save warnings. No live content changed.');
 } finally {
   dom.window.close();globalThis.fetch=nativeFetch;
 }

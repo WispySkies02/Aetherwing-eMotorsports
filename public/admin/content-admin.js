@@ -741,7 +741,7 @@
   }
   async function verifyPublicRevision(expectedRevision,dataset,publishedData) {
     if(local)return { verified:true, local:true };
-    const exactSections=new Set(['standings','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles']);
+    const exactSections=new Set(['standings','drivers','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles']);
     let problem='The public content feed has not confirmed this publication.';
     for(let attempt=0;attempt<3;attempt++){
       try {
@@ -842,7 +842,7 @@
       assign(current(),path,value);
     });
   }
-  const adminEditorVersion='2026-10-17.1';
+  const adminEditorVersion='2026-10-17.2';
   function saveFeedback(message,state='neutral'){
     const el=$('[data-content-save-feedback]');if(!el)return;
     el.dataset.state=state;
@@ -1449,7 +1449,7 @@
         const responseSaved=name==='saveDraft'?registry.drafts?.[key]:registry.published?.[key];
         if(responseSaved===undefined)throw new Error('The server replied successfully, but the saved section was missing. Nothing was marked saved; please retry.');
         const responseSerialized=JSON.stringify(responseSaved);
-        if(['standings','results'].includes(key)){
+        if(['standings','results','drivers'].includes(key)){
           const verification=await api();
           const verifiedSaved=name==='saveDraft'?verification.registry?.drafts?.[key]:verification.registry?.published?.[key];
           if(verifiedSaved===undefined||JSON.stringify(verifiedSaved)!==responseSerialized)throw new Error('Save verification failed. Your editor is still marked unsaved so no work is silently lost. Please retry.');
