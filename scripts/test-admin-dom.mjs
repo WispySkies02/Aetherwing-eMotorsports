@@ -47,6 +47,12 @@ saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));assert.eq
 click('[data-admin-dataset="roster-profiles"]');await tick();input(['name'],'DOM TEST driver');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts['roster-profiles'][0].name,'DOM TEST driver');
 click('[data-admin-dataset="drivers"]');await tick();assert.ok($('[data-number-image-upload]'),'Driver League Assignments need a number art file picker');$('[data-number-image-url]').value='https://example.test/number-art.png';click('[data-number-image-use-url]');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts.drivers[0].numberImage,'https://example.test/number-art.png','Driver League Assignments should save reusable number artwork');
 click('[data-admin-dataset="driver-portfolios"]');await tick();assert.equal($('[data-content-add]').textContent,'Add driver portfolio');assert.ok($('[data-portfolio-logo-upload]'),'Portfolio brands should accept logo file uploads');input(['brands',0,'logo'],'https://example.test/brand-logo.png');submit('[data-content-form]');await tick();assert.equal(JSON.parse(window.localStorage.getItem('aetherwing-site-admin')).drafts['driver-portfolios'][0].brands[0].logo,'https://example.test/brand-logo.png');click('[data-content-add]');const portfolioId=Array.from(window.document.querySelectorAll('[data-field-path]')).find((el)=>el.dataset.fieldPath==='["id"]');assert.ok(/^driver-/.test(portfolioId?.value||''),'New driver portfolio should receive a stable ID');
+input(['brands',0,'sponsorTitle'],'Apparel Partner');
+const newBrand=Array.from(window.document.querySelectorAll('[data-array-add]')).find(button=>button.dataset.arrayAdd==='["brands"]');
+newBrand.click();input(['brands',1,'sponsorTitle'],'Travel Partner');submit('[data-content-form]');await tick();
+saved=JSON.parse(window.localStorage.getItem('aetherwing-site-admin'));
+assert.equal(saved.drafts['driver-portfolios'].at(-1).brands[0].sponsorTitle,'Apparel Partner','New portfolios must expose an optional sponsor title');
+assert.equal(saved.drafts['driver-portfolios'].at(-1).brands[1].sponsorTitle,'Travel Partner','New brands must expose their own sponsor title');
 click('[data-admin-dataset="news"]');await tick();
 // The current lead story has no sections. Add one through the editor instead
 // of depending on a particular published story's nested content.
@@ -114,7 +120,7 @@ const pendingPrompts=[],beforeConfirm=window.confirm;
 window.confirm=(message)=>{pendingPrompts.push(String(message));return true;};
 click('[data-admin-dataset="wins"]');await tick();
 assert.equal(pendingPrompts.filter(message=>message.includes('Leave unsaved changes in this tab?')).length,0,'A just-published Standings page must not warn about phantom unsaved changes');
-assert.match($('[data-content-save-feedback]').textContent,/Editor 2026-10-17\.3/,'Editor build stamp makes it easier to verify updated Admin code is deployed');
+assert.match($('[data-content-save-feedback]').textContent,/Editor 2026-10-17\.4/,'Editor build stamp makes it easier to verify updated Admin code is deployed');
 click('[data-admin-dataset="standings"]');await tick();
 input(['rows',0,'points'],3212);
 click('[data-admin-dataset="wins"]');await tick();

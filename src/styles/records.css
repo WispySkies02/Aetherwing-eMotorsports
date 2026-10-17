@@ -369,3 +369,5 @@ html[data-anniversary-retro="true"] :is(.news-race-strip__eyebrow,.news-stat-car
   .bell-driver-partners .profile-partners>div{min-height:110px;padding:.65rem}
   .bell-driver-partners .profile-partners strong{font-size:1.1rem}
 }
+
+.profile-partners .driver-sponsor-title{max-width:100%;font:700 .7rem/1.5 var(--font-mono);color:#aaa;text-align:center;overflow-wrap:anywhere}

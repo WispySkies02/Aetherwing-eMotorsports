@@ -47,6 +47,11 @@ try {
   data.wins.push({league:'NRRS',track:'Publication Fixture Win',driver:'Wispy',date:'Sep 18, 2026'});
   data.milestones.push({date:'Sep 18, 2026',title:'Publication Fixture Milestone',description:'Publication fixture milestone text.'});
   data['roster-profiles'][0].name='Publication Fixture Driver';
+  const sponsorPortfolio=data['driver-portfolios'].find(portfolio=>portfolio.profile==='hailey');
+  assert.ok(sponsorPortfolio?.brands.length>=4,'Sponsor regression needs logo, text-only, legacy and blank-title brands');
+  sponsorPortfolio.brands[0].sponsorTitle='Publication Fixture Primary & Apparel Partner';
+  sponsorPortfolio.brands[1].logo='';sponsorPortfolio.brands[1].sponsorTitle='Publication Fixture Personal Partner';
+  delete sponsorPortfolio.brands[2].sponsorTitle;sponsorPortfolio.brands[3].sponsorTitle='   ';
   const editedNumbers=new Map([['wispy-nrrs','08'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
   for(const entry of data.drivers)if(editedNumbers.has(entry.id))entry.number=editedNumbers.get(entry.id);
   const nrrs=data.standings.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
@@ -65,6 +70,34 @@ try {
     assert.ok(read('schedule/index.html').includes('Publication Fixture Race'));
     for(const text of ['Publication Fixture Result','Publication Fixture Milestone','Publication Fixture Win'])assert.ok(read('history/index.html').includes(text),`History must render ${text}`);
     assert.ok(read('drivers/index.html').includes('Publication Fixture Driver'));
+    const sponsorTitles=sponsorPortfolio.brands.filter(brand=>brand.sponsorTitle?.trim()).map(brand=>brand.sponsorTitle.trim());
+    const profilePage=new JSDOM(read('drivers/hailey/index.html'),{runScripts:'outside-only'});
+    const partnersPage=new JSDOM(read('partners/index.html'),{runScripts:'outside-only'});
+    try{
+      const titles=page=>Array.from(page.window.document.querySelectorAll('.driver-sponsor-title'),node=>node.textContent);
+      assert.deepEqual(titles(profilePage),sponsorTitles,'Static driver profiles must render optional titles and hide blank/missing ones');
+      const partnersScript=Array.from(partnersPage.window.document.scripts).find(script=>script.textContent.includes('[data-personal-partners]'));
+      assert.ok(partnersScript,'Built Partners page must retain its portfolio renderer');
+      partnersPage.window.eval(partnersScript.textContent);
+      partnersPage.window.document.querySelector(`[data-portfolio="${sponsorPortfolio.id}"]`).click();
+      assert.deepEqual(titles(partnersPage),sponsorTitles,'Built Partners page must render saved sponsor titles');
+      const profileScript=fs.readFileSync(join(cwd,'src/pages/drivers/[slug].astro'),'utf8').match(/<script>([\s\S]*?)<\/script>/)?.[1];
+      assert.ok(profileScript);profilePage.window.eval(profileScript);
+      const live=structuredClone(data['driver-portfolios']),updated=live.find(portfolio=>portfolio.id===sponsorPortfolio.id);
+      updated.brands.forEach(brand=>{brand.sponsorTitle='';});
+      updated.brands[0].sponsorTitle='Live Travel & Apparel Partner';
+      for(const page of [profilePage,partnersPage]){
+        const publish=()=>page.window.dispatchEvent(new page.window.CustomEvent('aetherwing:content',{detail:{'driver-portfolios':live}}));
+        publish();assert.deepEqual(titles(page),['Live Travel & Apparel Partner'],'Public pages must update titles from live portfolio data');
+        const box=page.window.document.querySelector('[data-profile-partners]')||page.window.document.querySelector('.partner-logos');
+        assert.equal(box.children.length,updated.brands.length,'Title edits must retain every existing sponsor');
+        updated.brands[0].sponsorTitle='<img src=x onerror=alert(1)>';
+        publish();assert.deepEqual(titles(page),['<img src=x onerror=alert(1)>'],'Live titles must be escaped as text');
+        assert.equal(box.querySelector('[onerror="alert(1)"]'),null,'Titles must never inject image markup');
+        updated.brands[0].sponsorTitle='';publish();assert.deepEqual(titles(page),[],'Cleared titles must disappear without removing sponsor cards');
+        updated.brands[0].sponsorTitle='Live Travel & Apparel Partner';
+      }
+    }finally{profilePage.window.close();partnersPage.window.close();}
     const synced=JSON.parse(fs.readFileSync(overlayFile,'utf8'));
     for(const [id,number] of editedNumbers) {
       const assignment=synced.datasets.drivers.find((entry)=>entry.id===id);
@@ -130,6 +163,7 @@ try {
     assert.ok(!fs.existsSync(join(cwd,'dist/news/publication-fixture-story')),'Rebuild must remove fixture-only articles');
     assert.ok(!read('history/index.html').includes('Publication Fixture'),'Fixture results/wins/milestones must not survive restoration');
     assert.ok(!read('index.html').includes('Publication Fixture Lead'),'Fixture feature must not survive restoration');
+    assert.ok(!read('drivers/hailey/index.html').includes('Publication Fixture Primary'),'Fixture sponsor titles must not survive restoration');
     console.log('PASS: canonical baseline restored and rebuilt without fixture artifacts.');
   } catch(error) {
     failure=failure?new AggregateError([failure,error],'Publication assertions and baseline restoration both failed'):error;
