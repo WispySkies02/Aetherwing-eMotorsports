@@ -66,11 +66,11 @@ html:not(#adm) .ops-workspace>:not(.admin-workspace-tabs){width:auto;max-width:1
 html:not(#adm) .admin-workspace-tabs{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:2px!important;margin:0!important;padding:14px 12px 24px!important;overflow-y:auto;border:0!important;border-right:1px solid var(--adm-line)!important;border-radius:0!important;background:linear-gradient(180deg,rgba(13,15,19,.96),rgba(9,10,13,.98))!important;box-shadow:none!important;scrollbar-width:thin}
 @media(min-width:901px){html:not(#adm) .ops-workspace>.admin-workspace-tabs{position:sticky!important;top:var(--adm-head)!important;grid-column:1!important;grid-row:1/span 40!important;height:calc(100vh - var(--adm-head))!important;max-height:none!important;z-index:20}}
 html:not(#adm) .admin-workspace-tabs .adm-lane{margin:16px 10px 6px;color:var(--adm-ink-3);font:400 .64rem/1 var(--adm-mono);letter-spacing:.2em;text-transform:uppercase}
-html:not(#adm) .admin-workspace-tabs button{position:relative;display:flex!important;align-items:center;gap:10px;width:100%!important;min-height:38px!important;margin:0!important;padding:0 12px!important;border:0!important;border-radius:var(--adm-r-sm)!important;background:transparent!important;box-shadow:none!important;color:var(--adm-ink-2)!important;font:600 .94rem/1.1 var(--adm-body)!important;letter-spacing:0!important;text-align:left;text-transform:none!important;white-space:nowrap;cursor:pointer;transition:background .15s ease,color .15s ease}
-html:not(#adm) .admin-workspace-tabs button small{display:none!important}
-html:not(#adm) .admin-workspace-tabs button:hover{background:rgba(255,255,255,.05)!important;color:#fff!important}
-html:not(#adm) .admin-workspace-tabs button.is-active{background:linear-gradient(90deg,color-mix(in srgb,var(--adm-accent) 22%,transparent),transparent)!important;color:#fff!important}
-html:not(#adm) .admin-workspace-tabs button.is-active:before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:var(--adm-accent);box-shadow:0 0 12px var(--adm-glow)}
+html:not(#adm) .admin-workspace-tabs :is(button,a){position:relative;display:flex!important;align-items:center;gap:10px;width:100%!important;min-height:38px!important;margin:0!important;padding:0 12px!important;border:0!important;border-radius:var(--adm-r-sm)!important;background:transparent!important;box-shadow:none!important;color:var(--adm-ink-2)!important;font:600 .94rem/1.1 var(--adm-body)!important;letter-spacing:0!important;text-align:left;text-decoration:none!important;box-sizing:border-box;text-transform:none!important;white-space:nowrap;cursor:pointer;transition:background .15s ease,color .15s ease}
+html:not(#adm) .admin-workspace-tabs :is(button,a) small{display:none!important}
+html:not(#adm) .admin-workspace-tabs :is(button,a):hover{background:rgba(255,255,255,.05)!important;color:#fff!important}
+html:not(#adm) .admin-workspace-tabs :is(button,a).is-active{background:linear-gradient(90deg,color-mix(in srgb,var(--adm-accent) 22%,transparent),transparent)!important;color:#fff!important}
+html:not(#adm) .admin-workspace-tabs :is(button,a).is-active:before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:var(--adm-accent);box-shadow:0 0 12px var(--adm-glow)}
 
 /* ---------- Panels ---------- */
 html:not(#adm) :is(.admin-overview,.admin-theme-preview,.content-editor,.ops-panel){padding:clamp(16px,2.4vw,28px)!important;border:1px solid var(--adm-line)!important;border-top:2px solid var(--adm-accent)!important;border-radius:var(--adm-r)!important;background:linear-gradient(180deg,rgba(21,25,32,.92),rgba(15,18,22,.94))!important;box-shadow:0 22px 54px rgba(0,0,0,.45),0 0 38px color-mix(in srgb,var(--adm-accent) 10%,transparent)!important;clip-path:none!important}
@@ -181,7 +181,7 @@ html:not(#adm) .ops-toast{left:50%!important;right:auto!important;bottom:24px!im
   html:not(#adm) .ops-workspace>.admin-workspace-tabs{position:fixed!important;z-index:410!important;left:0;right:0;bottom:calc(var(--adm-dock) + env(safe-area-inset-bottom,0px));top:auto!important;width:auto!important;max-height:min(70vh,560px)!important;padding:18px 14px 14px!important;border:1px solid var(--adm-line-2)!important;border-bottom:0!important;border-radius:16px 16px 0 0!important;background:linear-gradient(180deg,#14161a,#0a0b0e)!important;box-shadow:0 -24px 60px rgba(0,0,0,.55)!important;transform:translateY(calc(100% + var(--adm-dock) + 40px));visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s linear .3s}
   html.adm-sheet-open:not(#adm) .ops-workspace>.admin-workspace-tabs{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
   html:not(#adm) .admin-workspace-tabs:before{content:'';align-self:center;flex:none;width:44px;height:4px;margin:-6px 0 6px;border-radius:2px;background:#4a4f55}
-  html:not(#adm) .admin-workspace-tabs button{min-height:48px!important;font-size:1rem!important}
+  html:not(#adm) .admin-workspace-tabs :is(button,a){min-height:48px!important;font-size:1rem!important}
   html:not(#adm) .admin-workspace-tabs .adm-lane{margin-top:8px}
   html:not(#adm) .admin-workspace-tabs[data-adm-show="race"]>:not([data-adm-lane="race"]),
   html:not(#adm) .admin-workspace-tabs[data-adm-show="people"]>:not([data-adm-lane="people"]),
@@ -192,3 +192,9 @@ html:not(#adm) .ops-toast{left:50%!important;right:auto!important;bottom:24px!im
 }
 @media(max-width:380px){.adm-crumb b{font-size:1rem}}
 @media(prefers-reduced-motion:reduce){html:not(#adm) .ops-workspace>.admin-workspace-tabs,.adm-dock button:after{transition:none!important}}
+
+/* Number artwork source selection stays usable in the narrow editor. */
+.number-image-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.number-image-options>label,.number-image-options>div,.number-image-options label{display:grid;gap:8px;min-width:0}
+.number-image-options small{display:block}
+[data-number-image-feedback]:empty{display:none}

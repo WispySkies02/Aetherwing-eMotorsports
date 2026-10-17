@@ -1,7 +1,7 @@
 /* v3.0.0 — Admin shell (layout only).
    Mirrors the active workspace into the header, drives the phone dock and the
    section sheet. It never edits, saves or publishes anything: switching a tab
-   is done by clicking the real [data-admin-tabs] button, so content-admin.js
+   is done by clicking the real [data-admin-tabs] link, so content-admin.js
    keeps every rule (unsaved-change prompts, loading, publishing). */
 (() => {
   const root = document.documentElement;
@@ -21,7 +21,7 @@
   let opener = null;
 
   const syncActive = () => {
-    const active = tabs.querySelector('button.is-active') || tabs.querySelector('button');
+    const active = tabs.querySelector('a.is-active,button.is-active') || tabs.querySelector('a,button');
     if (!active) return;
     const lane = active.dataset.admLane || 'overview';
     if (current) current.textContent = label(active);
@@ -48,7 +48,7 @@
     root.classList.add('adm-sheet-open');
     if (scrim) scrim.hidden = false;
     trigger.setAttribute('aria-expanded', 'true');
-    const first = tabs.querySelector('button.is-active:not([hidden])') || [...tabs.querySelectorAll('button')].find((button) => button.offsetParent !== null);
+    const first = tabs.querySelector(':is(a,button).is-active:not([hidden])') || [...tabs.querySelectorAll('a,button')].find((button) => button.offsetParent !== null);
     first?.focus();
   };
 
@@ -67,7 +67,7 @@
 
   // A tab chosen from the sheet closes it; content-admin.js handles the switch.
   tabs.addEventListener('click', (event) => {
-    if (event.target instanceof Element && event.target.closest('button')) window.setTimeout(() => closeSheet(false), 0);
+    if (event.target instanceof Element && event.target.closest('a,button')) window.setTimeout(() => closeSheet(false), 0);
   });
   scrim?.addEventListener('click', () => closeSheet());
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeSheet(); });

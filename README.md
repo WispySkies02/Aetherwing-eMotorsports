@@ -345,6 +345,10 @@ Keep the separate Paint Booth checkout at `../aetherwing-paint`, or set `AETHERW
 
 The development server serves the existing Admin shell at `/admin/`, including `?login=1`. It does not emulate Netlify Identity, Functions, or Blobs; local Admin tests use mock authentication and storage. The production build still prepares the bundled Admin seed and content overlay, so review generated changes before committing.
 
+Each Admin section has a bookmarkable link, such as `/admin/?section=drivers` for Assignments or `/admin/?section=standings`. Reloading or signing in returns to that section; Back and Forward navigate between sections. Unsaved content still prompts before leaving. Save a private draft before reloading if you want to keep unpublished edits.
+
+In Assignments, **Upload a file** optimizes PNG/JPG/WebP artwork and replaces the current image. To use external hosting, paste a publicly accessible direct HTTPS image link under **Use a hosted image**, then select **Use image URL**. Either choice replaces the previous source; the preview and source label show what will be used. Select **Remove number artwork** to return to the text number. Save a private draft or publish afterward. The existing storage limits still apply; new uploads store one optimized copy. Kmart #29 artwork changes continue to synchronize across its three shared assignments.
+
 Netlify uses `npm run build` and publishes `dist`. The existing Admin remains at `/admin/`, using the original verified account roles and content API. Do not deploy a ZIP by itself: deploy the extracted project with its Netlify Functions and configuration.
 
 ## Public routes

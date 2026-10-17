@@ -200,6 +200,7 @@
     $('[data-account]').hidden = false;
     $('[data-account-email]').textContent = user.email || 'Paint administrator';
     refreshAll();
+    window.dispatchEvent(new Event('aetherwing:admin-ready'));
     if (!LOCAL) loadRegistry().then(refreshAll).catch((error) => toast(error.message, true));
   }
 
@@ -217,6 +218,7 @@
       button.setAttribute('aria-selected', String(active));
     });
     $$('[data-panel]').forEach((panel) => { panel.hidden = panel.dataset.panel !== name; });
+    window.dispatchEvent(new CustomEvent('aetherwing:paint-section', {detail:name}));
     if (name === 'add') {
       const form = $('[data-paint-form]');
       const subline = form?.querySelector('[name="username"]');

@@ -842,7 +842,7 @@
       assign(current(),path,value);
     });
   }
-  const adminEditorVersion='2026-10-17.2';
+  const adminEditorVersion='2026-10-17.3';
   function saveFeedback(message,state='neutral'){
     const el=$('[data-content-save-feedback]');if(!el)return;
     el.dataset.state=state;
@@ -944,7 +944,9 @@
         const upload=current()?.numberImageBackup||'',primary=upload||v||'',secondary=upload&&v&&v!==upload?v:'';
         const preview=primary?`<img class="driver-number-preview" src="${esc(primary)}" ${secondary?`data-backup-src="${esc(secondary)}"`:''} alt="Current number artwork preview">`:'';
         const sharedNote=current()?.competitionId==='kmart'&&String(current()?.number)==='29'?' Kmart #29 is shared, so this artwork is synchronized to Clutch, Eazy, and Matty.':'';
-        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="Optional DIRECT image URL, or upload below"><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload>`,'Uploaded artwork is the public primary when present. A pasted direct URL is kept as a secondary source.'+sharedNote,'is-wide driver-number-field');
+        const source=!primary?'No image · the car number will be shown.':primary.startsWith('data:')?'Current source: uploaded file':'Current source: image link';
+        const urlValue=v&&!String(v).startsWith('data:')?v:'';
+        return `<div class="admin-field is-wide driver-number-field"><span class="admin-field__label">Number artwork</span>${preview}<strong data-number-image-source>${esc(source)}</strong><div class="number-image-options"><label><span>Upload a file</span><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload><small class="admin-field__help">Choose PNG, JPG, or WebP. The file is optimized and replaces the current image.</small></label><div><label><span>Use a hosted image</span><input type="text" inputmode="url" data-number-image-url value="${esc(urlValue)}" placeholder="https://example.com/number.png"></label><button type="button" data-number-image-use-url>Use image URL</button><small class="admin-field__help">Paste a direct HTTPS image link or site-relative path, then select Use image URL to replace the current image. The image must stay publicly accessible at that address.</small></div></div><button type="button" data-number-image-remove ${primary?'':'disabled'}>Remove number artwork</button><small class="admin-field__help">Review the preview, then Save private draft or Publish changes.${esc(sharedNote)}</small><small data-number-image-feedback role="status" aria-live="polite"></small></div>`;
       }
       if(key==='charters'&&k==='numberImage') {
         const preview=v?`<img class="driver-number-preview" src="${esc(v)}" alt="Current charter number artwork preview">`:'';
@@ -1167,12 +1169,24 @@
     if(key==='standings'&&row)renderStandingsImportTool();
     refreshResultsImportTool();
   }
+  let activeSection='overview', restoringRoute=false, routeIndex=Number.isInteger(history.state?.adminIndex)?history.state.adminIndex:0, restoringHistory=false;
+  const sectionUrl=(section)=>{
+    const url=new URL(location.href);
+    if(section==='overview')url.searchParams.delete('section');else url.searchParams.set('section',section);
+    return url;
+  };
   function setActiveAdminTab(selector,value) {
-    document.querySelectorAll('[data-admin-tabs] button').forEach((button)=>{
+    document.querySelectorAll('[data-admin-tabs] :is(a,button)').forEach((button)=>{
       const active=selector==='dataset'?button.dataset.adminDataset===value:selector==='paint'?button.dataset.adminPaintTab===value:button.dataset.adminTab===value;
       button.classList.toggle('is-active',active);
-      button.setAttribute('aria-selected',String(active));
+      if(button instanceof HTMLAnchorElement){if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');}
+      else button.setAttribute('aria-selected',String(active));
     });
+    activeSection=selector==='dataset'?value:selector==='paint'?`paint-${value}`:selector==='theme'?'theme-preview':'overview';
+    if(!restoringRoute&&sectionUrl(activeSection).href!==location.href){
+      routeIndex++;
+      history.pushState({adminIndex:routeIndex},'',sectionUrl(activeSection));
+    }
   }
   function hidePaintPanels() {
     document.querySelectorAll('[data-panel]').forEach((panel)=>{panel.hidden=true;});
@@ -1207,6 +1221,7 @@
   }
   async function openDatasetTab(name) {
     if (busy) return;
+    if (activeSection===name&&key===name&&!$('[data-content-editor]').hidden) return;
     if (key!==name && refreshDirtyState() && !confirm('Leave unsaved changes in this tab?')) return;
     try {
       if (!loaded) await load();
@@ -1256,10 +1271,44 @@
     panel?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
   document.querySelectorAll('[data-content-module]').forEach((button)=>button.addEventListener('click',()=>openModule(button.dataset.contentModule)));
-  document.querySelectorAll('[data-admin-dataset]').forEach((button)=>button.addEventListener('click',()=>openDatasetTab(button.dataset.adminDataset)));
-  document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',()=>openPaintTab(button.dataset.adminPaintTab)));
-  document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',showOverview);
-  document.querySelector('[data-admin-tab="theme-preview"]')?.addEventListener('click',showThemePreview);
+  const sectionClick=(open)=>(event)=>{
+    if(event.currentTarget instanceof HTMLAnchorElement&&(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey))return;
+    event.preventDefault();open();
+  };
+  document.querySelectorAll('[data-admin-dataset]').forEach((button)=>button.addEventListener('click',sectionClick(()=>openDatasetTab(button.dataset.adminDataset))));
+  document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',sectionClick(()=>openPaintTab(button.dataset.adminPaintTab))));
+  document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',sectionClick(showOverview));
+  document.querySelector('[data-admin-tab="theme-preview"]')?.addEventListener('click',sectionClick(showThemePreview));
+  async function restoreSection(event) {
+    if(restoringRoute)return;
+    if(restoringHistory){restoringHistory=false;return;}
+    if(local?$('[data-workspace]').hidden:!account())return;
+    const requested=new URLSearchParams(location.search).get('section')||'overview';
+    const nextIndex=Number.isInteger(event?.state?.adminIndex)?event.state.adminIndex:routeIndex;
+    restoringRoute=true;
+    try {
+      if(Object.hasOwn(datasetMeta,requested))await openDatasetTab(requested);
+      else if(['paint-feature','paint-add','paint-library','paint-3d'].includes(requested))openPaintTab(requested.slice(6));
+      else if(requested==='theme-preview')showThemePreview();
+      else showOverview();
+    } finally {restoringRoute=false;}
+    const valid=Object.hasOwn(datasetMeta,requested)||['overview','theme-preview','paint-feature','paint-add','paint-library','paint-3d'].includes(requested);
+    if(valid&&activeSection!==requested&&nextIndex!==routeIndex){
+      // Restore the previous history position when unsaved edits cancel Back.
+      restoringHistory=true;history.go(routeIndex-nextIndex);
+    } else {
+      routeIndex=valid&&activeSection===requested?nextIndex:routeIndex;
+      history.replaceState({adminIndex:routeIndex},'',sectionUrl(activeSection));
+    }
+  }
+  history.replaceState({adminIndex:routeIndex},'');
+  window.addEventListener('popstate',restoreSection);
+  window.addEventListener('aetherwing:admin-ready',restoreSection);
+  window.addEventListener('aetherwing:paint-section',(event)=>{
+    if(activeSection.startsWith('paint-'))setActiveAdminTab('paint',event.detail);
+  });
+  // Identity may already have restored its account before deferred scripts run.
+  if(!local&&account())restoreSection();
   $('[data-content-dataset]').addEventListener('change',(event)=>{ if(refreshDirtyState()&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
   $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
   $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
@@ -1285,6 +1334,38 @@
   };
   $('[data-content-form]').addEventListener('input',markDatasetFieldDirty);
   $('[data-content-form]').addEventListener('change',markDatasetFieldDirty);
+  function numberImageFeedback(message){
+    const feedback=$('[data-number-image-feedback]');
+    if(feedback)feedback.textContent=message;
+    status(message);
+  }
+  function selectNumberImage(source){
+    commit();
+    current().numberImage=source;
+    // Clear legacy embedded artwork so it cannot override an explicitly chosen URL.
+    current().numberImageBackup='';
+    const shared=syncSharedKmart29Art(current(),{syncUrl:true,syncUpload:true});
+    dirty=true;render();
+    saveFeedback('UNSAVED EDIT · publish or save a draft before leaving','warning');
+    numberImageFeedback(`${source?'Image link selected.':'Number artwork removed.'}${shared>1?` Updated all ${shared} shared Kmart #29 assignments.`:''} Save a draft or publish to keep this change.`);
+  }
+  function useNumberImageUrl(){
+    const value=$('[data-number-image-url]')?.value.trim()||'';
+    let source;
+    try{
+      const parsed=new URL(value,location.origin);
+      const siteRelative=/^\/(?![\/\\])/.test(value);
+      if(!value||(!siteRelative&&!/^https:\/\//i.test(value))||parsed.username||parsed.password)throw new Error();
+      source=siteRelative?value:parsed.href;
+    }catch{
+      numberImageFeedback('Enter a direct HTTPS image URL (or a site-relative path), then select Use image URL.');
+      return;
+    }
+    selectNumberImage(source);
+  }
+  $('[data-content-fields]').addEventListener('keydown',(event)=>{
+    if(key==='drivers'&&event.key==='Enter'&&event.target.matches('[data-number-image-url]')){event.preventDefault();useNumberImageUrl();}
+  });
   $('[data-content-fields]').addEventListener('change',async(event)=>{
     const scoreField=event.target.closest?.('[data-field-path]');
     if(scoreField&&key==='results'&&['nrrs','kmart','uarl-d1'].includes(current()?.league)){
@@ -1293,20 +1374,11 @@
         commit();const scored=scoreKnownResult(current());Object.keys(current()).forEach(k=>delete current()[k]);Object.assign(current(),scored);dirty=true;render();status('Finish, stage, and total race points recalculated for this league.');return;
       }
     }
-    if(scoreField&&key==='drivers'){
-      const path=JSON.parse(scoreField.dataset.fieldPath||'[]');
-      if(path.at(-1)==='numberImage'){
-        commit();const row=current(),shared=syncSharedKmart29Art(row,{syncUrl:true,syncUpload:Boolean(row?.numberImageBackup)});dirty=true;render();
-        const hasUpload=Boolean(row?.numberImageBackup),usingUrl=/^https:\/\//.test(String(row?.numberImage||''));
-        status(shared>1?`Kmart #29 artwork source synchronized to ${shared} assignments. ${hasUpload?'The uploaded file remains the public primary.':'Publish Driver League Assignments to update the site.'}`:usingUrl&&hasUpload?'Direct URL saved as the secondary source; the uploaded file remains public primary.':usingUrl?'Direct image URL selected. Use the preview to confirm it renders, then publish.':'Number artwork source updated. Publish Driver League Assignments to update the site.');
-        return;
-      }
-    }
     const numberUpload=event.target.closest?.('[data-number-image-upload]');
     if(numberUpload&&key==='drivers'){
       const file=numberUpload.files?.[0];if(!file)return;
       commit();const selected=current();
-      try{status(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(!data.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;selected.numberImageBackup=numberArt;const shared=syncSharedKmart29Art(selected,{syncUrl:true,syncUpload:true});dirty=true;if(current()===selected)render();status(shared>1?`${file.name} is now the shared Kmart #29 artwork for Clutch, Eazy, and Matty. Publish Driver League Assignments to update the site.`:`${file.name} is attached to #${selected.number} and will be the public primary artwork. Publish Driver League Assignments to update the site.`);}catch(error){status(error.message);}return;
+      try{numberImageFeedback(`Optimizing ${file.name}…`);const numberArt=await uploadedNumberData(file);if(key!=='drivers'||!data?.includes(selected))throw new Error('The driver assignment changed during upload. Select it and upload again.');selected.numberImage=numberArt;selected.numberImageBackup='';const shared=syncSharedKmart29Art(selected,{syncUrl:true,syncUpload:true});dirty=true;if(current()===selected)render();numberImageFeedback(shared>1?`${file.name} selected for all ${shared} shared Kmart #29 assignments. Save a draft or publish to keep this change.`:`${file.name} selected for #${selected.number}. Save a draft or publish to keep this change.`);}catch(error){numberImageFeedback(error.message);}return;
     }
     const charterNumberUpload=event.target.closest?.('[data-charter-number-image-upload]');
     if(charterNumberUpload&&key==='charters'){
@@ -1380,6 +1452,8 @@
     dirty=true;
   });
   $('[data-content-fields]').addEventListener('click',(event)=>{
+    if(key==='drivers'&&event.target.closest('[data-number-image-use-url]')){useNumberImageUrl();return;}
+    if(key==='drivers'&&event.target.closest('[data-number-image-remove]')){selectNumberImage('');return;}
     const highlight=event.target.closest('[data-standing-highlight]');
     if(highlight){
       commit();
@@ -1517,6 +1591,7 @@
   $('[data-content-fields]').addEventListener('error',(event)=>{
     const image=event.target;if(!(image instanceof HTMLImageElement)||!image.classList.contains('driver-number-preview'))return;
     const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'){image.dataset.backupTried='1';image.src=backup;status('The primary number artwork did not render. Showing the secondary source instead.');}
+    else if(key==='drivers')numberImageFeedback('The number preview could not load. For a hosted image, check that the link opens the image itself and is publicly accessible.');
   },true);
   window.addEventListener('beforeunload',(event)=>{if(refreshDirtyState()){event.preventDefault();event.returnValue='';}});
   window.netlifyIdentity?.on('logout',()=>{loaded=false;data=null;key='';dirty=false;persistedSnapshot='';seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});
