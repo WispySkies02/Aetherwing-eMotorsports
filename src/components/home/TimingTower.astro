@@ -1,0 +1,61 @@
+---
+// Broadcast timing tower for the NRRS championship fight. Shows the leaders
+// down to the Chase cutoff, then any Aetherwing car below it, so a phone sees
+// the whole battle without opening the full standings page.
+import { standings, drivers } from '../../lib/site-content.mjs';
+const board = standings.find((entry) => entry.id === 'nrrs');
+const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && entry.affiliation === 'aetherwing').map((entry) => String(entry.number));
+---
+<div class="aw-tower" data-timing-tower data-team-numbers={teamNumbers.join(',')} hidden={!board?.rows?.length}>
+  <header class="aw-tower__head">
+    <span><b data-tower-status>{board?.status || 'STANDINGS'}</b><small data-tower-title>{board?.title || 'NRRS Championship'}</small></span>
+    <em data-tower-context>{board?.subtitle?.split(' · ').find((part) => /after/i.test(part)) || ''}</em>
+  </header>
+  <ol class="aw-tower__rows" data-tower-rows></ol>
+  <p class="aw-tower__note"><span class="aw-tower__key" aria-hidden="true"></span>Aetherwing car <span class="aw-tower__cut-key" aria-hidden="true"></span><span data-tower-cut>{board?.cutoffLabel || 'Chase cutoff'}</span></p>
+</div>
+<script is:inline type="application/json" data-tower-seed set:html={JSON.stringify(board || null)} />
+
+<script>
+  const tower = document.querySelector('[data-timing-tower]');
+  if (tower instanceof HTMLElement) {
+    const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    let teamNumbers = new Set((tower.dataset.teamNumbers || '').split(',').filter(Boolean));
+
+    const render = (board) => {
+      const rows = Array.isArray(board?.rows) ? board.rows : [];
+      tower.hidden = !rows.length;
+      if (!rows.length) return;
+      const isTeam = (row) => row.highlight || teamNumbers.has(String(row.number));
+      const cutoff = Number(board.cutoffAfter) || 0;
+      const showTop = Math.max(cutoff + 1, 6);
+      const picked = rows.map((row, index) => ({ row, index })).filter(({ row, index }) => index < showTop || isTeam(row));
+      const leaderPts = Number(rows[0]?.points) || 0;
+      let previous = -1;
+      tower.querySelector('[data-tower-rows]').innerHTML = picked.map(({ row, index }) => {
+        const skipped = previous >= 0 && index - previous > 1 ? '<li class="aw-tower__gap" aria-hidden="true"><span>⋮</span></li>' : '';
+        previous = index;
+        const move = Number(row.positionChange) || 0;
+        const moveMark = move > 0 ? `<i class="is-up"><span aria-hidden="true">▲${move}</span><span class="aw-sr">up ${move}</span></i>` : move < 0 ? `<i class="is-down"><span aria-hidden="true">▼${Math.abs(move)}</span><span class="aw-sr">down ${Math.abs(move)}</span></i>` : '<i class="is-flat"><span aria-hidden="true">–</span><span class="aw-sr">no change</span></i>';
+        const gap = index === 0 ? 'LEADER' : (row.delta && row.delta !== 'LEADER' ? row.delta : `-${leaderPts - (Number(row.points) || 0)}`);
+        const classes = [isTeam(row) ? 'is-team' : '', cutoff && index === cutoff ? 'is-cut' : ''].filter(Boolean).join(' ');
+        return `${skipped}<li class="${classes}"><b class="aw-tower__pos">${esc(String(row.position || `P${index + 1}`).replace(/^P/i, ''))}</b>${moveMark}<span class="aw-tower__num">${esc(row.number)}</span><strong>${esc(row.driver)}</strong><em>${esc(gap)}</em></li>`;
+      }).join('');
+      tower.querySelector('[data-tower-status]').textContent = board.status || 'STANDINGS';
+      tower.querySelector('[data-tower-title]').textContent = board.title || 'NRRS Championship';
+      tower.querySelector('[data-tower-context]').textContent = String(board.subtitle || '').split(' · ').find((part) => /after/i.test(part)) || '';
+      tower.querySelector('[data-tower-cut]').textContent = board.cutoffLabel || 'Chase cutoff';
+      tower.querySelector('.aw-tower__cut-key').hidden = !cutoff;
+      tower.querySelector('[data-tower-cut]').hidden = !cutoff;
+    };
+
+    try { render(JSON.parse(document.querySelector('[data-tower-seed]')?.textContent || 'null')); } catch {}
+    const applyLive = (datasets) => {
+      if (Array.isArray(datasets?.drivers)) teamNumbers = new Set(datasets.drivers.filter((entry) => entry.competitionId === 'nrrs' && entry.affiliation === 'aetherwing').map((entry) => String(entry.number)));
+      const board = Array.isArray(datasets?.standings) ? datasets.standings.find((entry) => entry.id === 'nrrs') : null;
+      if (board) render(board);
+    };
+    window.addEventListener('aetherwing:content', (event) => applyLive(event.detail));
+    if (window.__AETHERWING_CONTENT__) applyLive(window.__AETHERWING_CONTENT__);
+  }
+</script>
