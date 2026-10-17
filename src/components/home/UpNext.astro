@@ -1,0 +1,38 @@
+---
+// The next four Aetherwing sessions as a compact list. Shares the race feed
+// that MobileNav prints, so live Admin schedule edits update it too.
+import { scheduleEvents, results } from '../../lib/site-content.mjs';
+import { buildRaceFeed, eventEnd, eventStart, seriesLogo, seriesShort } from '../../lib/race-clock.mjs';
+const now = new Date();
+const rows = buildRaceFeed(scheduleEvents, results, { from: new Date(now.getTime() - 3 * 86400000).toISOString().slice(0, 10) })
+  .filter((event) => !event.done && eventEnd(event) >= now).slice(0, 4);
+const day = (event) => eventStart(event).toLocaleDateString('en-US', { month: 'short', timeZone: 'America/New_York' });
+const date = (event) => eventStart(event).toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/New_York' });
+---
+<ol class="ux-list ux-upnext" data-up-next>
+  {rows.map((event) => (
+    <li><a class="ux-row" href={event.url}>
+      <span class="ux-date">{day(event)}<b>{date(event)}</b></span>
+      <span><strong>{event.track}</strong><small>{seriesShort[event.league] || event.leagueName} · {event.time || 'Event window'}</small></span>
+      {seriesLogo[event.league] ? <img class="ux-upnext__logo" src={seriesLogo[event.league]} alt="" width="44" height="32" loading="lazy" /> : <span />}
+    </a></li>
+  ))}
+</ol>
+
+<script>
+  import { subscribeFeed, eventEnd, eventStart, seriesLogo, seriesShort } from '../../lib/race-clock.mjs';
+  const list = document.querySelector('[data-up-next]');
+  if (list instanceof HTMLElement) {
+    const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    const part = (event, opts) => eventStart(event).toLocaleDateString('en-US', { ...opts, timeZone: 'America/New_York' });
+    let signature = '';
+    subscribeFeed((feed) => {
+      const now = new Date();
+      const rows = feed.filter((event) => !event.done && eventEnd(event) >= now).slice(0, 4);
+      const next = rows.map((event) => event.url + event.track + event.time).join('|');
+      if (!rows.length || next === signature) return;
+      signature = next;
+      list.innerHTML = rows.map((event) => `<li><a class="ux-row" href="${esc(event.url)}"><span class="ux-date">${part(event, { month: 'short' })}<b>${part(event, { day: 'numeric' })}</b></span><span><strong>${esc(event.track)}</strong><small>${esc(seriesShort[event.league] || event.leagueName)} · ${esc(event.time || 'Event window')}</small></span>${seriesLogo[event.league] ? `<img class="ux-upnext__logo" src="${seriesLogo[event.league]}" alt="" width="44" height="32" loading="lazy">` : '<span></span>'}</a></li>`).join('');
+    });
+  }
+</script>

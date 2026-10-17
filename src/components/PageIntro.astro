@@ -1,5 +1,6 @@
 ---
+// Page header for every interior page: kicker, title, lede, optional actions.
 interface Props { eyebrow:string; title:string; description:string; }
 const {eyebrow,title,description}=Astro.props;
 ---
-<section class="page-intro"><div class="wrap"><p class="eyebrow">{eyebrow}</p><h1>{title}</h1><p>{description}</p></div></section>
+<header class="ux-pagehead"><p class="ux-kicker"><b>AEM</b>{eyebrow}</p><h1 class="ux-title">{title}</h1><p class="ux-lede">{description}</p><slot/></header>

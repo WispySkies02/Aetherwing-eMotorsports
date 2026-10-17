@@ -64,7 +64,7 @@ for(const theme of ['halloween','halloween-week','fall','christmas','christmas-w
   if(!publicRule||publicRule.includes('aetherwing-editorial.webp'))throw Error(`Full takeover ${theme} must replace the public editorial background.`);
   if(!adminRule||adminRule.includes('aetherwing-editorial.webp'))throw Error(`Theme Preview ${theme} must replace the admin editorial background.`);
 }
-for(const file of ['src/styles/home.css','src/styles/records.css','src/styles/race-calendar.css']){
+for(const file of ['src/styles/ux-home.css','src/styles/records.css','src/styles/race-calendar.css']){
   const css=readFileSync(file,'utf8');
   if(css.includes("url('/images/textures/aetherwing-editorial.webp')"))throw Error(`${file} still hard-codes the editorial image instead of using --site-bg-art.`);
 }
@@ -182,14 +182,16 @@ console.log('v1.1.51 verified: number uploads are resilient and Driver Directory
 
 // v1.2.0 — public team-site redesign + logo-led filters.
 const headerSource=readFileSync('src/components/global/SiteHeader.astro','utf8');
-const homeCss=readFileSync('src/styles/home.css','utf8');
+const homeCss=readFileSync('src/styles/ux-home.css','utf8');
 const paintPageSource=readFileSync('src/pages/paint-booth/index.astro','utf8');
-if(!headerSource.includes('site-header__utility')||!headerSource.includes('header-race-link')||!headerSource.includes('AETHERWING eMOTORSPORTS'))throw Error('v1.2.0 team-site header/race-control treatment is missing.');
+// v3.0.0 — Paddock app shell replaces the v1.2.0 utility header: desktop rail + phone top bar with live race chip.
+const railSource=readFileSync('src/components/global/AppRail.astro','utf8');
+if(!headerSource.includes('ux-topbar')||!headerSource.includes('data-race-chip')||!railSource.includes('data-rail-nav')||!railSource.includes('data-rail-race'))throw Error('v3.0.0 app shell (rail + top bar race chip) is missing.');
 for(const asset of ['/images/schedule-logos/nrrs.png','/images/schedule-logos/kmart-regular.jpg','/images/schedule-logos/sunoco.png','/images/schedule-logos/uarl-d1.png','/images/schedule-logos/open.png','/images/schedule-logos/iracing.png'])if(!raceCalendarSource.includes(asset))throw Error(`Race Calendar logo filter is missing ${asset}.`);
 if(!lineupSource.includes('aw-lineup__filter-logo')||!lineupSource.includes("all:'/images/brand/aetherwing-logo.png'"))throw Error('Driver Lineup must use the logo-led program filter system.');
 if(!championshipsSource.includes('/images/schedule-logos/nrrs.png')||!championshipsSource.includes('/images/schedule-logos/kmart-regular.jpg')||!championshipsSource.includes('/images/schedule-logos/sunoco.png')||!championshipsSource.includes('/images/schedule-logos/uarl-d1.png'))throw Error('Championship filters must use league logos.');
 if(!paintPageSource.includes('leagueVisual')||!paintPageSource.includes('/images/schedule-logos/uarl-d2.png'))throw Error('Paint Booth must use logo-led league filters while retaining historical UARL D2 paint access.');
-if(!homeSource.includes('home-programs__rail')||!homeSource.includes('programLogo')||!homeCss.includes('v1.2.0 — full team-site homepage redesign'))throw Error('Homepage program rail/team-site redesign is missing.');
+if(!homeSource.includes('home-programs__rail')||!homeSource.includes('programLogo')||!homeCss.includes('v3.0.0 — PADDOCK UI · Race hub'))throw Error('Homepage program rail/race-hub layout is missing.');
 if(!siteCss.includes('v1.2.0 — AETHERWING TEAM-SITE REDESIGN')||!siteCss.includes('--red:#e10600')||!siteCss.includes('--blue:#4a6fff'))throw Error('Aetherwing logo-led v1.2.0 public design tokens are missing.');
 console.log('v1.2.0 verified: team-site redesign and logo-led public filters are intact.');
 
@@ -219,7 +221,7 @@ console.log('v2.0.7 verified: desktop driver artwork feed, compact Anniversary b
 const navigationSeedNow=JSON.parse(readFileSync('src/data/navigation.json','utf8'));
 const paintNav=navigationSeedNow.find((item)=>item.label==='Paint Booth'&&item.group==='Team');
 if(paintNav?.href!=='https://paint.aetherwing.net/')throw Error('Team → Paint Booth navigation must point directly to paint.aetherwing.net.');
-if(!headerSource.includes("item?.label==='Paint Booth'&&item?.href==='/paint-booth/'")||!readFileSync('src/lib/site-content.mjs','utf8').includes("href:'https://paint.aetherwing.net/'"))throw Error('Public navigation must migrate previously published legacy /paint-booth/ links to the standalone Paint Booth.');
+if(!railSource.includes("item?.label === 'Paint Booth' && item?.href === '/paint-booth/'")||!readFileSync('src/lib/site-content.mjs','utf8').includes("href:'https://paint.aetherwing.net/'"))throw Error('Public navigation must migrate previously published legacy /paint-booth/ links to the standalone Paint Booth.');
 console.log('v2.0.7 verified: Team → Paint Booth routes directly to the standalone viewer, including legacy published navigation.');
 
 // v2.0.8 — desktop artwork hydration must retry and must not depend on the mobile canvas fitter.
