@@ -241,6 +241,8 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
     const hide = compact.matches && y > 160 && y > lastY + 4 && !document.documentElement.classList.contains('aw-sheet-open');
     if (hide) header?.classList.add('is-tucked');
     else if (y < lastY - 4 || y <= 160) header?.classList.remove('is-tucked');
+    // Sticky page controls (e.g. the championship picker) follow the header.
+    document.documentElement.classList.toggle('aw-header-tucked', Boolean(header?.classList.contains('is-tucked')));
     lastY = y;
   };
   window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });

@@ -188,3 +188,21 @@
   :root:not(#ux) .ux-main .aw-paint-gallery__info button{display:flex!important;justify-content:space-between;align-items:center;gap:4px;width:100%;min-height:40px;padding:6px 8px!important;font-size:.6rem!important;white-space:nowrap;overflow:hidden}
   :root:not(#ux) .ux-main .aw-paint-gallery__info button b{flex:none}
 }
+
+/* ---------- Championship league picker ----------
+   Stays pinned while reading standings: flush under the 60px top bar on
+   phones/tablets, moving to the screen edge when the bar tucks away, and
+   to the top of the viewport on desktop (no top bar beside the rail).
+   One compact row so it never covers more than a single standings row. */
+:root:not(#ux) .ux-main .championship-filter{position:sticky!important;top:68px!important;z-index:40!important;display:flex!important;grid-auto-flow:unset!important;gap:6px!important;margin:0 0 16px!important;padding:4px!important;overflow-x:auto;border:1px solid var(--ux-line)!important;border-radius:calc(var(--ux-r) + 2px)!important;background:rgba(9,10,13,.92)!important;box-shadow:0 10px 24px rgba(0,0,0,.35)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);scrollbar-width:none;transition:top .32s var(--ux-ease)}
+:root:not(#ux) .ux-main .championship-filter::-webkit-scrollbar{display:none}
+html.aw-header-tucked:not(#ux) .ux-main .championship-filter{top:8px!important}
+@media(min-width:1100px){:root:not(#ux) .ux-main .championship-filter{top:12px!important}}
+:root:not(#ux) .ux-main .championship-filter button{position:relative;flex:0 0 auto!important;display:inline-flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;min-width:0!important;min-height:44px!important;height:auto!important;padding:4px 12px 4px 4px!important;border:0!important;border-radius:var(--ux-r)!important;background:transparent!important;box-shadow:none!important;clip-path:none!important;color:var(--ux-ink-2)!important;transform:none!important;cursor:pointer}
+:root:not(#ux) .ux-main .championship-filter button:before,:root:not(#ux) .ux-main .championship-filter button:after{display:none!important}
+:root:not(#ux) .ux-main .championship-filter button>span{display:grid!important;place-items:center;width:48px!important;height:34px!important;min-height:0!important;margin:0!important;padding:3px!important;border:0!important;border-radius:var(--ux-r-sm);background:rgba(255,255,255,.05)!important}
+:root:not(#ux) .ux-main .championship-filter button img{width:100%!important;height:100%!important;max-width:none!important;object-fit:contain!important;margin:0!important}
+:root:not(#ux) .ux-main .championship-filter button b{padding:0!important;border:0!important;background:none!important;font:600 .86rem/1.1 var(--ux-body)!important;font-style:normal!important;letter-spacing:0!important;text-transform:none!important;text-shadow:none!important;white-space:nowrap}
+:root:not(#ux) .ux-main .championship-filter button:hover{color:#fff!important}
+:root:not(#ux) .ux-main .championship-filter button.is-active{background:var(--ux-s3)!important;color:#fff!important;box-shadow:inset 0 -2px 0 var(--ux-accent)!important}
+@media(prefers-reduced-motion:reduce){:root:not(#ux) .ux-main .championship-filter{transition:none}}
