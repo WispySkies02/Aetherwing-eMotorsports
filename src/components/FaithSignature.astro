@@ -15,16 +15,11 @@ const fallback = {
 const copy = siteSettings[field] || fallback[field];
 const verse = siteSettings.faithVerse || 'Matthew 17:20';
 ---
-<section class={`faith-signature faith-signature--${variant}`} data-faith-signature={field} aria-label="Aetherwing faith statement">
-  <div class="wrap faith-signature__inner">
-    <span class="faith-signature__spark" aria-hidden="true">✦</span>
-    <div class="faith-signature__copy">
-      <small>{label}</small>
-      <p data-faith-copy>{copy}</p>
-    </div>
-    <strong data-faith-verse>{verse}</strong>
-  </div>
-</section>
+<aside class={`ux-faith ux-faith--${variant}`} data-faith-signature={field} aria-label="Aetherwing faith statement">
+  <i aria-hidden="true">✦</i>
+  <div><small>{label}</small><p data-faith-copy>{copy}</p></div>
+  <strong data-faith-verse>{verse}</strong>
+</aside>
 <script is:inline>
   (()=>{
     const roots=[...document.querySelectorAll('[data-faith-signature]')];

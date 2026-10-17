@@ -1,0 +1,190 @@
+/* =========================================================
+   v3.0.0 — PADDOCK UI · component bridge
+   Script-rendered components (calendar, lineup, standings, results,
+   Team Wire blocks, paint gallery) keep the class names their live-data
+   renderers emit. This layer gives them the Paddock look. The
+   :root:not(#ux) prefix adds id-level weight so the old component
+   skins (including theme rules aimed at those classes) yield, while
+   every theme still supplies the colors through --ux-accent.
+   ========================================================= */
+
+/* ---------- Page structure inside the new shell ---------- */
+:root:not(#ux) .ux-main .wrap,:root:not(#ux) .ux-main .shell{width:100%;max-width:none;margin-inline:0}
+:root:not(#ux) .ux-main .section{margin-top:clamp(36px,6vw,64px);padding:0;background:none!important;border:0!important;box-shadow:none!important}
+:root:not(#ux) .ux-main .section:before,:root:not(#ux) .ux-main .section:after{display:none}
+:root:not(#ux) .ux-main .section-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px;margin:0 0 16px;padding:0;border:0}
+:root:not(#ux) .ux-main .section-head:after{display:none!important}
+:root:not(#ux) .ux-main .section-head>div{min-width:0}
+:root:not(#ux) .ux-main :is(.section-title,.section-head h2){margin:0;font:800 clamp(1.6rem,3vw,2.3rem)/.95 var(--ux-display)!important;letter-spacing:0!important;text-transform:uppercase;text-shadow:none!important;filter:none!important}
+:root:not(#ux) .ux-main .eyebrow{margin:0 0 8px;color:var(--ux-ink-3)!important;font:400 .68rem/1.2 var(--ux-mono)!important;letter-spacing:.16em!important;text-transform:uppercase;text-shadow:none!important}
+:root:not(#ux) .ux-main .eyebrow:before{display:none!important}
+:root:not(#ux) .ux-main :is(.lede,.section-head>p){max-width:56ch;margin:0;color:var(--ux-ink-2);font-size:.95rem}
+:root:not(#ux) .ux-main .section-head>a,:root:not(#ux) .ux-main .section-head>.btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;clip-path:none!important;color:var(--ux-ink-2)!important;font:600 .9rem/1 var(--ux-body)!important;letter-spacing:0;text-transform:none;text-decoration:none}
+:root:not(#ux) .ux-main .section-head>a:hover{color:#fff!important}
+:root:not(#ux) .ux-main :is(h1,h2,h3,h4){font-style:normal;text-shadow:none!important}
+:root:not(#ux) .ux-main .story-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+
+/* ---------- Cards ---------- */
+:root:not(#ux) .ux-main :is(.story-panel,.news-tile,.results-list article,.profile-stat,.profile-assignment,.profile-partners,.program-card,.mission-program,.news-stat-card,.aw-lineup__poster,.aw-paint-gallery__tile,.aw-paint-gallery__hero,.aw-calendar__hero,.aw-calendar__upcoming,.standings-board,.team-partner,.partner-logos article,.history-win-grid>div){border:1px solid var(--ux-line)!important;border-radius:var(--ux-r)!important;background:var(--ux-s1)!important;box-shadow:none!important;clip-path:none!important;filter:none!important}
+:root:not(#ux) .ux-main :is(.story-panel,.program-card,.mission-program,.news-tile,.team-partner){padding:clamp(16px,2.2vw,24px)!important}
+:root:not(#ux) .ux-main .story-panel:after{display:none!important}
+:root:not(#ux) .ux-main :is(.story-panel,.news-tile,.program-card,.mission-program,.team-partner,.results-list article) :is(h2,h3){margin:8px 0 6px;font:700 clamp(1.2rem,1.8vw,1.5rem)/1.05 var(--ux-display)!important;letter-spacing:.005em!important;text-transform:uppercase}
+:root:not(#ux) .ux-main :is(.story-panel,.news-tile,.program-card,.mission-program,.team-partner) p{color:var(--ux-ink-2)}
+:root:not(#ux) .ux-main :is(.story-panel,.news-tile,.program-card,.mission-program,.team-partner,.results-list article) a{color:var(--ux-ink);font:600 .9rem/1 var(--ux-body)!important;letter-spacing:0;text-transform:none}
+:root:not(#ux) .ux-main :is(.story-panel,.program-card,.mission-program,.team-partner) .eyebrow{color:var(--ux-accent)!important}
+:root:not(#ux) .ux-main :is(a.news-tile,a.program-card,.results-list a){transition:border-color .18s ease,transform .18s var(--ux-ease)}
+@media(hover:hover){:root:not(#ux) .ux-main :is(a.news-tile,a.program-card):hover{border-color:var(--ux-line-2)!important;transform:translateY(-2px)}}
+:root:not(#ux) .ux-main .profile-assignment{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;margin-top:8px;padding:10px 12px!important;background:var(--ux-sink)!important}
+:root:not(#ux) .ux-main .profile-assignment span{font:700 1rem/1 var(--ux-display);text-transform:uppercase}
+:root:not(#ux) .ux-main .profile-assignment strong{color:var(--ux-accent);font:800 1.2rem/1 var(--ux-display)}
+:root:not(#ux) .ux-main .profile-assignment small{color:var(--ux-ink-3);font:400 .66rem/1 var(--ux-mono);text-transform:uppercase}
+
+/* ---------- Buttons and filters ---------- */
+:root:not(#ux) .ux-main .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px!important;border:1px solid var(--ux-accent)!important;border-radius:var(--ux-r)!important;background:var(--ux-accent)!important;box-shadow:none!important;clip-path:none!important;color:var(--aw-on-accent,#fff)!important;font:700 .95rem/1 var(--ux-body)!important;letter-spacing:0!important;text-transform:none!important;transform:none!important}
+:root:not(#ux) .ux-main .btn--ghost{border-color:var(--ux-line-2)!important;background:rgba(10,11,14,.55)!important;color:var(--ux-ink)!important}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,[data-standings-filters],.standings-filters){display:flex!important;flex-wrap:nowrap!important;gap:6px!important;margin:0 0 16px!important;padding:4px!important;overflow-x:auto;border:1px solid var(--ux-line);border-radius:calc(var(--ux-r) + 2px);background:var(--ux-sink);scrollbar-width:none}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,[data-standings-filters],.standings-filters)::-webkit-scrollbar{display:none}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,[data-standings-filters],.standings-filters) button{flex:0 0 auto!important;display:inline-flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;width:auto!important;min-width:0!important;min-height:44px!important;height:auto!important;padding:4px 12px 4px 6px!important;border:0!important;border-radius:var(--ux-r)!important;background:transparent!important;box-shadow:none!important;clip-path:none!important;color:var(--ux-ink-2)!important;transform:none!important}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,[data-standings-filters],.standings-filters) button[aria-pressed="true"]{background:var(--ux-s3)!important;color:#fff!important;box-shadow:inset 0 -2px 0 var(--ux-accent)!important}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button :is(img){width:44px!important;height:30px!important;max-width:none!important;object-fit:contain!important;margin:0!important}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button>span:first-child{display:grid;place-items:center;width:52px!important;height:34px!important;min-height:0!important;padding:0!important;border:0!important;background:rgba(255,255,255,.05)!important;border-radius:var(--ux-r-sm)}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button :is(strong,small,b){font-style:normal!important;text-shadow:none!important}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button strong{font:600 .86rem/1.1 var(--ux-body)!important;text-transform:none!important;letter-spacing:0!important;white-space:nowrap}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button small{color:var(--ux-ink-3)!important;font:400 .62rem/1 var(--ux-mono)!important}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button>*{border:0!important;background-color:transparent}
+:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button:before,:root:not(#ux) .ux-main :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,[data-standings-filters],.standings-filters) button:after{display:none!important}
+
+/* ---------- Race calendar ---------- */
+:root:not(#ux) .ux-main .aw-calendar__layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+:root:not(#ux) .ux-main .aw-calendar__hero{display:grid;gap:12px;min-height:0!important;padding:clamp(18px,2.6vw,28px)!important;background:radial-gradient(circle at 85% 0%,color-mix(in srgb,var(--ux-accent) 18%,transparent),transparent 60%),var(--ux-s1)!important}
+:root:not(#ux) .ux-main .aw-calendar__hero :is(span,small,p){color:var(--ux-ink-3)!important;font:400 .68rem/1.3 var(--ux-mono)!important;letter-spacing:.12em!important;text-transform:uppercase}
+:root:not(#ux) .ux-main .aw-calendar__hero [data-calendar-state]{color:var(--ux-accent)!important}
+:root:not(#ux) .ux-main .aw-calendar__hero h3{margin:0;font:800 clamp(1.9rem,3.6vw,3rem)/.92 var(--ux-display)!important;letter-spacing:-.005em!important;text-transform:uppercase}
+:root:not(#ux) .ux-main .aw-calendar__hero h4{margin:6px 0 0;color:var(--ux-ink-2);font:600 1.05rem/1.2 var(--ux-body)!important;text-transform:none}
+:root:not(#ux) .ux-main .aw-calendar__hero strong{display:block;margin-top:8px;font:400 clamp(1.8rem,3vw,2.4rem)/1 var(--ux-mono)!important;font-style:normal!important;font-variant-numeric:tabular-nums;color:#fff}
+:root:not(#ux) .ux-main .aw-calendar__hero>a{justify-self:start;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:var(--ux-r);background:var(--ux-accent);color:var(--aw-on-accent,#fff)!important;font:700 .92rem/1 var(--ux-body)!important;letter-spacing:0;text-decoration:none;text-transform:none}
+:root:not(#ux) .ux-main .aw-calendar__upcoming{padding:0!important;overflow:hidden}
+:root:not(#ux) .ux-main .aw-calendar__heading{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--ux-line);color:var(--ux-ink-3);font:400 .66rem/1 var(--ux-mono);letter-spacing:.14em}
+:root:not(#ux) .ux-main .aw-calendar__heading a{color:var(--ux-ink-2);font:600 .85rem/1 var(--ux-body);letter-spacing:0;text-decoration:none}
+:root:not(#ux) .ux-main .aw-calendar__event{display:grid!important;grid-template-columns:56px minmax(0,1fr) auto!important;gap:14px!important;align-items:center;min-height:64px;margin:0!important;padding:10px 16px!important;border:0!important;border-top:1px solid var(--ux-line)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;clip-path:none!important;color:inherit;text-decoration:none}
+:root:not(#ux) .ux-main .aw-calendar__event:first-child{border-top:0!important;box-shadow:inset 3px 0 var(--ux-accent)!important}
+:root:not(#ux) .ux-main .aw-calendar__event:hover{background:rgba(255,255,255,.035)!important}
+:root:not(#ux) .ux-main .aw-calendar__event>span{display:grid;place-items:center;min-height:44px;border-radius:var(--ux-r-sm);background:rgba(255,255,255,.05);color:#fff;font:700 .82rem/1.1 var(--ux-display);text-align:center}
+:root:not(#ux) .ux-main .aw-calendar__event small{display:block;color:var(--ux-ink-3)!important;font:400 .7rem/1.3 var(--ux-mono)!important;letter-spacing:.04em}
+:root:not(#ux) .ux-main .aw-calendar__event strong{display:block;margin:2px 0;font:700 1.08rem/1.05 var(--ux-display)!important;font-style:normal!important;text-transform:uppercase}
+:root:not(#ux) .ux-main .aw-calendar__event em{display:block;color:var(--ux-ink-2);font:400 .82rem/1.3 var(--ux-body);font-style:normal}
+:root:not(#ux) .ux-main .aw-calendar__event b{color:var(--ux-accent);font:600 .8rem/1 var(--ux-body)}
+:root:not(#ux) .ux-main .aw-calendar__recent{margin-top:14px;padding:12px 16px;border:1px solid var(--ux-line)!important;border-radius:var(--ux-r);background:var(--ux-s1)!important;box-shadow:none!important}
+:root:not(#ux) .ux-main .aw-calendar__recent *{font-style:normal!important}
+
+/* ---------- Standings ---------- */
+:root:not(#ux) .ux-main .standings-board{padding:0!important;overflow:hidden}
+:root:not(#ux) .ux-main :is(.standings-chase-panel__head,.standings-board__head,.standings-board>header){padding:clamp(16px,2.4vw,24px)!important;border-bottom:1px solid var(--ux-line);background:radial-gradient(circle at 90% 0%,color-mix(in srgb,var(--ux-accent) 14%,transparent),transparent 60%)!important}
+:root:not(#ux) .ux-main .standings-board :is(h2,h3){font:800 clamp(1.6rem,3vw,2.4rem)/.95 var(--ux-display)!important;letter-spacing:0!important;text-transform:uppercase}
+:root:not(#ux) .ux-main .standing-row{border-color:var(--ux-line)!important;background:transparent!important;box-shadow:none!important;clip-path:none!important}
+:root:not(#ux) .ux-main .standing-row:nth-child(even){background:rgba(255,255,255,.02)!important}
+:root:not(#ux) .ux-main .standing-row :is(strong,b,span){font-style:normal!important;text-shadow:none!important}
+:root:not(#ux) .ux-main .standing-row__position{font-family:var(--ux-display)!important;font-weight:800!important}
+:root:not(#ux) .ux-main .standing-row.is-highlight,:root:not(#ux) .ux-main .standing-row[data-highlight="true"]{background:linear-gradient(90deg,color-mix(in srgb,var(--ux-accent) 20%,transparent),transparent 80%)!important;box-shadow:inset 3px 0 var(--ux-accent)!important}
+:root:not(#ux) .ux-main .standings-cutoff{border-color:var(--ux-cut)!important;background:rgba(232,196,90,.08)!important;color:var(--ux-cut)!important;font-family:var(--ux-mono)!important;font-style:normal!important}
+
+/* ---------- Driver lineup cards ---------- */
+:root:not(#ux) .ux-main .aw-lineup__poster{overflow:hidden}
+:root:not(#ux) .ux-main .aw-lineup__poster :is(h2,h3,strong){font-style:normal!important;text-shadow:none!important}
+:root:not(#ux) .ux-main .aw-lineup__poster a{color:var(--ux-ink)!important;font:600 .86rem/1 var(--ux-body)!important;letter-spacing:0!important;text-transform:none!important}
+
+/* ---------- Results, wins, news ---------- */
+:root:not(#ux) .ux-main .results-list article{padding:clamp(14px,2vw,20px)!important}
+:root:not(#ux) .ux-main .history-win-grid>div{padding:14px!important;min-height:0!important}
+:root:not(#ux) .ux-main .history-win-grid b{color:var(--ux-accent)!important;font-family:var(--ux-display)!important}
+:root:not(#ux) .ux-main .news-tile :is(span,small){color:var(--ux-ink-3)!important;font:400 .66rem/1.3 var(--ux-mono)!important;letter-spacing:.1em}
+
+/* ---------- Paint gallery ---------- */
+:root:not(#ux) .ux-main .aw-paint-gallery__tile{padding:0!important;overflow:hidden}
+:root:not(#ux) .ux-main :is(.aw-paint-gallery__tile,.aw-paint-gallery__hero,.aw-paint-gallery__visual) img{color:transparent;font-size:0;background:radial-gradient(circle at 50% 45%,#1d2126,#0b0c0f 70%)}
+:root:not(#ux) .ux-main .aw-paint-gallery__info h3{font:700 1.05rem/1.05 var(--ux-display)!important;font-style:normal!important}
+:root:not(#ux) .ux-main .aw-paint-gallery__info button{border:1px solid var(--ux-line-2)!important;border-radius:var(--ux-r-sm)!important;background:var(--ux-sink)!important;font-family:var(--ux-mono)!important}
+
+/* ---------- Partners ---------- */
+:root:not(#ux) .ux-main .partner-logos article{padding:14px!important}
+:root:not(#ux) .ux-main .partner-logos strong{font:800 1.4rem/1 var(--ux-display)!important}
+
+/* ---------- Phones ---------- */
+@media(max-width:860px){
+  :root:not(#ux) .ux-main .aw-calendar__layout{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  :root:not(#ux) .ux-main .history-win-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  :root:not(#ux) .ux-main .aw-paint-gallery__grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  :root:not(#ux) .ux-main .partner-logos{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  :root:not(#ux) .ux-main .partner-logos article{min-height:100px!important}
+  :root:not(#ux) .ux-main .partner-logos strong{font-size:1.1rem!important}
+  :root:not(#ux) .ux-main .mission-counts{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  :root:not(#ux) .ux-main .mission-counts>*{min-height:0!important;padding:12px!important}
+  :root:not(#ux) .ux-main .mission-counts :is(b,strong){font-size:2rem!important}
+}
+
+/* ---------- Race-weekend clock (EventClock) ---------- */
+/* ---------- Race-weekend session strip (event pages) ---------- */
+.aw-session{margin-top:14px;border:1px solid var(--ux-line);border-radius:var(--ux-r);background:var(--ux-s1)}
+.aw-session__inner{padding-inline:18px;display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:1.2rem;padding-block:1rem}
+.aw-session__logo{display:grid;place-items:center;width:64px;height:48px}
+.aw-session__logo img{max-width:64px;max-height:48px;object-fit:contain}
+.aw-session__logo b{font:800 1rem/1 var(--ux-display)}
+.aw-session__state{display:flex;align-items:center;gap:.5rem;margin:0;font:400 .7rem/1 var(--ux-mono);letter-spacing:.16em;text-transform:uppercase;color:#d8dcdf}
+.aw-session__state i{width:8px;height:8px;background:var(--ux-accent);transform:rotate(45deg)}
+.aw-session__clock{display:grid;grid-template-columns:repeat(4,minmax(52px,72px));gap:.35rem}
+.aw-session__clock span{display:grid;justify-items:center;gap:.25rem;padding:.45rem 0 .4rem;border:1px solid var(--ux-line);border-radius:var(--ux-r-sm);background:var(--ux-sink)}
+.aw-session__clock b{font:400 1.6rem/1 var(--ux-mono);font-variant-numeric:tabular-nums;color:#fff}
+.aw-session__clock small{color:var(--ux-ink-3);font:400 .5rem/1 var(--ux-mono);letter-spacing:.16em;text-transform:uppercase}
+.aw-session__when{display:grid;gap:.2rem;margin:0;color:#c6cbcf;font:400 .76rem/1.3 var(--ux-mono)}
+.aw-session__when em{color:var(--ux-ink-3);font-style:normal}
+.aw-session__when em:empty{display:none}
+.aw-session__ics{display:inline-flex;align-items:center;gap:.5rem;min-height:46px;padding:0 1rem;border:1px solid var(--ux-line-2);background:transparent;color:#eef0f2;font:700 .92rem/1 var(--ux-body);border-radius:var(--ux-r);cursor:pointer;clip-path:none}
+.aw-session__ics:hover{border-color:#eef0f2}
+.aw-session__ics svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.aw-session__inner[data-state="live"] .aw-session__state{color:var(--ux-accent)}
+.aw-session__inner[data-state="live"] .aw-session__state i{border-radius:50%;transform:none;animation:aw-live 1.3s ease-in-out infinite}
+.aw-session__inner[data-state="live"] .aw-session__clock,.aw-session__inner[data-state="done"] .aw-session__clock{opacity:.35}
+.aw-session__inner[data-state="done"] .aw-session__state i{background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/4px 4px;transform:none}
+@keyframes aw-live{50%{opacity:.35}}
+
+@media(max-width:760px){
+  .aw-session__inner{grid-template-columns:auto 1fr;gap:.75rem 1rem}
+  .aw-session__clock{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}
+  .aw-session__when{grid-column:1/-1}
+  .aw-session__ics{grid-column:1/-1;justify-content:center}
+}
+
+/* ---------- Event page title block (renders its own header markup) ---------- */
+:root:not(#ux) .ux-main .page-intro{min-height:0!important;display:block;padding:clamp(28px,5vw,56px) 0 clamp(20px,3.4vw,32px)!important;border:0!important;border-bottom:1px solid var(--ux-line)!important;background:none!important;box-shadow:none!important}
+:root:not(#ux) .ux-main .page-intro:before,:root:not(#ux) .ux-main .page-intro:after{display:none!important}
+:root:not(#ux) .ux-main .page-intro .wrap{display:grid;gap:12px}
+:root:not(#ux) .ux-main .page-intro h1{max-width:20ch;margin:0!important;font:800 clamp(2.5rem,6.2vw,5rem)/.92 var(--ux-display)!important;letter-spacing:-.01em!important;text-transform:uppercase;text-shadow:none!important}
+:root:not(#ux) .ux-main .page-intro .eyebrow{margin:0!important}
+:root:not(#ux) .ux-main .page-intro a.eyebrow{color:var(--ux-ink-2)!important;text-decoration:none}
+:root:not(#ux) .ux-main .page-intro p:last-of-type{color:var(--ux-ink-2)}
+:root:not(#ux) .ux-main .page-intro .btn{justify-self:start}
+
+/* ---------- Fixes after the first full-site pass ---------- */
+/* Section heads stay left-aligned on phones (old rule flipped them to a right-aligned column). */
+:root:not(#ux) .ux-main .section-head{flex-direction:row!important;align-items:flex-end!important;text-align:left!important}
+:root:not(#ux) .ux-main .section-head>div{flex:1 1 260px}
+/* A component directly under the page header drops its repeated title. */
+:root:not(#ux) .ux-main .ux-pagehead~:is(.aw-calendar,.aw-lineup) .section-head>div:first-child{display:none}
+:root:not(#ux) .ux-main .ux-pagehead~:is(.aw-calendar,.aw-lineup){margin-top:20px}
+:root:not(#ux) .ux-main .drivers-page>.aw-lineup{margin-top:20px}
+:root:not(#ux) .ux-main .drivers-page .ux-pagehead~.aw-lineup .section-head>div:first-child{display:none}
+/* Team Wire headlines use the upright Paddock display face. */
+:root:not(#ux) .ux-main .news-article h1{font:800 clamp(2.4rem,5.4vw,4.6rem)/.92 var(--ux-display)!important;font-style:normal!important;letter-spacing:-.01em!important;text-shadow:none!important}
+:root:not(#ux) .ux-main .news-article :is(h2,h3,strong,b,em){text-shadow:none!important}
+:root:not(#ux) .ux-main .news-article :is(h2,h3){font-style:normal!important}
+:root:not(#ux) .ux-main .news-tile{min-height:0!important}
+:root:not(#ux) .ux-main .news-tile>:last-child{margin-top:auto;padding-top:14px}
+@media(max-width:640px){
+  :root:not(#ux) .ux-main .aw-lineup__grid{gap:10px!important}
+  :root:not(#ux) .ux-main .aw-lineup__poster{min-height:310px!important}
+  :root:not(#ux) .ux-main .aw-paint-gallery__info{display:grid!important;gap:8px!important;padding:10px!important}
+  :root:not(#ux) .ux-main .aw-paint-gallery__info button{display:flex!important;justify-content:space-between;align-items:center;gap:4px;width:100%;min-height:40px;padding:6px 8px!important;font-size:.6rem!important;white-space:nowrap;overflow:hidden}
+  :root:not(#ux) .ux-main .aw-paint-gallery__info button b{flex:none}
+}

@@ -32,7 +32,7 @@ try {
   const overlayFile=join(cwd,'src/data/admin-content.json');
   await build();
   const css=fs.readdirSync(join(cwd,'dist/_astro')).filter((file)=>file.endsWith('.css')).map((file)=>fs.readFileSync(join(cwd,'dist/_astro',file),'utf8')).join('\n');
-  assert.match(css,/html\.menu-open\s*\{\s*overflow:\s*hidden\s*;?\s*\}/,'Compiled mobile menu rule must lock page scrolling');
+  assert.match(css,/html\.aw-sheet-open(?:,\s*html\.aw-sheet-open\s+body)?\s*\{\s*overflow:\s*hidden\s*;?\s*\}/,'Compiled mobile menu sheet must lock page scrolling');
   assert.doesNotMatch(css,/:global\(/,'Astro-only selector syntax must not leak into browser CSS');
   // The sync script canonically adds core partners. Restore this build baseline,
   // rather than expecting an empty source overlay to survive normalization.
@@ -64,7 +64,9 @@ try {
     for(const path of ['news/index.html','news/publication-fixture-story/index.html'])assert.ok(read(path).includes('Publication Fixture Story'),`${path} must render the published story`);
     for(const path of ['index.html',`news/${lead.slug}/index.html`])assert.ok(read(path).includes('Publication Fixture Lead'),`${path} must render edits to the canonical featured story`);
     assert.ok(read('index.html').includes(`/news/${lead.slug}/`),'Homepage must still link to the canonical lead');
-    assert.ok(!read('index.html').includes('Publication Fixture Story'),'An unfeatured story must not replace the canonical homepage lead');
+    // v3.0.0: the race hub also lists recent stories, so check the lead slot itself.
+    const leadCard=(read('index.html').match(/<a[^>]*class="[^"]*hub-wire__lead[^"]*"[^>]*>[\s\S]*?<\/a>/)||[''])[0];
+    assert.ok(leadCard.includes(`/news/${lead.slug}/`)&&!leadCard.includes('Publication Fixture Story'),'An unfeatured story must not replace the canonical homepage lead');
     for(const slug of [eventSlug(event),legacyEventSlug(event)]) {
       const html=read(`event/${slug}/index.html`);
       assert.ok(html.includes('Publication Fixture Race'),'Stable and legacy event routes must render the published race');

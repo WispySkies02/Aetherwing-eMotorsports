@@ -1,0 +1,80 @@
+---
+// Desktop app rail (≥1100px): brand, every Admin-managed page, and a live
+// race-control card. Phones and tablets use the top bar + dock instead.
+import { navigation, siteSettings } from '../../lib/site-content.mjs';
+const path = Astro.url.pathname;
+const isActive = (href = '') => href.startsWith('/') && (href === '/' ? path === '/' : path.startsWith(href));
+const isExternal = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
+const home = navigation.find((item) => item.group === 'Home') ?? { label: 'Home', href: '/' };
+const groups = ['Team', 'Race', 'Connect']
+  .map((label) => ({ label, links: navigation.filter((item) => item.group === label) }))
+  .filter((group) => group.links.length);
+---
+<aside class="ux-rail" aria-label="Site">
+  <a class="ux-rail__brand" href="/" aria-label={`${siteSettings.name} home`}><img src={siteSettings.logo} alt={siteSettings.name} width="212" height="56" /></a>
+  <nav class="ux-rail__nav" aria-label="Primary navigation" data-rail-nav>
+    <ul class="ux-rail__home"><li><a class="ux-rail__link" href={home.href} aria-current={isActive(home.href) ? 'page' : undefined}>{home.label}</a></li></ul>
+    {groups.map((group) => (
+      <div class="ux-rail__group">
+        <h2>{group.label}</h2>
+        <ul>{group.links.map((item) => <li><a class="ux-rail__link" href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}{isExternal(item.href) && <small aria-label="(external)">↗</small>}</a></li>)}</ul>
+      </div>
+    ))}
+  </nav>
+  <a class="ux-rail__race" href="/schedule/" data-rail-race hidden>
+    <span class="ux-rail__race-top"><b data-rail-state>Next race</b><span data-rail-series></span></span>
+    <strong data-rail-track></strong>
+    <em data-rail-when></em>
+    <span class="ux-rail__clock" data-rail-clock></span>
+  </a>
+  <div class="ux-rail__foot">
+    <a href={siteSettings.discordUrl}>Team Discord ↗</a>
+    <small>{siteSettings.tagline}<br />To God be the glory · {siteSettings.faithVerse || 'Matthew 17:20'}</small>
+  </div>
+</aside>
+
+<script>
+  import { subscribeFeed, nextRace, compactCountdown, whenLabel, seriesShort } from '../../lib/race-clock.mjs';
+
+  const rail = document.querySelector('.ux-rail');
+  const nav = rail?.querySelector('[data-rail-nav]');
+  const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const here = () => location.pathname.replace(/\/+$/, '/') || '/';
+  const active = (href = '') => href.startsWith('/') && (href === '/' ? here() === '/' : here().startsWith(href));
+  const external = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
+  const link = (item) => `<li><a class="ux-rail__link" href="${esc(item.href)}"${active(item.href) ? ' aria-current="page"' : ''}>${esc(item.label)}${external(item.href) ? '<small aria-label="(external)">↗</small>' : ''}</a></li>`;
+
+  // Admin-published navigation replaces the build-time links.
+  const renderNavigation = (items) => {
+    if (!(nav instanceof HTMLElement) || !Array.isArray(items) || !items.length) return;
+    const publicItems = items.map((item) => item?.label === 'Paint Booth' && item?.href === '/paint-booth/' ? { ...item, href: 'https://paint.aetherwing.net/' } : item);
+    const home = publicItems.find((item) => item?.group === 'Home') || { label: 'Home', href: '/' };
+    nav.innerHTML = `<ul class="ux-rail__home">${link(home)}</ul>` + ['Team', 'Race', 'Connect']
+      .map((label) => ({ label, links: publicItems.filter((item) => item?.group === label) }))
+      .filter((group) => group.links.length)
+      .map((group) => `<div class="ux-rail__group"><h2>${esc(group.label)}</h2><ul>${group.links.map(link).join('')}</ul></div>`)
+      .join('');
+  };
+  window.addEventListener('aetherwing:content', (event) => renderNavigation(event.detail?.navigation));
+  if (window.__AETHERWING_CONTENT__) renderNavigation(window.__AETHERWING_CONTENT__.navigation);
+
+  const card = rail?.querySelector('[data-rail-race]');
+  let feed = [];
+  const paint = () => {
+    if (!(card instanceof HTMLAnchorElement)) return;
+    const race = nextRace(feed, new Date());
+    card.hidden = !race;
+    if (!race) return;
+    const clock = compactCountdown(race);
+    const live = clock === 'LIVE';
+    card.href = race.url;
+    card.classList.toggle('is-live', live);
+    card.querySelector('[data-rail-state]').textContent = live ? 'Live now' : 'Next race';
+    card.querySelector('[data-rail-series]').textContent = seriesShort[race.league] || race.leagueName;
+    card.querySelector('[data-rail-track]').textContent = race.track;
+    card.querySelector('[data-rail-when]').textContent = whenLabel(race);
+    card.querySelector('[data-rail-clock]').textContent = live ? 'On track' : clock;
+  };
+  subscribeFeed((next) => { feed = next; paint(); });
+  window.setInterval(() => { if (!document.hidden) paint(); }, 1000);
+</script>

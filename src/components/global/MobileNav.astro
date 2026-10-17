@@ -126,7 +126,7 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
       if (target?.closest('a[href]')) finishClose();
     });
     window.addEventListener('pageshow', finishClose);
-    window.matchMedia('(min-width: 981px)').addEventListener('change', (query) => { if (query.matches) finishClose(); });
+    window.matchMedia('(min-width: 1100px)').addEventListener('change', (query) => { if (query.matches) finishClose(); });
 
     // Drag the grab handle (or the header) down to dismiss.
     const grabZones = sheet.querySelectorAll('[data-sheet-grab], .aw-sheet__head');
@@ -233,7 +233,7 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
 
   // Phones get the header out of the way while reading and back on scroll-up.
   const header = document.querySelector('[data-site-header]');
-  const compact = window.matchMedia('(max-width: 980px)');
+  const compact = window.matchMedia('(max-width: 1099px)');
   let lastY = window.scrollY, ticking = false;
   const onScroll = () => {
     ticking = false;

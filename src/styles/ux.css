@@ -1,0 +1,189 @@
+/* =========================================================
+   v3.0.0 — PADDOCK UI
+   A ground-up interface: app shell (desktop rail / phone dock),
+   new type pairing and component set. Every class here is `ux-`
+   prefixed so the legacy component layers in site.css never touch it.
+   site.css, seasonal-theme.js and seasonal-effects.css still run the
+   theme system unchanged; these components read its palette tokens
+   (--season-primary/-secondary/-tertiary, --site-bg-art) so every
+   seasonal takeover and Anniversary Week carries through.
+   ========================================================= */
+:root{
+  --ux-accent:var(--season-primary,#e10600);
+  --ux-accent-2:var(--season-secondary,#4a6fff);
+  --ux-gold:#e0c891;--ux-up:#2fd27a;--ux-down:#ff5148;--ux-cut:#e8c45a;
+  --ux-s1:rgba(17,20,25,.9);--ux-s2:rgba(23,27,33,.94);--ux-s3:#1d2229;--ux-sink:rgba(7,8,10,.72);
+  --ux-line:rgba(255,255,255,.08);--ux-line-2:rgba(255,255,255,.15);
+  --ux-ink:#f3f4f6;--ux-ink-2:#b8bec6;--ux-ink-3:#808892;
+  --ux-display:'Saira Condensed','Arial Narrow',Arial,sans-serif;
+  --ux-body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ux-mono:'Share Tech Mono',ui-monospace,monospace;
+  --ux-r:6px;--ux-r-sm:4px;
+  --ux-rail:252px;--ux-pad:clamp(16px,3.2vw,40px);--ux-max:1240px;
+  --ux-stripe:linear-gradient(90deg,var(--ux-accent) 0 38%,#f1f1f1 38% 48%,#7a8087 48% 56%,var(--ux-accent) 56% 72%,var(--ux-accent-2) 72%);
+  --ux-ease:cubic-bezier(.2,.8,.2,1);
+}
+html[data-anniversary-retro="true"]{--ux-accent:var(--retro-red,#e2242b);--ux-accent-2:var(--retro-blue,#2aa8ff);--ux-display:Arial,Helvetica,sans-serif}
+
+/* ---------- Base ---------- */
+body.ux{font:400 1rem/1.55 var(--ux-body);color:var(--ux-ink);-webkit-font-smoothing:antialiased}
+.ux :is(h1,h2,h3,h4){text-wrap:balance}
+.ux .skip{z-index:1000}
+.aw-sr,.ux-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.ux-num{font-family:var(--ux-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- Shell ---------- */
+.ux-app{display:block;min-height:100vh}
+.ux-stage{min-width:0}
+.ux-main{width:min(100%,calc(var(--ux-max) + 2 * var(--ux-pad)));margin-inline:auto;padding-inline:var(--ux-pad);padding-block:0 4rem}
+
+.ux-rail{display:none}
+@media(min-width:1100px){
+  .ux-app{display:grid;grid-template-columns:var(--ux-rail) minmax(0,1fr)}
+  .ux-rail{position:sticky;top:0;z-index:200;display:flex;flex-direction:column;height:100vh;overflow-y:auto;overscroll-behavior:contain;border-right:1px solid var(--ux-line);background:linear-gradient(180deg,color-mix(in srgb,var(--ux-accent-2) 10%,#0b0d10),#090a0d 46%,color-mix(in srgb,var(--ux-accent) 8%,#090a0d));scrollbar-width:thin}
+  .ux-rail:before{content:'';flex:none;height:4px;background:var(--ux-stripe)}
+}
+.ux-rail__brand{display:block;padding:22px 20px 14px}
+.ux-rail__brand img{display:block;width:100%;height:56px;object-fit:contain;object-position:left center;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.ux-rail__nav{display:grid;gap:18px;padding:10px 12px 18px}
+.ux-rail__home{margin:0;padding:0;list-style:none}
+.ux-rail__group h2{margin:0 0 6px 10px;color:var(--ux-ink-3);font:400 .64rem/1 var(--ux-mono);letter-spacing:.2em;text-transform:uppercase}
+.ux-rail__group ul{display:grid;gap:2px;margin:0;padding:0;list-style:none}
+.ux-rail__link{position:relative;display:flex;align-items:center;gap:10px;min-height:38px;padding:0 10px;border-radius:var(--ux-r-sm);color:var(--ux-ink-2);text-decoration:none;font:600 .95rem/1 var(--ux-body);transition:background .15s ease,color .15s ease}
+.ux-rail__link:hover{background:rgba(255,255,255,.05);color:var(--ux-ink)}
+.ux-rail__link[aria-current="page"]{background:linear-gradient(90deg,color-mix(in srgb,var(--ux-accent) 22%,transparent),transparent);color:#fff}
+.ux-rail__link[aria-current="page"]:before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:var(--ux-accent)}
+.ux-rail__link small{margin-left:auto;color:var(--ux-ink-3);font:400 .7rem/1 var(--ux-mono)}
+.ux-rail__race{display:grid;gap:8px;margin:auto 12px 12px;padding:14px;border:1px solid var(--ux-line);border-radius:var(--ux-r);background:var(--ux-sink);color:inherit;text-decoration:none}
+.ux-rail__race:hover{border-color:var(--ux-line-2)}
+.ux-rail__race-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--ux-ink-3);font:400 .62rem/1 var(--ux-mono);letter-spacing:.16em;text-transform:uppercase}
+.ux-rail__race-top b{display:flex;align-items:center;gap:6px;color:var(--ux-ink-2);font-weight:400}
+.ux-rail__race-top b:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--ux-accent)}
+.ux-rail__race.is-live .ux-rail__race-top b{color:var(--ux-accent)}
+.ux-rail__race.is-live .ux-rail__race-top b:before{animation:ux-pulse 1.3s ease-in-out infinite}
+.ux-rail__race strong{font:700 1.15rem/1.05 var(--ux-display);text-transform:uppercase;letter-spacing:.01em}
+.ux-rail__race em{color:var(--ux-ink-3);font:400 .78rem/1.3 var(--ux-body);font-style:normal}
+.ux-rail__clock{font:400 1.35rem/1 var(--ux-mono);font-variant-numeric:tabular-nums;color:#fff}
+.ux-rail__foot{display:grid;gap:10px;padding:14px 20px 22px;border-top:1px solid var(--ux-line)}
+.ux-rail__foot a{color:var(--ux-ink-2);font:600 .85rem/1 var(--ux-body);text-decoration:none}
+.ux-rail__foot a:hover{color:#fff}
+.ux-rail__foot small{color:var(--ux-ink-3);font:400 .62rem/1.4 var(--ux-mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* Phone/tablet top bar keeps the .site-header hook so themed header art still applies. */
+.ux .site-header.ux-topbar{position:sticky;top:0;z-index:300;display:flex;align-items:center;gap:12px;height:60px;padding:0 max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--ux-line);transition:transform .32s var(--ux-ease)}
+.ux .site-header.ux-topbar.is-tucked{transform:translateY(calc(-100% - 6px))}
+@media(min-width:1100px){.ux .site-header.ux-topbar{display:none}}
+.ux-topbar__brand{display:block;flex:0 1 170px;min-width:0;height:42px}
+.ux-topbar__brand img{width:100%;height:100%;object-fit:contain;object-position:left center}
+.ux .header-chip{display:none;align-items:center;gap:9px;min-height:42px;margin-left:auto;padding:5px 12px 5px 10px;border:1px solid var(--ux-line-2);border-radius:var(--ux-r);background:rgba(10,11,14,.7);color:#fff;text-decoration:none}
+.ux .header-chip:not([hidden]){display:flex}
+.ux .header-chip i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ux-ink-3)}
+.ux .header-chip span{display:grid;gap:3px;min-width:0}
+.ux .header-chip small{color:var(--ux-ink-3);font:400 .56rem/1 var(--ux-mono);letter-spacing:.14em;white-space:nowrap}
+.ux .header-chip b{max-width:40vw;overflow:hidden;font:400 .86rem/1 var(--ux-mono);font-variant-numeric:tabular-nums;text-overflow:ellipsis;white-space:nowrap}
+.ux .header-chip.is-live{border-color:var(--ux-accent)}
+.ux .header-chip.is-live i{background:var(--ux-accent);animation:ux-pulse 1.3s ease-in-out infinite}
+.ux .header-chip.is-live small{color:var(--ux-accent)}
+
+.ux .aw-season-banner{margin:0}
+
+/* ---------- Footer ---------- */
+.ux-footer{border-top:1px solid var(--ux-line);background:rgba(7,8,10,.86)}
+.ux-footer__inner{display:grid;grid-template-columns:1.4fr repeat(3,minmax(0,1fr));gap:28px;width:min(100%,calc(var(--ux-max) + 2 * var(--ux-pad)));margin-inline:auto;padding:40px var(--ux-pad) 28px}
+.ux-footer strong{display:block;font:800 1.6rem/1 var(--ux-display);letter-spacing:.02em;text-transform:uppercase}
+.ux-footer p{margin:8px 0 0;color:var(--ux-ink-2)}
+.ux-footer h2{margin:0 0 10px;color:var(--ux-ink-3);font:400 .64rem/1 var(--ux-mono);letter-spacing:.2em;text-transform:uppercase}
+.ux-footer ul{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.ux-footer li a{display:inline-flex;align-items:center;min-height:32px;color:var(--ux-ink-2);text-decoration:none}
+.ux-footer li a:hover{color:#fff}
+.ux-footer__base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;width:min(100%,calc(var(--ux-max) + 2 * var(--ux-pad)));margin-inline:auto;padding:16px var(--ux-pad) 28px;border-top:1px solid var(--ux-line);color:var(--ux-ink-3);font:400 .7rem/1.4 var(--ux-mono);letter-spacing:.08em;text-transform:uppercase}
+.ux-footer__base b{color:var(--ux-gold);font-weight:400}
+@media(max-width:760px){.ux-footer__inner{grid-template-columns:1fr 1fr;gap:22px 16px}.ux-footer__inner>div:first-child{grid-column:1/-1}}
+
+/* ---------- Page header ---------- */
+.ux-pagehead{position:relative;display:grid;gap:12px;padding:clamp(28px,5vw,56px) 0 clamp(20px,3.4vw,32px);margin-bottom:clamp(8px,2vw,18px);border-bottom:1px solid var(--ux-line)}
+.ux-pagehead:after{content:'';position:absolute;left:0;bottom:-2px;width:72px;height:3px;border-radius:2px;background:var(--ux-accent)}
+.ux-kicker{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;color:var(--ux-ink-3);font:400 .7rem/1.2 var(--ux-mono);letter-spacing:.18em;text-transform:uppercase}
+.ux-kicker a{color:var(--ux-ink-2);text-decoration:none}
+.ux-kicker a:hover{color:#fff}
+.ux-kicker b{color:var(--ux-accent);font-weight:400}
+.ux-title{margin:0;max-width:20ch;font:800 clamp(2.5rem,6.2vw,5rem)/.92 var(--ux-display);letter-spacing:-.01em;text-transform:uppercase}
+.ux-lede{max-width:62ch;margin:0;color:var(--ux-ink-2);font-size:clamp(1rem,1.3vw,1.12rem)}
+.ux-pagehead__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+
+/* ---------- Sections ---------- */
+.ux-section{margin-top:clamp(36px,6vw,64px)}
+.ux-section__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px;margin-bottom:16px}
+.ux-section__head>div{min-width:0}
+.ux-h2{margin:0;font:800 clamp(1.6rem,3vw,2.3rem)/.95 var(--ux-display);letter-spacing:0;text-transform:uppercase}
+.ux-section__head p{margin:6px 0 0;max-width:56ch;color:var(--ux-ink-2);font-size:.95rem}
+.ux-more{display:inline-flex;align-items:center;gap:6px;min-height:40px;color:var(--ux-ink-2);font:600 .9rem/1 var(--ux-body);text-decoration:none;white-space:nowrap}
+.ux-more:after{content:'→';transition:transform .15s ease}
+.ux-more:hover{color:#fff}
+.ux-more:hover:after{transform:translateX(3px)}
+
+/* ---------- Cards, grids, lists ---------- */
+.ux-card{position:relative;min-width:0;border:1px solid var(--ux-line);border-radius:var(--ux-r);background:var(--ux-s1);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ux-card--pad{padding:clamp(16px,2.2vw,24px)}
+.ux-card--accent{border-top:2px solid var(--ux-accent)}
+a.ux-card{display:block;color:inherit;text-decoration:none;transition:border-color .18s ease,transform .18s var(--ux-ease),background .18s ease}
+@media(hover:hover){a.ux-card:hover{border-color:var(--ux-line-2);background:var(--ux-s2);transform:translateY(-2px)}}
+.ux-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px}
+.ux-grid--2{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.ux-grid--3{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.ux-tag{display:inline-flex;align-items:center;gap:6px;color:var(--ux-ink-3);font:400 .68rem/1.2 var(--ux-mono);letter-spacing:.14em;text-transform:uppercase}
+.ux-tag b{color:var(--ux-accent);font-weight:400}
+.ux-card h3,.ux-h3{margin:8px 0 6px;font:700 clamp(1.2rem,1.8vw,1.5rem)/1.05 var(--ux-display);letter-spacing:.005em;text-transform:uppercase}
+.ux-card p{margin:0;color:var(--ux-ink-2)}
+.ux-list{margin:0;padding:0;list-style:none;border:1px solid var(--ux-line);border-radius:var(--ux-r);background:var(--ux-s1);overflow:hidden}
+.ux-list>li+li{border-top:1px solid var(--ux-line)}
+.ux-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;min-height:60px;padding:10px 16px;color:inherit;text-decoration:none}
+a.ux-row:hover{background:rgba(255,255,255,.035)}
+.ux-row strong{display:block;overflow:hidden;font:700 1.08rem/1.1 var(--ux-display);text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.ux-row small{display:block;margin-top:3px;color:var(--ux-ink-3);font:400 .8rem/1.3 var(--ux-body)}
+.ux-date{display:grid;justify-items:center;min-width:48px;padding:6px 0;border-radius:var(--ux-r-sm);background:rgba(255,255,255,.05);font:400 .62rem/1 var(--ux-mono);letter-spacing:.12em;color:var(--ux-ink-3);text-transform:uppercase}
+.ux-date b{display:block;margin-top:3px;color:#fff;font:700 1.3rem/1 var(--ux-display)}
+
+/* ---------- Controls ---------- */
+.ux-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border:1px solid var(--ux-accent);border-radius:var(--ux-r);background:var(--ux-accent);color:var(--aw-on-accent,#fff);font:700 .98rem/1 var(--ux-body);letter-spacing:.01em;text-decoration:none;cursor:pointer;transition:filter .15s ease}
+.ux-btn:hover{filter:brightness(1.1)}
+.ux-btn--ghost{border-color:var(--ux-line-2);background:rgba(10,11,14,.55);color:var(--ux-ink)}
+.ux-btn--ghost:hover{border-color:var(--ux-ink-2);filter:none}
+.ux-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ux-chip{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:0 9px;border:1px solid var(--ux-line-2);border-radius:var(--ux-r-sm);color:var(--ux-ink-2);font:400 .7rem/1 var(--ux-mono);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.ux-chip--accent{border-color:color-mix(in srgb,var(--ux-accent) 60%,transparent);color:var(--ux-accent)}
+:is(.ux,.ux *):focus-visible{outline:2px solid var(--ux-accent-2);outline-offset:2px}
+
+/* Segmented tabs that scroll sideways on phones. */
+.ux-tabs{display:flex;gap:6px;margin:0 0 16px;padding:4px;overflow-x:auto;border:1px solid var(--ux-line);border-radius:calc(var(--ux-r) + 2px);background:var(--ux-sink);scrollbar-width:none}
+.ux-tabs::-webkit-scrollbar{display:none}
+.ux-tabs button{display:inline-flex;flex:0 0 auto;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:0;border-radius:var(--ux-r);background:transparent;color:var(--ux-ink-2);font:600 .9rem/1 var(--ux-body);white-space:nowrap;cursor:pointer}
+.ux-tabs button:hover{color:#fff}
+.ux-tabs button[aria-pressed="true"],.ux-tabs button[aria-selected="true"]{background:var(--ux-s3);color:#fff;box-shadow:inset 0 -2px 0 var(--ux-accent)}
+.ux-tabs img{width:30px;height:22px;object-fit:contain}
+
+/* ---------- Stats ---------- */
+.ux-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));border:1px solid var(--ux-line);border-radius:var(--ux-r);background:var(--ux-s1);overflow:hidden}
+.ux-stats>div{display:flex;flex-direction:column-reverse;gap:6px;padding:16px 18px}
+.ux-stats>div+div{border-left:1px solid var(--ux-line)}
+.ux-stats dt,.ux-stat__label{color:var(--ux-ink-3);font:400 .64rem/1.2 var(--ux-mono);letter-spacing:.14em;text-transform:uppercase}
+.ux-stats dd,.ux-stat__value{margin:0;font:800 clamp(1.8rem,3.4vw,2.6rem)/.9 var(--ux-display);font-variant-numeric:tabular-nums}
+.ux-stats>div:first-child dd{color:var(--ux-accent)}
+@media(max-width:520px){.ux-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ux-stats>div:nth-child(odd){border-left:0}.ux-stats>div:nth-child(n+3){border-top:1px solid var(--ux-line)}}
+
+/* ---------- Faith line ---------- */
+.ux-faith{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;margin-top:18px;padding:14px 18px;border:1px solid color-mix(in srgb,var(--ux-gold) 30%,transparent);border-radius:var(--ux-r);background:linear-gradient(90deg,rgba(224,200,145,.08),transparent 70%)}
+.ux-faith i{color:var(--ux-gold);font-style:normal}
+.ux-faith small{display:block;color:var(--ux-gold);font:400 .62rem/1 var(--ux-mono);letter-spacing:.18em;text-transform:uppercase}
+.ux-faith p{margin:4px 0 0;color:var(--ux-ink);font-weight:500}
+.ux-faith strong{color:var(--ux-gold);font:400 .72rem/1 var(--ux-mono);letter-spacing:.1em;white-space:nowrap}
+@media(max-width:620px){.ux-faith{grid-template-columns:auto minmax(0,1fr)}.ux-faith strong{grid-column:2}}
+
+/* ---------- Motion ---------- */
+@keyframes ux-pulse{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.ux *,.ux *:before{animation:none!important;transition:none!important}}
+
+/* ---------- Seasonal hooks for the new components ---------- */
+html[data-season] .ux-card--accent,html[data-season] .ux-pagehead:after{box-shadow:0 0 22px color-mix(in srgb,var(--ux-accent) 22%,transparent)}
+html[data-anniversary-retro="true"] :is(.ux-title,.ux-h2,.ux-card h3,.ux-row strong,.ux-rail__race strong){font-style:italic;letter-spacing:-.02em}
+html[data-anniversary-retro="true"] :is(.ux-card,.ux-list,.ux-stats){background:linear-gradient(180deg,rgba(13,58,82,.85),rgba(6,25,37,.9));border-color:rgba(85,189,236,.35)}
