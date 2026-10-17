@@ -198,4 +198,46 @@
     head.addEventListener('click', (event) => { if (!(event.target instanceof Element) || !event.target.closest('a,button,input,select,textarea')) flip(); });
     head.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flip(); } });
   });
+  // ---- Phone home screen (layout only) ----
+  // Overview opens with one large card per section; each card lists that
+  // section's tabs. Tapping one clicks the real [data-admin-tabs] link, so
+  // content-admin.js opens it exactly as from the sidebar or sheet.
+  const overview = document.querySelector('[data-admin-overview]');
+  if (overview && tabs) {
+    const blurbs = {
+      race: 'Schedule, results, wins, standings and milestones.',
+      people: 'Who races where, numbers, profiles, charters and leagues.',
+      news: 'Team Wire stories, team partners and driver portfolios.',
+      paint: 'Feature, edit and organise paints, plus the 3D viewer.',
+      site: 'Site settings, navigation, page text and theme preview.'
+    };
+    const icons = {
+      race: '<path d="M5 21V3.5M5 4h14v9H5"/><path class="is-fill" d="M5 4h4.7v4.5H5zM14.3 4H19v4.5h-4.7zM9.7 8.5h4.6V13H9.7z"/>',
+      people: '<path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.3a3.5 3.5 0 0 1 0 6.4M21.5 20a6.5 6.5 0 0 0-4-6"/>',
+      news: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5M8 16h3"/>',
+      paint: '<path d="M4 16.5c0-1.5 1-2.5 2.5-2.5h11c1.5 0 2.5 1 2.5 2.5V18H4zM6 14l2.2-5.2A2 2 0 0 1 10 7.5h4a2 2 0 0 1 1.8 1.3L18 14M7 18v2M17 18v2"/>',
+      site: '<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'
+    };
+    const escHome = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    const home = document.createElement('section');
+    home.className = 'adm-home';
+    home.setAttribute('aria-label', 'Admin sections');
+    const lanes = [...tabs.querySelectorAll('h2[data-adm-lane]')].map((heading) => ({
+      lane: heading.dataset.admLane,
+      title: heading.textContent.trim(),
+      links: [...tabs.querySelectorAll(`:is(a,button)[data-adm-lane="${heading.dataset.admLane}"]`)]
+    }));
+    home.innerHTML = `<header class="adm-home__head"><small>Race control</small><h2>Where to?</h2></header>` + lanes.map((group, index) => `
+      <article class="adm-home__card" data-adm-home-lane="${escHome(group.lane)}">
+        <div class="adm-home__title"><svg viewBox="0 0 24 24" aria-hidden="true">${icons[group.lane] || ''}</svg><span><b>${escHome(group.title)}</b><small>${escHome(blurbs[group.lane] || '')}</small></span><em>${group.links.length}</em></div>
+        <div class="adm-home__links">${group.links.map((link, i) => `<button type="button" data-adm-home-open="${index}:${i}">${escHome(label(link))}</button>`).join('')}</div>
+      </article>`).join('');
+    home.addEventListener('click', (event) => {
+      const button = event.target instanceof Element ? event.target.closest('[data-adm-home-open]') : null;
+      if (!button) return;
+      const [laneIndex, linkIndex] = button.dataset.admHomeOpen.split(':').map(Number);
+      lanes[laneIndex]?.links[linkIndex]?.click();
+    });
+    overview.prepend(home);
+  }
 })();
