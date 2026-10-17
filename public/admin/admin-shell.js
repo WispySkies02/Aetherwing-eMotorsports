@@ -85,4 +85,33 @@
   };
   if (workspace) new MutationObserver(syncDock).observe(workspace, { attributes: true, attributeFilter: ['hidden'] });
   syncDock();
+
+  // Typing mode (phones): while a text field has focus the on-screen keyboard
+  // takes half the screen, so the sticky header, dock and Save / Publish bar
+  // step aside and give the field the room. They return when typing stops.
+  const typable = (el) => el instanceof HTMLTextAreaElement
+    || el instanceof HTMLSelectElement
+    || (el instanceof HTMLInputElement && !['button', 'submit', 'reset', 'checkbox', 'radio', 'file', 'range', 'color', 'image', 'hidden'].includes(el.type))
+    || (el instanceof HTMLElement && el.isContentEditable);
+  const viewport = window.visualViewport;
+  // Full-screen height before the keyboard opened (some browsers shrink
+  // innerHeight with the keyboard, so it can't be the reference).
+  let fullHeight = viewport ? viewport.height : window.innerHeight;
+  const syncViewport = () => root.style.setProperty('--adm-vv', `${Math.round(viewport ? viewport.height : window.innerHeight)}px`);
+  const setTyping = (on) => {
+    root.classList.toggle('adm-typing', on && compact.matches);
+    if (on) syncViewport();
+  };
+  document.addEventListener('focusin', (event) => { if (typable(event.target)) setTyping(true); });
+  document.addEventListener('focusout', () => {
+    // Moving between fields keeps typing mode; leaving them all ends it.
+    window.setTimeout(() => setTyping(typable(document.activeElement)), 120);
+  });
+  viewport?.addEventListener('resize', () => {
+    if (!root.classList.contains('adm-typing')) { fullHeight = viewport.height; return; }
+    syncViewport();
+    // Keyboard dismissed while the field keeps focus: restore the chrome.
+    if (viewport.height > fullHeight * 0.85) root.classList.remove('adm-typing');
+  });
+  compact.addEventListener('change', () => setTyping(typable(document.activeElement)));
 })();

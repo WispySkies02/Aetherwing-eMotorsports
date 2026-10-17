@@ -198,3 +198,18 @@ html:not(#adm) .ops-toast{left:50%!important;right:auto!important;bottom:24px!im
 .number-image-options>label,.number-image-options>div,.number-image-options label{display:grid;gap:8px;min-width:0}
 .number-image-options small{display:block}
 [data-number-image-feedback]:empty{display:none}
+
+/* ---------- Typing mode (phones, keyboard open) ----------
+   admin-shell.js adds html.adm-typing while a text field has focus. The
+   sticky header, dock and Save / Publish bar step out of the way so the
+   field gets the visible space; everything returns when typing stops. */
+@media(max-width:900px){
+  html.adm-typing:not(#adm) .ops-header{position:relative!important}
+  html.adm-typing .adm-dock{display:none!important}
+  html.adm-typing.adm-signed-in body{padding-bottom:0}
+  html.adm-typing:not(#adm) [data-content-form]>.actions{position:static!important;box-shadow:none!important}
+  html.adm-typing:not(#adm) .ops-toast{bottom:16px!important}
+  /* A focused multi-line field (e.g. a pasted standings CSV) fills the
+     space above the keyboard instead of a few lines. */
+  html.adm-typing:not(#adm) textarea:focus{height:max(160px,calc(var(--adm-vv,60vh) - 72px))!important;max-height:none!important;scroll-margin-top:12px}
+}
