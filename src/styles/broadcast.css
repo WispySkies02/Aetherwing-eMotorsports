@@ -1,0 +1,159 @@
+/* =========================================================
+   v2.2.0 — PIT WALL BROADCAST UI (all public pages)
+   One design layer over the existing markup, scoped to
+   html[data-ui="broadcast"][lang] body so it can be switched off in Base.astro.
+   Seasonal themes keep their palettes, atmosphere, banners and
+   Anniversary Week takeover: every accent below reads --aw-accent,
+   which follows --season-primary whenever a theme is active.
+   ========================================================= */
+html[data-ui="broadcast"][lang]{
+  --aw-accent:var(--season-primary,#e10600);--aw-on-accent:#fff;
+  --ui-panel:#0f1114;--ui-panel-2:#15181c;--ui-line:#262a30;--ui-line-2:#3a3f46;
+  --ui-ink:#f2f3f4;--ui-mute:#9aa1a7;--ui-dim:#6c737a;--ui-data:#8fb0ff;
+  --ui-cut:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+  --ui-cut-sm:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);
+  --ui-stripe:linear-gradient(90deg,var(--aw-accent) 0 36%,#f1f1f1 36% 47%,#777d83 47% 55%,var(--aw-accent) 55% 71%,var(--blue,#4a6fff) 71% 100%);
+}
+html[data-ui="broadcast"][lang][data-anniversary-retro="true"]{--aw-accent:#e2242b}
+
+/* ---------- Page title card (every interior page) ---------- */
+html[data-ui="broadcast"][lang] body .page-intro{min-height:0!important;display:block;padding-block:clamp(2.4rem,5vw,4.4rem) clamp(1.8rem,3.4vw,2.8rem)!important;border-bottom:0!important;box-shadow:none!important}
+html[data-ui="broadcast"][lang] body .page-intro:before{left:0;right:0;width:auto!important;height:4px!important;background:var(--ui-stripe)!important;clip-path:none!important}
+html[data-ui="broadcast"][lang] body .page-intro .wrap{display:grid;gap:.85rem}
+html[data-ui="broadcast"][lang] body .page-intro .eyebrow{display:inline-flex;align-items:stretch;justify-self:start;gap:0;margin:0;padding:0;font:400 .7rem/1 var(--font-mono);letter-spacing:.16em;color:#d8dcdf;text-transform:uppercase}
+html[data-ui="broadcast"][lang] body .page-intro .eyebrow~.eyebrow{background:none;padding:0;line-height:1.4}
+html[data-ui="broadcast"][lang] body .page-intro .eyebrow~.eyebrow:before{content:''!important;flex:none;width:14px!important;height:3px!important;padding:0;margin:0 .6rem 0 0!important}
+html[data-ui="broadcast"][lang] body .page-intro .btn{justify-self:start}
+html[data-ui="broadcast"][lang] body .page-intro .eyebrow{align-items:center;padding-right:.7rem;background:#16191d;text-shadow:none}
+html[data-ui="broadcast"][lang] body .page-intro .eyebrow:before{content:'AEM'!important;display:grid!important;place-items:center;width:auto!important;height:auto!important;margin:0 .65rem 0 0!important;padding:.42rem .55rem;background:var(--aw-accent)!important;color:var(--aw-on-accent)!important;letter-spacing:.12em;box-shadow:none!important}
+html[data-ui="broadcast"][lang] body .page-intro h1{max-width:18ch;margin:0!important;font:900 italic clamp(2.7rem,7vw,6rem)/.86 var(--font-condensed)!important;letter-spacing:-.025em!important;text-transform:uppercase;text-shadow:none!important;filter:none!important;text-wrap:balance}
+html[data-ui="broadcast"][lang] body .page-intro p:last-child{max-width:62ch;margin:0;color:#c3c8cc;font-size:clamp(.95rem,1.3vw,1.08rem);line-height:1.5}
+
+/* ---------- Section heads ---------- */
+html[data-ui="broadcast"][lang] body .section{padding-block:clamp(2.6rem,6vw,5.5rem)}
+html[data-ui="broadcast"][lang] body .section-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:.6rem 1.5rem;margin-bottom:clamp(1.1rem,2.4vw,1.8rem);padding-bottom:.8rem;border-bottom:1px solid var(--ui-line)}
+html[data-ui="broadcast"][lang] body .section-head:after{width:min(140px,30vw)!important;height:3px!important;background:var(--aw-accent)!important;bottom:-2px!important}
+html[data-ui="broadcast"][lang] body .section-head>div{min-width:0}
+html[data-ui="broadcast"][lang] body :is(.section-title,.section-head h2){margin:0;font:900 italic clamp(2rem,4.2vw,3.5rem)/.9 var(--font-condensed)!important;letter-spacing:-.02em!important;text-transform:uppercase;text-shadow:none!important;filter:none!important;text-wrap:balance}
+html[data-ui="broadcast"][lang] body .eyebrow{margin:0 0 .45rem;color:var(--ui-mute);font:400 .66rem/1.2 var(--font-mono);letter-spacing:.18em;text-transform:uppercase}
+html[data-ui="broadcast"][lang] body .eyebrow:before{width:14px!important;height:3px!important;background:var(--aw-accent)!important;box-shadow:none!important}
+html[data-ui="broadcast"][lang] body .eyebrow{text-shadow:none!important}
+html[data-ui="broadcast"][lang] body .section-head:after{box-shadow:none!important}
+html[data-ui="broadcast"][lang] body .section-head .lede,html[data-ui="broadcast"][lang] body .section-head>p{max-width:48ch;margin:0;color:var(--ui-mute);font-size:.95rem;line-height:1.5}
+html[data-ui="broadcast"][lang] body .section-head>a,html[data-ui="broadcast"][lang] body .section-head>.btn{display:inline-flex;align-items:center;min-height:40px;padding:.4rem 0!important;border:0!important;background:none!important;box-shadow:none!important;clip-path:none!important;color:#e4e7e9!important;font:400 .74rem/1 var(--font-mono)!important;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+html[data-ui="broadcast"][lang] body .section-head>a:hover,html[data-ui="broadcast"][lang] body .section-head>.btn:hover{color:var(--aw-accent)!important}
+
+/* A component that repeats the page title directly under it drops its own heading. */
+html[data-ui="broadcast"][lang] body .page-intro~:is(.aw-calendar,.aw-lineup) .section-head>div:first-child{display:none}
+html[data-ui="broadcast"][lang] body .page-intro~:is(.aw-calendar,.aw-lineup) .section-head{justify-content:flex-start}
+html[data-ui="broadcast"][lang] body .page-intro~:is(.aw-calendar,.aw-lineup){padding-top:clamp(1.6rem,3vw,2.6rem)}
+
+/* ---------- Panels: one card language everywhere ---------- */
+html[data-ui="broadcast"][lang] body :is(.story-panel,.news-tile,.results-list article,.profile-stat,.profile-assignment,.profile-partners,.program-card,.home-after__card,.home-story__feature,.home-people__tile,.aw-calendar__hero,.aw-calendar__upcoming,.aw-lineup__poster,.aw-paint-gallery__tile,.standings-board,.mission-program,.news-stat-card){border:1px solid var(--ui-line)!important;border-top:2px solid var(--aw-accent)!important;border-radius:0!important;background:linear-gradient(180deg,var(--ui-panel-2),var(--ui-panel) 60%)!important;box-shadow:none!important;clip-path:var(--ui-cut)}
+html[data-ui="broadcast"][lang] body .story-panel:after{content:'';display:none}
+html[data-ui="broadcast"][lang] body :is(.story-panel,.news-tile,.results-list article,.program-card,.aw-lineup__poster,.aw-paint-gallery__tile) :is(h2,h3){text-shadow:none!important}
+html[data-ui="broadcast"][lang] body .story-panel :is(h2,h3){font:900 italic clamp(1.5rem,2.6vw,2.4rem)/.95 var(--font-condensed);letter-spacing:-.01em;text-transform:uppercase}
+html[data-ui="broadcast"][lang] body .story-panel a{color:var(--aw-accent);font:400 .74rem var(--font-mono);letter-spacing:.08em}
+html[data-ui="broadcast"][lang] body :is(a.news-tile,a.program-card,.results-list a,a.home-story__feature,a.home-people__tile,.aw-calendar__event){transition:transform .18s ease,border-color .18s ease}
+@media(hover:hover){html[data-ui="broadcast"][lang] body :is(a.news-tile,a.program-card,a.home-story__feature,a.home-people__tile,.aw-calendar__event):hover{transform:translateY(-2px);border-color:var(--ui-line-2)!important}}
+html[data-ui="broadcast"][lang] body .aw-calendar__event{border:1px solid var(--ui-line)!important;border-left:3px solid var(--ui-line-2)!important;border-radius:0!important;background:var(--ui-panel)!important;box-shadow:none!important;clip-path:var(--ui-cut-sm)}
+html[data-ui="broadcast"][lang] body .aw-calendar__event:first-child{border-left-color:var(--aw-accent)!important}
+
+/* ---------- Buttons ---------- */
+html[data-ui="broadcast"][lang] body .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.75rem 1.3rem!important;border:1px solid var(--aw-accent)!important;border-radius:0!important;background:var(--aw-accent)!important;box-shadow:none!important;color:var(--aw-on-accent)!important;font:900 italic .92rem/1 var(--font-condensed)!important;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;clip-path:var(--ui-cut-sm);transition:filter .18s ease}
+html[data-ui="broadcast"][lang] body .btn:hover{filter:brightness(1.12)}
+html[data-ui="broadcast"][lang] body .btn--ghost{background:rgba(10,11,13,.7)!important;border-color:var(--ui-line-2)!important;color:#eef0f2!important}
+html[data-ui="broadcast"][lang] body .btn--ghost:hover{border-color:#eef0f2!important}
+
+/* ---------- Logo filters (calendar, lineup, championships, paints) ---------- */
+html[data-ui="broadcast"][lang] body :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,.standings-filters,[data-standings-filters]) button{border:1px solid var(--ui-line)!important;border-bottom:3px solid transparent!important;border-radius:0!important;background:var(--ui-panel)!important;box-shadow:none!important;clip-path:none!important;transition:border-color .15s ease,background .15s ease}
+html[data-ui="broadcast"][lang] body :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,.standings-filters,[data-standings-filters]) button[aria-pressed="true"]{border-bottom-color:var(--aw-accent)!important;background:linear-gradient(180deg,var(--ui-panel-2),color-mix(in srgb,var(--aw-accent) 14%,var(--ui-panel)))!important}
+html[data-ui="broadcast"][lang] body :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues,.partner-select,.standings-filters,[data-standings-filters]) button:hover{border-color:var(--ui-line-2)!important}
+
+/* ---------- Faith strip: kept, quieter ---------- */
+html[data-ui="broadcast"][lang] body .faith-signature__inner{border:0!important;border-left:3px solid var(--gold,#e0c891)!important;border-radius:0!important;background:linear-gradient(90deg,rgba(224,200,145,.07),transparent 70%)!important;box-shadow:none!important}
+
+/* ---------- Data type ---------- */
+html[data-ui="broadcast"][lang] body :is(.standing-row__points,.standing-row__gap,.aw-calendar__event>span,[data-calendar-clock],.profile-stat strong){font-variant-numeric:tabular-nums}
+
+/* ---------- Footer ---------- */
+html[data-ui="broadcast"][lang] body .site-footer{border-top:0;background:linear-gradient(180deg,#0b0c0f,#060708)!important}
+html[data-ui="broadcast"][lang] body .site-footer:before{content:'';display:block;height:4px;background:var(--ui-stripe)}
+html[data-ui="broadcast"][lang] body .site-footer .footer-grid span{color:var(--ui-mute)!important;font:400 .66rem/1 var(--font-mono)!important;letter-spacing:.18em}
+html[data-ui="broadcast"][lang] body .site-footer .footer-grid a{color:#d6dadd;text-decoration:none}
+html[data-ui="broadcast"][lang] body .site-footer .footer-grid a:hover{color:var(--aw-accent)}
+
+/* ---------- Phones ---------- */
+@media(max-width:760px){
+  html[data-ui="broadcast"][lang] body .page-intro:after{display:none}
+  html[data-ui="broadcast"][lang] body .page-intro h1{font-size:clamp(2.5rem,12vw,3.6rem)!important}
+  html[data-ui="broadcast"][lang] body .section{padding-block:2.4rem}
+  html[data-ui="broadcast"][lang] body .section-head{flex-direction:row!important;align-items:flex-end!important}
+  html[data-ui="broadcast"][lang] body :is(.section-title,.section-head h2){font-size:clamp(1.9rem,9.5vw,2.6rem)!important}
+  html[data-ui="broadcast"][lang] body .section-head .lede,html[data-ui="broadcast"][lang] body .section-head>p{flex-basis:100%;font-size:.9rem}
+  html[data-ui="broadcast"][lang] body .story-panel{padding:1.15rem!important}
+  /* Filter rows scroll sideways instead of wrapping into tall grids. */
+  html[data-ui="broadcast"][lang] body :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues){display:flex!important;flex-wrap:nowrap!important;gap:.45rem!important;margin-inline:calc(-1 * var(--gutter));padding:0 var(--gutter) .4rem;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
+  html[data-ui="broadcast"][lang] body :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues)::-webkit-scrollbar{display:none}
+  html[data-ui="broadcast"][lang] body :is(.aw-calendar__filters,.aw-lineup__filters,.aw-paint-gallery__leagues)>button{flex:0 0 auto;scroll-snap-align:start}
+  html[data-ui="broadcast"][lang] body .faith-signature__inner{padding-block:.8rem!important}
+  html[data-ui="broadcast"][lang] body .site-footer .footer-grid{grid-template-columns:1fr 1fr!important;gap:1.4rem 1rem!important}
+  html[data-ui="broadcast"][lang] body .site-footer .footer-grid>div:first-child{grid-column:1/-1}
+  html[data-ui="broadcast"][lang] body .site-footer .footer-grid a{display:flex;align-items:center;min-height:36px}
+}
+
+@media(prefers-reduced-motion:reduce){html[data-ui="broadcast"][lang] body :is(a.news-tile,a.program-card,a.home-story__feature,a.home-people__tile,.aw-calendar__event){transition:none}}
+
+/* ---------- Race-weekend session strip (event pages) ---------- */
+html[data-ui="broadcast"][lang] body .aw-session{border-bottom:1px solid var(--ui-line);background:linear-gradient(90deg,#0d0e11,#121418 50%,#0d0e11)}
+html[data-ui="broadcast"][lang] body .aw-session__inner{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:1.2rem;padding-block:1rem}
+html[data-ui="broadcast"][lang] body .aw-session__logo{display:grid;place-items:center;width:64px;height:48px}
+html[data-ui="broadcast"][lang] body .aw-session__logo img{max-width:64px;max-height:48px;object-fit:contain}
+html[data-ui="broadcast"][lang] body .aw-session__logo b{font:900 italic 1rem/1 var(--font-condensed)}
+html[data-ui="broadcast"][lang] body .aw-session__state{display:flex;align-items:center;gap:.5rem;margin:0;font:400 .7rem/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:#d8dcdf}
+html[data-ui="broadcast"][lang] body .aw-session__state i{width:8px;height:8px;background:var(--aw-accent);transform:rotate(45deg)}
+html[data-ui="broadcast"][lang] body .aw-session__clock{display:grid;grid-template-columns:repeat(4,minmax(52px,72px));gap:.35rem}
+html[data-ui="broadcast"][lang] body .aw-session__clock span{display:grid;justify-items:center;gap:.25rem;padding:.45rem 0 .4rem;border:1px solid var(--ui-line);background:#0a0b0d}
+html[data-ui="broadcast"][lang] body .aw-session__clock b{font:400 1.6rem/1 var(--font-mono);font-variant-numeric:tabular-nums;color:#fff}
+html[data-ui="broadcast"][lang] body .aw-session__clock small{color:var(--ui-dim);font:400 .5rem/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase}
+html[data-ui="broadcast"][lang] body .aw-session__when{display:grid;gap:.2rem;margin:0;color:#c6cbcf;font:400 .76rem/1.3 var(--font-mono)}
+html[data-ui="broadcast"][lang] body .aw-session__when em{color:var(--ui-dim);font-style:normal}
+html[data-ui="broadcast"][lang] body .aw-session__when em:empty{display:none}
+html[data-ui="broadcast"][lang] body .aw-session__ics{display:inline-flex;align-items:center;gap:.5rem;min-height:46px;padding:0 1rem;border:1px solid var(--ui-line-2);background:transparent;color:#eef0f2;font:900 italic .86rem/1 var(--font-condensed);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;clip-path:var(--ui-cut-sm)}
+html[data-ui="broadcast"][lang] body .aw-session__ics:hover{border-color:#eef0f2}
+html[data-ui="broadcast"][lang] body .aw-session__ics svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+html[data-ui="broadcast"][lang] body .aw-session__inner[data-state="live"] .aw-session__state{color:var(--aw-accent)}
+html[data-ui="broadcast"][lang] body .aw-session__inner[data-state="live"] .aw-session__state i{border-radius:50%;transform:none;animation:aw-live 1.3s ease-in-out infinite}
+html[data-ui="broadcast"][lang] body .aw-session__inner[data-state="live"] .aw-session__clock,html[data-ui="broadcast"][lang] body .aw-session__inner[data-state="done"] .aw-session__clock{opacity:.35}
+html[data-ui="broadcast"][lang] body .aw-session__inner[data-state="done"] .aw-session__state i{background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/4px 4px;transform:none}
+@keyframes aw-live{50%{opacity:.35}}
+
+/* ---------- Page-specific phone layouts ---------- */
+@media(max-width:760px){
+  html[data-ui="broadcast"][lang] body .aw-session__inner{grid-template-columns:auto 1fr;gap:.75rem 1rem}
+  html[data-ui="broadcast"][lang] body .aw-session__clock{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}
+  html[data-ui="broadcast"][lang] body .aw-session__when{grid-column:1/-1}
+  html[data-ui="broadcast"][lang] body .aw-session__ics{grid-column:1/-1;justify-content:center}
+  /* Mission "At a glance": one stat bar instead of three tall cards. */
+  html[data-ui="broadcast"][lang] body .mission-counts{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;border:1px solid var(--ui-line)}
+  html[data-ui="broadcast"][lang] body .mission-counts>*{min-height:0!important;padding:.9rem .7rem!important;border:0!important;border-left:1px solid var(--ui-line)!important;clip-path:none!important;background:var(--ui-panel)!important}
+  html[data-ui="broadcast"][lang] body .mission-counts>*:first-child{border-left:0!important}
+  html[data-ui="broadcast"][lang] body .mission-counts :is(b,strong){font-size:2.2rem!important;line-height:1}
+  html[data-ui="broadcast"][lang] body .mission-counts :is(span,small,p){font-size:.56rem!important;letter-spacing:.08em}
+  /* Win list: two-up compact cards. */
+  html[data-ui="broadcast"][lang] body .history-win-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.45rem!important}
+  html[data-ui="broadcast"][lang] body .history-win-grid>div{min-height:0!important;padding:.75rem!important}
+  /* Paint and partner logos: two-up grids. */
+  html[data-ui="broadcast"][lang] body .aw-paint-gallery__grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.5rem!important}
+  html[data-ui="broadcast"][lang] body .aw-paint-gallery__tile :is(h3,strong){font-size:1rem!important;line-height:1}
+  html[data-ui="broadcast"][lang] body .aw-paint-gallery__info{display:grid!important;gap:.55rem!important;padding:.7rem!important}
+  html[data-ui="broadcast"][lang] body .aw-paint-gallery__info p{font-size:.58rem!important}
+  html[data-ui="broadcast"][lang] body .aw-paint-gallery__info button{display:flex!important;justify-content:space-between;align-items:center;gap:.3rem;width:100%;min-height:40px;padding:.4rem .5rem!important;font-size:.58rem!important;white-space:nowrap;overflow:hidden}
+  html[data-ui="broadcast"][lang] body .aw-paint-gallery__info button b{flex:none}
+  html[data-ui="broadcast"][lang] body .partner-logos{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.5rem!important}
+  html[data-ui="broadcast"][lang] body .partner-logos article{min-height:110px!important;padding:.8rem!important}
+  html[data-ui="broadcast"][lang] body .partner-logos strong{font-size:1.25rem!important}
+}
+
+/* Broken or still-loading renders never spill their alt text over the layout. */
+html[data-ui="broadcast"][lang] body :is(.aw-paint-gallery__visual,.aw-paint-gallery__hero,.aw-paint-gallery__tile) img{color:transparent;font-size:0;background:radial-gradient(circle at 50% 45%,#1d2126,#0b0c0f 70%)}
