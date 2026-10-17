@@ -48,7 +48,8 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets.results))datasets.results=normalize('results',datasets.results);
   // Published standings are authoritative. Historical repair migrations belong at release time,
   // never in the live read path, or fresh Admin edits can be silently replaced by bundled seeds.
-  const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r'))).map(e=>{if(e?.competitionId!=='uarl-d1')return e;const k=String(e?.profile||e?.displayName||'').toLowerCase();if(k==='hailey')return {...e,number:'28',displayName:'Hailey'};if(k==='burgertown2good')return {...e,number:'32'};if(k==='rocky')return {...e,number:'46'};return e;});
+  // Keep published assignment numbers while retaining legacy identity/roster filtering.
+  const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r'))).map(e=>{if(e?.competitionId!=='uarl-d1')return e;const k=String(e?.profile||e?.displayName||'').toLowerCase();if(k==='hailey')return {...e,displayName:'Hailey'};return e;});
   if(Array.isArray(datasets.drivers))datasets.drivers=canonDrivers(datasets.drivers);
   if(Array.isArray(datasets['roster-profiles']))datasets['roster-profiles']=normalize('roster-profiles',datasets['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(datasets['driver-profiles']))datasets['driver-profiles']=normalize('driver-profiles',datasets['driver-profiles']);

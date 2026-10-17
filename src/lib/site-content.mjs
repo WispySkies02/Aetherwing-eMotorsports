@@ -91,12 +91,11 @@ export const wins = choose('wins', winsSeed);
 const publishedStandings = choose('standings', standingsSeed);
 export const standings = Array.isArray(publishedStandings) ? publishedStandings : standingsSeed;
 export const milestones = choose('milestones', milestonesSeed);
+// Preserve edited numbers while applying identity aliases and retired-driver filtering.
 const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
   if(entry?.competitionId!=='uarl-d1')return entry;
   const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
-  if(key==='wispy'||key==='hailey')return {...entry,number:'28',displayName:'Hailey'};
-  if(key==='burgertown2good')return {...entry,number:'32'};
-  if(key==='rocky')return {...entry,number:'46'};
+  if(key==='wispy'||key==='hailey')return {...entry,displayName:'Hailey'};
   return entry;
 });
 export const drivers = enforceCurrentAssignments(choose('drivers', driversSeed));

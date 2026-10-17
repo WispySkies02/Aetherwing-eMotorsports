@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { eventSlug, legacyEventSlug } from '../src/lib/schedule-events.mjs';
+import { JSDOM } from 'jsdom';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const scratch=fs.mkdtempSync(join(tmpdir(),'aetherwing-publication-'));
@@ -46,6 +47,9 @@ try {
   data.wins.push({league:'NRRS',track:'Publication Fixture Win',driver:'Wispy',date:'Sep 18, 2026'});
   data.milestones.push({date:'Sep 18, 2026',title:'Publication Fixture Milestone',description:'Publication fixture milestone text.'});
   data['roster-profiles'][0].name='Publication Fixture Driver';
+  const editedNumbers=new Map([['wispy-nrrs','08'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
+  for(const entry of data.drivers)if(editedNumbers.has(entry.id))entry.number=editedNumbers.get(entry.id);
+  const nrrs=data.standings.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
   // The current release deliberately pins Portland as the featured story in
   // Admin, the live API and static pages. Verify published edits to that lead
   // separately from adding an unfeatured article; do not change that policy.
@@ -61,6 +65,25 @@ try {
     assert.ok(read('schedule/index.html').includes('Publication Fixture Race'));
     for(const text of ['Publication Fixture Result','Publication Fixture Milestone','Publication Fixture Win'])assert.ok(read('history/index.html').includes(text),`History must render ${text}`);
     assert.ok(read('drivers/index.html').includes('Publication Fixture Driver'));
+    const synced=JSON.parse(fs.readFileSync(overlayFile,'utf8'));
+    for(const [id,number] of editedNumbers) {
+      const assignment=synced.datasets.drivers.find((entry)=>entry.id===id);
+      assert.equal(assignment.number,number,'Content sync must retain published assignment numbers');
+      const profile=new JSDOM(read(`drivers/${assignment.profile}/index.html`));
+      const program=Array.from(profile.window.document.querySelectorAll('[data-profile-assignments] .profile-assignment')).find((row)=>row.querySelector('span').textContent===assignment.competition);
+      assert.ok(program,`${id} program must render`);
+      assert.equal(program.querySelector('strong').textContent,`#${number}`,'Production driver profiles must render the published number');
+      profile.window.close();
+    }
+    const championships=new JSDOM(read('championships/index.html'));
+    for(const [id,position] of [['nrrs',5],['kmart',6]]) {
+      const cutoff=championships.window.document.querySelector(`[data-board="${id}"] .standings-cutoff`);
+      assert.ok(cutoff,`${id} cutoff must render`);
+      assert.equal(cutoff.previousElementSibling.querySelector('.standing-row__position').textContent,`P${position}`);
+      assert.equal(cutoff.nextElementSibling.querySelector('.standing-row__position').textContent,`P${position+1}`);
+    }
+    assert.equal(championships.window.document.querySelector('[data-board="nrrs"] .standings-cutoff').textContent,'Chase cutoff · Top 5');
+    championships.window.close();
     for(const path of ['news/index.html','news/publication-fixture-story/index.html'])assert.ok(read(path).includes('Publication Fixture Story'),`${path} must render the published story`);
     for(const path of ['index.html',`news/${lead.slug}/index.html`])assert.ok(read(path).includes('Publication Fixture Lead'),`${path} must render edits to the canonical featured story`);
     assert.ok(read('index.html').includes(`/news/${lead.slug}/`),'Homepage must still link to the canonical lead');
