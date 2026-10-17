@@ -213,3 +213,47 @@ html:not(#adm) .ops-toast{left:50%!important;right:auto!important;bottom:24px!im
      space above the keyboard instead of a few lines. */
   html.adm-typing:not(#adm) textarea:focus{height:max(160px,calc(var(--adm-vv,60vh) - 72px))!important;max-height:none!important;scroll-margin-top:12px}
 }
+
+/* ---------- Phone editing QoL ---------- */
+.adm-entry-toggle{display:none}
+/* Bulk tools fold by tapping their heading (all widths). */
+html:not(#adm) .adm-tool-head{position:relative;cursor:pointer;padding-right:36px!important}
+html:not(#adm) .adm-tool-head:after{content:'';position:absolute;right:6px;top:14px;width:10px;height:10px;border-right:2px solid var(--adm-ink-2);border-bottom:2px solid var(--adm-ink-2);transform:rotate(45deg);transition:transform .2s ease}
+html:not(#adm) .adm-folded>.adm-tool-head:after{transform:rotate(-45deg)}
+html:not(#adm) .adm-folded>:not(.adm-tool-head){display:none!important}
+html:not(#adm) .adm-folded>.adm-tool-head{margin-bottom:0!important;padding-bottom:0!important;border-bottom:0!important}
+html:not(#adm) .adm-folded>.adm-tool-head p{display:none!important}
+
+@media(max-width:900px){
+  /* No iOS auto-zoom when a field is tapped: inputs need 16px text. */
+  html:not(#adm) :is(.content-layout,.ops-panel,.admin-theme-preview,.schedule-shift-tool,.results-race-tool,.standings-import-tool,.admin-workspace-tabs) :is(input,select,textarea),html:not(#adm) [data-content-search]{font-size:16px!important}
+
+  /* Editor heading: short description, compact tool row. */
+  html:not(#adm) .admin-editor-heading p[data-content-description]{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+  html:not(#adm) .admin-editor-heading{margin-bottom:12px!important;padding-bottom:10px!important}
+  html:not(#adm) [data-content-status]{font-size:.84rem!important;padding:8px 12px!important}
+  html:not(#adm) .admin-editor-tools{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px!important}
+  html:not(#adm) .admin-editor-tools>button{min-height:40px!important;padding:0 6px!important;font-size:.76rem!important;line-height:1.1!important;white-space:normal}
+  html:not(#adm) .admin-editor-tools>label{grid-column:1/-1}
+
+  /* Guide folds to a preview; tap to expand. */
+  html:not(#adm) [data-content-guide].adm-folded{position:relative;max-height:132px;overflow:hidden;cursor:pointer}
+  html:not(#adm) [data-content-guide].adm-folded:after{content:'Tap to read more';position:absolute;left:0;right:0;bottom:0;padding:22px 16px 8px;background:linear-gradient(transparent,var(--adm-sink) 55%);color:var(--adm-accent);font:600 .78rem/1 var(--adm-body);text-align:right}
+
+  /* Entry picker: one bar; opens to search + full-height list. */
+  html:not(#adm) .content-layout>aside{position:static!important;max-height:none!important;overflow:visible!important;padding:8px!important}
+  .adm-entry-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;padding:8px 12px;border:1px solid var(--adm-line-2);border-left:3px solid var(--adm-accent);border-radius:var(--adm-r-sm);background:var(--adm-s2);color:var(--adm-ink);text-align:left;cursor:pointer}
+  .adm-entry-toggle span{display:grid;gap:3px;min-width:0}
+  .adm-entry-toggle small{color:var(--adm-ink-3);font:400 .6rem/1 var(--adm-mono);letter-spacing:.14em;text-transform:uppercase}
+  .adm-entry-toggle b{overflow:hidden;font:800 italic 1.1rem/1.05 var(--adm-display);text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+  .adm-entry-toggle em{flex:none;padding:6px 10px;border:1px solid var(--adm-line-2);border-radius:999px;color:var(--adm-ink-2);font:600 .76rem/1 var(--adm-body);font-style:normal}
+  .adm-entry-toggle em:after{content:' ▾'}
+  .adm-entry-toggle[aria-expanded="true"] em:after{content:' ▴'}
+  html:not(#adm) .content-layout>aside:not(.adm-entries-open)>:is([data-content-search],[data-content-list]){display:none!important}
+  html:not(#adm) .content-layout>aside.adm-entries-open [data-content-list]{max-height:55vh;overflow:auto;overscroll-behavior:contain;padding:4px;border:1px solid var(--adm-line);border-radius:var(--adm-r-sm)}
+  html:not(#adm) .content-layout>aside.adm-entries-single>.adm-entry-toggle{display:none}
+  html:not(#adm) .content-layout>aside>[data-content-add]{min-height:44px!important}
+
+  /* Checkbox fields: big enough to hit. */
+  html:not(#adm) .content-layout input[type="checkbox"]{width:26px!important;height:26px!important;min-height:0!important;accent-color:var(--adm-accent)}
+}

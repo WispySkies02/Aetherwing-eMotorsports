@@ -124,4 +124,78 @@
     else if (root.classList.contains('adm-typing')) setTyping(false);
   });
   compact.addEventListener('change', () => setTyping(typable(document.activeElement)));
+  // ---- Phone editing QoL (layout only) ----
+  // 1. Entry picker: the entry list folds into one "Editing: <entry>" bar.
+  //    Opening it shows search + list; choosing an entry folds it again and
+  //    brings the form into view. Selection itself stays in content-admin.js.
+  const aside = document.querySelector('.content-layout > aside');
+  const list = document.querySelector('[data-content-list]');
+  const form = document.querySelector('[data-content-form]');
+  if (aside && list) {
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'adm-entry-toggle';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = '<span><small>Editing</small><b data-adm-entry-name>Choose an entry</b></span><em data-adm-entry-count></em>';
+    aside.prepend(toggle);
+    const setOpen = (open, focusSearch = false) => {
+      aside.classList.toggle('adm-entries-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open && focusSearch && compact.matches) aside.querySelector('[data-content-search]')?.focus({ preventScroll: true });
+    };
+    const syncEntry = () => {
+      const entries = list.querySelectorAll('[data-entry]');
+      // One-record sections render a note instead of entry buttons. A search
+      // with no matches renders nothing: keep the picker open so it can be cleared.
+      const single = !entries.length && Boolean(list.querySelector('p'));
+      const searching = Boolean(aside.querySelector('[data-content-search]')?.value.trim());
+      const noMatches = !entries.length && !single && searching;
+      aside.classList.toggle('adm-entries-single', single);
+      if (noMatches) setOpen(true);
+      const active = list.querySelector('[data-entry][aria-pressed="true"]');
+      toggle.querySelector('[data-adm-entry-name]').textContent = active?.querySelector('strong')?.textContent?.trim() || (single ? 'This section' : noMatches ? 'No matching entries' : 'Choose an entry');
+      toggle.querySelector('[data-adm-entry-count]').textContent = single ? '' : noMatches ? 'Search' : `${entries.length} · Change`;
+    };
+    toggle.addEventListener('click', () => setOpen(!aside.classList.contains('adm-entries-open'), true));
+    list.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest('[data-entry]') || !compact.matches) return;
+      window.setTimeout(() => {
+        setOpen(false);
+        form?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      }, 60);
+    });
+    new MutationObserver(syncEntry).observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
+    syncEntry();
+  }
+
+  // 2. Long guides fold to a short preview; tap to read the rest.
+  const guide = document.querySelector('[data-content-guide]');
+  if (guide) {
+    guide.classList.add('adm-folded');
+    guide.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a,button,input,select,textarea,label')) return;
+      guide.classList.toggle('adm-folded');
+    });
+  }
+
+  // 3. Bulk tools (schedule shift, results, CSV import, page scan) fold by
+  //    tapping their heading; the choice is remembered per tool on this device.
+  const remember = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
+  const recall = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
+  document.querySelectorAll('[data-schedule-shift],[data-results-race-tool],[data-results-import-tool],[data-page-scan-tool]').forEach((tool, index) => {
+    const head = tool.firstElementChild;
+    if (!(head instanceof HTMLElement)) return;
+    const key = `adm-tool-folded-${[...tool.attributes].find((a) => a.name.startsWith('data-'))?.name || index}`;
+    head.classList.add('adm-tool-head');
+    head.setAttribute('role', 'button');
+    head.tabIndex = 0;
+    const apply = (folded) => { tool.classList.toggle('adm-folded', folded); head.setAttribute('aria-expanded', String(!folded)); };
+    // Occasional bulk tools start folded on phones; race-week imports stay open.
+    const saved = recall(key);
+    const foldByDefault = compact.matches && (tool.hasAttribute('data-schedule-shift') || tool.hasAttribute('data-page-scan-tool'));
+    apply(saved === null ? foldByDefault : saved === '1');
+    const flip = () => { const folded = !tool.classList.contains('adm-folded'); apply(folded); remember(key, folded ? '1' : '0'); };
+    head.addEventListener('click', (event) => { if (!(event.target instanceof Element) || !event.target.closest('a,button,input,select,textarea')) flip(); });
+    head.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flip(); } });
+  });
 })();
