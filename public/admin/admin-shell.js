@@ -94,9 +94,12 @@
     || (el instanceof HTMLInputElement && !['button', 'submit', 'reset', 'checkbox', 'radio', 'file', 'range', 'color', 'image', 'hidden'].includes(el.type))
     || (el instanceof HTMLElement && el.isContentEditable);
   const viewport = window.visualViewport;
-  // Full-screen height before the keyboard opened (some browsers shrink
-  // innerHeight with the keyboard, so it can't be the reference).
+  // Full-screen height with no keyboard: the tallest visual viewport seen at
+  // the current width (some browsers shrink innerHeight with the keyboard,
+  // so it can't be the reference). Rotating the phone starts a new baseline.
   let fullHeight = viewport ? viewport.height : window.innerHeight;
+  let baseWidth = viewport ? viewport.width : window.innerWidth;
+  const keyboardOpen = () => Boolean(viewport) && viewport.height < fullHeight * 0.8;
   const syncViewport = () => root.style.setProperty('--adm-vv', `${Math.round(viewport ? viewport.height : window.innerHeight)}px`);
   const setTyping = (on) => {
     root.classList.toggle('adm-typing', on && compact.matches);
@@ -107,11 +110,18 @@
     // Moving between fields keeps typing mode; leaving them all ends it.
     window.setTimeout(() => setTyping(typable(document.activeElement)), 120);
   });
+  // Tapping a field that already has focus (after the keyboard's own "hide"
+  // button) reopens the keyboard without a new focus event.
+  document.addEventListener('pointerdown', (event) => {
+    if (typable(event.target) && event.target === document.activeElement) setTyping(true);
+  });
   viewport?.addEventListener('resize', () => {
-    if (!root.classList.contains('adm-typing')) { fullHeight = viewport.height; return; }
-    syncViewport();
-    // Keyboard dismissed while the field keeps focus: restore the chrome.
-    if (viewport.height > fullHeight * 0.85) root.classList.remove('adm-typing');
+    if (Math.abs(viewport.width - baseWidth) > 1) { baseWidth = viewport.width; fullHeight = viewport.height; }
+    if (viewport.height > fullHeight) fullHeight = viewport.height;
+    // The keyboard's state decides while a field has focus: hidden with the
+    // keyboard's own button restores the chrome, shown again steps it aside.
+    if (typable(document.activeElement)) setTyping(keyboardOpen());
+    else if (root.classList.contains('adm-typing')) setTyping(false);
   });
   compact.addEventListener('change', () => setTyping(typable(document.activeElement)));
 })();
