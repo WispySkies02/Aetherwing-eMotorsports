@@ -119,10 +119,24 @@ function validate(key, data, registry={}) {
     return false;
   }
   if (unsafe(data)) return 'Use plain text without HTML or angle brackets.';
-  function structure(sample,value) {
+  function validPositionChange(value) {
+    if(value==null)return true;
+    if(typeof value==='number')return Number.isFinite(value);
+    if(typeof value!=='string')return false;
+    const text=value.trim();
+    return ['', '-', '—', 'NEW'].includes(text.toUpperCase())||/^[▲▼]\s*\d+$/.test(text)||(/^[+-]?\d+(?:\.\d+)?$/.test(text)&&Number.isFinite(Number(text)));
+  }
+  function structure(sample,value,fieldPath=[]) {
+    // Movement is a display value, not a points total. Existing publications
+    // and CSV imports mix numbers with NEW, signed strings and neutral dashes.
+    // Validate this union only on regular/Chase standings rows; retain strict
+    // seed types for points and every other numeric field.
+    if(key==='standings'&&fieldPath.length===4&&['rows','chaseRows'].includes(fieldPath[1])&&fieldPath[3]==='positionChange') {
+      return validPositionChange(value);
+    }
     if (sample===null || sample===undefined || value===null) return true;
-    if (Array.isArray(sample)) return Array.isArray(value) && (!sample.length || value.every((v)=>structure(sample[0],v)));
-    if (typeof sample==='object') return value && typeof value==='object' && !Array.isArray(value) && Object.entries(value).every(([k,v])=>structure(sample[k],v));
+    if (Array.isArray(sample)) return Array.isArray(value) && (!sample.length || value.every((v,index)=>structure(sample[0],v,[...fieldPath,index])));
+    if (typeof sample==='object') return value && typeof value==='object' && !Array.isArray(value) && Object.entries(value).every(([k,v])=>structure(sample[k],v,[...fieldPath,k]));
     return typeof sample===typeof value && (typeof value!=='number'||Number.isFinite(value));
   }
   if (!structure(seed,data)) return 'A field has the wrong type. Use numeric inputs for points and finishes, and lists for grouped entries.';
@@ -186,6 +200,10 @@ function validate(key, data, registry={}) {
     if (key === 'roster-profiles' && !validLogoImage(row.signatureLogo||'')) return 'Driver signature logos must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points)) || (Array.isArray(row.chaseRows) && row.chaseRows.some((r)=>!(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points))))) return 'Standings rows need numeric points (or an explicit pending placeholder before the first full-roster import).';
+    if(key==='standings') {
+      if(row.chaseRows!=null&&!Array.isArray(row.chaseRows))return 'Chase standings rows must be a list.';
+      if([...row.rows,...(row.chaseRows||[])].some((entry)=>!validPositionChange(entry?.positionChange)))return 'Standings position change must be a finite number, signed number, NEW, or a dash.';
+    }
     if (key === 'charters') {
       if (!Array.isArray(row.fullTime) || !Array.isArray(row.openCharters)) return 'Charter boards need full-time entries and an Open Charters list.';
       if (row.fullTime.some((slot)=>slot?.numberImage && !validNumberImage(slot.numberImage))) return 'Full-time charter number images must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';

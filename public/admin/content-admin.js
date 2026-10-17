@@ -842,7 +842,7 @@
       assign(current(),path,value);
     });
   }
-  const adminEditorVersion='2026-10-16.2';
+  const adminEditorVersion='2026-10-17.1';
   function saveFeedback(message,state='neutral'){
     const el=$('[data-content-save-feedback]');if(!el)return;
     el.dataset.state=state;
@@ -1483,7 +1483,7 @@
       updateControlCenterStatus(response.publication);
     } finally { busy=false; $('[data-content-editor]').inert=false; }
   }
-  $('[data-content-form]').addEventListener('submit',async(event)=>{event.preventDefault();commit();try{await action('saveDraft');}catch(error){status(error.message);}});
+  $('[data-content-form]').addEventListener('submit',async(event)=>{event.preventDefault();commit();try{await action('saveDraft');}catch(error){saveFeedback('DRAFT NOT SAVED · '+(error?.message||'Save failed'),'error');status(error.message);}});
   $('[data-content-publish]').addEventListener('click',async()=>{
     commit();
     const prompt=key==='navigation'?`${dirty?'Save and publish the current navigation changes':'Publish this navigation section'}? The public menu reads these links live.`:`${dirty?'Save and publish the current changes':'Publish this section'}? Existing Team Wire articles and other live-enabled content update immediately; a site rebuild is queued when configured.`;
