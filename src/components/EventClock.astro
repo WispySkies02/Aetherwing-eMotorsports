@@ -1,0 +1,101 @@
+---
+// Race-weekend session strip: countdown to this event, a live state while the
+// window is open, a checkered state after it, both clocks, and a calendar file.
+// Follows live Admin schedule edits for the same stable route.
+import { results } from '../lib/site-content.mjs';
+import { buildRaceFeed, countdownParts, eventEnd, whenLabel, seriesLogo, seriesShort, pad } from '../lib/race-clock.mjs';
+interface Props { event: Record<string, any>; }
+const { event } = Astro.props;
+const [row] = buildRaceFeed([event], results);
+const now = new Date();
+const finished = Boolean(row?.done) || (row ? eventEnd(row) < now : false);
+const parts = row && !finished ? countdownParts(row, now) : null;
+---
+{row && (
+  <section class="aw-session" data-event-clock aria-label="Race weekend clock">
+    <div class="wrap aw-session__inner" data-state={finished ? 'done' : parts?.live ? 'live' : 'upcoming'}>
+      <span class="aw-session__logo">{seriesLogo[row.league] ? <img src={seriesLogo[row.league]} alt={row.leagueName} width="64" height="48" /> : <b>{seriesShort[row.league] || row.leagueName}</b>}</span>
+      <p class="aw-session__state"><i aria-hidden="true"></i><b data-session-state>{finished ? 'Checkered flag' : parts?.live ? 'Live now' : 'Green flag in'}</b></p>
+      <div class="aw-session__clock" role="timer" aria-live="off" data-session-clock>
+        {[['d', 'Days'], ['h', 'Hrs'], ['m', 'Min'], ['s', 'Sec']].map(([key, label]) => (
+          <span><b data-unit={key}>{parts ? pad(parts[key]) : '00'}</b><small>{label}</small></span>
+        ))}
+      </div>
+      <p class="aw-session__when"><span data-session-when>{whenLabel(row)}</span><em data-session-local></em></p>
+      <button type="button" class="aw-session__ics" data-session-ics hidden={finished}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5M12 13v5M9.5 15.5h5" /></svg>
+        Add to calendar
+      </button>
+    </div>
+  </section>
+)}
+<script is:inline type="application/json" data-session-seed set:html={JSON.stringify(row || null)} />
+
+<script>
+  import { buildRaceFeed, countdownParts, eventEnd, whenLabel, localTimeLabel, calendarFile, pad } from '../lib/race-clock.mjs';
+  import { eventSlug, legacyEventSlug } from '../lib/schedule-events.mjs';
+
+  const root = document.querySelector('[data-event-clock]');
+  if (root instanceof HTMLElement) {
+    const inner = root.querySelector('.aw-session__inner');
+    let race = null;
+    try { race = JSON.parse(document.querySelector('[data-session-seed]')?.textContent || 'null'); } catch {}
+    let hasResult = Boolean(race?.done);
+    const q = (selector) => root.querySelector(selector);
+    const units = ['d', 'h', 'm', 's'].map((key) => [key, q(`[data-unit="${key}"]`)]);
+    const labels = { upcoming: 'Green flag in', live: 'Live now', done: 'Checkered flag' };
+
+    const render = () => {
+      if (!race || !(inner instanceof HTMLElement)) return;
+      const now = new Date();
+      const state = hasResult || eventEnd(race) < now ? 'done' : countdownParts(race, now).live ? 'live' : 'upcoming';
+      inner.dataset.state = state;
+      q('[data-session-state]').textContent = labels[state];
+      const parts = state === 'upcoming' ? countdownParts(race, now) : { d: 0, h: 0, m: 0, s: 0 };
+      units.forEach(([key, node]) => { if (node) node.textContent = pad(parts[key]); });
+      q('[data-session-clock]')?.setAttribute('aria-label', state === 'upcoming' ? `Starts in ${parts.d} days, ${parts.h} hours, ${parts.m} minutes` : labels[state]);
+      const ics = q('[data-session-ics]');
+      if (ics instanceof HTMLElement) ics.hidden = state === 'done';
+    };
+    const describe = () => {
+      if (!race) return;
+      q('[data-session-when]').textContent = whenLabel(race);
+      q('[data-session-local]').textContent = localTimeLabel(race);
+    };
+
+    q('[data-session-ics]')?.addEventListener('click', () => {
+      if (!race) return;
+      const href = URL.createObjectURL(new Blob([calendarFile({ ...race, url: location.pathname }, location.origin)], { type: 'text/calendar;charset=utf-8' }));
+      const anchor = Object.assign(document.createElement('a'), { href, download: `aetherwing-${location.pathname.split('/').filter(Boolean).pop()}.ics` });
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(href), 4000);
+    });
+
+    // Live Admin edits: re-find this route's event and its published result.
+    const slug = location.pathname.split('/').filter(Boolean).pop();
+    const applyLive = (datasets) => {
+      const events = datasets?.['schedule-events'];
+      if (!Array.isArray(events)) return;
+      const match = events.find((event) => !event?.offWeek && (eventSlug(event) === slug || legacyEventSlug(event) === slug));
+      if (!match) return;
+      const [row] = buildRaceFeed([match], Array.isArray(datasets.results) ? datasets.results : []);
+      if (!row) return;
+      race = row;
+      hasResult = Boolean(row.done);
+      describe();
+      render();
+    };
+    window.addEventListener('aetherwing:content', (event) => applyLive(event.detail));
+    if (window.__AETHERWING_CONTENT__) applyLive(window.__AETHERWING_CONTENT__);
+
+    describe();
+    render();
+    let timer = window.setInterval(render, 1000);
+    document.addEventListener('visibilitychange', () => {
+      window.clearInterval(timer);
+      if (!document.hidden) { render(); timer = window.setInterval(render, 1000); }
+    });
+  }
+</script>

@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import FaithSignature from '../../components/FaithSignature.astro';
+import EventClock from '../../components/EventClock.astro';
 import { scheduleEvents, results, drivers } from '../../lib/site-content.mjs';
 import { eventSlug, legacyEventSlug, eventDisplayDate } from '../../lib/schedule-events.mjs';
 import '../../styles/records.css';
@@ -35,6 +36,7 @@ const entries=resolveEventEntries(event,result);
 ---
 <Base title={`${event.title} · Race Weekend`} description={`${event.leagueName} at ${event.track} · ${eventDisplayDate(event)}.`}>
   <section class="page-intro"><div class="wrap"><a class="eyebrow" href="/schedule/">← Race calendar</a><p class="eyebrow" data-event-series>{event.leagueName} · {event.round||event.status||'RACE WEEKEND'}</p><h1 data-event-track>{event.track}</h1><p data-event-summary>{event.title} · {eventDisplayDate(event)} · {event.time||'TIME TBD'}</p><button class="btn" type="button" data-share>Copy event link ↗</button></div></section>
+  <EventClock event={event}/>
   <FaithSignature field="faithRaceDayLine" label="Before the green flag"/>
   <section class="section"><div class="wrap story-grid"><article class="story-panel"><p class="eyebrow">01 / Race weekend</p><h3 data-event-title>{event.title}</h3><p data-event-detail>{event.status||'Scheduled'} · {event.track} · {eventDisplayDate(event)}</p><a href="/schedule/">Full calendar ↗</a></article><article class="story-panel"><p class="eyebrow">02 / The garage</p><h3>Team Entries</h3><div data-event-entries>{entries.length?entries.map(e=><div class="profile-assignment"><span>{e.displayName}</span><strong>#{e.number}</strong><small>{e.status}</small></div>):<p>No team entries are currently listed for this event.</p>}</div></article><article class="story-panel race-result-panel"><p class="eyebrow">03 / The result</p><h3 data-event-head>{result?'Official Result':'Awaiting Green Flag'}</h3><div data-event-result>{result?<><div class="race-result-table"><div class="race-result-table__head"><span>FIN</span><span>DRIVER</span><span>START</span><span>S1</span><span>S2</span><span>PTS</span></div>{result.entries?.slice().sort((a,b)=>Number(a.finish||999)-Number(b.finish||999)).map(e=><div class:list={["race-result-row",{'is-featured':e.featuredDriver,'is-chase':e.chaseDriver}]}><b>P{e.finish||'—'}</b><strong>{e.number?`#${e.number} · `:''}{e.driver}{e.featuredDriver&&<em>FEATURED</em>}{e.chaseDriver&&<em>CHASE</em>}</strong><span>{e.start?`P${e.start}`:'—'}</span><span>{e.stage1Finish?`P${e.stage1Finish}`:'—'}</span><span>{e.stage2Finish?`P${e.stage2Finish}`:'—'}</span><span>{Number.isFinite(Number(e.racePoints))?Number(e.racePoints):'—'}</span></div>)}</div><p>{result.summary}</p></>:<p>Results appear here after the race is published.</p>}</div><a href="/history/">Results archive ↗</a></article></div></section>
 </Base>

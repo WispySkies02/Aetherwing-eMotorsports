@@ -61,7 +61,7 @@
   .aw-sheet__group a[aria-current="page"]{border-color:color-mix(in srgb,var(--aw-accent) 60%,#262a2f);background:linear-gradient(100deg,color-mix(in srgb,var(--aw-accent) 22%,transparent),#0f1114 70%)}
   .aw-sheet__group a[aria-current="page"] small{color:var(--aw-accent)}
 
-  .aw-sheet__discord{display:flex;align-items:center;justify-content:space-between;min-height:56px;margin-top:1.25rem;padding:0 1.1rem;background:var(--aw-accent);color:#fff;text-decoration:none;font:900 italic 1.1rem/1 var(--font-condensed);letter-spacing:.03em;text-transform:uppercase;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+  .aw-sheet__discord{display:flex;align-items:center;justify-content:space-between;min-height:56px;margin-top:1.25rem;padding:0 1.1rem;background:var(--aw-accent);color:var(--aw-on-accent,#fff);text-decoration:none;font:900 italic 1.1rem/1 var(--font-condensed);letter-spacing:.03em;text-transform:uppercase;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
   .aw-sheet__sign{display:grid;gap:.3rem;margin:1.1rem 0 0;text-align:center}
   .aw-sheet__sign strong{font:900 italic 1rem/1 var(--font-condensed);letter-spacing:.04em;text-transform:uppercase}
   .aw-sheet__sign span{color:#7f868c;font:400 .62rem/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
@@ -85,3 +85,9 @@
 /* Anniversary Week keeps its 2015 palette on the new surfaces too. */
 html[data-anniversary-retro="true"]{--aw-accent:#e2242b}
 html[data-anniversary-retro="true"] .aw-sheet__panel{background:linear-gradient(180deg,#0d3a52,#061925)}
+
+/* Anniversary Week HUD rides above the dock instead of covering it. */
+@media(max-width:980px){
+  .aw-anniversary-hud{bottom:calc(var(--aw-dock-h) + env(safe-area-inset-bottom,0px))!important}
+  html[data-anniversary-retro="true"] body{padding-bottom:calc(var(--aw-dock-h) + 34px + env(safe-area-inset-bottom,0px))}
+}

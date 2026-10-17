@@ -214,6 +214,23 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
     if (!document.hidden) { paint(); timer = window.setInterval(paint, 1000); }
   });
 
+  // Seasonal accents range from deep red to white; pick the readable text color
+  // for anything filled with the accent, and follow Theme Preview changes.
+  const probe = document.createElement('i');
+  probe.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;color:var(--aw-accent)';
+  document.body.append(probe);
+  const syncOnAccent = () => {
+    const raw = getComputedStyle(probe).color;
+    const nums = (raw.match(/[\d.]+/g) || []).map(Number);
+    if (nums.length < 3) return;
+    const [r, g, b] = raw.startsWith('color(') ? nums.slice(0, 3) : nums.slice(0, 3).map((n) => n / 255);
+    const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    const luminance = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    document.documentElement.style.setProperty('--aw-on-accent', luminance > 0.32 ? '#0a0b0d' : '#ffffff');
+  };
+  syncOnAccent();
+  new MutationObserver(syncOnAccent).observe(document.documentElement, { attributes: true, attributeFilter: ['data-season', 'data-season-ui', 'data-observance', 'data-anniversary-retro'] });
+
   // Phones get the header out of the way while reading and back on scroll-up.
   const header = document.querySelector('[data-site-header]');
   const compact = window.matchMedia('(max-width: 980px)');
