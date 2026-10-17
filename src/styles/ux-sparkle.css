@@ -50,11 +50,11 @@
 :root:not(#ux) :is(.ux-stats dd,.hub-battle__marks dd,.aw-tower__pos){font-style:italic!important;text-shadow:3px 4px 0 rgba(0,0,0,.55)!important}
 :root:not(#ux) .ux-stats>div:first-child dd{text-shadow:3px 4px 0 rgba(0,0,0,.55),0 0 22px color-mix(in srgb,var(--ux-accent) 45%,transparent)!important}
 .aw-next__clock b{text-shadow:0 0 14px var(--ux-glow)}
-.aw-next.is-live,.ux-rail__race.is-live{box-shadow:0 0 0 1px var(--ux-accent),0 0 42px var(--ux-glow)!important}
+.aw-next.is-live{box-shadow:0 0 0 1px var(--ux-accent),0 0 42px var(--ux-glow)!important}
 
-/* ---------- Rail and top bar ---------- */
-.ux-rail__link[aria-current="page"]:before{box-shadow:0 0 12px var(--ux-glow)}
-.ux-rail:before{box-shadow:0 0 16px var(--ux-glow)}
+/* ---------- Top navigation ---------- */
+.ux-topnav__link{text-shadow:2px 3px 0 rgba(0,0,0,.5)}
+.ux-topnav__link:hover,.ux-topnav__link[aria-expanded="true"]{text-shadow:2px 3px 0 rgba(0,0,0,.5),0 0 14px var(--ux-glow)}
 
 /* Anniversary Week keeps its own 2015 type and flat retro treatment. */
 html[data-anniversary-retro="true"]:not(#ux) :is(.ux-title,.hub-hero__title,.ux-h2,.ux-main .section-title,.ux-main .page-intro h1){font-weight:900!important;letter-spacing:-.03em!important}
