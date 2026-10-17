@@ -113,7 +113,7 @@ const pendingPrompts=[],beforeConfirm=window.confirm;
 window.confirm=(message)=>{pendingPrompts.push(String(message));return true;};
 click('[data-admin-dataset="wins"]');await tick();
 assert.equal(pendingPrompts.filter(message=>message.includes('Leave unsaved changes in this tab?')).length,0,'A just-published Standings page must not warn about phantom unsaved changes');
-assert.match($('[data-content-save-feedback]').textContent,/Editor 2026-10-16\.2/,'Editor build stamp makes it easier to verify updated Admin code is deployed');
+assert.match($('[data-content-save-feedback]').textContent,/Editor 2026-10-17\.1/,'Editor build stamp makes it easier to verify updated Admin code is deployed');
 click('[data-admin-dataset="standings"]');await tick();
 input(['rows',0,'points'],3212);
 click('[data-admin-dataset="wins"]');await tick();
