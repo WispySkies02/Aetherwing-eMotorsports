@@ -13,16 +13,16 @@ const parts = row && !finished ? countdownParts(row, now) : null;
 ---
 {row && (
   <section class="aw-session" data-event-clock aria-label="Race weekend clock">
-    <div class="wrap aw-session__inner" data-state={finished ? 'done' : parts?.live ? 'live' : 'upcoming'}>
+    <div class="wrap aw-session__inner" data-state={finished ? 'done' : parts?.pending?'pending':parts?.live ? 'live' : 'upcoming'}>
       <span class="aw-session__logo">{seriesLogo[row.league] ? <img src={seriesLogo[row.league]} alt={row.leagueName} width="64" height="48" /> : <b>{seriesShort[row.league] || row.leagueName}</b>}</span>
-      <p class="aw-session__state"><i aria-hidden="true"></i><b data-session-state>{finished ? 'Checkered flag' : parts?.live ? 'Live now' : 'Green flag in'}</b></p>
+      <p class="aw-session__state"><i aria-hidden="true"></i><b data-session-state>{finished ? 'Checkered flag' : parts?.pending?'Start time pending':parts?.live ? 'Live now' : 'Green flag in'}</b></p>
       <div class="aw-session__clock" role="timer" aria-live="off" data-session-clock>
         {[['d', 'Days'], ['h', 'Hrs'], ['m', 'Min'], ['s', 'Sec']].map(([key, label]) => (
-          <span><b data-unit={key}>{parts ? pad(parts[key]) : '00'}</b><small>{label}</small></span>
+          <span><b data-unit={key}>{parts?.pending?'--':parts ? pad(parts[key]) : '00'}</b><small>{label}</small></span>
         ))}
       </div>
       <p class="aw-session__when"><span data-session-when>{whenLabel(row)}</span><em data-session-local></em></p>
-      <button type="button" class="aw-session__ics" data-session-ics hidden={finished}>
+      <button type="button" class="aw-session__ics" data-session-ics hidden={finished || parts?.pending}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5M12 13v5M9.5 15.5h5" /></svg>
         Add to calendar
       </button>
@@ -43,19 +43,19 @@ const parts = row && !finished ? countdownParts(row, now) : null;
     let hasResult = Boolean(race?.done);
     const q = (selector) => root.querySelector(selector);
     const units = ['d', 'h', 'm', 's'].map((key) => [key, q(`[data-unit="${key}"]`)]);
-    const labels = { upcoming: 'Green flag in', live: 'Live now', done: 'Checkered flag' };
+    const labels = { upcoming: 'Green flag in', live: 'Live now', done: 'Checkered flag',pending:'Start time pending' };
 
     const render = () => {
       if (!race || !(inner instanceof HTMLElement)) return;
       const now = new Date();
-      const state = hasResult || eventEnd(race) < now ? 'done' : countdownParts(race, now).live ? 'live' : 'upcoming';
+      const state = hasResult || eventEnd(race) < now ? 'done' : race.timePending?'pending':countdownParts(race, now).live ? 'live' : 'upcoming';
       inner.dataset.state = state;
       q('[data-session-state]').textContent = labels[state];
       const parts = state === 'upcoming' ? countdownParts(race, now) : { d: 0, h: 0, m: 0, s: 0 };
-      units.forEach(([key, node]) => { if (node) node.textContent = pad(parts[key]); });
+      units.forEach(([key, node]) => { if (node) node.textContent = state==='pending'?'--':pad(parts[key]); });
       q('[data-session-clock]')?.setAttribute('aria-label', state === 'upcoming' ? `Starts in ${parts.d} days, ${parts.h} hours, ${parts.m} minutes` : labels[state]);
       const ics = q('[data-session-ics]');
-      if (ics instanceof HTMLElement) ics.hidden = state === 'done';
+      if (ics instanceof HTMLElement) ics.hidden = state === 'done' || state==='pending';
     };
     const describe = () => {
       if (!race) return;
@@ -64,7 +64,7 @@ const parts = row && !finished ? countdownParts(row, now) : null;
     };
 
     q('[data-session-ics]')?.addEventListener('click', () => {
-      if (!race) return;
+      if (!race || race.timePending) return;
       const href = URL.createObjectURL(new Blob([calendarFile({ ...race, url: location.pathname }, location.origin)], { type: 'text/calendar;charset=utf-8' }));
       const anchor = Object.assign(document.createElement('a'), { href, download: `aetherwing-${location.pathname.split('/').filter(Boolean).pop()}.ics` });
       document.body.append(anchor);

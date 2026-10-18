@@ -1,0 +1,349 @@
+{
+  "id": "confirmed-october-2026-results-v1",
+  "reviewDate": "2026-10-18",
+  "source": "Owner-provided official screenshots and explicit corrections recorded in this change",
+  "results": [
+    {
+      "scheduleId": "nrrs-round-23",
+      "league": "nrrs",
+      "leagueName": "NRRS Town Fair Cup",
+      "title": "Portland (Chase Race 4)",
+      "track": "Portland International Raceway",
+      "date": "2026-10-13",
+      "round": "ROUND 23",
+      "status": "The Chase",
+      "specialTag": "CHASE RACE 4",
+      "featured": true,
+      "pointsSource": "official-recap",
+      "coverage": "team-only",
+      "sourceUrl": "/news/bells-road-course-struggles-deepen-at-portland/",
+      "headline": "CHASE RACE 4",
+      "headlineAccent": "PORTLAND INTERNATIONAL RACEWAY",
+      "summary": "Official team result: Hailey #32 qualified P7, finished outside the top five in both stages, and finished P8 with 29 total points. Plarker is not in the supplied official field. Only Aetherwing NRRS entries are included.",
+      "entries": [
+        {
+          "assignmentId": "wispy-nrrs",
+          "driver": "Hailey",
+          "number": "32",
+          "start": 7,
+          "stage1Finish": null,
+          "stage1Points": 0,
+          "stage2Finish": null,
+          "stage2Points": 0,
+          "stagePoints": 0,
+          "finish": 8,
+          "racePoints": 29,
+          "featuredDriver": true
+        }
+      ],
+      "standingsMode": "record-only",
+      "sourceNote": "Official October 13 Discord qualifying, stages and results screenshots supplied by the team owner; published recap confirms 29 total points."
+    },
+    {
+      "scheduleId": "sunoco-2026-10-10",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "title": "Ecosave 250",
+      "track": "Charlotte Motor Speedway (Oval)",
+      "date": "2026-10-10",
+      "round": "",
+      "status": "The Chase",
+      "specialTag": "",
+      "featured": false,
+      "pointsSource": "official-result",
+      "coverage": "team-only",
+      "standingsMode": "record-only",
+      "sourceNote": "Official October 10 CHARLOTTE 2 Discord qualifying, stages and final results, plus the official Sunoco points format supplied by the team owner. Owner confirmed the oval layout and Clutch identity.",
+      "summary": "Charlotte oval team result: Will #42 led qualifying, both stages and the finish for 75 points; Clutch #46 was P2 throughout for 51 points; Wispy #54 was P3 throughout for 46 points. Totals include both stages under the supplied Sunoco format.",
+      "entries": [
+        {
+          "driver": "Will",
+          "number": "42",
+          "start": 1,
+          "stage1Finish": 1,
+          "stage1Points": 10,
+          "stage2Finish": 1,
+          "stage2Points": 10,
+          "finish": 1,
+          "finishPoints": 55,
+          "racePoints": 75,
+          "assignmentId": "will-sunoco",
+          "stagePoints": 20,
+          "featuredDriver": false
+        },
+        {
+          "driver": "Clutch",
+          "number": "46",
+          "start": 2,
+          "stage1Finish": 2,
+          "stage1Points": 8,
+          "stage2Finish": 2,
+          "stage2Points": 8,
+          "finish": 2,
+          "finishPoints": 35,
+          "racePoints": 51,
+          "assignmentId": "clutch-sunoco",
+          "stagePoints": 16,
+          "featuredDriver": false
+        },
+        {
+          "driver": "Wispy",
+          "number": "54",
+          "start": 3,
+          "stage1Finish": 3,
+          "stage1Points": 6,
+          "stage2Finish": 3,
+          "stage2Points": 6,
+          "finish": 3,
+          "finishPoints": 34,
+          "racePoints": 46,
+          "assignmentId": "wispy-sunoco",
+          "stagePoints": 12,
+          "featuredDriver": true
+        }
+      ]
+    },
+    {
+      "scheduleId": "nrrs-round-22",
+      "league": "nrrs",
+      "leagueName": "NRRS Town Fair Cup",
+      "title": "GEICO 400",
+      "track": "Talladega Superspeedway",
+      "date": "2026-10-06",
+      "round": "ROUND 22",
+      "status": "The Chase",
+      "specialTag": "CHASE RACE 3",
+      "featured": false,
+      "pointsSource": "official-recap",
+      "coverage": "team-only",
+      "sourceUrl": "/news/talladega-leaves-bell-frustrated-championship-gap-grows/",
+      "headline": "CHASE RACE 3",
+      "headlineAccent": "TALLADEGA SUPERSPEEDWAY",
+      "summary": "Official team result: Hailey #32 qualified P2, won Stage 1, finished P3 in Stage 2 and P4 overall with 41 total points. Plarker did not participate. Only Aetherwing NRRS entries are included.",
+      "entries": [
+        {
+          "assignmentId": "wispy-nrrs",
+          "driver": "Hailey",
+          "number": "32",
+          "start": 2,
+          "stage1Finish": 1,
+          "stage1Points": null,
+          "stage2Finish": 3,
+          "stage2Points": null,
+          "stagePoints": 8,
+          "finish": 4,
+          "racePoints": 41,
+          "featuredDriver": true
+        }
+      ],
+      "standingsMode": "record-only",
+      "sourceNote": "Official October 6 DEGA 2 Discord screenshots supplied by the team owner; published recap confirms 41 total points and 8 combined stage points. Individual stage-point awards are not inferred."
+    },
+    {
+      "scheduleId": "kmart-round-9",
+      "league": "kmart",
+      "leagueName": "NASCAR Kmart Auto Parts Series",
+      "title": "BrakeBest Brake Pads 250",
+      "track": "Martinsville",
+      "date": "2026-10-05",
+      "round": "ROUND 9",
+      "status": "Regular Season",
+      "specialTag": "DASH4CASH",
+      "featured": false,
+      "pointsSource": "official-result",
+      "coverage": "team-only",
+      "standingsMode": "record-only",
+      "sourceNote": "Official stage/qualifying/results screenshots supplied by the team owner. Owner explicitly confirmed that 35 and 33 are final totals including stages and that only Clutch and Wispy belong in this result.",
+      "summary": "SCR team result: Clutch qualified P1, finished P2 in both stages and P2 overall for 35 total points. Wispy qualified P3, finished P5 in both stages and P4 overall for 33 total points. Official totals already include stages.",
+      "entries": [
+        {
+          "assignmentId": "clutch-kmart",
+          "driver": "Clutch",
+          "number": "",
+          "start": 1,
+          "stage1Finish": 2,
+          "stage1Points": null,
+          "stage2Finish": 2,
+          "stage2Points": null,
+          "finish": 2,
+          "racePoints": 35,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "wispy-kmart",
+          "driver": "Wispy",
+          "number": "",
+          "start": 3,
+          "stage1Finish": 5,
+          "stage1Points": null,
+          "stage2Finish": 5,
+          "stage2Points": null,
+          "finish": 4,
+          "racePoints": 33,
+          "featuredDriver": true
+        }
+      ]
+    }
+  ],
+  "scheduleChanges": [
+    {
+      "eventId": "sunoco-2026-10-10",
+      "before": {
+        "track": "Charlotte Motor Speedway Roval"
+      },
+      "after": {
+        "track": "Charlotte Motor Speedway (Oval)"
+      }
+    },
+    {
+      "eventId": "open-round-4",
+      "before": {
+        "date": "2026-10-11",
+        "time": "11:30 AM ET",
+        "timePending": null
+      },
+      "after": {
+        "date": "2026-10-18",
+        "time": "Start time TBD",
+        "timePending": true
+      }
+    },
+    {
+      "eventId": "nrrs-round-23",
+      "before": {
+        "track": "Indianapolis Motor Speedway Road Course",
+        "title": "Microsoft 200"
+      },
+      "after": {
+        "track": "Portland International Raceway",
+        "title": "Portland (Chase Race 4)"
+      }
+    },
+    {
+      "eventId": "open-round-5",
+      "before": {
+        "date": "2026-10-18"
+      },
+      "after": {
+        "date": "2026-10-25"
+      }
+    },
+    {
+      "eventId": "open-round-6",
+      "before": {
+        "date": "2026-10-25"
+      },
+      "after": {
+        "date": "2026-11-01"
+      }
+    },
+    {
+      "eventId": "open-round-7",
+      "before": {
+        "date": "2026-11-01"
+      },
+      "after": {
+        "date": "2026-11-08"
+      }
+    },
+    {
+      "eventId": "open-round-8",
+      "before": {
+        "date": "2026-11-08"
+      },
+      "after": {
+        "date": "2026-11-15"
+      }
+    },
+    {
+      "eventId": "open-round-9",
+      "before": {
+        "date": "2026-11-15"
+      },
+      "after": {
+        "date": "2026-11-22"
+      }
+    },
+    {
+      "eventId": "open-round-10",
+      "before": {
+        "date": "2026-11-22"
+      },
+      "after": {
+        "date": "2026-11-29"
+      }
+    },
+    {
+      "eventId": "open-round-11",
+      "before": {
+        "date": "2026-11-29"
+      },
+      "after": {
+        "date": "2026-12-06"
+      }
+    },
+    {
+      "eventId": "open-round-12",
+      "before": {
+        "date": "2026-12-06"
+      },
+      "after": {
+        "date": "2026-12-13"
+      }
+    },
+    {
+      "eventId": "sunoco-2026-10-17",
+      "before": {
+        "date": "2026-10-17",
+        "routeId": null,
+        "track": "Phoenix Raceway"
+      },
+      "after": {
+        "date": "2026-10-24",
+        "routeId": "sunoco-2026-10-17",
+        "track": "Phoenix Raceway"
+      }
+    },
+    {
+      "eventId": "sunoco-2026-10-24",
+      "before": {
+        "date": "2026-10-24",
+        "routeId": null,
+        "track": "Atlanta Motor Speedway"
+      },
+      "after": {
+        "date": "2026-10-31",
+        "routeId": "sunoco-2026-10-24",
+        "track": "Atlanta Motor Speedway"
+      }
+    },
+    {
+      "eventId": "sunoco-2026-10-31",
+      "before": {
+        "date": "2026-10-31",
+        "routeId": null,
+        "track": "Homestead-Miami Speedway"
+      },
+      "after": {
+        "date": "2026-11-07",
+        "routeId": "sunoco-2026-10-31",
+        "track": "Homestead-Miami Speedway"
+      }
+    }
+  ],
+  "scheduleAdditions": [
+    {
+      "eventId": "sunoco-off-week-2026-10-17",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "date": "2026-10-17",
+      "title": "Off Week",
+      "track": "Off Week",
+      "time": "No race",
+      "status": "Off Week",
+      "offWeek": true,
+      "entryListMode": "auto",
+      "entries": []
+    }
+  ]
+}

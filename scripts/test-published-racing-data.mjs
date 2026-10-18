@@ -79,7 +79,8 @@ const normalized=normalize('results',seed.results);
 assert.equal(validate('results',normalized),'');
 assert.equal(normalized[0].date,'2026-10-13');
 assert.equal(normalized.find(r=>r.date==='2026-10-06').entries[0].racePoints,41,'Official points survive normalization');
-assert.equal(normalized[0].entries[0].start,null,'Unreported qualifying positions stay unknown');
+assert.equal(normalized[0].entries[0].start,7,'Screenshot confirms Hailey qualified P7 at Portland');
+assert.equal(normalized[0].entries[0].stage1Finish,null,'Outside the stage top five does not establish an exact finishing position');
 for(const field of ['finish','racePoints']) {
   const bad=structuredClone(normalized);bad[0].entries[0][field]=null;
   assert.notEqual(validate('results',bad),'',`${field} is still required`);
@@ -124,7 +125,7 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
     const actual=saved.published.results.find(r=>r.scheduleId===race.scheduleId);
     assert.ok(actual,'Admin must actually publish the loaded record');
     assert.equal(actual.entries[0].racePoints,race.entries[0].racePoints);
-    assert.equal(actual.entries[0].stage1Points,null,'Blank official breakdown survives commit');
+    assert.equal(actual.entries[0].stage1Points,race.entries[0].stage1Points,'Confirmed zero and unknown stage awards survive commit');
     assert.equal(actual.entries[0].start,race.entries[0].start,'Unknown start remains unknown');
     assert.equal(JSON.stringify(saved.published.standings),standingsBefore,'Historical loading must not add points twice');
   }

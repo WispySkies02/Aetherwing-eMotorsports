@@ -54,7 +54,7 @@ function finishPointsFor(league,finish) {
   return null;
 }
 function scoreKnownRace(race={}) {
-  if(race.pointsSource==='official-recap'||!['nrrs','kmart','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
+  if(['official-recap','official-result'].includes(race.pointsSource)||!['nrrs','kmart','uarl-d1'].includes(race.league)||!Array.isArray(race.entries))return race;
   return {...race,entries:race.entries.map((entry)=>{
     const stage1=stagePointsFor(race.league,entry.stage1Finish),stage2=stagePointsFor(race.league,entry.stage2Finish),finishPoints=finishPointsFor(race.league,entry.finish);
     const bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;
@@ -157,6 +157,7 @@ function validate(key, data, registry={}) {
     }
     if (row.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.slug)) return `Entry ${index + 1}: invalid slug.`;
     if (key === 'schedule-events') {
+      if (typeof row.timePending!=='undefined' && typeof row.timePending!=='boolean')return 'Start time pending must be checked or unchecked.';
       if (typeof row.offWeek!=='undefined' && typeof row.offWeek!=='boolean') return 'Off-week must be checked or unchecked.';
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.league)) return 'Use a lowercase League ID containing letters, numbers, and hyphens.';
       if (!row.tbd && (!/^\d{4}-\d{2}-\d{2}$/.test(row.date) || Number.isNaN(Date.parse(row.date)))) return 'Use a valid YYYY-MM-DD event date.';
@@ -176,6 +177,7 @@ function validate(key, data, registry={}) {
       }
     }
     if(key==='results'){
+      if(row.pointsSource==='official-result'&&(!String(row.sourceNote||'').trim()||row.coverage!=='team-only'))return `Result ${index+1}: official team results need source notes and explicit team-only coverage.`;
       if(row.pointsSource==='official-recap'&&(!/^\/news\/[a-z0-9-]+\/$/.test(row.sourceUrl||'')||row.coverage!=='team-only'))return `Result ${index+1}: recap-confirmed results need a source article and explicit team-only coverage.`;
       if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date)||Number.isNaN(Date.parse(row.date)))return `Result ${index+1}: select a valid scheduled race.`;
       if(!Array.isArray(row.entries)||!row.entries.length)return `Result ${index+1}: add at least one roster driver result.`;
@@ -192,7 +194,7 @@ function validate(key, data, registry={}) {
         if(entry.assignmentId&&!assignment&&!recorded)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
         if(assignment&&!recorded&&(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||'')))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
         if(!assignment&&!String(entry.driver||'').trim())return `Result ${index+1}: external race participants need a driver name.`;
-        for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!(row.pointsSource==='official-recap'&&['start','stage1Finish','stage1Points','stage2Finish','stage2Points'].includes(field)&&entry[field]===null)&&(!Number.isFinite(entry[field])||entry[field]<0))return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
+        for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!(['official-recap','official-result'].includes(row.pointsSource)&&['start','stage1Finish','stage1Points','stage2Finish','stage2Points'].includes(field)&&entry[field]===null)&&(!Number.isFinite(entry[field])||entry[field]<0))return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
       }
       if(new Set(row.entries.map((entry)=>entry.driver)).size!==row.entries.length)return `Result ${index+1}: each driver can appear only once.`;
     }

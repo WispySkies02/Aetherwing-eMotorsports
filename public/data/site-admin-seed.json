@@ -761,13 +761,19 @@
       "time": "Event Window"
     },
     {
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "",
+      "entryListMode": "auto",
       "date": "2026-10-03",
       "league": "sunoco",
       "leagueName": "Sunoco Trucks",
       "status": "The Chase",
-      "title": "Ecosave 250",
-      "track": "Charlotte Motor Speedway Roval",
-      "time": "8:00 PM ET"
+      "title": "Sunoco Truck Series Race",
+      "track": "Dover Motor Speedway",
+      "time": "8:00 PM ET",
+      "entries": []
     },
     {
       "date": "2026-10-04",
@@ -826,13 +832,19 @@
       "endAt": "2026-10-04T04:00:00-04:00"
     },
     {
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "",
+      "entryListMode": "auto",
       "date": "2026-10-10",
       "league": "sunoco",
       "leagueName": "Sunoco Trucks",
       "status": "The Chase",
-      "title": "Sunoco Truck Series Race",
-      "track": "Phoenix Raceway",
-      "time": "8:00 PM ET"
+      "title": "Ecosave 250",
+      "track": "Charlotte Motor Speedway (Oval)",
+      "time": "8:00 PM ET",
+      "entries": []
     },
     {
       "date": "2026-10-11",
@@ -845,14 +857,20 @@
       "round": "ROUND 4"
     },
     {
-      "date": "2026-10-04",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 4",
+      "entryListMode": "auto",
+      "date": "2026-10-18",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Queen City Dirt Nationals",
       "track": "The Dirt Track At Charlotte",
-      "time": "11:30 AM ET",
-      "round": "ROUND 4"
+      "time": "Start time TBD",
+      "entries": [],
+      "timePending": true
     },
     {
       "league": "kmart",
@@ -867,23 +885,26 @@
       "status": "All-Star Race"
     },
     {
-      "date": "2026-09-29",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 22",
+      "entryListMode": "custom",
+      "date": "2026-10-06",
       "league": "nrrs",
       "leagueName": "NRRS",
       "status": "The Chase",
       "title": "GEICO 400",
-      "track": "Las Vegas Motor Speedway",
+      "track": "Talladega Superspeedway",
       "time": "7:30 PM ET",
-      "round": "ROUND 22"
-    },
-    {
-      "date": "2026-10-17",
-      "league": "sunoco",
-      "leagueName": "Sunoco Trucks",
-      "status": "The Chase",
-      "title": "The Fr8 208",
-      "track": "Atlanta Motor Speedway",
-      "time": "8:00 PM ET"
+      "entries": [
+        {
+          "assignmentId": "wispy-nrrs",
+          "driver": "Hailey",
+          "number": "32",
+          "entryStatus": "Confirmed"
+        }
+      ]
     },
     {
       "date": "2026-10-18",
@@ -896,14 +917,19 @@
       "round": "ROUND 5"
     },
     {
-      "date": "2026-10-11",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 5",
+      "entryListMode": "auto",
+      "date": "2026-10-25",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Capital Cup",
       "track": "Wake County Speedway",
       "time": "11:30 AM ET",
-      "round": "ROUND 5"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -918,14 +944,19 @@
       "status": "Regular Season"
     },
     {
-      "date": "2026-10-06",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 23",
+      "entryListMode": "auto",
+      "date": "2026-10-13",
       "league": "nrrs",
       "leagueName": "NRRS",
       "status": "The Chase",
-      "title": "Microsoft 200",
-      "track": "Indianapolis Motor Speedway Road Course",
+      "title": "Portland (Chase Race 4)",
+      "track": "Portland International Raceway",
       "time": "7:30 PM ET",
-      "round": "ROUND 23"
+      "entries": []
     },
     {
       "date": "2026-10-16",
@@ -939,15 +970,6 @@
       "time": "Event Window"
     },
     {
-      "date": "2026-10-24",
-      "league": "sunoco",
-      "leagueName": "Sunoco Trucks",
-      "status": "Championship",
-      "title": "The Baptist Health 200",
-      "track": "Homestead-Miami Speedway",
-      "time": "8:00 PM ET"
-    },
-    {
       "date": "2026-10-25",
       "league": "uarl-d1",
       "leagueName": "L.L. Bean Cup Series",
@@ -958,14 +980,19 @@
       "round": "ROUND 6"
     },
     {
-      "date": "2026-10-18",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 6",
+      "entryListMode": "auto",
+      "date": "2026-11-01",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Badger State 150",
       "track": "Slinger Speedway",
       "time": "11:30 AM ET",
-      "round": "ROUND 6"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -1000,14 +1027,19 @@
       "round": "ROUND 7"
     },
     {
-      "date": "2026-10-25",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 7",
+      "entryListMode": "auto",
+      "date": "2026-11-08",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Appalachian Challenge",
       "track": "Tyler County Speedway",
       "time": "11:30 AM ET",
-      "round": "ROUND 7"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -1043,14 +1075,19 @@
       "time": "Event Window"
     },
     {
-      "date": "2026-11-01",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 8",
+      "entryListMode": "auto",
+      "date": "2026-11-15",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Great Lakes Showdown",
       "track": "Cedar Lake Speedway",
       "time": "11:30 AM ET",
-      "round": "ROUND 8"
+      "entries": []
     },
     {
       "date": "2026-11-08",
@@ -1095,14 +1132,19 @@
       "time": "8:30 PM ET"
     },
     {
-      "date": "2026-11-08",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 9",
+      "entryListMode": "auto",
+      "date": "2026-11-22",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "North Country Classic",
       "track": "ABC Raceway",
       "time": "11:30 AM ET",
-      "round": "ROUND 9"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -1138,14 +1180,19 @@
       "round": "ROUND 9"
     },
     {
-      "date": "2026-11-15",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 10",
+      "entryListMode": "auto",
+      "date": "2026-11-29",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Pine Tree State 150",
       "track": "Baileyville Speedway",
       "time": "11:30 AM ET",
-      "round": "ROUND 10"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -1181,14 +1228,19 @@
       "round": "ROUND 10"
     },
     {
-      "date": "2026-11-22",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 11",
+      "entryListMode": "auto",
+      "date": "2026-12-06",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Heartland Dirt Crown",
       "track": "Eldora Speedway",
       "time": "11:30 AM ET",
-      "round": "ROUND 11"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -1213,14 +1265,19 @@
       "round": "ROUND 11"
     },
     {
-      "date": "2026-11-29",
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "ROUND 12",
+      "entryListMode": "auto",
+      "date": "2026-12-13",
       "league": "open",
       "leagueName": "UARL Open",
       "status": "Regular Season",
       "title": "Madhouse 100",
       "track": "Bowman Gray Stadium",
       "time": "11:30 AM ET",
-      "round": "ROUND 12"
+      "entries": []
     },
     {
       "league": "kmart",
@@ -1397,6 +1454,67 @@
       "track": "Homestead-Miami Speedway",
       "time": "8:30 PM ET",
       "round": "ROUND 18"
+    },
+    {
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "",
+      "entryListMode": "auto",
+      "date": "2026-10-24",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "status": "The Chase",
+      "title": "Sunoco Truck Series Race",
+      "track": "Phoenix Raceway",
+      "time": "8:00 PM ET",
+      "entries": [],
+      "routeId": "sunoco-2026-10-17"
+    },
+    {
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "",
+      "entryListMode": "auto",
+      "date": "2026-10-31",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "status": "The Chase",
+      "title": "The Fr8 208",
+      "track": "Atlanta Motor Speedway",
+      "time": "8:00 PM ET",
+      "entries": [],
+      "routeId": "sunoco-2026-10-24"
+    },
+    {
+      "offWeek": false,
+      "tbd": false,
+      "specialTag": "",
+      "round": "",
+      "entryListMode": "auto",
+      "date": "2026-11-07",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "status": "Championship",
+      "title": "The Baptist Health 200",
+      "track": "Homestead-Miami Speedway",
+      "time": "8:00 PM ET",
+      "entries": [],
+      "routeId": "sunoco-2026-10-31"
+    },
+    {
+      "eventId": "sunoco-off-week-2026-10-17",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "date": "2026-10-17",
+      "title": "Off Week",
+      "track": "Off Week",
+      "time": "No race",
+      "status": "Off Week",
+      "offWeek": true,
+      "entryListMode": "auto",
+      "entries": []
     }
   ],
   "results": [
@@ -1416,24 +1534,89 @@
       "sourceUrl": "/news/bells-road-course-struggles-deepen-at-portland/",
       "headline": "CHASE RACE 4",
       "headlineAccent": "PORTLAND INTERNATIONAL RACEWAY",
-      "summary": "Recap-confirmed team result: Hailey Bell finished P8, earning 29 race points and 0 stage points. Only verified team results are listed; the full finishing order and unreported details remain unavailable.",
+      "summary": "Official team result: Hailey #32 qualified P7, finished outside the top five in both stages, and finished P8 with 29 total points. Plarker is not in the supplied official field. Only Aetherwing NRRS entries are included.",
       "entries": [
         {
           "assignmentId": "wispy-nrrs",
           "driver": "Hailey",
           "number": "32",
-          "start": null,
+          "start": 7,
           "stage1Finish": null,
-          "stage1Points": null,
+          "stage1Points": 0,
           "stage2Finish": null,
-          "stage2Points": null,
+          "stage2Points": 0,
           "stagePoints": 0,
           "finish": 8,
           "racePoints": 29,
           "featuredDriver": true
         }
       ],
-      "standingsMode": "record-only"
+      "standingsMode": "record-only",
+      "sourceNote": "Official October 13 Discord qualifying, stages and results screenshots supplied by the team owner; published recap confirms 29 total points."
+    },
+    {
+      "scheduleId": "sunoco-2026-10-10",
+      "league": "sunoco",
+      "leagueName": "Sunoco Trucks",
+      "title": "Ecosave 250",
+      "track": "Charlotte Motor Speedway (Oval)",
+      "date": "2026-10-10",
+      "round": "",
+      "status": "The Chase",
+      "specialTag": "",
+      "featured": false,
+      "pointsSource": "official-result",
+      "coverage": "team-only",
+      "standingsMode": "record-only",
+      "sourceNote": "Official October 10 CHARLOTTE 2 Discord qualifying, stages and final results, plus the official Sunoco points format supplied by the team owner. Owner confirmed the oval layout and Clutch identity.",
+      "summary": "Charlotte oval team result: Will #42 led qualifying, both stages and the finish for 75 points; Clutch #46 was P2 throughout for 51 points; Wispy #54 was P3 throughout for 46 points. Totals include both stages under the supplied Sunoco format.",
+      "entries": [
+        {
+          "driver": "Will",
+          "number": "42",
+          "start": 1,
+          "stage1Finish": 1,
+          "stage1Points": 10,
+          "stage2Finish": 1,
+          "stage2Points": 10,
+          "finish": 1,
+          "finishPoints": 55,
+          "racePoints": 75,
+          "assignmentId": "will-sunoco",
+          "stagePoints": 20,
+          "featuredDriver": false
+        },
+        {
+          "driver": "Clutch",
+          "number": "46",
+          "start": 2,
+          "stage1Finish": 2,
+          "stage1Points": 8,
+          "stage2Finish": 2,
+          "stage2Points": 8,
+          "finish": 2,
+          "finishPoints": 35,
+          "racePoints": 51,
+          "assignmentId": "clutch-sunoco",
+          "stagePoints": 16,
+          "featuredDriver": false
+        },
+        {
+          "driver": "Wispy",
+          "number": "54",
+          "start": 3,
+          "stage1Finish": 3,
+          "stage1Points": 6,
+          "stage2Finish": 3,
+          "stage2Points": 6,
+          "finish": 3,
+          "finishPoints": 34,
+          "racePoints": 46,
+          "assignmentId": "wispy-sunoco",
+          "stagePoints": 12,
+          "featuredDriver": true
+        }
+      ]
     },
     {
       "scheduleId": "nrrs-round-22",
@@ -1451,7 +1634,7 @@
       "sourceUrl": "/news/talladega-leaves-bell-frustrated-championship-gap-grows/",
       "headline": "CHASE RACE 3",
       "headlineAccent": "TALLADEGA SUPERSPEEDWAY",
-      "summary": "Recap-confirmed team result: Hailey Bell finished P4, earning 41 race points and 8 stage points. Only verified team results are listed; the full finishing order and unreported details remain unavailable.",
+      "summary": "Official team result: Hailey #32 qualified P2, won Stage 1, finished P3 in Stage 2 and P4 overall with 41 total points. Plarker did not participate. Only Aetherwing NRRS entries are included.",
       "entries": [
         {
           "assignmentId": "wispy-nrrs",
@@ -1468,7 +1651,53 @@
           "featuredDriver": true
         }
       ],
-      "standingsMode": "record-only"
+      "standingsMode": "record-only",
+      "sourceNote": "Official October 6 DEGA 2 Discord screenshots supplied by the team owner; published recap confirms 41 total points and 8 combined stage points. Individual stage-point awards are not inferred."
+    },
+    {
+      "scheduleId": "kmart-round-9",
+      "league": "kmart",
+      "leagueName": "NASCAR Kmart Auto Parts Series",
+      "title": "BrakeBest Brake Pads 250",
+      "track": "Martinsville",
+      "date": "2026-10-05",
+      "round": "ROUND 9",
+      "status": "Regular Season",
+      "specialTag": "DASH4CASH",
+      "featured": false,
+      "pointsSource": "official-result",
+      "coverage": "team-only",
+      "standingsMode": "record-only",
+      "sourceNote": "Official stage/qualifying/results screenshots supplied by the team owner. Owner explicitly confirmed that 35 and 33 are final totals including stages and that only Clutch and Wispy belong in this result.",
+      "summary": "SCR team result: Clutch qualified P1, finished P2 in both stages and P2 overall for 35 total points. Wispy qualified P3, finished P5 in both stages and P4 overall for 33 total points. Official totals already include stages.",
+      "entries": [
+        {
+          "assignmentId": "clutch-kmart",
+          "driver": "Clutch",
+          "number": "",
+          "start": 1,
+          "stage1Finish": 2,
+          "stage1Points": null,
+          "stage2Finish": 2,
+          "stage2Points": null,
+          "finish": 2,
+          "racePoints": 35,
+          "featuredDriver": false
+        },
+        {
+          "assignmentId": "wispy-kmart",
+          "driver": "Wispy",
+          "number": "",
+          "start": 3,
+          "stage1Finish": 5,
+          "stage1Points": null,
+          "stage2Finish": 5,
+          "stage2Points": null,
+          "finish": 4,
+          "racePoints": 33,
+          "featuredDriver": true
+        }
+      ]
     },
     {
       "scheduleId": "2026-09-28-kmart-brembo-performance-200",

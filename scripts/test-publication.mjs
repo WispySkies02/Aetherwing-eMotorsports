@@ -43,7 +43,7 @@ try {
   const event={...data['schedule-events'][0],date:'2027-02-01',title:'Publication Fixture Race',eventId:'publication-fixture-race'};
   data['schedule-events'].push(event);
   data['schedule-events'].push({...event,league:'fixture-league',leagueName:'Fixture League',eventId:'fixture-league-race'});
-  const resultTemplate=data.results.find(race=>race.league==='kmart'&&race.entries.some(entry=>entry.assignmentId==='clutch-kmart'));
+  const resultTemplate=data.results.find(race=>race.league==='kmart'&&race.date==='2026-09-28'&&race.entries.some(entry=>entry.assignmentId==='clutch-kmart'));
   assert.ok(resultTemplate,'Publication fixture needs a complete Kmart result');
   data.results.unshift({...resultTemplate,scheduleId:'2099-01-01-kmart-publication-fixture-result',date:'2099-01-01',title:'Publication Fixture Result',track:'Fixture Raceway',headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.',entries:[{...resultTemplate.entries.find((entry)=>entry.assignmentId==='clutch-kmart'),finish:2,featuredDriver:true}]});
   data.results=normalize('results',data.results);

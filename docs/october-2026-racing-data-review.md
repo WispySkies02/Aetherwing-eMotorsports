@@ -1,5 +1,9 @@
 # October 18, 2026 racing data review
 
+Follow-up: the owner has now supplied official screenshots and schedule
+corrections. See [the confirmed intake](confirmed-october-2026-results.md).
+The original audit findings below describe the earlier published state.
+
 ## Sources and confirmed records
 
 The public `/api/site-content` feed was inspected read-only at revision 89. It
