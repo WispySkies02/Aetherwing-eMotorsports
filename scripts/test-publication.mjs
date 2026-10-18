@@ -42,6 +42,7 @@ try {
   const data=seeds();
   const event={...data['schedule-events'][0],date:'2027-02-01',title:'Publication Fixture Race',eventId:'publication-fixture-race'};
   data['schedule-events'].push(event);
+  data['schedule-events'].push({...event,league:'fixture-league',leagueName:'Fixture League',eventId:'fixture-league-race'});
   data.results.unshift({...data.results[0],scheduleId:'2099-01-01-kmart-publication-fixture-result',date:'2099-01-01',title:'Publication Fixture Result',track:'Fixture Raceway',headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.',entries:[{...data.results[0].entries.find((entry)=>entry.assignmentId==='clutch-kmart'),finish:2}]});
   data.results=normalize('results',data.results);
   data.wins.push({league:'NRRS',track:'Publication Fixture Win',driver:'Wispy',date:'Sep 18, 2026'});
@@ -99,7 +100,7 @@ try {
       }
     }finally{profilePage.window.close();partnersPage.window.close();}
     const synced=JSON.parse(fs.readFileSync(overlayFile,'utf8'));
-    const calendar=new JSDOM(read('schedule/index.html'),{runScripts:'outside-only'});
+    const calendar=new JSDOM(read('schedule/index.html'),{url:'https://aetherwing.net/schedule/',runScripts:'outside-only'});
     try{
       calendar.window.setInterval=()=>0;
       const calendarScript=Array.from(calendar.window.document.scripts).find(script=>script.textContent.includes('[data-race-calendar]'));
@@ -116,6 +117,20 @@ try {
       assert.equal(rows().filter(row=>row.tagName==='DIV').length,kmart.filter(event=>event.offWeek).length,'Built full schedule retains off weeks without broken links');
       doc.querySelector('[data-calendar-toggle]').click();assert.ok(rows().length<=5);
     }finally{calendar.window.close();}
+    for(const league of new Set(synced.datasets['schedule-events'].map(event=>event.league))){
+      const path=`/schedule/${league}/`;
+      const page=new JSDOM(read(`schedule/${league}/index.html`),{url:`https://aetherwing.net${path}#full`,runScripts:'outside-only'});
+      try{
+        page.window.setInterval=()=>0;
+        const script=Array.from(page.window.document.scripts).find(script=>script.textContent.includes('[data-race-calendar]'));
+        assert.ok(script);page.window.eval(script.textContent);
+        const doc=page.window.document;
+        assert.equal(doc.querySelector('link[rel="canonical"]').href,`https://aetherwing.net${path}`);
+        assert.equal(doc.querySelector('[data-series][aria-pressed="true"]').dataset.series,league,'Built shared links must select their league');
+        assert.equal(doc.querySelector('[data-calendar-toggle]').getAttribute('aria-expanded'),'true');
+        assert.equal(doc.querySelectorAll('[data-calendar-list] .aw-calendar__event').length,synced.datasets['schedule-events'].filter(event=>event.league===league).length,'Direct full links must render every published entry');
+      }finally{page.window.close();}
+    }
     for(const [id,number] of editedNumbers) {
       const assignment=synced.datasets.drivers.find((entry)=>entry.id===id);
       assert.equal(assignment.number,number,'Content sync must retain published assignment numbers');
@@ -178,6 +193,7 @@ try {
     await build();
     assert.equal(fs.readFileSync(overlayFile,'utf8'),baselineOverlay,'Canonical build baseline must be idempotent');
     assert.ok(!fs.existsSync(join(cwd,'dist/news/publication-fixture-story')),'Rebuild must remove fixture-only articles');
+    assert.ok(!fs.existsSync(join(cwd,'dist/schedule/fixture-league')),'Rebuild must remove fixture-only league routes');
     assert.ok(!read('history/index.html').includes('Publication Fixture'),'Fixture results/wins/milestones must not survive restoration');
     assert.ok(!read('index.html').includes('Publication Fixture Lead'),'Fixture feature must not survive restoration');
     assert.ok(!read('drivers/hailey/index.html').includes('Publication Fixture Primary'),'Fixture sponsor titles must not survive restoration');

@@ -19,7 +19,13 @@ const initialResults = results;
 <script define:vars={{ initial, initialResults }}>
 (() => {
   const root=document.querySelector('[data-race-calendar]');if(!root)return;
-  let events=initial, raceResults=initialResults, selected='all', showFull=false, renderedList='';
+  const readLocation=()=>{
+    const match=location.pathname.match(/^\/schedule(?:\/([^/]+))?\/?$/);
+    let league='all';
+    try{if(match?.[1])league=decodeURIComponent(match[1]);}catch{}
+    return {league,full:location.hash==='#full'};
+  };
+  let events=initial, raceResults=initialResults, selected=readLocation().league, showFull=readLocation().full, renderedList='';
   const esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const labels=(rows)=>new Map(rows.map(e=>[e.league,e.leagueName||e.league.toUpperCase()]));
   const seriesVisual={
@@ -53,11 +59,27 @@ const initialResults = results;
   const relative=(ms)=>!Number.isFinite(ms)?'DATE TBD':ms<=0?'LIVE':`${Math.max(1,Math.ceil(ms/86400000))}D`;
   const routeSlug=(e)=>{const slugify=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();const explicit=slugify(e.routeId||e.eventId||'');if(explicit)return explicit;const league=slugify(e.league||'event')||'event',round=String(e.round||'').match(/(\d+)/);if(round)return `${league}-round-${Number(round[1])}`;return `${league}-${slugify(e.date||'tbd')||'tbd'}`;};
   const url=(e)=>`/event/${routeSlug(e)}/`;
+  const syncCanonical=()=>{
+    const canonical=document.querySelector('link[rel="canonical"]');
+    if(canonical)canonical.href=new URL(location.pathname,canonical.href).href;
+  };
+  const navigate=(league,full)=>{
+    if(league===selected&&full===showFull)return;
+    selected=league;showFull=full;
+    const target=new URL(location.href);
+    target.pathname=league==='all'?'/schedule/':`/schedule/${encodeURIComponent(league)}/`;
+    target.hash=full?'full':'';
+    if(target.href!==location.href)history.pushState(null,'',target);
+    syncCanonical();tick();
+  };
+  const restoreLocation=()=>{const view=readLocation();selected=view.league;showFull=view.full;syncCanonical();tick();};
+  window.addEventListener('popstate',restoreLocation);
+  window.addEventListener('hashchange',restoreLocation);
   const toggle=root.querySelector('[data-calendar-toggle]');
-  toggle.addEventListener('click',()=>{showFull=!showFull;tick();});
+  toggle.addEventListener('click',()=>navigate(selected,!showFull));
   root.addEventListener('click',(event)=>{
     if(!event.target.closest('[data-calendar-open-full]'))return;
-    event.preventDefault();showFull=true;tick();toggle.focus({preventScroll:true});
+    event.preventDefault();navigate(selected,true);toggle.focus({preventScroll:true});
   });
   function tick(){
     const now=new Date(), visible=events.filter(e=>!e.offWeek&&(selected==='all'||e.league===selected));
@@ -68,7 +90,7 @@ const initialResults = results;
     if(filters.dataset.keys!==keys.join('|')){
       filters.dataset.keys=keys.join('|');
       filters.innerHTML=keys.map(k=>filterMarkup(k,names)).join('');
-      filters.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{selected=button.dataset.series;tick();}));
+      filters.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.series,showFull)));
     }
     filters.querySelectorAll('button').forEach(button=>{
       const k=button.dataset.series, future=events.filter(e=>!e.offWeek&&(k==='all'||e.league===k)&&!completed(e,now)).sort(chronological)[0];

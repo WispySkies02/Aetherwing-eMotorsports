@@ -355,7 +355,7 @@ Netlify uses `npm run build` and publishes `dist`. The existing Admin remains at
 
 ## Public routes
 
-Race Calendar defaults to the next five upcoming races. Select a league and choose **View full schedule** to see every published entry in chronological order, including completed races, remaining events, and off weeks. **Show next 5** returns to the default view. The full view follows league changes and live Admin updates; off weeks do not link to event pages.
+Race Calendar defaults to the next five upcoming races. Select a league and choose **View full schedule** to see every published entry in chronological order, including completed races, remaining events, and off weeks. **Show next 5** returns to the default view. The full view follows league changes and live Admin updates; off weeks do not link to event pages. Each league has a shareable URL: `/schedule/kmart/` opens the next five Kmart races, and `/schedule/kmart/#full` opens the full Kmart calendar. `/schedule/#full` shows all programs in full. Changing the league or view updates the address bar; reload and Back/Forward restore that selection. League pages are generated from the published schedule during the normal production build.
 
 Home, Race Calendar, Programs, Driver Lineup and profiles, Championships, Paint Booth gallery, Partners, Newsroom and articles, History, and event Race Weekend pages. Share-only schedule variants and their generated social-card collection were removed. Every event URL now opens a real page.
 
