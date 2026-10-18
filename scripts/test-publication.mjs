@@ -99,6 +99,23 @@ try {
       }
     }finally{profilePage.window.close();partnersPage.window.close();}
     const synced=JSON.parse(fs.readFileSync(overlayFile,'utf8'));
+    const calendar=new JSDOM(read('schedule/index.html'),{runScripts:'outside-only'});
+    try{
+      calendar.window.setInterval=()=>0;
+      const calendarScript=Array.from(calendar.window.document.scripts).find(script=>script.textContent.includes('[data-race-calendar]'));
+      assert.ok(calendarScript,'Built schedule page must include its calendar renderer');
+      calendar.window.eval(calendarScript.textContent);
+      const doc=calendar.window.document,rows=()=>Array.from(doc.querySelectorAll('[data-calendar-list] .aw-calendar__event'));
+      assert.ok(rows().length<=5,'Production calendar must default to at most five upcoming races');
+      assert.equal(doc.querySelector('[data-calendar-toggle]').getAttribute('aria-expanded'),'false');
+      doc.querySelector('[data-series="nrrs"]').click();doc.querySelector('[data-calendar-toggle]').click();
+      assert.equal(rows().length,synced.datasets['schedule-events'].filter(event=>event.league==='nrrs').length,'Built calendar must expose the entire selected league');
+      doc.querySelector('[data-series="kmart"]').click();
+      const kmart=synced.datasets['schedule-events'].filter(event=>event.league==='kmart');
+      assert.equal(rows().length,kmart.length,'Full view must follow a league change');
+      assert.equal(rows().filter(row=>row.tagName==='DIV').length,kmart.filter(event=>event.offWeek).length,'Built full schedule retains off weeks without broken links');
+      doc.querySelector('[data-calendar-toggle]').click();assert.ok(rows().length<=5);
+    }finally{calendar.window.close();}
     for(const [id,number] of editedNumbers) {
       const assignment=synced.datasets.drivers.find((entry)=>entry.id===id);
       assert.equal(assignment.number,number,'Content sync must retain published assignment numbers');
