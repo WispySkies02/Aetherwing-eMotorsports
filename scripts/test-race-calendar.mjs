@@ -81,4 +81,49 @@ for(const mode of ['seed','cached','event']){
     assert.ok(!w.document.body.textContent.includes('NaN'));
   }finally{w.close();}
 }
-console.log('PASS: next-five/full league schedules, complete seasons, off weeks, TBD dates, chronological order, stable links, focus preservation, and seed/cached/live updates.');
+const waitFor=async(predicate,label)=>{
+  for(let attempt=0;attempt<100;attempt++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,10));}
+  assert.fail(label);
+};
+for(const mode of ['seed','cached','event']){
+  for(const [path,league,full] of [['/schedule/kmart#full','kmart',true],['/schedule/kmart/?from=fixture#full','kmart',true],['/schedule/kmart/','kmart',false],['/schedule/nrrs/#full','nrrs',true],['/schedule/#full','all',true],['/schedule/#main','all',false]]){
+    const link=new URL(path,'https://aetherwing.net');
+    const dom=new JSDOM(`<link rel="canonical" href="${link.origin}${link.pathname}">${markup}`,{url:link.href,runScripts:'outside-only'});
+    const w=dom.window,$=selector=>w.document.querySelector(selector);
+    try{
+      const RealDate=w.Date,now=RealDate.parse('2026-10-18T12:00:00Z');
+      w.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}};
+      let clockTick;w.setInterval=fn=>{clockTick=fn;return 1;};
+      const payload={'schedule-events':events,results:initialResults};
+      if(mode==='cached')w.__AETHERWING_CONTENT__=payload;
+      w.eval(`const initial=${JSON.stringify(mode==='seed'?events:[])},initialResults=${JSON.stringify(mode==='seed'?initialResults:[])};\n${script}`);
+      const publish=()=>w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:payload}));
+      if(mode==='event')publish();
+      const selected=()=>$('[data-series][aria-pressed="true"]')?.dataset.series;
+      const expanded=()=>$('[data-calendar-toggle]').getAttribute('aria-expanded')==='true';
+      assert.equal(selected(),league,`${mode}: ${path} opens the linked league`);
+      assert.equal(expanded(),full,`${mode}: fragment selects full/default view`);
+      const count=w.document.querySelectorAll('[data-calendar-list] .aw-calendar__event').length;
+      assert.equal(count,full?(league==='all'?events.length:events.filter(event=>event.league===league).length):5);
+      const initialLength=w.history.length;clockTick();publish();
+      $(`[data-series="${league}"]`).click();
+      assert.equal(w.history.length,initialLength,'Clock ticks and live publications must not create navigation entries');
+      assert.equal(w.location.href,link.href,'Initial loading and live hydration retain the shared URL');
+      $('[data-series="nrrs"]').click();
+      const beforeToggle=w.location.href;
+      assert.equal(w.location.pathname,'/schedule/nrrs/');assert.equal(w.location.hash,full?'#full':'');
+      assert.equal(w.location.search,link.search,'Navigating calendar views preserves query parameters');
+      assert.equal($('link[rel="canonical"]').href,'https://aetherwing.net/schedule/nrrs/');
+      $('[data-calendar-toggle]').click();
+      const afterToggle=w.location.href;assert.equal(w.location.hash,full?'':'#full');
+      w.history.back();await waitFor(()=>w.location.href===beforeToggle&&expanded()===full,'Back must restore league and view');
+      assert.equal(selected(),'nrrs');
+      w.history.forward();await waitFor(()=>w.location.href===afterToggle&&expanded()===!full,'Forward must restore league and view');
+      // Editing only the fragment must update the existing page too.
+      w.location.hash=expanded()?'':'full';
+      await waitFor(()=>expanded()===full,'Changing the fragment must select the corresponding view');
+      $('[data-series="all"]').click();assert.equal(w.location.pathname,'/schedule/');assert.equal(expanded(),full);
+    }finally{w.close();}
+  }
+}
+console.log('PASS: next-five/full league schedules, shareable URLs, fragment/history restoration, complete seasons, off weeks, TBD dates, stable links, focus, and seed/cached/live updates.');

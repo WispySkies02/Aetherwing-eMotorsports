@@ -6,7 +6,7 @@ import { dirname,resolve } from 'node:path';
 // from a different working directory.
 const projectRoot=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 process.chdir(projectRoot);
-const needed=['src/pages/mission-values/index.astro','src/pages/team-handbook/index.astro','src/pages/index.astro','src/pages/schedule/index.astro','src/pages/drivers/index.astro','src/pages/championships/index.astro','src/pages/paint-booth/index.astro','src/pages/partners/index.astro','src/pages/news/index.astro','src/pages/history/index.astro','src/pages/event/[slug].astro','src/pages/programs/index.astro','public/images/textures/aetherwing-editorial.webp','public/seasonal-theme.js','public/admin/index.html','public/admin/theme-preview.js'];
+const needed=['src/pages/mission-values/index.astro','src/pages/team-handbook/index.astro','src/pages/index.astro','src/pages/schedule/[...league].astro','src/pages/drivers/index.astro','src/pages/championships/index.astro','src/pages/paint-booth/index.astro','src/pages/partners/index.astro','src/pages/news/index.astro','src/pages/history/index.astro','src/pages/event/[slug].astro','src/pages/programs/index.astro','public/images/textures/aetherwing-editorial.webp','public/seasonal-theme.js','public/admin/index.html','public/admin/theme-preview.js'];
 for(const file of needed)if(!existsSync(file))throw Error(`Missing site asset: ${file}`);
 for(const name of ['schedule-events','drivers','charters','results','standings','driver-portfolios','partners','paints','news']){const content=JSON.parse(readFileSync(`src/data/${name}.json`,'utf8'));if(!Array.isArray(content)||!content.length)throw Error(`Empty or invalid ${name} dataset`);}
 const standings=JSON.parse(readFileSync('src/data/standings.json','utf8'));
