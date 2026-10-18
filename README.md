@@ -355,6 +355,8 @@ Netlify uses `npm run build` and publishes `dist`. The existing Admin remains at
 
 ## Public routes
 
+Race Calendar defaults to the next five upcoming races. Select a league and choose **View full schedule** to see every published entry in chronological order, including completed races, remaining events, and off weeks. **Show next 5** returns to the default view. The full view follows league changes and live Admin updates; off weeks do not link to event pages.
+
 Home, Race Calendar, Programs, Driver Lineup and profiles, Championships, Paint Booth gallery, Partners, Newsroom and articles, History, and event Race Weekend pages. Share-only schedule variants and their generated social-card collection were removed. Every event URL now opens a real page.
 
 The original supplied site header is restored on desktop and mobile. Its page picker groups current routes under Team (Drivers, Paint Booth, Programs), Race (Schedule, Championships, News, History), and Connect (Partners, Discord). Previously published navigation that still points to removed legacy pages falls back to this updated menu.
