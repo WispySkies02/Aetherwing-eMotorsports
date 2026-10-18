@@ -323,7 +323,7 @@
   const autoResultScoringLeagues=new Set(['nrrs','kmart','uarl-d1']);
   function stagePointsForResult(league,finish){const pos=Number(finish||0);if(league==='nrrs')return pos>=1&&pos<=5?11-pos:0;if(['kmart','uarl-d1'].includes(league))return pos>=1&&pos<=5?6-pos:0;return null;}
   function finishPointsForResult(league,finish){const pos=Number(finish||0);if(pos<1)return 0;if(league==='nrrs')return pos===1?40:Math.max(1,37-pos);if(league==='kmart')return pos===1?55:Math.max(1,37-pos);if(league==='uarl-d1')return uarlFinishPoints[pos]||0;return null;}
-  function scoreKnownResult(race){if(!race||!autoResultScoringLeagues.has(race.league)||!Array.isArray(race.entries))return race;return {...race,entries:race.entries.map(entry=>{const stage1=stagePointsForResult(race.league,entry.stage1Finish),stage2=stagePointsForResult(race.league,entry.stage2Finish),finishPoints=finishPointsForResult(race.league,entry.finish),bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;return {...entry,stage1Points:stage1,stage2Points:stage2,finishPoints,bonusPoints,pointsEligible,racePoints:pointsEligible?finishPoints+stage1+stage2+bonusPoints:0};})};}
+  function scoreKnownResult(race){if(!race||race.pointsSource==='official-recap'||!autoResultScoringLeagues.has(race.league)||!Array.isArray(race.entries))return race;return {...race,entries:race.entries.map(entry=>{const stage1=stagePointsForResult(race.league,entry.stage1Finish),stage2=stagePointsForResult(race.league,entry.stage2Finish),finishPoints=finishPointsForResult(race.league,entry.finish),bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;return {...entry,stage1Points:stage1,stage2Points:stage2,finishPoints,bonusPoints,pointsEligible,racePoints:pointsEligible?finishPoints+stage1+stage2+bonusPoints:0};})};}
   function migrateResults(value) {
     if(Array.isArray(value)||Array.isArray(value?.races))return (Array.isArray(value)?value:value.races).map((race)=>scoreKnownResult({...race,entries:(race.entries||[]).map((entry)=>{if(entry?.assignmentId==='shared-kmart'||(String(entry?.number)==='29'&&/Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.driver||'')))return{chaseDriver:false,...entry,assignmentId:'',driver:'Select Clutch, Eazy, or Matty',number:'29'};const assignment=resultRoster(race.league).find((driver)=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{chaseDriver:false,...entry,assignmentId:assignment?.id||entry.assignmentId||''};})}));
     const old=value?.latestResult;if(!old)return [];
@@ -358,13 +358,14 @@
     return {...old,assignmentId:assignment?.id||old.assignmentId||'',driver:assignment?.displayName||old.driver||row.driver,number:String(assignment?.number||old.number||standing.number||''),start:row.start,stage1Finish:row.stage1Finish,stage1Points:Number(old.stage1Points||0)||0,stage2Finish:row.stage2Finish,stage2Points:Number(old.stage2Points||0)||0,finish:row.finish,finishPoints:Number(old.finishPoints||0)||0,bonusPoints:Number(old.bonusPoints||0)||0,pointsEligible:old.pointsEligible!==false,racePoints:Number(old.racePoints||0)||0,featuredDriver:old.featuredDriver===true,chaseDriver:old.chaseDriver===true};
   }
   let resultsImportPreview=[];
-  function previewScoredResultEntries(race,rows=resultsImportPreview){const entries=rows.map(row=>importedResultEntry(race,row));return scoreKnownResult({...race,entries}).entries||entries;}
+  function fullFieldResult(race,entries){const next={...race,entries};if(next.pointsSource==='official-recap'){delete next.pointsSource;delete next.coverage;delete next.sourceUrl;next.summary='Full finishing order imported. Review official positions and scoring before publication.';}return scoreKnownResult(next);}
+  function previewScoredResultEntries(race,rows=resultsImportPreview){const entries=rows.map(row=>importedResultEntry(race,row));return fullFieldResult(race,entries).entries||entries;}
   function drawResultsImportPreview(){
     const box=$('[data-results-import-preview]');if(!box)return;const race=current();if(key!=='results'||!race||!resultsImportPreview.length){box.innerHTML='<p class="results-race-note">Paste a full results CSV, then choose Preview full results.</p>';return;}
     const entries=previewScoredResultEntries(race);box.innerHTML=`<div class="standings-import-summary"><strong>${entries.length} FINISHERS READY</strong><span>${autoResultScoringLeagues.has(race.league)?'POINTS AUTO-CALCULATED':'NO AUTO-SCORING PROFILE · REVIEW POINTS MANUALLY'}</span></div><div class="standings-import-grid results-import-grid">${entries.map(entry=>`<div><b>P${entry.finish}</b><span>${esc(entry.driver)}</span><strong>${Number.isFinite(Number(entry.racePoints))?`${Number(entry.racePoints)} PTS`:'PTS —'}</strong><small>START P${entry.start||'—'} · S1 ${entry.stage1Finish?`P${entry.stage1Finish}`:'—'} · S2 ${entry.stage2Finish?`P${entry.stage2Finish}`:'—'}</small></div>`).join('')}</div>`;
   }
   function applyResultsImport(){
-    if(key!=='results'||!current()||!resultsImportPreview.length)return status('Preview a full race-results CSV first.');commit();const race=current(),entries=resultsImportPreview.map(row=>importedResultEntry(race,row));race.entries=scoreKnownResult({...race,entries}).entries||entries;dirty=true;resultsImportPreview=[];render();status(`${race.entries.length} finishers imported for ${race.title||race.track}. Points were ${autoResultScoringLeagues.has(race.league)?'calculated automatically':'left for manual review'}; Featured Driver and Chase Driver remain manual.`);
+    if(key!=='results'||!current()||!resultsImportPreview.length)return status('Preview a full race-results CSV first.');commit();const race=current(),entries=resultsImportPreview.map(row=>importedResultEntry(race,row));const imported=fullFieldResult(race,entries);for(const field of ['pointsSource','coverage','sourceUrl'])if(!(field in imported))delete race[field];Object.assign(race,imported);dirty=true;resultsImportPreview=[];render();status(`${race.entries.length} finishers imported for ${race.title||race.track}. Points were ${autoResultScoringLeagues.has(race.league)?'calculated automatically':'left for manual review'}; Featured Driver and Chase Driver remain manual.`);
   }
   const standingName=(value='')=>String(value).toLowerCase().replace(/[^a-z0-9]+/g,'').replace(/^wispy$/,'hailey');
   function recalcStandingBoard(board=current()) {
@@ -450,7 +451,7 @@
   }
   function applyPublishedResultsToStanding(){
     if(key!=='standings')return;commit();const board=current();if(board.autoPoints!==true)return status('Turn Auto Points on for this standings board first.');
-    const results=[...(base('results')||[])].filter(r=>r.league===board.league&&String(r.date||'')>String(board.lastResultDate||'')).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    const results=[...(base('results')||[])].filter(r=>r.league===board.league&&r.pointsSource!=='official-recap'&&r.standingsMode!=='record-only'&&String(r.date||'')>String(board.lastResultDate||'')).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
     if(!results.length)return status('No newer published results are waiting to be applied to this board.');
     let matched=0;for(const race of results){for(const entry of race.entries||[]){const row=matchedStanding(board,entry);if(row&&Number.isFinite(Number(entry.racePoints))){row.points=Number(row.points||0)+Number(entry.racePoints||0);matched++;}}recalcStandingBoard(board);board.lastResultDate=race.date||board.lastResultDate||'';board.lastResultScheduleId=race.scheduleId||'';board.autoUpdateNote=`Applied ${race.title||race.track||'published result'} · ${race.date||''}`;}
     dirty=true;render();status(`${results.length} published result${results.length===1?'':'s'} applied (${matched} driver point updates). Review, then publish Standings.`);
@@ -840,6 +841,7 @@
       const path=JSON.parse(field.dataset.fieldPath), type=field.dataset.fieldType;
       let value=type==='boolean'?field.checked:type==='number'?Number(field.value):type==='lines'?field.value.split('\n').filter((v)=>v.trim()):field.value;
       if (type==='nullable' && !value) value=null;
+      if(type==='nullable-number')value=field.value.trim()===''?null:Number(field.value);
       assign(current(),path,value);
     });
   }
@@ -891,9 +893,12 @@
         const shown=Array.isArray(v)?v.join(' · '):String(v||'');
         return shell(pretty,`<input type="text" readonly value="${esc(shown)}">`,'Automatically generated from Driver League Assignments when the site builds.','is-readonly');
       }
+      if(key==='results'&&current()?.pointsSource==='official-recap'&&['pointsSource','coverage'].includes(k))return shell(k==='pointsSource'?'Points source':'Result coverage',`<input type="text" readonly value="${k==='pointsSource'?'Official race recap':'Confirmed team results only'}">`,'Missing details stay blank. Import a complete official finishing order to switch to full-field scoring.','is-readonly');
+      if(key==='results'&&k==='standingsMode'&&v==='record-only')return shell('Standings effect','<input type="text" readonly value="Historical record only">','Already reflected in current standings. Publishing this race updates results without adding its points again.','is-readonly');
       if(key==='results'&&['scheduleId','league','leagueName','title','track','date','round','status','specialTag'].includes(k)) {
         return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Synced automatically from the selected scheduled race.','is-readonly');
       }
+      if(key==='results'&&current()?.pointsSource==='official-recap'&&path[0]==='entries'&&['stage1Points','stage2Points','finishPoints','racePoints'].includes(k)){return shell(pretty,`<input type="text" readonly value="${esc(v??'Not reported')}">`,'Official recap value. This partial historical record does not advance standings. Unreported points are not inferred.','is-readonly');}
       if(key==='results'&&path[0]==='entries'&&['nrrs','kmart','uarl-d1'].includes(current()?.league)&&['stage1Points','stage2Points','finishPoints','racePoints'].includes(k)) {
         return shell(pretty,`<input ${attr} data-field-type="number" type="number" readonly value="${esc(v)}">`,k==='racePoints'?'Automatically calculated from finish + stage points + bonus/adjustment points.':'Automatically calculated from the recorded position for this league.','is-readonly');
       }
@@ -1000,7 +1005,7 @@
         return shell(pretty,`<textarea rows="${Array.isArray(v)?5:6}" ${attr} data-field-type="${Array.isArray(v)?'lines':'string'}">${esc(Array.isArray(v)?v.join('\n'):v)}</textarea>`,Array.isArray(v)?(help||'One item per line.'):help,'is-wide');
       }
       const inputType=typeof v==='number'?'number':(['dateIso','endDate'].includes(k)||(k==='date'&&key==='schedule-events'))?'date':(['url','logo','image','numberImage'].includes(k)||/ImageUrl$/i.test(k))?'url':'text';
-      return shell(pretty,`<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?'nullable':'string'}" type="${inputType}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}">`,help);
+      return shell(pretty,`<input ${attr} data-field-type="${typeof v==='number'?'number':v===null?(key==='results'?'nullable-number':'nullable'):'string'}" type="${inputType}" ${typeof v==='number'?'step="any"':''} value="${esc(v)}">`,help);
     }).join('');
   }
   function title(row,i) { if(key==='drivers') return `${row.displayName||row.profile||'Driver'} · ${row.competition||'Choose league'}${row.number?` · #${row.number}`:''}`; if(key==='driver-portfolios')return `${row.name||'New driver'} · ${(row.brands||[]).length} brand${(row.brands||[]).length===1?'':'s'}`; return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
@@ -1114,8 +1119,11 @@
     commit();
     const id=$('[data-results-race-select]').value,event=(base('schedule-events')||seeds['schedule-events']||[]).find((item)=>resultScheduleId(item)===id);
     if(!event)return status('Choose a scheduled race first.');
-    const existing=data.findIndex((race)=>race.scheduleId===id);
+    const matchesRace=race=>race.scheduleId===id||(race.league===event.league&&race.date===event.date&&String(race.round||'').match(/\d+/)?.[0]===String(event.round||'').match(/\d+/)?.[0]);
+    const existing=data.findIndex(matchesRace);
     if(existing!==-1){index=existing;render();refreshResultsRaceOptions(id);return status(`${event.title} is already in Race Results. Its saved result is open now.`);}
+    const verified=(seeds.results||[]).find(race=>race.pointsSource==='official-recap'&&matchesRace(race));
+    if(verified){data.push(JSON.parse(JSON.stringify(verified)));data.sort(compareResults);index=data.findIndex(race=>race.scheduleId===verified.scheduleId);dirty=true;render();refreshResultsRaceOptions(id);return status('Recap-confirmed team result loaded. Unreported fields remain blank. Review the source and publish to add this result to the public record.');}
     const eligible=resultRoster(event.league),first=eligible[0];
     data.push(scoreKnownResult({scheduleId:id,league:event.league,leagueName:event.leagueName||event.league,title:event.title||'',track:event.track||'',date:event.date||'',round:event.round||'',status:event.status||'',specialTag:event.specialTag||'',featured:data.length===0,headline:'',headlineAccent:'',summary:'',entries:[{assignmentId:first?.id||'',driver:first?.displayName||'',number:String(first?.number||''),start:0,stage1Finish:0,stage1Points:0,stage2Finish:0,stage2Points:0,finish:0,finishPoints:0,bonusPoints:0,pointsEligible:true,racePoints:0,featuredDriver:true,chaseDriver:false}]}));
     data.sort(compareResults);index=data.findIndex((race)=>race.scheduleId===id);dirty=true;render();refreshResultsRaceOptions(id);
@@ -1374,7 +1382,7 @@
     if(scoreField&&key==='results'&&['nrrs','kmart','uarl-d1'].includes(current()?.league)){
       const path=JSON.parse(scoreField.dataset.fieldPath||'[]'),field=path.at(-1);
       if(path[0]==='entries'&&['finish','stage1Finish','stage2Finish','bonusPoints','pointsEligible'].includes(field)){
-        commit();const scored=scoreKnownResult(current());Object.keys(current()).forEach(k=>delete current()[k]);Object.assign(current(),scored);dirty=true;render();status('Finish, stage, and total race points recalculated for this league.');return;
+        commit();const scored=scoreKnownResult(current());Object.keys(current()).forEach(k=>delete current()[k]);Object.assign(current(),scored);dirty=true;render();status(current()?.pointsSource==='official-recap'?'Recorded position updated. Official recap points remain unchanged.':'Finish, stage, and total race points recalculated for this league.');return;
       }
     }
     const numberUpload=event.target.closest?.('[data-number-image-upload]');

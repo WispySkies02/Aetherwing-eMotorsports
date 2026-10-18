@@ -91,6 +91,7 @@ for(const [key,data] of Object.entries(seeds))assert.equal(content.validate(key,
 // to bypass the current roster for another race or a changed name/number.
 const historicalRace=structuredClone(seeds.results.find((race)=>race.entries.some((entry)=>entry.assignmentId==='jaxon-kmart')));
 assert.ok(historicalRace,'Keep the canonical former-driver result as a regression fixture');
+historicalRace.featured=true; // This isolated one-race publication has its own latest result.
 assert.equal(content.validate('results',[historicalRace]),'','Canonical historical results remain editable after roster exits');
 for(const change of [{scheduleId:'new-fixture-race'},{date:'2099-02-01'},{league:'nrrs',leagueName:'NRRS'}]) {
   assert.notEqual(content.validate('results',[{...historicalRace,...change}]),'','Recorded identities must not grant access to a new race/date/league');

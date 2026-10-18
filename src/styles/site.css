@@ -984,3 +984,9 @@ html[data-season]:not([data-anniversary-retro="true"]){--season-intensity-label:
   .news-metrics>div{padding:1.35rem 1.5rem}
   .news-timeline__rail{gap:.85rem}
 }
+
+/* Preserve each card's geometry while the shared publication resolves. */
+html[data-content-state="loading"] [data-live-region] { position:relative; min-height:7rem; }
+html[data-content-state="loading"] [data-live-region] > * { visibility:hidden; }
+html[data-content-state="loading"] [data-live-region]::after { content:"Loading published data…"; position:absolute; inset:1.25rem; color:var(--muted,#b8b8b8); font:0.85rem/1.5 var(--font-mono,monospace); }
+.live-data-note { color:var(--muted,#b8b8b8); font-size:.8rem; line-height:1.5; padding:.65rem 0; }

@@ -43,7 +43,9 @@ try {
   const event={...data['schedule-events'][0],date:'2027-02-01',title:'Publication Fixture Race',eventId:'publication-fixture-race'};
   data['schedule-events'].push(event);
   data['schedule-events'].push({...event,league:'fixture-league',leagueName:'Fixture League',eventId:'fixture-league-race'});
-  data.results.unshift({...data.results[0],scheduleId:'2099-01-01-kmart-publication-fixture-result',date:'2099-01-01',title:'Publication Fixture Result',track:'Fixture Raceway',headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.',entries:[{...data.results[0].entries.find((entry)=>entry.assignmentId==='clutch-kmart'),finish:2}]});
+  const resultTemplate=data.results.find(race=>race.league==='kmart'&&race.entries.some(entry=>entry.assignmentId==='clutch-kmart'));
+  assert.ok(resultTemplate,'Publication fixture needs a complete Kmart result');
+  data.results.unshift({...resultTemplate,scheduleId:'2099-01-01-kmart-publication-fixture-result',date:'2099-01-01',title:'Publication Fixture Result',track:'Fixture Raceway',headline:'PUBLICATION FIXTURE RESULT',summary:'Publication fixture result summary.',entries:[{...resultTemplate.entries.find((entry)=>entry.assignmentId==='clutch-kmart'),finish:2,featuredDriver:true}]});
   data.results=normalize('results',data.results);
   data.wins.push({league:'NRRS',track:'Publication Fixture Win',driver:'Wispy',date:'Sep 18, 2026'});
   data.milestones.push({date:'Sep 18, 2026',title:'Publication Fixture Milestone',description:'Publication fixture milestone text.'});
