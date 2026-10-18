@@ -32,7 +32,7 @@ function autoAdvanceStandings(registry, nextResults, priorResults=[]) {
     if(board.lastResultScheduleId){
       const prior=(priorResults||[]).find((race)=>race?.league===board.league&&race?.scheduleId===board.lastResultScheduleId);
       const next=(nextResults||[]).find((race)=>race?.league===board.league&&race?.scheduleId===board.lastResultScheduleId);
-      if(prior&&next){
+      if(prior&&next&&next.pointsSource!=='official-recap'&&next.standingsMode!=='record-only'){
         const priorPoints=new Map((prior.entries||[]).map((entry)=>[entryKey(entry),Number(entry.racePoints||0)]));
         let corrected=false;
         for(const entry of next.entries||[]){
@@ -43,7 +43,7 @@ function autoAdvanceStandings(registry, nextResults, priorResults=[]) {
         if(corrected){recalcBoardRows(board);board.autoUpdateNote=`Corrected ${next.title||next.track||'published result'} · ${next.date||''}`;changed=true;}
       }
     }
-    const candidates=(nextResults||[]).filter((race)=>race?.league===board.league&&String(race.date||'')>String(board.lastResultDate||'')).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    const candidates=(nextResults||[]).filter((race)=>race?.league===board.league&&race.pointsSource!=='official-recap'&&race.standingsMode!=='record-only'&&String(race.date||'')>String(board.lastResultDate||'')).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
     for(const race of candidates){
       for(const entry of race.entries||[]){
         const points=Number(entry.racePoints||0);if(!Number.isFinite(points))continue;
@@ -217,4 +217,4 @@ exports.handler = async (event, context) => {
   }
 };
 
-exports._test = { cascadeRemovedDriverProfiles };
+exports._test = { cascadeRemovedDriverProfiles, autoAdvanceStandings };

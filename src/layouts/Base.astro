@@ -1,5 +1,5 @@
 ---
-import { siteSettings } from '../lib/site-content.mjs';
+import { siteSettings, standings, results, scheduleEvents } from '../lib/site-content.mjs';
 import SiteHeader from '../components/global/SiteHeader.astro';
 import '../styles/site.css';
 import '../styles/ux.css';
@@ -12,6 +12,7 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
 ---
 <!doctype html>
 <html lang="en"><head>
+  <script is:inline>document.documentElement.dataset.contentState="loading";</script>
   <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#090a0c"/>
   <title>{fullTitle}</title><meta name="description" content={description}/><link rel="canonical" href={canonical}/>
   <meta property="og:type" content="website"/><meta property="og:title" content={fullTitle}/><meta property="og:description" content={description}/><meta property="og:image" content={new URL(image,Astro.site).href}/>
@@ -27,7 +28,7 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
     <div class="ux-stage">
       <SiteHeader />
       <div class="aw-season-banner" data-season-banner role="note" aria-label="Seasonal theme" hidden><i class="aw-season-banner__icon" data-season-icon aria-hidden="true"></i><span data-season-title></span><b data-season-subtitle></b></div>
-      <main id="main" class="ux-main"><slot/></main>
+      <main id="main" class="ux-main"><noscript><p class="live-data-note">Bundled snapshot · enable JavaScript to load current published racing data.</p></noscript><slot/></main>
       <footer class="ux-footer">
         <div class="ux-footer__inner">
           <div><strong>Aetherwing eMotorsports</strong><p>{siteSettings.tagline}</p></div>
@@ -39,7 +40,17 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
       </footer>
     </div>
   </div>
-  <script is:inline>
-    (()=>{const page=location.pathname.replace(/\/+$/,'/')||'/';const apply=(rules)=>{for(const rule of Array.isArray(rules)?rules:[]){if(rule.enabled===false||!['*',page].includes(rule.page)||rule.value===rule.original)continue;if(rule.type==='link')document.querySelectorAll('a[href]').forEach(a=>{if(a.getAttribute('href')===rule.original)a.setAttribute('href',rule.value);});else if(rule.type==='image')document.querySelectorAll('img[src]').forEach(img=>{if(img.getAttribute('src')===rule.original)img.setAttribute('src',rule.value);});else if(rule.type==='text'){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while((node=walker.nextNode())){if(['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement?.tagName||''))continue;const raw=node.nodeValue||'';if(raw.trim().replace(/\s+/g,' ')===rule.original)node.nodeValue=raw.replace(rule.original,rule.value);}}}};fetch(`/api/site-content?v=${Date.now()}`,{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(data?.datasets){window.__AETHERWING_CONTENT__=data.datasets;apply(data.datasets['page-overrides']);window.dispatchEvent(new CustomEvent('aetherwing:content',{detail:data.datasets}));}}).catch(()=>{});})();
+  <script is:inline type="application/json" id="aw-content-fallback" set:html={JSON.stringify({standings, results, 'schedule-events':scheduleEvents})} />
+  <script>
+    import { loadPublishedContent, applyPublication } from '../lib/published-content.mjs';
+    const page=location.pathname.replace(/\/+$/,'/')||'/';
+    const apply=(rules)=>{for(const rule of Array.isArray(rules)?rules:[]){if(rule.enabled===false||!['*',page].includes(rule.page)||rule.value===rule.original)continue;if(rule.type==='link')document.querySelectorAll('a[href]').forEach(a=>{if(a.getAttribute('href')===rule.original)a.setAttribute('href',rule.value);});else if(rule.type==='image')document.querySelectorAll('img[src]').forEach(img=>{if(img.getAttribute('src')===rule.original)img.setAttribute('src',rule.value);});else if(rule.type==='text'){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while((node=walker.nextNode())){if(['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement?.tagName||''))continue;const raw=node.nodeValue||'';if(raw.trim().replace(/\s+/g,' ')===rule.original)node.nodeValue=raw.replace(rule.original,rule.value);}}}};
+    const fallback=JSON.parse(document.getElementById('aw-content-fallback').textContent);
+    let storage;
+    try { storage=window.localStorage; } catch { storage={getItem:()=>null,setItem:()=>{}}; }
+    loadPublishedContent({storage}).then(snapshot=>{
+      applyPublication(snapshot, fallback, {document,window});
+      apply(snapshot.datasets['page-overrides']);
+    });
   </script>
 </body></html>

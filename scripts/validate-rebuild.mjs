@@ -516,7 +516,7 @@ console.log('v2.0.31 historical Talladega context revision superseded by v2.0.37
   const home=readFileSync('src/pages/index.astro','utf8');
   const calendar=readFileSync('src/components/RaceCalendar.astro','utf8');
   if(base.includes('aetherwing-updated-standings')||base.includes('After Race 20 of 25')||base.includes('After Race 6 of 23'))throw Error('v2.0.32 Base must not replace live standings with bundled snapshots.');
-  if(!base.includes('window.__AETHERWING_CONTENT__=data.datasets')||!base.includes("new CustomEvent('aetherwing:content'"))throw Error('v2.0.32 Base must publish the live site-content payload to every page.');
+  if(!base.includes('loadPublishedContent')||!base.includes('applyPublication')||!readFileSync('src/lib/published-content.mjs','utf8').includes("window.__AETHERWING_CONTENT__ = datasets")||!readFileSync('src/lib/published-content.mjs','utf8').includes("new window.CustomEvent('aetherwing:content'"))throw Error('v2.0.32 Base must publish the live site-content payload to every page.');
   if(siteContent.includes('supersededSnapshot'))throw Error('v2.0.32 build-time site content must not use expired standings repair guards.');
   if(siteData.includes('canonicalResults')||siteData.includes("After Round 8")||siteData.includes("After R(?:20|21)"))throw Error('v2.0.32 live site-data must trust published results/standings instead of legacy seed repairs.');
   if(siteAdmin.includes("After Round 8")||siteAdmin.includes("After R(?:20|21)"))throw Error('v2.0.32 Admin reads must not rewrite newly published standings with old migration rules.');

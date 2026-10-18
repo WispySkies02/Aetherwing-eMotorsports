@@ -102,7 +102,7 @@ const positionMovement=(value)=>{if(value==null||value===''||value==='—')retur
       <button type="button" data-championship-filter-value="sunoco" aria-label="Sunoco Truck Series standings"><span><img src="/images/schedule-logos/sunoco.png" alt=""/></span><b>Sunoco</b></button>
       <button type="button" data-championship-filter-value="uarl" aria-label="UARL standings"><span><img src="/images/schedule-logos/uarl-d1.png" alt=""/></span><b>UARL</b></button>
     </nav>
-    <div data-standings-root>
+    <div data-standings-root data-live-region="standings">
     {displayStandings.map(board=><article class="standings-board" data-board={board.id} data-board-group={standingsGroup(board)}>
       <header><span>{board.status||board.league}</span><h2>{board.title}</h2><p>{board.subtitle}</p>{board.pointsContext&&<p class="standings-context">{board.pointsContext}</p>}</header>
       <div class="standings-board__rows">

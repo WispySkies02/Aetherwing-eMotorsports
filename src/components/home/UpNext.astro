@@ -30,7 +30,7 @@ const date = (event) => eventStart(event).toLocaleDateString('en-US', { day: 'nu
       const now = new Date();
       const rows = feed.filter((event) => !event.done && eventEnd(event) >= now).slice(0, 4);
       const next = rows.map((event) => event.url + event.track + event.time).join('|');
-      if (!rows.length || next === signature) return;
+      if (next === signature) return;
       signature = next;
       list.innerHTML = rows.map((event) => `<li><a class="ux-row" href="${esc(event.url)}"><span class="ux-date">${part(event, { month: 'short' })}<b>${part(event, { day: 'numeric' })}</b></span><span><strong>${esc(event.track)}</strong><small>${esc(seriesShort[event.league] || event.leagueName)} · ${esc(event.time || 'Event window')}</small></span>${seriesLogo[event.league] ? `<img class="ux-upnext__logo" src="${seriesLogo[event.league]}" alt="" width="44" height="32" loading="lazy">` : '<span></span>'}</a></li>`).join('');
     });

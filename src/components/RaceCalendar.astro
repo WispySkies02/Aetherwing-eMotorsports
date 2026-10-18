@@ -52,8 +52,9 @@ const initialResults = results;
   };
   const end=(e)=>{if(e.endAt){const t=new Date(e.endAt);if(!isNaN(t))return t;}return e.endDate?new Date(`${e.endDate}T23:59:59Z`):new Date(start(e).getTime()+(Number(e.durationMinutes)||90)*60000);};
   const resultId=(e)=>`${e.date||'tbd'}-${e.league||'event'}-${String(e.title||e.track||'scheduled-event').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()}`;
-  const resultFor=(e)=>raceResults.find(r=>r.scheduleId===resultId(e))||raceResults.find(r=>r.league===e.league&&r.date===e.date&&(r.title===e.title||r.track===e.track));
-  const completed=(e,now=new Date())=>Boolean(resultFor(e))||end(e)<now;
+  const resultFor=(e)=>raceResults.find(r=>r.league===e.league&&String(r.date||'').slice(0,4)===String(e.date||'').slice(0,4)&&String(e.round||'').match(/\d+/)&&Number(String(e.round).match(/\d+/)[0])===Number(String(r.round||'').match(/\d+/)?.[0]))||raceResults.find(r=>r.scheduleId===resultId(e))||raceResults.find(r=>r.league===e.league&&r.date===e.date&&(r.title===e.title||r.track===e.track));
+  const unavailable=e=>e.cancelled===true||e.canceled===true||e.postponed===true||/\b(cancelled|canceled|postponed)\b/i.test(String(e.status||''));
+  const completed=(e,now=new Date())=>e.completed===true||/\b(completed|finished)\b/i.test(String(e.status||''))||Boolean(resultFor(e))||end(e)<now;
   const dateLabel=(e,full=false)=>{const d=new Date(`${e.date}T12:00:00Z`);return e.tbd||isNaN(d)?'DATE TBD':full&&e.displayDate?`${e.displayDate} · ${d.getUTCFullYear()}`:d.toLocaleDateString('en-US',{month:'short',day:'numeric',...(full?{year:'numeric'}:{}),timeZone:'UTC'}).toUpperCase();};
   const chronological=(a,b)=>(Number.isFinite(+start(a))?+start(a):Infinity)-(Number.isFinite(+start(b))?+start(b):Infinity);
   const relative=(ms)=>!Number.isFinite(ms)?'DATE TBD':ms<=0?'LIVE':`${Math.max(1,Math.ceil(ms/86400000))}D`;
@@ -83,7 +84,7 @@ const initialResults = results;
   });
   function tick(){
     const now=new Date(), visible=events.filter(e=>!e.offWeek&&(selected==='all'||e.league===selected));
-    const upcoming=visible.filter(e=>!completed(e,now)).sort(chronological);
+    const upcoming=visible.filter(e=>!unavailable(e)&&!completed(e,now)).sort(chronological);
     const current=upcoming.find(e=>start(e)<=now&&end(e)>=now) || upcoming[0];
     const filters=root.querySelector('[data-calendar-filters]'), list=root.querySelector('[data-calendar-list]'), hero=root.querySelector('[data-calendar-hero]');
     const names=labels(events), keys=['all',...names.keys()];
@@ -93,15 +94,17 @@ const initialResults = results;
       filters.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.series,showFull)));
     }
     filters.querySelectorAll('button').forEach(button=>{
-      const k=button.dataset.series, future=events.filter(e=>!e.offWeek&&(k==='all'||e.league===k)&&!completed(e,now)).sort(chronological)[0];
+      const k=button.dataset.series, future=events.filter(e=>!e.offWeek&&(k==='all'||e.league===k)&&!unavailable(e)&&!completed(e,now)).sort(chronological)[0];
       button.setAttribute('aria-pressed',String(k===selected));button.querySelector('small').textContent=k==='all'?`${names.size} SERIES`:future?`NEXT · ${relative(start(future)-now)}`:'SEASON COMPLETE';
     });
     root.querySelector('[data-calendar-heading]').textContent=`${selected==='all'?'ALL SERIES':names.get(selected)||selected} · ${showFull?'FULL SCHEDULE':'UPCOMING'}`;
     toggle.textContent=showFull?'Show next 5':'View full schedule';toggle.setAttribute('aria-expanded',String(showFull));
     const rows=showFull?events.filter(e=>selected==='all'||e.league===selected).sort(chronological):upcoming.slice(0,5);
-    const markup=rows.length?rows.map((e,i)=>{
+    const markup=rows.length?rows.map((scheduled,i)=>{
+      const result=resultFor(scheduled);
+      const e=result?.pointsSource==='official-recap'?{...scheduled,title:result.title,track:result.track,date:result.date}:scheduled;
       const tag=e.offWeek?'div':'a',link=e.offWeek?'':` href="${esc(url(e))}"`;
-      const state=e.offWeek?'OFF WEEK':resultFor(e)?'RESULTS →':completed(e,now)?'COMPLETED':e.tbd||!Number.isFinite(+start(e))?'DATE TBD':start(e)<=now&&end(e)>=now?'LIVE →':e===current?'NEXT →':showFull?'UPCOMING':'↗';
+      const state=e.offWeek?'OFF WEEK':unavailable(e)?String(e.status|| (e.postponed?'POSTPONED':'CANCELLED')).toUpperCase():resultFor(e)?'RESULTS →':completed(e,now)?'COMPLETED':e.tbd||!Number.isFinite(+start(e))?'DATE TBD':start(e)<=now&&end(e)>=now?'LIVE →':e===current?'NEXT →':showFull?'UPCOMING':'↗';
       return `<${tag}${link} class="aw-calendar__event"><span>${dateLabel(e,showFull)}</span><div><small>${esc(e.leagueName||e.league)} · ${esc(e.round||e.status||'RACE')}</small><strong>${esc(e.offWeek?e.title||'Off week':e.track||e.title)}</strong><em>${esc(e.title)}${!e.offWeek&&e.time?' · '+esc(e.time):''}</em></div><b>${showFull?state:i===0?'NEXT →':'↗'}</b></${tag}>`;
     }).join(''):showFull?'<p class="aw-calendar__empty">No events have been published for this program.</p>':'<p class="aw-calendar__empty">No upcoming races. <a href="#calendar-list" data-calendar-open-full>View full schedule →</a></p>';
     // Include live track/time/status changes without replacing focused links on every clock tick.
@@ -116,7 +119,7 @@ const initialResults = results;
     }
     const recent=visible.filter(e=>completed(e,now)).sort((a,b)=>start(b)-start(a))[0];
     const official=recent&&resultFor(recent),driver=official?.entries?.find(e=>e.featuredDriver)||official?.entries?.[0];
-    root.querySelector('[data-calendar-recent]').innerHTML=recent?`<span>${official?'✓ RESULT':'✓ RECENT'}</span><b>${esc(recent.leagueName||recent.league)} · ${esc(recent.track||recent.title)}</b><small>${dateLabel(recent)}${driver?` · #${esc(driver.number)} ${esc(driver.driver)} ${driver.finish?`P${esc(driver.finish)}`:'DNS'}`:''}</small><a href="${esc(url(recent))}">View event →</a>`:'';
+    root.querySelector('[data-calendar-recent]').innerHTML=recent?`<span>${official?'✓ RESULT':'✓ RECENT'}</span><b>${esc(recent.leagueName||recent.league)} · ${esc(official?.track||recent.track||recent.title)}</b><small>${dateLabel(recent)}${driver?` · #${esc(driver.number)} ${esc(driver.driver)} ${driver.finish?`P${esc(driver.finish)}`:'DNS'}`:''}</small><a href="${esc(url(recent))}">View event →</a>`:'';
   }
   const applyLiveCalendar=(d)=>{if(Array.isArray(d?.['schedule-events']))events=d['schedule-events'];if(Array.isArray(d?.results))raceResults=d.results;tick();};
   window.addEventListener('aetherwing:content',e=>applyLiveCalendar(e.detail));

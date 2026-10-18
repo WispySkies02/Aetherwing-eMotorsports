@@ -3,7 +3,7 @@
 // the Race Calendar uses (startAt/endAt first, then "8:30 PM ET" + the
 // Eastern offset for that date, 90-minute default window, results or a
 // finished window mark an event complete).
-import { eventSlug } from './schedule-events.mjs';
+import { eventSlug, legacyEventSlug } from './schedule-events.mjs';
 
 export const seriesLogo = {
   nrrs: '/images/schedule-logos/nrrs.png',
@@ -53,13 +53,36 @@ export function eventEnd(event = {}) {
   return new Date(eventStart(event).getTime() + (Number(event.durationMinutes) || 90) * 60000);
 }
 
-const resultKey = (league, date) => `${league || ''}|${date || ''}`;
+// A round keeps its identity when Admin changes its date or venue.
+export function resultForEvent(results = [], event = {}) {
+  const round = String(event.round || '').match(/\d+/)?.[0];
+  return results.find(result => result.league === event.league && (!result.date || !event.date || String(result.date).slice(0,4) === String(event.date).slice(0,4)) && (
+    result.scheduleId === eventSlug(event) || result.scheduleId === legacyEventSlug(event) ||
+    (round && Number(String(result.round || '').match(/\d+/)?.[0]) === Number(round)) ||
+    (result.date === event.date && (result.title === event.title || result.track === event.track))
+  ));
+}
+
+export function eventUnavailable(event = {}) {
+  return event.cancelled === true || event.canceled === true || event.postponed === true ||
+    /\b(cancelled|canceled|postponed)\b/i.test(String(event.status || ''));
+}
+
+export function eventCompleted(event, results = [], now = new Date()) {
+  return event.completed === true || /\b(completed|finished)\b/i.test(String(event.status || '')) ||
+    Boolean(resultForEvent(results, event)) || eventEnd(event) < now;
+}
+
+export function upcomingRaces(events = [], results = [], now = new Date()) {
+  return events.filter(event => event && !event.offWeek && !eventUnavailable(event) &&
+    !event.tbd && Number.isFinite(+eventStart(event)) && !eventCompleted(event, results, now))
+    .sort((a, b) => eventStart(a) - eventStart(b));
+}
 
 // Compact, serialisable rows: enough to render every surface and nothing more.
 export function buildRaceFeed(events = [], results = [], { from } = {}) {
-  const finished = new Set(results.map((result) => resultKey(result.league, result.date)));
   return events
-    .filter((event) => event && !event.offWeek && !event.tbd && event.date && (!from || (event.endDate || event.date) >= from))
+    .filter((event) => event && !event.offWeek && !eventUnavailable(event) && !event.tbd && event.date && (!from || (event.endDate || event.date) >= from))
     .map((event) => ({
       league: event.league,
       leagueName: event.leagueName || seriesShort[event.league] || event.league,
@@ -74,7 +97,7 @@ export function buildRaceFeed(events = [], results = [], { from } = {}) {
       endAt: event.endAt,
       durationMinutes: event.durationMinutes,
       url: `/event/${eventSlug(event)}/`,
-      done: finished.has(resultKey(event.league, event.date)) || undefined
+      done: event.completed === true || /\b(completed|finished)\b/i.test(String(event.status || '')) || Boolean(resultForEvent(results, event)) || undefined
     }))
     .sort((a, b) => eventStart(a) - eventStart(b));
 }
@@ -158,7 +181,7 @@ export function subscribeFeed(callback) {
   callback(feed);
   const apply = (datasets) => {
     const events = datasets?.['schedule-events'];
-    if (!Array.isArray(events) || !events.length) return;
+    if (!Array.isArray(events)) return;
     const results = Array.isArray(datasets.results) ? datasets.results : [];
     const today = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
     feed = buildRaceFeed(events.filter((event) => event?.league !== 'uarl-d2'), results, { from: today });

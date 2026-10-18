@@ -1,16 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, competitions } from '../lib/site-content.mjs';
+import { eventSlug } from '../lib/schedule-events.mjs';
 import OnTrackNext from '../components/home/OnTrackNext.astro';
 import TimingTower from '../components/home/TimingTower.astro';
 import UpNext from '../components/home/UpNext.astro';
 import '../styles/ux-home.css';
-const teamStats=[[siteSettings.verifiedWins,'Verified wins','verifiedWins'],[siteSettings.estimatedStarts,'Race starts','estimatedStarts'],[siteSettings.competitionRelationships,'Programs','competitionRelationships'],[siteSettings.founded,'Founded','founded']].filter(([value])=>value!==undefined&&value!=='');
+const teamStats=[[siteSettings.verifiedWins,'Verified wins','verifiedWins'],[siteSettings.estimatedStarts,'Race starts','estimatedStarts'],[siteSettings.competitionRelationships,'Programs','competitionRelationships'],[2015,'Roots since','rootsSince']].filter(([value])=>value!==undefined&&value!=='');
 const chase=standings.find(s=>s.id==='nrrs');
 const driver=chase?.rows?.find(r=>r.highlight);
 const battleAssignment=drivers.find(d=>d.competitionId==='nrrs'&&d.number===driver?.number);
 const leader=chase?.rows?.[0];
-const latest=results.find(r=>r.featured)||[...results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
+const latest=[...results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
 const compactResultEntries=(race)=>{const entries=race?.entries||[],featured=entries.filter(e=>e.featuredDriver);return (featured.length?featured:entries).slice(0,3);};
 const leadNews=news.find(s=>s.featured)||news[0];
 const moreNews=news.filter(s=>s!==leadNews).slice(0,2);
@@ -42,7 +43,7 @@ const programLogo={
   <div class="hub-grid">
     <section class="ux-section hub-battle" aria-labelledby="battle-title">
       <div class="ux-section__head"><div><p class="ux-tag"><b>●</b>{chase?.status||'Championship'}</p><h2 class="ux-h2" id="battle-title">The championship fight</h2></div><a class="ux-more" href="/championships/">Full standings</a></div>
-      <div class="ux-card hub-battle__card">
+      <div class="ux-card hub-battle__card" data-live-region="standings">
         <div class="hub-battle__driver">
           <span class="hub-battle__number" data-battle-number>{(battleAssignment?.numberImageBackup||battleAssignment?.numberImage)?<img src={battleAssignment.numberImageBackup||battleAssignment.numberImage} alt={`Number ${battleAssignment.number}`} />:`#${driver?.number||'32'}`}</span>
           <div>
@@ -58,12 +59,12 @@ const programLogo={
     <section class="ux-section hub-next" aria-labelledby="next-title">
       <div class="ux-section__head"><div><p class="ux-tag">Race control</p><h2 class="ux-h2" id="next-title">Up next</h2></div><a class="ux-more" href="/schedule/">Schedule</a></div>
       <UpNext />
-      <article class="ux-card ux-card--pad hub-result" data-latest-result>
+      <article class="ux-card ux-card--pad hub-result" data-live-region="results" data-latest-result>
         <p class="ux-tag" data-latest-meta>{latest?.leagueName||'Aetherwing'} · {latest?.date||'LATEST'}</p>
         <h3 data-latest-title>{latest?.title||'Race results'}</h3>
         <p data-latest-track>{latest?.track||''}</p>
         <div class="hub-result__entries" data-latest-entries>{compactResultEntries(latest).map(e=><strong>{e.number?`#${e.number} `:''}{e.driver}<b>{e.finish?`P${e.finish}`:'DNS'}</b></strong>)}</div>
-        <a class="ux-more" href="/history/">Results archive</a>
+        <a class="ux-more" data-latest-event hidden={!latest} href={latest?`/event/${eventSlug(latest)}/`:'/history/'}>Race result →</a><a class="ux-more" href="/history/">Results archive</a>
       </article>
     </section>
   </div>
@@ -99,7 +100,27 @@ const programLogo={
   </section>
 </Base>
 <script>
-  const applyLiveHome=(d)=>{const liveSite=d.site||{};const setText=(selector,value)=>{const el=document.querySelector(selector);if(el&&value)el.textContent=value;};const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));setText('[data-faith-eyebrow]',liveSite.faithEyebrow);setText('[data-faith-title]',liveSite.faithTitle);setText('[data-faith-statement]',liveSite.faithStatement);setText('[data-faith-verse]',liveSite.faithVerse);if(Array.isArray(d.partners)){const partnerRoot=document.querySelector('[data-home-partners]');if(partnerRoot){partnerRoot.innerHTML=d.partners.map(partner=>`<a href="${esc(/^https:\/\//i.test(String(partner.url||''))?partner.url:'#')}" target="_blank" rel="noopener noreferrer">${partner.logo?`<img src="${esc(partner.logo)}" alt="${esc(partner.name)}" loading="lazy">`:`<strong>${esc(partner.name)}</strong>`}<span>${esc(partner.role)}</span></a>`).join('');partnerFallback();}}document.querySelectorAll('[data-team-stat]').forEach(node=>{const value=liveSite[node.dataset.teamStat];if(value!==undefined&&value!=='')node.textContent=String(value);});if(Array.isArray(d.results)&&d.results.length){const liveLatest=d.results.find(r=>r.featured)||[...d.results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];if(liveLatest){setText('[data-latest-meta]',`${liveLatest.leagueName||'Aetherwing'} · ${liveLatest.date||'LATEST'}`);setText('[data-latest-title]',liveLatest.title||'Race results');setText('[data-latest-track]',liveLatest.track||'');const entries=document.querySelector('[data-latest-entries]');if(entries){const all=liveLatest.entries||[],featured=all.filter(e=>e.featuredDriver),compact=(featured.length?featured:all).slice(0,3);entries.innerHTML=compact.map(e=>`<strong>${e.number?`#${esc(e.number)} `:''}${esc(e.driver)}<b>${e.finish?`P${esc(e.finish)}`:'DNS'}</b></strong>`).join('');}}}const board=d.standings?.find(s=>s.id==='nrrs'),row=board?.rows?.find(r=>r.highlight),lead=board?.rows?.[0];if(row){document.querySelector('[data-battle-heading]').textContent=`${row.driver} · ${row.position}`;document.querySelector('[data-battle-context]').textContent=`${board.subtitle} · ${Number(row.points||0).toLocaleString('en-US')} PTS`;document.querySelector('[data-battle-gap]').textContent=row.delta||'—';document.querySelector('[data-battle-leader]').textContent=lead?.driver||'—';}if(!Array.isArray(d.drivers))return;const show=(element,number,art)=>{if(!element)return;element.textContent=`#${number}`;if(art){const img=document.createElement('img');img.alt=`Number ${number}`;img.src=art;img.addEventListener('error',()=>{element.textContent=`#${number}`;},{once:true});element.replaceChildren(img);}};if(row){const assignment=d.drivers.find(a=>a.competitionId==='nrrs'&&String(a.number)===String(row.number));show(document.querySelector('[data-battle-number]'),row.number,assignment?.numberImageBackup||assignment?.numberImage);}document.querySelectorAll('.ux-driver[data-profile]').forEach(tile=>{const rides=d.drivers.filter(a=>a.profile===tile.dataset.profile&&a.affiliation==='aetherwing').sort((a,b)=>({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[a.competitionId]||99)-({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[b.competitionId]||99));const assignment=rides[0]||d.drivers.find(a=>a.profile===tile.dataset.profile);if(assignment){tile.dataset.number=String(assignment.number||'');show(tile.querySelector('[data-number-art]'),assignment.number,assignment?.numberImageBackup||assignment?.numberImage);}const meta=tile.querySelector('[data-program-numbers]');if(meta)meta.textContent=rides.slice(0,2).map(a=>`#${a.number} ${{nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[a.competitionId]||a.competition}`).join(' / ');});};
+  import { eventSlug } from '../lib/schedule-events.mjs';
+  const applyLiveHome=(d)=>{const liveSite=d.site||{};const setText=(selector,value)=>{const el=document.querySelector(selector);if(el&&value)el.textContent=value;};const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));setText('[data-faith-eyebrow]',liveSite.faithEyebrow);setText('[data-faith-title]',liveSite.faithTitle);setText('[data-faith-statement]',liveSite.faithStatement);setText('[data-faith-verse]',liveSite.faithVerse);if(Array.isArray(d.partners)){const partnerRoot=document.querySelector('[data-home-partners]');if(partnerRoot){partnerRoot.innerHTML=d.partners.map(partner=>`<a href="${esc(/^https:\/\//i.test(String(partner.url||''))?partner.url:'#')}" target="_blank" rel="noopener noreferrer">${partner.logo?`<img src="${esc(partner.logo)}" alt="${esc(partner.name)}" loading="lazy">`:`<strong>${esc(partner.name)}</strong>`}<span>${esc(partner.role)}</span></a>`).join('');partnerFallback();}}document.querySelectorAll('[data-team-stat]').forEach(node=>{const value=liveSite[node.dataset.teamStat];if(value!==undefined&&value!=='')node.textContent=String(value);});if(Array.isArray(d.results))renderLatestResult(d.results);const board=d.standings?.find(s=>s.id==='nrrs'),row=board?.rows?.find(r=>r.highlight),lead=board?.rows?.[0];if(row){document.querySelector('[data-battle-heading]').textContent=`${row.driver} · ${row.position}`;document.querySelector('[data-battle-context]').textContent=`${board.subtitle} · ${Number(row.points||0).toLocaleString('en-US')} PTS`;document.querySelector('[data-battle-gap]').textContent=row.delta||'—';document.querySelector('[data-battle-leader]').textContent=lead?.driver||'—';}if(Array.isArray(d.standings)&&!row){setText('[data-battle-heading]','No published standings');setText('[data-battle-context]','Standings will appear after publication.');setText('[data-battle-gap]','—');setText('[data-battle-leader]','—');}if(!Array.isArray(d.drivers))return;const show=(element,number,art)=>{if(!element)return;element.textContent=`#${number}`;if(art){const img=document.createElement('img');img.alt=`Number ${number}`;img.src=art;img.addEventListener('error',()=>{element.textContent=`#${number}`;},{once:true});element.replaceChildren(img);}};if(row){const assignment=d.drivers.find(a=>a.competitionId==='nrrs'&&String(a.number)===String(row.number));show(document.querySelector('[data-battle-number]'),row.number,assignment?.numberImageBackup||assignment?.numberImage);}document.querySelectorAll('.ux-driver[data-profile]').forEach(tile=>{const rides=d.drivers.filter(a=>a.profile===tile.dataset.profile&&a.affiliation==='aetherwing').sort((a,b)=>({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[a.competitionId]||99)-({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[b.competitionId]||99));const assignment=rides[0]||d.drivers.find(a=>a.profile===tile.dataset.profile);if(assignment){tile.dataset.number=String(assignment.number||'');show(tile.querySelector('[data-number-art]'),assignment.number,assignment?.numberImageBackup||assignment?.numberImage);}const meta=tile.querySelector('[data-program-numbers]');if(meta)meta.textContent=rides.slice(0,2).map(a=>`#${a.number} ${{nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[a.competitionId]||a.competition}`).join(' / ');});};
+  function renderLatestResult(rows){
+    const latest=[...rows].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
+    const set=(selector,value)=>{const node=document.querySelector(selector);if(node)node.textContent=value;};
+    set('[data-latest-meta]',latest?`${latest.leagueName||'Aetherwing'} · ${latest.date}`:'Aetherwing');
+    set('[data-latest-title]',latest?.title||'No published results');
+    set('[data-latest-track]',latest?.track||'');
+    const link=document.querySelector('[data-latest-event]');
+    if(link){link.hidden=!latest;link.href=latest?`/event/${eventSlug(latest)}/`:'/history/';}
+    const container=document.querySelector('[data-latest-entries]');
+    if(!container)return;
+    container.replaceChildren();
+    const all=latest?.entries||[],featured=all.filter(entry=>entry.featuredDriver);
+    for(const entry of (featured.length?featured:all).slice(0,3)){
+      const row=document.createElement('strong'),finish=document.createElement('b');
+      row.textContent=`${entry.number?`#${entry.number} `:''}${entry.driver}`;
+      finish.textContent=entry.finish?`P${entry.finish}`:'DNS';
+      row.append(finish);container.append(row);
+    }
+  }
   // Hot-linked partner logos sometimes fail; show the partner name instead of an empty tile.
   function partnerFallback(){document.querySelectorAll('[data-home-partners] img').forEach(img=>{const swap=()=>{const name=document.createElement('strong');name.textContent=img.alt;img.replaceWith(name);};if(img.complete&&img.naturalWidth===0)swap();else img.addEventListener('error',swap,{once:true});});}
   partnerFallback();

@@ -54,7 +54,7 @@ const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && 
     const applyLive = (datasets) => {
       if (Array.isArray(datasets?.drivers)) teamNumbers = new Set(datasets.drivers.filter((entry) => entry.competitionId === 'nrrs' && entry.affiliation === 'aetherwing').map((entry) => String(entry.number)));
       const board = Array.isArray(datasets?.standings) ? datasets.standings.find((entry) => entry.id === 'nrrs') : null;
-      if (board) render(board);
+      if (Array.isArray(datasets?.standings)) render(board);
     };
     window.addEventListener('aetherwing:content', (event) => applyLive(event.detail));
     if (window.__AETHERWING_CONTENT__) applyLive(window.__AETHERWING_CONTENT__);
