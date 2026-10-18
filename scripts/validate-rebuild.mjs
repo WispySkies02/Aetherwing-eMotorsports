@@ -168,7 +168,7 @@ if(!JSON.stringify(JSON.parse(readFileSync('src/data/leadership.json','utf8'))[0
 if(!adminHtml.includes('Roblox asset tracking · internal only')||!adminHtml.includes('name="robloxModerationStatus"'))throw Error('Paint Admin Roblox asset tracking fields are missing.');
 const paintRegistrySource=readFileSync('netlify/lib/_registry.cjs','utf8');
 if(!paintRegistrySource.includes('robloxAssetId')||!paintRegistrySource.includes('...publicPaint'))throw Error('Roblox tracking must save privately and be stripped from the public paint API.');
-if(!raceCalendarSource.includes('Boolean(resultFor(e))||end(e)<now')||!raceCalendarSource.includes('setInterval(tick,1000)'))throw Error('Homepage next-event rollover protection is missing.');
+if(!raceCalendarSource.includes('Boolean(resultFor(e))||(!e.timePending&&end(e)<now)')||!raceCalendarSource.includes('setInterval(tick,1000)'))throw Error('Homepage next-event rollover protection is missing.');
 console.log('v1.1.43 verified: active-program pages, current identities, private Roblox asset tracking, and next-event rollover are intact.');
 
 // v1.1.49 — randomized no-repeat ALL-tab number art pool.
@@ -381,14 +381,14 @@ if(!kmartR8||kmartR8.track!=='Portland'||kmartR8.entries?.find((e)=>e.driver==='
 const scheduleV2022=JSON.parse(readFileSync('src/data/schedule-events.json','utf8'));
 const bathurstV2022=scheduleV2022.find((e)=>e.title==='Bathurst 1000'&&e.date==='2026-10-02');
 if(!bathurstV2022?.startAt||!bathurstV2022?.endAt)throw Error('Bathurst must have explicit start/end timestamps.');
-const vegasR22=scheduleV2022.find((e)=>e.league==='nrrs'&&e.date==='2026-09-29');
-if(vegasR22?.track!=='Las Vegas Motor Speedway')throw Error('NRRS Round 22 venue must be Las Vegas Motor Speedway.');
+const officialR22=scheduleV2022.find((e)=>e.league==='nrrs'&&e.round==='ROUND 22');
+if(officialR22?.date!=='2026-10-06'||officialR22?.track!=='Talladega Superspeedway')throw Error('The owner-provided official NRRS Round 22 result places Talladega on October 6.');
 const standingsV2022=JSON.parse(readFileSync('src/data/standings.json','utf8'));
 const sunocoV2022=standingsV2022.find((b)=>b.id==='sunoco');
 if(!sunocoV2022?.missingRanks?.includes('P3')||!Array.isArray(sunocoV2022.chaseRows)||sunocoV2022.chaseRows.length<17)throw Error('Sunoco regular/Chase pending datasets are incomplete.');
 if(!championshipsSource.includes('PTS pending')||!championshipsSource.includes('sunocoRank'))throw Error('Sunoco public ordering/pending-state repair is missing.');
 if(!raceCalendarSource.includes('e.endAt'))throw Error('Race Calendar must honor explicit special-event end timestamps.');
-console.log('v2.0.22 verified: Kmart R8, Sunoco dual standings, and event expiration are locked without guessing NRRS R22.');
+console.log('v2.0.22 verified: Kmart R8, Sunoco dual standings, and event expiration are locked with owner-confirmed NRRS R22 at Talladega.');
 
 // v2.0.23 — canonical Hailey identity / Drivers hero polish. Palmetto placement was corrected in v2.0.35.
 const rosterV2023=JSON.parse(readFileSync('src/data/roster-profiles.json','utf8'));

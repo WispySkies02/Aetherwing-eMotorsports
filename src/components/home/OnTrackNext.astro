@@ -10,7 +10,7 @@ const parts = race ? countdownParts(race, now) : null;
 ---
 <article class="aw-next" data-on-track-next aria-labelledby="aw-next-track" hidden={!race}>
   <header class="aw-next__bug">
-    <span class="aw-next__state"><i aria-hidden="true"></i><b data-next-state>{parts?.live ? 'LIVE NOW' : 'ON TRACK NEXT'}</b></span>
+    <span class="aw-next__state"><i aria-hidden="true"></i><b data-next-state>{parts?.pending?'START TIME PENDING':parts?.live ? 'LIVE NOW' : 'ON TRACK NEXT'}</b></span>
     <span data-next-series>{race ? `${seriesShort[race.league] || race.leagueName} · ${race.round}` : ''}</span>
   </header>
   <div class="aw-next__body">
@@ -22,14 +22,14 @@ const parts = race ? countdownParts(race, now) : null;
   </div>
   <div class="aw-next__clock" role="timer" aria-live="off" data-next-clock>
     {[['d', 'Days'], ['h', 'Hrs'], ['m', 'Min'], ['s', 'Sec']].map(([key, label]) => (
-      <span><b data-unit={key}>{parts ? pad(parts[key]) : '--'}</b><small>{label}</small></span>
+      <span><b data-unit={key}>{parts && !parts.pending ? pad(parts[key]) : '--'}</b><small>{label}</small></span>
     ))}
     <strong class="aw-next__live" aria-hidden="true">Green flag</strong>
   </div>
   <p class="aw-next__when"><span data-next-when>{race ? whenLabel(race) : ''}</span><em data-next-local></em></p>
   <div class="aw-next__actions">
     <a href={race?.url || '/schedule/'} data-next-link>Race weekend <span aria-hidden="true">→</span></a>
-    <button type="button" data-next-ics>
+    <button type="button" data-next-ics hidden={parts?.pending}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5M12 13v5M9.5 15.5h5" /></svg>
       Add to calendar
     </button>
@@ -53,10 +53,11 @@ const parts = race ? countdownParts(race, now) : null;
       if (!race) return;
       const parts = countdownParts(race, now);
       card.classList.toggle('is-live', parts.live);
-      q('[data-next-state]').textContent = parts.live ? 'LIVE NOW' : 'ON TRACK NEXT';
-      units.forEach(([key, node]) => { if (node) node.textContent = pad(parts[key]); });
+      q('[data-next-state]').textContent = parts.pending?'START TIME PENDING':parts.live ? 'LIVE NOW' : 'ON TRACK NEXT';
+      units.forEach(([key, node]) => { if (node) node.textContent = parts.pending?'--':pad(parts[key]); });
       const clock = q('[data-next-clock]');
-      clock?.setAttribute('aria-label', parts.live ? 'Session is live now' : `Starts in ${parts.d} days, ${parts.h} hours, ${parts.m} minutes`);
+      clock?.setAttribute('aria-label', parts.pending?'Start time pending':parts.live ? 'Session is live now' : `Starts in ${parts.d} days, ${parts.h} hours, ${parts.m} minutes`);
+      q('[data-next-ics]').hidden=!!parts.pending;
       if (shown === race.url) return;
       shown = race.url;
       q('[data-next-series]').textContent = `${seriesShort[race.league] || race.leagueName} · ${race.round}`;
@@ -75,7 +76,7 @@ const parts = race ? countdownParts(race, now) : null;
 
     q('[data-next-ics]')?.addEventListener('click', () => {
       const race = nextRace(feed, new Date());
-      if (!race) return;
+      if (!race || race.timePending) return;
       const blob = new Blob([calendarFile(race, location.origin)], { type: 'text/calendar;charset=utf-8' });
       const href = URL.createObjectURL(blob);
       const anchor = Object.assign(document.createElement('a'), { href, download: `aetherwing-${race.url.split('/').filter(Boolean).pop()}.ics` });

@@ -33,6 +33,9 @@ const easternOffset = (date) => {
 };
 
 export function eventStart(event = {}) {
+  // Midnight is only the date-sort key for an event with an unknown start.
+  // Pending events never use it as a countdown or calendar-export time.
+  if(event.timePending)return new Date(`${event.date}T00:00:00${easternOffset(event.date)}`);
   if (event.startAt) {
     const explicit = new Date(event.startAt);
     if (!isNaN(explicit)) return explicit;
@@ -45,6 +48,7 @@ export function eventStart(event = {}) {
 }
 
 export function eventEnd(event = {}) {
+  if(event.timePending)return new Date(NaN);
   if (event.endAt) {
     const explicit = new Date(event.endAt);
     if (!isNaN(explicit)) return explicit;
@@ -70,7 +74,7 @@ export function eventUnavailable(event = {}) {
 
 export function eventCompleted(event, results = [], now = new Date()) {
   return event.completed === true || /\b(completed|finished)\b/i.test(String(event.status || '')) ||
-    Boolean(resultForEvent(results, event)) || eventEnd(event) < now;
+    Boolean(resultForEvent(results, event)) || (!event.timePending && eventEnd(event) < now);
 }
 
 export function upcomingRaces(events = [], results = [], now = new Date()) {
@@ -82,7 +86,7 @@ export function upcomingRaces(events = [], results = [], now = new Date()) {
 // Compact, serialisable rows: enough to render every surface and nothing more.
 export function buildRaceFeed(events = [], results = [], { from } = {}) {
   return events
-    .filter((event) => event && !event.offWeek && !eventUnavailable(event) && !event.tbd && event.date && (!from || (event.endDate || event.date) >= from))
+    .filter((event) => event && !event.offWeek && !eventUnavailable(event) && !event.tbd && event.date && (!from || event.timePending || (event.endDate || event.date) >= from))
     .map((event) => ({
       league: event.league,
       leagueName: event.leagueName || seriesShort[event.league] || event.league,
@@ -93,6 +97,7 @@ export function buildRaceFeed(events = [], results = [], { from } = {}) {
       endDate: event.endDate,
       displayDate: event.displayDate,
       time: event.time || '',
+      timePending: event.timePending || undefined,
       startAt: event.startAt,
       endAt: event.endAt,
       durationMinutes: event.durationMinutes,
@@ -103,11 +108,12 @@ export function buildRaceFeed(events = [], results = [], { from } = {}) {
 }
 
 export function nextRace(feed = [], now = new Date()) {
-  const open = feed.filter((event) => !event.done && eventEnd(event) >= now);
-  return open.find((event) => eventStart(event) <= now) || open[0] || null;
+  const open = feed.filter((event) => !event.done && (event.timePending || eventEnd(event) >= now));
+  return open.find((event) => !event.timePending && eventStart(event) <= now) || open[0] || null;
 }
 
 export function countdownParts(event, now = new Date()) {
+  if(event.timePending)return {pending:true,live:false,d:0,h:0,m:0,s:0};
   const start = eventStart(event), end = eventEnd(event);
   if (start <= now && end >= now) return { live: true, d: 0, h: 0, m: 0, s: 0 };
   const ms = Math.max(0, start - now);
@@ -124,6 +130,7 @@ export const pad = (value) => String(value).padStart(2, '0');
 
 export function compactCountdown(event, now = new Date()) {
   const c = countdownParts(event, now);
+  if(c.pending)return 'TIME TBD';
   if (c.live) return 'LIVE';
   if (c.d > 0) return `${c.d}D ${pad(c.h)}H`;
   if (c.h > 0) return `${c.h}H ${pad(c.m)}M`;
@@ -131,6 +138,7 @@ export function compactCountdown(event, now = new Date()) {
 }
 
 export function whenLabel(event) {
+  if(event.timePending)return `${eventStart(event).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'America/New_York'})} · Start time pending`;
   if (event.displayDate && !/\d:\d/.test(event.time || '')) return `${event.displayDate} · ${event.time || 'Event window'}`;
   const start = eventStart(event);
   const day = start.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York' });
@@ -139,6 +147,7 @@ export function whenLabel(event) {
 
 // The viewer's own clock, only when it differs from Eastern Time.
 export function localTimeLabel(event) {
+  if(event.timePending)return '';
   if (!/\d:\d/.test(event.time || '') && !event.startAt) return '';
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   if (!zone || zone === 'America/New_York') return '';
@@ -153,6 +162,7 @@ const icsText = (value) => String(value || '').replace(/[\\;,]/g, (ch) => `\\${c
 const icsDate = (date) => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
 export function calendarFile(event, origin = 'https://aetherwing.net') {
+  if(event.timePending)throw new Error('A confirmed start time is required for calendar export.');
   const url = new URL(event.url, origin).href;
   return [
     'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Aetherwing eMotorsports//Race Control//EN', 'CALSCALE:GREGORIAN',

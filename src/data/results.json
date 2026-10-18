@@ -15,24 +15,89 @@
     "sourceUrl": "/news/bells-road-course-struggles-deepen-at-portland/",
     "headline": "CHASE RACE 4",
     "headlineAccent": "PORTLAND INTERNATIONAL RACEWAY",
-    "summary": "Recap-confirmed team result: Hailey Bell finished P8, earning 29 race points and 0 stage points. Only verified team results are listed; the full finishing order and unreported details remain unavailable.",
+    "summary": "Official team result: Hailey #32 qualified P7, finished outside the top five in both stages, and finished P8 with 29 total points. Plarker is not in the supplied official field. Only Aetherwing NRRS entries are included.",
     "entries": [
       {
         "assignmentId": "wispy-nrrs",
         "driver": "Hailey",
         "number": "32",
-        "start": null,
+        "start": 7,
         "stage1Finish": null,
-        "stage1Points": null,
+        "stage1Points": 0,
         "stage2Finish": null,
-        "stage2Points": null,
+        "stage2Points": 0,
         "stagePoints": 0,
         "finish": 8,
         "racePoints": 29,
         "featuredDriver": true
       }
     ],
-    "standingsMode": "record-only"
+    "standingsMode": "record-only",
+    "sourceNote": "Official October 13 Discord qualifying, stages and results screenshots supplied by the team owner; published recap confirms 29 total points."
+  },
+  {
+    "scheduleId": "sunoco-2026-10-10",
+    "league": "sunoco",
+    "leagueName": "Sunoco Trucks",
+    "title": "Ecosave 250",
+    "track": "Charlotte Motor Speedway (Oval)",
+    "date": "2026-10-10",
+    "round": "",
+    "status": "The Chase",
+    "specialTag": "",
+    "featured": false,
+    "pointsSource": "official-result",
+    "coverage": "team-only",
+    "standingsMode": "record-only",
+    "sourceNote": "Official October 10 CHARLOTTE 2 Discord qualifying, stages and final results, plus the official Sunoco points format supplied by the team owner. Owner confirmed the oval layout and Clutch identity.",
+    "summary": "Charlotte oval team result: Will #42 led qualifying, both stages and the finish for 75 points; Clutch #46 was P2 throughout for 51 points; Wispy #54 was P3 throughout for 46 points. Totals include both stages under the supplied Sunoco format.",
+    "entries": [
+      {
+        "driver": "Will",
+        "number": "42",
+        "start": 1,
+        "stage1Finish": 1,
+        "stage1Points": 10,
+        "stage2Finish": 1,
+        "stage2Points": 10,
+        "finish": 1,
+        "finishPoints": 55,
+        "racePoints": 75,
+        "assignmentId": "will-sunoco",
+        "stagePoints": 20,
+        "featuredDriver": false
+      },
+      {
+        "driver": "Clutch",
+        "number": "46",
+        "start": 2,
+        "stage1Finish": 2,
+        "stage1Points": 8,
+        "stage2Finish": 2,
+        "stage2Points": 8,
+        "finish": 2,
+        "finishPoints": 35,
+        "racePoints": 51,
+        "assignmentId": "clutch-sunoco",
+        "stagePoints": 16,
+        "featuredDriver": false
+      },
+      {
+        "driver": "Wispy",
+        "number": "54",
+        "start": 3,
+        "stage1Finish": 3,
+        "stage1Points": 6,
+        "stage2Finish": 3,
+        "stage2Points": 6,
+        "finish": 3,
+        "finishPoints": 34,
+        "racePoints": 46,
+        "assignmentId": "wispy-sunoco",
+        "stagePoints": 12,
+        "featuredDriver": true
+      }
+    ]
   },
   {
     "scheduleId": "nrrs-round-22",
@@ -50,7 +115,7 @@
     "sourceUrl": "/news/talladega-leaves-bell-frustrated-championship-gap-grows/",
     "headline": "CHASE RACE 3",
     "headlineAccent": "TALLADEGA SUPERSPEEDWAY",
-    "summary": "Recap-confirmed team result: Hailey Bell finished P4, earning 41 race points and 8 stage points. Only verified team results are listed; the full finishing order and unreported details remain unavailable.",
+    "summary": "Official team result: Hailey #32 qualified P2, won Stage 1, finished P3 in Stage 2 and P4 overall with 41 total points. Plarker did not participate. Only Aetherwing NRRS entries are included.",
     "entries": [
       {
         "assignmentId": "wispy-nrrs",
@@ -67,7 +132,53 @@
         "featuredDriver": true
       }
     ],
-    "standingsMode": "record-only"
+    "standingsMode": "record-only",
+    "sourceNote": "Official October 6 DEGA 2 Discord screenshots supplied by the team owner; published recap confirms 41 total points and 8 combined stage points. Individual stage-point awards are not inferred."
+  },
+  {
+    "scheduleId": "kmart-round-9",
+    "league": "kmart",
+    "leagueName": "NASCAR Kmart Auto Parts Series",
+    "title": "BrakeBest Brake Pads 250",
+    "track": "Martinsville",
+    "date": "2026-10-05",
+    "round": "ROUND 9",
+    "status": "Regular Season",
+    "specialTag": "DASH4CASH",
+    "featured": false,
+    "pointsSource": "official-result",
+    "coverage": "team-only",
+    "standingsMode": "record-only",
+    "sourceNote": "Official stage/qualifying/results screenshots supplied by the team owner. Owner explicitly confirmed that 35 and 33 are final totals including stages and that only Clutch and Wispy belong in this result.",
+    "summary": "SCR team result: Clutch qualified P1, finished P2 in both stages and P2 overall for 35 total points. Wispy qualified P3, finished P5 in both stages and P4 overall for 33 total points. Official totals already include stages.",
+    "entries": [
+      {
+        "assignmentId": "clutch-kmart",
+        "driver": "Clutch",
+        "number": "",
+        "start": 1,
+        "stage1Finish": 2,
+        "stage1Points": null,
+        "stage2Finish": 2,
+        "stage2Points": null,
+        "finish": 2,
+        "racePoints": 35,
+        "featuredDriver": false
+      },
+      {
+        "assignmentId": "wispy-kmart",
+        "driver": "Wispy",
+        "number": "",
+        "start": 3,
+        "stage1Finish": 5,
+        "stage1Points": null,
+        "stage2Finish": 5,
+        "stage2Points": null,
+        "finish": 4,
+        "racePoints": 33,
+        "featuredDriver": true
+      }
+    ]
   },
   {
     "scheduleId": "2026-09-28-kmart-brembo-performance-200",

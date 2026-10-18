@@ -5,7 +5,7 @@ import { scheduleEvents, results } from '../../lib/site-content.mjs';
 import { buildRaceFeed, eventEnd, eventStart, seriesLogo, seriesShort } from '../../lib/race-clock.mjs';
 const now = new Date();
 const rows = buildRaceFeed(scheduleEvents, results, { from: new Date(now.getTime() - 3 * 86400000).toISOString().slice(0, 10) })
-  .filter((event) => !event.done && eventEnd(event) >= now).slice(0, 4);
+  .filter((event) => !event.done && (event.timePending || eventEnd(event) >= now)).slice(0, 4);
 const day = (event) => eventStart(event).toLocaleDateString('en-US', { month: 'short', timeZone: 'America/New_York' });
 const date = (event) => eventStart(event).toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/New_York' });
 ---
@@ -28,7 +28,7 @@ const date = (event) => eventStart(event).toLocaleDateString('en-US', { day: 'nu
     let signature = '';
     subscribeFeed((feed) => {
       const now = new Date();
-      const rows = feed.filter((event) => !event.done && eventEnd(event) >= now).slice(0, 4);
+      const rows = feed.filter((event) => !event.done && (event.timePending || eventEnd(event) >= now)).slice(0, 4);
       const next = rows.map((event) => event.url + event.track + event.time).join('|');
       if (next === signature) return;
       signature = next;

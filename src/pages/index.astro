@@ -12,7 +12,7 @@ const driver=chase?.rows?.find(r=>r.highlight);
 const battleAssignment=drivers.find(d=>d.competitionId==='nrrs'&&d.number===driver?.number);
 const leader=chase?.rows?.[0];
 const latest=[...results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
-const compactResultEntries=(race)=>{const entries=race?.entries||[],featured=entries.filter(e=>e.featuredDriver);return (featured.length?featured:entries).slice(0,3);};
+const compactResultEntries=(race)=>{const entries=race?.entries||[],featured=entries.filter(e=>e.featuredDriver);return (race.coverage==='team-only'?entries:featured.length?featured:entries).slice(0,3);};
 const leadNews=news.find(s=>s.featured)||news[0];
 const moreNews=news.filter(s=>s!==leadNews).slice(0,2);
 const garageProgramOrder={nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5};
@@ -114,7 +114,7 @@ const programLogo={
     if(!container)return;
     container.replaceChildren();
     const all=latest?.entries||[],featured=all.filter(entry=>entry.featuredDriver);
-    for(const entry of (featured.length?featured:all).slice(0,3)){
+    for(const entry of (latest?.coverage==='team-only'?all:featured.length?featured:all).slice(0,3)){
       const row=document.createElement('strong'),finish=document.createElement('b');
       row.textContent=`${entry.number?`#${entry.number} `:''}${entry.driver}`;
       finish.textContent=entry.finish?`P${entry.finish}`:'DNS';
