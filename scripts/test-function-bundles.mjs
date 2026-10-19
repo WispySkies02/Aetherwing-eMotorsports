@@ -21,13 +21,13 @@ try {
     basePath:root,
     config:{'*':{nodeBundler:'esbuild',nodeVersion:'24',includedFiles:['data/paint-seed.json','src/data/*.json'],includedFilesBasePath:root}}
   });
-  verify(main,{'driver-art':2,'paint-3d-texture':2,'paint-3d-upload':1,'paint-admin':2,'paint-data':2,'site-admin':2,'site-data':2});
+  verify(main,{'driver-art':2,'paint-3d-texture':2,'paint-3d-upload':1,'paint-admin':2,'paint-data':2,'site-admin':2,'site-data':2,'track-weather':2});
   const boothRoot=findPaintProject();
   if(boothRoot) {
     const booth=await zipFunctions(join(boothRoot,'netlify/functions'),join(destination,'booth'),{config:{'*':{nodeBundler:'esbuild',nodeVersion:'22'}}});
     verify(booth,{'paint-data':1});
-    console.log('PASS: packaged all 7 main-site functions and the read-only Paint Booth proxy.');
-  } else console.log('PASS: packaged all 7 main-site functions. SKIP: separate Paint Booth checkout absent; set AETHERWING_PAINT_PROJECT to include it.');
+    console.log('PASS: packaged all 8 main-site functions and the read-only Paint Booth proxy.');
+  } else console.log('PASS: packaged all 8 main-site functions. SKIP: separate Paint Booth checkout absent; set AETHERWING_PAINT_PROJECT to include it.');
 } finally {
   rmSync(destination,{recursive:true,force:true});
 }

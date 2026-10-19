@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-rebuild.mjs",
-    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-3d-client-contract.mjs && node scripts/test-race-calendar.mjs && node scripts/test-published-racing-data.mjs && node scripts/test-confirmed-racing-updates.mjs",
+    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-3d-client-contract.mjs && node scripts/test-race-calendar.mjs && node scripts/test-published-racing-data.mjs && node scripts/test-confirmed-racing-updates.mjs && node scripts/test-race-weekend-track-info.mjs",
     "test:public:browser": "node scripts/test-public-racing-browser.mjs",
     "test:dev": "node scripts/test-dev.mjs",
     "test:publication": "node scripts/test-publication.mjs",

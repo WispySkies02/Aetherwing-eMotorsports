@@ -1,0 +1,23 @@
+/* Scoped to the Race Weekend card; inherit the active site theme. */
+.race-track-info { margin-block: 1rem; min-width: 0; }
+.race-track-facts { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .7rem 1rem; margin: 0; }
+.race-track-facts > div:first-child, .race-track-facts > div:last-child:nth-child(even) { grid-column: 1 / -1; }
+.race-track-facts dt, .race-track-weather__heading { color: var(--ux-accent,var(--season-primary,#f97814)); font: 600 .65rem/1.4 var(--ux-mono,var(--font-mono,monospace)); letter-spacing: .08em; text-transform: uppercase; }
+.race-track-facts dd { margin: .2rem 0 0; color: var(--ux-ink,#eee); font: 600 .88rem/1.45 var(--ux-body,sans-serif); overflow-wrap: anywhere; }
+.story-panel .race-track-note, .story-panel .race-track-weather__credit, .story-panel .race-track-weather__valid, .story-panel .race-track-weather__issued { margin: .65rem 0; font-size: .72rem; line-height: 1.5; color: var(--ux-ink-2,#b8bec4); }
+:root:not(#ux) .ux-main .story-panel .race-track-info a.race-track-source, :root:not(#ux) .ux-main .story-panel .race-track-info .race-track-weather__credit a { font-size: .72rem !important; line-height: 1.5 !important; }
+.race-track-weather { margin-block: 1rem; padding-block: .85rem; border-block: 1px solid var(--ux-line,#ffffff24); }
+.race-track-weather__heading { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; }
+.race-track-weather__heading button { cursor: pointer; border: 1px solid currentColor; border-radius: 0; padding: .55rem; background: transparent; color: var(--ux-ink,#eee); font: inherit; }
+.race-track-weather__heading button:focus-visible { outline: 2px solid var(--ux-accent,#f97814); outline-offset: 3px; }
+.story-panel .race-track-weather__status { margin: .6rem 0; font-size: .8rem; }
+.race-track-weather__status:empty { display: none; }
+.race-track-weather__current { display: flex; flex-wrap: wrap; gap: .35rem .7rem; align-items: baseline; margin-top: .65rem; }
+.race-track-weather__current strong { font: 700 1.7rem/1 var(--ux-display,var(--font-condensed,sans-serif)); color: var(--ux-ink,#eee); }
+.race-track-weather__current span { font-size: .8rem; }
+.race-track-weather__forecast { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .4rem; }
+.race-track-weather__forecast > div { display: flex; flex-direction: column; gap: .35rem; padding: .5rem .35rem; border: 1px solid var(--ux-line,#ffffff24); background: #0002; overflow-wrap: anywhere; }
+.race-track-weather__forecast time { font: 500 .62rem/1.5 var(--ux-mono,var(--font-mono,monospace)); }
+.race-track-weather__forecast strong { font-size: 1rem; color: var(--ux-ink,#eee); }
+.race-track-weather__forecast span, .race-track-weather__forecast small { font-size: .67rem; line-height: 1.4; }
+.race-track-info [hidden] { display: none !important; }
