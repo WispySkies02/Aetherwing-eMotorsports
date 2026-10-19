@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { trackDetails, trackFacts } from '../src/lib/track-details.mjs';
 import { mountTrackInfo, weatherCondition } from '../src/lib/track-info-client.mjs';
+import { createWeatherIcon, weatherIconKind } from '../src/lib/weather-icons.mjs';
 import { createWeatherHandler, normalizeWeather } from '../netlify/lib/_track-weather.mjs';
 
 const now = Date.parse('2026-10-19T17:15:00Z');
@@ -103,8 +104,22 @@ fails = false; assert.equal((await retryHandler(request())).status, 200, 'Failur
 const stale = createWeatherHandler({ now: () => now, fetcher: async () => Response.json(oldPeriods) });
 assert.equal((await stale(request())).status, 502, 'Do not silently serve yesterday\'s weather as current');
 
-const markup = `<div data-race-track-info data-track="Talladega"><dl data-track-facts></dl><p data-track-note></p><a data-track-source></a><section data-track-weather><p data-weather-status></p><button data-weather-retry></button><div data-weather-report hidden><strong data-weather-temperature></strong><span data-weather-condition></span><span data-weather-wind></span><p data-weather-valid></p><div data-weather-forecast></div><p data-weather-issued></p></div></section></div>`;
+const markup = `<div data-race-track-info data-track="Talladega"><dl data-track-facts></dl><p data-track-note></p><a data-track-source></a><section data-track-weather><p data-weather-status></p><button data-weather-retry></button><div data-weather-report hidden><span data-weather-current-icon></span><strong data-weather-temperature></strong><span data-weather-condition></span><span data-weather-wind></span><p data-weather-valid></p><div data-weather-forecast></div><p data-weather-issued></p></div></section></div>`;
 const dom = new JSDOM(markup, { pretendToBeVisual: true });
+for (const [code, kind] of [
+  ['clearsky_day','sun'], ['clearsky_night','moon'], ['fair_day','partly-day'], ['partlycloudy_night','partly-night'],
+  ['cloudy','cloud'], ['fog','fog'], ['lightrainshowers_day','rain'], ['lightsnow_night','snow'],
+  ['heavysleet','sleet'], ['heavyrainandthunder_day','thunder'], ['train','unknown'], ['rainbow','unknown'], ['<img onerror=alert(1)>','unknown']
+]) {
+  assert.equal(weatherIconKind(code), kind);
+  const icon = createWeatherIcon(dom.window.document, code);
+  assert.equal(icon.namespaceURI, 'http://www.w3.org/2000/svg');
+  assert.equal(icon.dataset.weatherIcon, kind);
+  assert.equal(icon.getAttribute('aria-hidden'), 'true', 'Readable condition text supplies the accessible label');
+  assert.equal(icon.getAttribute('focusable'), 'false');
+  assert.ok(icon.childElementCount > 0);
+  assert.equal(icon.querySelector('script,image,foreignObject,[href],[onerror]'), null, 'Icons use only fixed local artwork');
+}
 const root = dom.window.document.querySelector('[data-race-track-info]');
 const select = name => root.querySelector(`[data-${name}]`);
 const pending = [];
@@ -118,9 +133,12 @@ try {
   pending[1].resolve(Response.json(weather('Charlotte Motor Speedway'))); await settle();
   assert.match(select('weather-temperature').textContent, /68°F/);
   assert.equal(select('weather-forecast').children.length, 3);
+  assert.equal(select('weather-current-icon').querySelector('svg').dataset.weatherIcon, 'sun');
+  assert.equal(select('weather-forecast').querySelectorAll('svg[data-weather-icon=rain]').length, 3, 'All later rain periods display an icon');
   assert.match(select('weather-valid').textContent, /EDT/, 'Venue-local time, not the browser timezone');
-  pending[0].resolve(Response.json({ ...weather(), current: { ...weather().current, temperatureF: 99 } })); await settle();
+  pending[0].resolve(Response.json({ ...weather(), current: { ...weather().current, temperatureF: 99, condition: 'heavysnow_night' } })); await settle();
   assert.equal(select('weather-temperature').textContent, '68°F', 'Late response for Talladega cannot replace Charlotte');
+  assert.equal(select('weather-current-icon').querySelector('svg').dataset.weatherIcon, 'sun', 'Late snow response cannot replace the current venue icon');
   change('Charlotte Roval'); assert.match(select('track-facts').textContent, /2.32 mi/);
   pending[2].resolve(new Response('offline', { status: 502 })); await settle();
   assert.equal(select('weather-retry').hidden, false); assert.match(select('weather-status').textContent, /unavailable/);

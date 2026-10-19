@@ -1,4 +1,5 @@
 import { trackDetails, trackFacts } from './track-details.mjs';
+import { createWeatherIcon } from './weather-icons.mjs';
 
 const symbols = {
   clearsky:'Clear', fair:'Mostly clear', partlycloudy:'Partly cloudy', cloudy:'Cloudy', fog:'Fog',
@@ -43,6 +44,7 @@ export function mountTrackInfo(root, { fetcher = fetch, refreshMs = 600000 } = {
       if (id !== requestId || destroyed) return;
       const validPeriod = period => period && Number.isFinite(Date.parse(period.time)) && Number.isFinite(period.temperatureF) && Number.isFinite(period.windMph);
       if (weather.venue !== venue.name || !validPeriod(weather.current) || !Number.isFinite(Date.parse(weather.issuedAt)) || !Array.isArray(weather.forecast) || weather.forecast.length !== 3 || !weather.forecast.every(validPeriod)) throw new Error('Invalid weather');
+      select('weather-current-icon').replaceChildren(createWeatherIcon(document, weather.current.condition));
       text('weather-temperature', `${weather.current.temperatureF}°F`);
       text('weather-condition', weatherCondition(weather.current.condition));
       text('weather-wind', `Wind ${weather.current.windMph} mph`);
@@ -50,7 +52,7 @@ export function mountTrackInfo(root, { fetcher = fetch, refreshMs = 600000 } = {
       const periods = weather.forecast.map(period => {
         const tile = element('div', '');
         const stamp = element('time', time(period.time)); stamp.dateTime = period.time;
-        tile.append(stamp, element('strong', `${period.temperatureF}°F`), element('span', weatherCondition(period.condition)));
+        tile.append(stamp, createWeatherIcon(document, period.condition), element('strong', `${period.temperatureF}°F`), element('span', weatherCondition(period.condition)));
         if (Number.isFinite(period.rainInches)) tile.append(element('small', `Rain ${period.rainInches.toFixed(2)} in / hr`));
         return tile;
       });

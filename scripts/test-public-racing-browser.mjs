@@ -91,6 +91,9 @@ try {
     assert.match(await page.locator('[data-track-facts]').textContent(),/TALLADEGA, AL.*2.66 mi.*16.5–33°/s);
     assert.equal(await page.locator('[data-weather-temperature]').textContent(),'68°F');
     assert.equal(await page.locator('[data-weather-forecast] time').count(),3);
+    assert.equal(await page.locator('[data-weather-current-icon] svg[data-weather-icon=partly-day]').count(),1);
+    assert.equal(await page.locator('[data-weather-forecast] svg[data-weather-icon=partly-day]').count(),3);
+    for(const icon of await page.locator('.race-weather-icon').all())assert.equal(await icon.isVisible(),true,'Current and forecast icons render at every viewport');
     assert.match(await page.locator('[data-weather-valid]').textContent(),/CDT/);
     assert.match(await page.locator('[data-weather-issued]').textContent(),/Issued.*times local/);
     assert.match(await page.locator('.race-track-weather__credit').textContent(),/MET Norway.*CC BY 4.0/);

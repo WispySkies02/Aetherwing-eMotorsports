@@ -21,3 +21,10 @@
 .race-track-weather__forecast strong { font-size: 1rem; color: var(--ux-ink,#eee); }
 .race-track-weather__forecast span, .race-track-weather__forecast small { font-size: .67rem; line-height: 1.4; }
 .race-track-info [hidden] { display: none !important; }
+
+.race-weather-icon { display: block; width: 2rem; height: 2rem; flex-shrink: 0; color: var(--ux-ink,#eee); }
+.race-weather-icon__sun { stroke: var(--ux-accent,var(--season-primary,#f97814)); }
+.race-weather-icon__cloud { fill: var(--ux-s1,#17171b); }
+.race-weather-icon__rain { stroke: var(--season-secondary,#8ec8ed); }
+.race-track-weather__current > [data-weather-current-icon] { align-self: center; }
+.race-track-weather__forecast .race-weather-icon { width: 1.6rem; height: 1.6rem; }

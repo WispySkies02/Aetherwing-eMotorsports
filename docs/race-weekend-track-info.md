@@ -49,6 +49,14 @@ Local cloud shells using an outbound HTTPS proxy may need
 `NODE_USE_ENV_PROXY=1` when starting Astro or running a live upstream smoke check.
 Production Netlify uses its normal network access. No credentials are saved.
 
+## Weather icons
+
+Current and forecast conditions include local SVG icons for clear day/night,
+partly cloudy day/night, overcast, rain, sleet, snow, fog and thunderstorms.
+They retain the readable condition text, use the site's active accent colors,
+and make no extra image requests. Unknown condition codes use a neutral icon.
+MET Norway remains the data provider, with its existing attribution and caching.
+
 ## Verification
 
 `npm run test:all` includes venue resolution, published venue coverage, weather
