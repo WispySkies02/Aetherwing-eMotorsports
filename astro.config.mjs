@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import trackWeather from './netlify/functions/track-weather.mjs';
 
 export default defineConfig({
   site: 'https://aetherwing.net',
@@ -13,8 +14,20 @@ export default defineConfig({
         // Keep the canonical Admin URL and its login query/hash unchanged.
         // Astro installs its slash check in a post hook. Normalize these local
         // aliases ahead of that check after its middleware has been installed.
-        return () => server.middlewares.stack.unshift({route:'',handle(request, _response, next) {
+        return () => server.middlewares.stack.unshift({route:'',async handle(request, response, next) {
           const url = new URL(request.url || '/', 'http://localhost');
+          // Run the same read-only handler locally, before Astro's page router.
+          if (url.pathname === '/api/track-weather') {
+            try {
+              const weather = await trackWeather(new Request(url, { method: request.method }));
+              response.writeHead(weather.status, Object.fromEntries(weather.headers));
+              response.end(await weather.text());
+            } catch {
+              response.writeHead(502, { 'Content-Type':'application/json', 'Cache-Control':'no-store' });
+              response.end(JSON.stringify({ error:'Weather is temporarily unavailable' }));
+            }
+            return;
+          }
           if (url.pathname === '/admin/') request.url = `/admin/index.html${url.search}`;
           // Match directory-style production links, including shared #full URLs
           // whose fragments stay in the browser and are not sent to the server.

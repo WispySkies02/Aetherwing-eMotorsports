@@ -1,0 +1,409 @@
+{
+  "aliases": {
+    "Charlotte Motor Speedway (Oval)": "Charlotte Motor Speedway",
+    "Charlotte Oval": "Charlotte Motor Speedway",
+    "Charlotte Roval": "Charlotte Motor Speedway Roval",
+    "EchoPark Speedway": "Echo Park Speedway",
+    "Charlotte Motor Speedway (Roval)": "Charlotte Motor Speedway Roval",
+    "Charlotte (Oval)": "Charlotte Motor Speedway",
+    "Charlotte (Roval)": "Charlotte Motor Speedway Roval"
+  },
+  "tracks": {
+    "Talladega Superspeedway": {
+      "length": "2.66 mi",
+      "layout": "Tri-oval",
+      "surface": "Asphalt",
+      "banking": "16.5–33°",
+      "source": "https://www.talladegasuperspeedway.com/track-facts/"
+    },
+    "Daytona International Speedway": {
+      "length": "2.50 mi",
+      "layout": "Tri-oval",
+      "surface": "Asphalt",
+      "banking": "Turns 31° · tri-oval 18° · backstretch 3°",
+      "source": "https://en.wikipedia.org/wiki/Daytona_International_Speedway"
+    },
+    "Daytona International Speedway Road Course": {
+      "length": "3.56 mi",
+      "layout": "Sports car road course",
+      "surface": "Asphalt",
+      "banking": "Oval turns 31° · infield flat",
+      "source": "https://en.wikipedia.org/wiki/Daytona_International_Speedway"
+    },
+    "Charlotte Motor Speedway": {
+      "length": "1.50 mi",
+      "layout": "Quad-oval",
+      "surface": "Asphalt",
+      "banking": "Turns 24° · straights 5°",
+      "source": "https://www.charlottemotorspeedway.com/fans/track-facts/"
+    },
+    "Charlotte Motor Speedway Roval": {
+      "length": "2.32 mi",
+      "layout": "Roval · 2024 configuration",
+      "surface": "Asphalt",
+      "banking": "Oval turns 24° · oval straights 5°",
+      "source": "https://en.wikipedia.org/wiki/Charlotte_Motor_Speedway"
+    },
+    "The Dirt Track At Charlotte": {
+      "length": "0.40 mi",
+      "layout": "Dirt oval",
+      "surface": "Dirt",
+      "source": "https://en.wikipedia.org/wiki/Charlotte_Motor_Speedway"
+    },
+    "Martinsville Speedway": {
+      "length": "0.526 mi",
+      "layout": "Paperclip oval",
+      "surface": "Asphalt / concrete",
+      "banking": "Turns 12° · straights flat",
+      "source": "https://en.wikipedia.org/wiki/Martinsville_Speedway"
+    },
+    "Darlington Raceway": {
+      "length": "1.366 mi",
+      "layout": "Asymmetric oval",
+      "surface": "Asphalt",
+      "banking": "T1–2: 25° · T3–4: 23° · straights 6°",
+      "source": "https://en.wikipedia.org/wiki/Darlington_Raceway"
+    },
+    "Phoenix Raceway": {
+      "length": "1.00 mi (NASCAR)",
+      "layout": "Dogleg oval",
+      "surface": "Asphalt",
+      "banking": "T1–2: 9° · T3–4: 11°",
+      "source": "https://en.wikipedia.org/wiki/Phoenix_Raceway"
+    },
+    "Kansas Speedway": {
+      "length": "1.50 mi",
+      "layout": "Tri-oval",
+      "surface": "Asphalt",
+      "banking": "Turns 17–20° · front 10° · back 5°",
+      "source": "https://en.wikipedia.org/wiki/Kansas_Speedway"
+    },
+    "Las Vegas Motor Speedway": {
+      "length": "1.50 mi",
+      "layout": "Tri-oval",
+      "surface": "Asphalt",
+      "banking": "Turns 20° · straights 9°",
+      "source": "https://en.wikipedia.org/wiki/Las_Vegas_Motor_Speedway"
+    },
+    "Echo Park Speedway": {
+      "length": "1.54 mi",
+      "layout": "Quad-oval · 2022 configuration",
+      "surface": "Asphalt",
+      "banking": "Turns 28° · straights 5°",
+      "source": "https://en.wikipedia.org/wiki/Atlanta_Motor_Speedway"
+    },
+    "Atlanta Motor Speedway": {
+      "length": "1.54 mi",
+      "layout": "Quad-oval · 2022 configuration",
+      "surface": "Asphalt",
+      "banking": "Turns 28° · straights 5°",
+      "source": "https://en.wikipedia.org/wiki/Atlanta_Motor_Speedway"
+    },
+    "Richmond Raceway": {
+      "length": "0.75 mi",
+      "layout": "D-shaped oval",
+      "surface": "Asphalt",
+      "banking": "Turns 14° · front 8° · back 2°",
+      "source": "https://en.wikipedia.org/wiki/Richmond_Raceway"
+    },
+    "Bristol Motor Speedway": {
+      "length": "0.533 mi",
+      "layout": "Short oval",
+      "surface": "Concrete",
+      "banking": "Turns 24–28° · straights 4–8°",
+      "source": "https://en.wikipedia.org/wiki/Bristol_Motor_Speedway",
+      "timeZone": "America/New_York"
+    },
+    "Dover Motor Speedway": {
+      "length": "1.00 mi",
+      "layout": "Oval",
+      "surface": "Concrete",
+      "banking": "Turns 24° · straights 9°",
+      "source": "https://en.wikipedia.org/wiki/Dover_Motor_Speedway"
+    },
+    "New Hampshire Motor Speedway": {
+      "length": "1.058 mi",
+      "layout": "Paperclip oval",
+      "surface": "Asphalt",
+      "banking": "Turns 2–7° · straights 1°",
+      "source": "https://en.wikipedia.org/wiki/New_Hampshire_Motor_Speedway"
+    },
+    "Homestead-Miami Speedway": {
+      "length": "1.50 mi",
+      "layout": "Oval",
+      "surface": "Asphalt",
+      "banking": "Turns 18–20° · straights 4°",
+      "source": "https://en.wikipedia.org/wiki/Homestead-Miami_Speedway"
+    },
+    "Homestead Miami Speedway": {
+      "length": "1.50 mi",
+      "layout": "Oval",
+      "surface": "Asphalt",
+      "banking": "Turns 18–20° · straights 4°",
+      "source": "https://en.wikipedia.org/wiki/Homestead-Miami_Speedway"
+    },
+    "Michigan International Speedway": {
+      "length": "2.00 mi",
+      "layout": "D-shaped oval",
+      "surface": "Asphalt",
+      "banking": "Turns 18° · front 12° · back 5°",
+      "source": "https://en.wikipedia.org/wiki/Michigan_International_Speedway"
+    },
+    "Texas Motor Speedway": {
+      "length": "1.50 mi (NASCAR)",
+      "layout": "Quad-oval",
+      "surface": "Asphalt",
+      "banking": "T1–2: 20° · T3–4: 24° · straights 5°",
+      "source": "https://en.wikipedia.org/wiki/Texas_Motor_Speedway"
+    },
+    "Pocono Raceway": {
+      "length": "2.50 mi",
+      "layout": "Triangular oval",
+      "surface": "Asphalt",
+      "banking": "T1: 14° · T2: 8° · T3: 6°",
+      "source": "https://en.wikipedia.org/wiki/Pocono_Raceway"
+    },
+    "North Wilkesboro Speedway": {
+      "length": "0.625 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/North_Wilkesboro_Speedway"
+    },
+    "Rockingham Speedway": {
+      "length": "0.94 mi",
+      "layout": "D-shaped oval · current measurement",
+      "surface": "Asphalt",
+      "banking": "T1–2: 22° · T3–4: 25° · straights 8°",
+      "source": "https://en.wikipedia.org/wiki/Rockingham_Speedway"
+    },
+    "Chicagoland Speedway": {
+      "length": "1.50 mi (NASCAR)",
+      "layout": "Tri-oval",
+      "surface": "Asphalt",
+      "banking": "Turns 18° · front 11° · back 5°",
+      "source": "https://www.iracing.com/tracks/chicagoland-speedway/"
+    },
+    "Auto Club Speedway": {
+      "length": "2.00 mi",
+      "layout": "Legacy D-shaped oval",
+      "surface": "Asphalt",
+      "banking": "Turns 14° · front 11° · back 3°",
+      "source": "https://en.wikipedia.org/wiki/Auto_Club_Speedway"
+    },
+    "Iowa Speedway": {
+      "length": "0.875 mi",
+      "layout": "D-shaped oval",
+      "surface": "Asphalt",
+      "banking": "Turns 12–14° · front 10° · back 4°",
+      "source": "https://en.wikipedia.org/wiki/Iowa_Speedway"
+    },
+    "World Wide Technology Raceway": {
+      "length": "1.25 mi",
+      "layout": "Asymmetric oval",
+      "surface": "Asphalt",
+      "banking": "T1–2: 11° · T3–4: 9°",
+      "source": "https://en.wikipedia.org/wiki/World_Wide_Technology_Raceway"
+    },
+    "Indianapolis Motor Speedway": {
+      "length": "2.50 mi",
+      "layout": "Rectangular oval",
+      "surface": "Asphalt / brick",
+      "banking": "Turns 9.2° · straights flat",
+      "source": "https://en.wikipedia.org/wiki/Indianapolis_Motor_Speedway"
+    },
+    "Indianapolis Raceway Park": {
+      "length": "0.686 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "banking": "Turns 12°",
+      "source": "https://en.wikipedia.org/wiki/Indianapolis_Raceway_Park"
+    },
+    "The Milwaukee Mile": {
+      "length": "1.015 mi",
+      "layout": "Oval",
+      "surface": "Asphalt",
+      "banking": "Turns 9.25° · straights 2.5°",
+      "source": "https://en.wikipedia.org/wiki/Milwaukee_Mile"
+    },
+    "Nashville Fairgrounds": {
+      "length": "0.596 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "banking": "Turns 18° · straights 3°",
+      "source": "https://en.wikipedia.org/wiki/Nashville_Fairgrounds_Speedway"
+    },
+    "Bowman Gray Stadium": {
+      "length": "0.25 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "banking": "Flat",
+      "source": "https://en.wikipedia.org/wiki/Bowman_Gray_Stadium"
+    },
+    "Wake County Speedway": {
+      "length": "0.25 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "banking": "Turns 7°",
+      "source": "https://en.wikipedia.org/wiki/Wake_County_Speedway"
+    },
+    "Slinger Speedway": {
+      "length": "0.25 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "banking": "Turns 33°",
+      "source": "https://en.wikipedia.org/wiki/Slinger_Speedway"
+    },
+    "Sunny South Raceway Park": {
+      "length": "0.25 mi",
+      "layout": "D-shaped oval",
+      "surface": "Asphalt",
+      "banking": "Turns 18° · front 6° · back 12°",
+      "source": "https://en.wikipedia.org/wiki/Sunny_South_Raceway"
+    },
+    "Five Flags Speedway": {
+      "length": "0.50 mi",
+      "layout": "Short oval",
+      "surface": "Asphalt",
+      "banking": "Turns 15° · straights 9°",
+      "source": "https://en.wikipedia.org/wiki/Five_Flags_Speedway",
+      "timeZone": "America/Chicago"
+    },
+    "USA International Speedway": {
+      "length": "0.75 mi",
+      "layout": "Legacy short oval",
+      "surface": "Concrete",
+      "banking": "Turns 14°",
+      "source": "https://en.wikipedia.org/wiki/USA_International_Speedway"
+    },
+    "Eldora Speedway": {
+      "length": "0.50 mi",
+      "layout": "Dirt oval",
+      "surface": "Clay",
+      "banking": "Turns 24° · straights 8°",
+      "source": "https://en.wikipedia.org/wiki/Eldora_Speedway"
+    },
+    "Cedar Lake Speedway": {
+      "length": "0.375 mi",
+      "layout": "Dirt oval",
+      "surface": "Clay",
+      "source": "https://en.wikipedia.org/wiki/Cedar_Lake_Speedway"
+    },
+    "Knoxville Raceway": {
+      "length": "0.50 mi",
+      "layout": "Dirt oval",
+      "surface": "Dirt",
+      "banking": "7°",
+      "source": "https://en.wikipedia.org/wiki/Knoxville_Raceway"
+    },
+    "Tyler County Speedway": {
+      "length": "0.25 mi",
+      "layout": "Dirt oval",
+      "surface": "Clay",
+      "banking": "High banking",
+      "source": "https://en.wikipedia.org/wiki/Tyler_County_Speedway"
+    },
+    "Portland International Raceway": {
+      "length": "1.967 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt / concrete",
+      "source": "https://en.wikipedia.org/wiki/Portland_International_Raceway"
+    },
+    "Watkins Glen International": {
+      "length": "2.45 mi",
+      "layout": "Short road course",
+      "surface": "Asphalt",
+      "banking": "Turns 6–10°",
+      "source": "https://www.theglen.com/track-info/"
+    },
+    "Road America": {
+      "length": "4.048 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Road_America"
+    },
+    "Michelin Raceway Road Atlanta": {
+      "length": "2.54 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Road_Atlanta"
+    },
+    "Virginia International Raceway": {
+      "length": "3.27 mi",
+      "layout": "Full road course",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Virginia_International_Raceway"
+    },
+    "Silverstone Circuit": {
+      "length": "3.660 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Silverstone_Circuit"
+    },
+    "Algarve International Circuit": {
+      "length": "2.891 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Algarve_International_Circuit"
+    },
+    "Mount Panorama Circuit": {
+      "length": "3.861 mi",
+      "layout": "Road course · 23 turns",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Mount_Panorama_Circuit"
+    },
+    "Suzuka Circuit": {
+      "length": "3.608 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Suzuka_International_Racing_Course"
+    },
+    "Chicago Street Course": {
+      "length": "2.14 mi",
+      "layout": "Street circuit",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Street_Course"
+    },
+    "Brands Hatch": {
+      "length": "1.208 mi Indy / 2.433 mi GP",
+      "layout": "Road course · multiple layouts",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Brands_Hatch"
+    },
+    "Circuit of the Americas": {
+      "length": "2.40 mi NASCAR / 3.426 mi GP",
+      "layout": "Road course · multiple layouts",
+      "surface": "Asphalt",
+      "source": "https://en.wikipedia.org/wiki/Circuit_of_the_Americas"
+    },
+    "Indianapolis Motor Speedway Road Course": {
+      "length": "2.439 mi",
+      "layout": "Grand Prix road course",
+      "surface": "Asphalt / brick",
+      "source": "https://en.wikipedia.org/wiki/Indianapolis_Motor_Speedway"
+    },
+    "Crandon International Raceway": {
+      "length": "1.6 mi",
+      "layout": "Short-course off-road",
+      "surface": "Dirt",
+      "banking": "Varies",
+      "source": "https://en.wikipedia.org/wiki/Crandon_International_Off-Road_Raceway"
+    },
+    "Sonoma Raceway": {
+      "layout": "Road course · multiple layouts",
+      "source": "https://en.wikipedia.org/wiki/Sonoma_Raceway"
+    },
+    "Mexico City": {
+      "layout": "Road course · layout unconfirmed",
+      "source": "https://en.wikipedia.org/wiki/Autódromo_Hermanos_Rodríguez"
+    },
+    "Twin Ring Motegi": {
+      "layout": "Oval / road course · layout unconfirmed",
+      "source": "https://en.wikipedia.org/wiki/Mobility_Resort_Motegi"
+    },
+    "Monza Oval": {
+      "layout": "Legacy banked oval",
+      "source": "https://en.wikipedia.org/wiki/Autodromo_Nazionale_Monza"
+    }
+  },
+  "verifiedAt": "2026-10-19"
+}

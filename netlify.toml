@@ -46,6 +46,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/track-weather"
+  to = "/.netlify/functions/track-weather"
+  status = 200
+
+[[redirects]]
   from = "/api/driver-art"
   to = "/.netlify/functions/driver-art"
   status = 200

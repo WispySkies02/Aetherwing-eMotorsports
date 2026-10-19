@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { eventEnd } from '../src/lib/race-clock.mjs';
 import { eventSlug } from '../src/lib/schedule-events.mjs';
+import { createWeatherHandler } from '../netlify/lib/_track-weather.mjs';
 const require=createRequire(import.meta.url);
 const {chromium}=await import(pathToFileURL(path.join(process.env.PAINT_TEST_MODULES||'/tmp/aetherwing-browser-tests/node_modules','playwright-core/index.mjs')));
 const seed=require('../netlify/lib/_content.cjs').seeds();
@@ -23,6 +24,8 @@ Object.assign(board.rows[0],{driver:'Will',points:2296});
 const uarl=datasets['schedule-events'].find(e=>e.league==='uarl-d1'&&e.round==='ROUND 4');
 Object.assign(uarl,{date:'2026-10-18',track:'Echo Park Speedway',title:'Echo Park Thunder 400'});
 const published={revision:90,datasets};
+const weatherNow=Date.parse('2026-10-18T12:00:00Z');
+const weatherHandler=createWeatherHandler({now:()=>weatherNow,fetcher:async()=>Response.json({properties:{meta:{updated_at:'2026-10-18T12:00:00Z'},timeseries:Array.from({length:24},(_,i)=>({time:new Date(weatherNow+i*3600000).toISOString(),data:{instant:{details:{air_temperature:20,wind_speed:5}},next_1_hours:{summary:{symbol_code:'fair_day'},details:{precipitation_amount:0}}}}))}})});
 const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
 const root=path.resolve('dist');
 assert.ok(fs.existsSync(path.join(root,'index.html')),'Build the production site before running this browser check');
@@ -41,9 +44,13 @@ try {
     const page=await context.newPage();
     await page.clock.install({time:new Date('2026-10-18T12:00:00Z')});
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
-    let fail=false, delay=600;
+    let fail=false, delay=600, weatherFail=false;
     await page.route('**/*',async route=>{
       const url=new URL(route.request().url());
+      if(url.pathname==='/api/track-weather') {
+        const response=weatherFail?Response.json({error:'offline'},{status:502}):await weatherHandler(new Request(url));
+        return route.fulfill({status:response.status,contentType:'application/json',body:await response.text()});
+      }
       if(url.pathname==='/api/site-content') {
         if(fail)return route.abort('failed');
         await new Promise(resolve=>setTimeout(resolve,delay));
@@ -77,6 +84,48 @@ try {
       assert.ok(clearance.bottom<=clearance.dock+1,'Footer content remains above the mobile tab bar');
     }
     delay=20;
+    // Exercise the real built card, publication subscriber and weather renderer.
+    await page.goto(`${base}/event/kmart-round-10/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    await page.locator('[data-weather-report]').waitFor({state:'visible'});
+    assert.match(await page.locator('[data-track-facts]').textContent(),/TALLADEGA, AL.*2.66 mi.*16.5–33°/s);
+    assert.equal(await page.locator('[data-weather-temperature]').textContent(),'68°F');
+    assert.equal(await page.locator('[data-weather-forecast] time').count(),3);
+    assert.match(await page.locator('[data-weather-valid]').textContent(),/CDT/);
+    assert.match(await page.locator('[data-weather-issued]').textContent(),/Issued.*times local/);
+    assert.match(await page.locator('.race-track-weather__credit').textContent(),/MET Norway.*CC BY 4.0/);
+    assert.equal(await page.locator('[data-track-source]').getAttribute('href'),'https://www.talladegasuperspeedway.com/track-facts/');
+    await page.locator('.story-grid > .story-panel').first().screenshot({path:`/tmp/aetherwing-race-weekend-${viewport.width}.png`});
+    const updateVenue=async track=>page.evaluate(({track,datasets})=>{
+      const next=structuredClone(datasets);
+      const race=next['schedule-events'].find(e=>e.league==='kmart'&&e.round==='ROUND 10');
+      race.track=track;
+      window.dispatchEvent(new CustomEvent('aetherwing:content',{detail:next}));
+    },{track,datasets});
+    await updateVenue('Charlotte Motor Speedway (Oval)');
+    await page.locator('[data-weather-report]').waitFor({state:'visible'});
+    assert.equal(await page.locator('[data-event-track]').textContent(),'Charlotte Motor Speedway (Oval)');
+    assert.match(await page.locator('[data-track-facts]').textContent(),/CONCORD, NC.*1.50 mi.*24°/s);
+    assert.match(await page.locator('[data-weather-valid]').textContent(),/EDT/);
+    await updateVenue('The Dirt Track At Charlotte');
+    await page.locator('[data-weather-report]').waitFor({state:'visible'});
+    assert.match(await page.locator('[data-track-facts]').textContent(),/0.40 mi.*Dirt/s);
+    assert.doesNotMatch(await page.locator('[data-track-facts]').textContent(),/1.50 mi|24°/);
+    await updateVenue('Track TBD');
+    assert.equal(await page.locator('[data-track-weather]').isVisible(),false);
+    assert.equal(await page.locator('[data-track-facts]').textContent(),'');
+    weatherFail=true; await updateVenue('Talladega');
+    await page.locator('[data-weather-retry]').waitFor({state:'visible'});
+    assert.match(await page.locator('[data-weather-status]').textContent(),/temporarily unavailable/);
+    assert.match(await page.locator('[data-track-facts]').textContent(),/2.66 mi/);
+    weatherFail=false; await page.locator('[data-weather-retry]').click();
+    await page.locator('[data-weather-report]').waitFor({state:'visible'});
+    for(const name of ['[data-track-facts] dd','[data-weather-forecast] > div']) {
+      for(const cell of await page.locator(name).all())assert.equal(await cell.evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,`${viewport.width}px track details and forecast fit their cells`);
+    }
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'Race card does not create horizontal scrolling');
+    await page.locator('[data-track-source]').scrollIntoViewIfNeeded();
+    assert.equal(await page.locator('[data-track-source]').evaluate(el=>{const r=el.getBoundingClientRect();return el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),true,'Track reference remains unobstructed');
     await page.goto(`${base}/championships/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.match(await page.locator('[data-board="nrrs"] header').textContent(),/R23\/25/);
@@ -161,7 +210,7 @@ try {
     assert.deepEqual(saved.published.results.find(r=>r.scheduleId==='kmart-round-9').entries.map(e=>[e.driver,e.racePoints]),[['Clutch',35],['Wispy',33]]);
     assert.deepEqual(saved.published.standings,beforeReview.standings,'Reviewing/publishing archival records leaves current championship points intact');
     assert.deepEqual(errors,[],'No browser runtime errors');
-    console.log(`PASS: ${viewport.width}px publication loading, R23 snapshot, every program, schedules/results/recap links, founding label, fallback, mobile navigation and clearance.`);
+    console.log(`PASS: ${viewport.width}px Race Weekend track facts/weather/retry/venue updates, publication loading, R23 snapshot, every program, schedules/results/recap links, founding label, fallback, mobile navigation and clearance.`);
     await context.close();
   }
 }finally {

@@ -15,6 +15,10 @@ try {
     assert.ok(html.includes('data-auth-gate'),'Admin authentication UI must remain intact');
     assert.ok(html.includes('/admin/content-admin.js'),'Admin scripts must retain their asset URLs');
   }
+  const weather = await fetch(`${base}/api/track-weather?track=unknown`);
+  assert.equal(weather.status,404);
+  assert.equal((await weather.json()).error,'Unknown venue','Development serves the actual weather handler');
+  assert.equal((await fetch(`${base}/api/track-weather?track=Talladega`,{method:'POST'})).status,405);
   assert.equal((await fetch(`${base}/admin/`,{method:'HEAD'})).status,200);
   for(const path of ['/admin/content-admin.js','/admin/fresh-admin.css','/','/drivers/hailey/'])assert.equal((await fetch(`${base}${path}`)).status,200,`${path} must remain accessible`);
   assert.equal((await fetch(`${base}/admin/missing-fixture-file.js`)).status,404,'Admin fallback must not swallow unknown assets');
