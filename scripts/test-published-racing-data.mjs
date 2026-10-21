@@ -73,14 +73,16 @@ for(const snapshot of [published,cached,bundled]) {
 }
 
 const official=seed.results.filter(r=>r.pointsSource==='official-recap');
-assert.equal(official.length,2);
-assert.deepEqual(official.map(r=>[r.date,r.entries[0].driver,r.entries[0].number,r.entries[0].finish,r.entries[0].racePoints]),[['2026-10-13','Hailey','32',8,29],['2026-10-06','Hailey','32',4,41]]);
+assert.equal(official.length,3);
+assert.deepEqual(official.map(r=>[r.date,r.entries[0].driver,r.entries[0].number,r.entries[0].finish,r.entries[0].racePoints]),[['2026-10-20','Hailey','32',3,39],['2026-10-13','Hailey','32',8,29],['2026-10-06','Hailey','32',4,41]]);
 const normalized=normalize('results',seed.results);
 assert.equal(validate('results',normalized),'');
-assert.equal(normalized[0].date,'2026-10-13');
+assert.equal(normalized[0].date,'2026-10-20');
+assert.equal(normalized[0].entries[0].racePoints,39,'New Hampshire keeps its recap-confirmed total');
+const portland=normalized.find(race=>race.scheduleId==='nrrs-round-23');
 assert.equal(normalized.find(r=>r.date==='2026-10-06').entries[0].racePoints,41,'Official points survive normalization');
-assert.equal(normalized[0].entries[0].start,7,'Screenshot confirms Hailey qualified P7 at Portland');
-assert.equal(normalized[0].entries[0].stage1Finish,null,'Outside the stage top five does not establish an exact finishing position');
+assert.equal(portland.entries[0].start,7,'Screenshot confirms Hailey qualified P7 at Portland');
+assert.equal(portland.entries[0].stage1Finish,null,'Outside the stage top five does not establish an exact finishing position');
 for(const field of ['finish','racePoints']) {
   const bad=structuredClone(normalized);bad[0].entries[0][field]=null;
   assert.notEqual(validate('results',bad),'',`${field} is still required`);
@@ -119,7 +121,8 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
     assert.ok(event);const select=$('[data-results-race-select]');
     select.value=[...select.options].find(option=>option.value.startsWith(race.date+'-')&&option.textContent.includes(event.track)).value;
     $('[data-results-load-race]').click();
-    assert.match($('[data-content-status]').textContent,/Recap-confirmed team result loaded/);
+    if(race.scheduleId==='nrrs-round-24')assert.match($('[data-content-status]').textContent,/already in Race Results/,'The current featured recap is available without duplicating the event');
+    else assert.match($('[data-content-status]').textContent,/Recap-confirmed team result loaded/);
     $('[data-content-publish]').click();await tick();
     const saved=JSON.parse(w.localStorage.getItem('aetherwing-site-admin'));
     const actual=saved.published.results.find(r=>r.scheduleId===race.scheduleId);
@@ -139,5 +142,50 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   assert.equal(completed.standingsMode,'record-only','Completing an archival record must not add its points again');
   assert.equal(JSON.stringify(JSON.parse(w.localStorage.getItem('aetherwing-site-admin')).published.standings),standingsBefore);
   w.close();
+}
+// The owner-supplied New Hampshire article and canonical result stay linked
+// when the live registry still contains the older September-only collection.
+{
+  const slug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
+  const {mergeCanonical}=createRequire(import.meta.url)('../netlify/lib/_site-data.cjs')._test;
+  const older={news:structuredClone(seed.news.filter(s=>s.slug!==slug)),results:structuredClone(seed.results.filter(r=>r.scheduleId!=='nrrs-round-24')),standings:structuredClone(seed.standings)};
+  const beforeStandings=JSON.stringify(older.standings);
+  const merged=mergeCanonical(older);
+  assert.deepEqual(merged.news.filter(s=>s.featured).map(s=>s.slug),[slug]);
+  assert.equal(JSON.stringify(merged.standings),beforeStandings,'A recap does not replace an Admin championship snapshot');
+  const race=merged.results[0];
+  assert.equal(race.scheduleId,'nrrs-round-24');
+  assert.deepEqual(race.entries.map(e=>[e.driver,e.number,e.start,e.stage1Finish,e.stage2Finish,e.finish,e.racePoints,e.lapsDown]),[['Hailey','32',1,4,3,3,39,2]]);
+  assert.equal(race.entries[0].stagePoints,5);
+  assert.equal(race.entries[0].stage1Points,null,'Do not infer individual stage awards from a combined five-point total');
+  assert.equal(race.entries[0].stage2Points,null);
+  assert.equal(race.sourceUrl,`/news/${slug}/`);
+  assert.equal(mergeCanonical(merged).results.filter(r=>r.scheduleId===race.scheduleId).length,1,'Release defaults are idempotent');
+  const corrected=structuredClone(race);corrected.scheduleId='2026-10-20-nrrs-comcast-301';corrected.entries[0].racePoints=40;
+  const preserved=mergeCanonical({news:seed.news,results:[corrected]});
+  assert.equal(preserved.results.length,1,'Legacy event IDs for the same round do not duplicate');
+  assert.equal(preserved.results[0].entries[0].racePoints,40,'Subsequent Admin corrections remain authoritative');
+  delete corrected.round;
+  assert.equal(mergeCanonical({results:[corrected]}).results.length,1,'A date/venue-matched legacy record also remains authoritative');
+  corrected.date='2027-10-20';corrected.round='ROUND 24';
+  assert.equal(mergeCanonical({results:[corrected]}).results.length,2,'A later season cannot hide the current recap result');
+  const story=seed.news.find(s=>s.slug===slug);
+  const paragraphs=story.featureBlocks.filter(b=>b.type==='prose').flatMap(b=>b.paragraphs);
+  const raw=fs.readFileSync(new URL('../docs/sources/nrrs-new-hampshire-2026-10-20.md',import.meta.url),'utf8');
+  const plain=value=>value.replace(/\*/g,'').replace(/\s+/g,' ').trim();
+  const articleText=plain([story.summary,...paragraphs].join(' '));
+  for(const paragraph of raw.split(/\r?\n\s*\r?\n/)) {
+    if(/^(#|\||NRRS Town|\*\*NRRS|\*\*NEW HAMPSHIRE|\*\*CHAMPIONSHIP|---)/.test(paragraph.trim()))continue;
+    assert.ok(articleText.includes(plain(paragraph)),`Preserve supplied prose: ${plain(paragraph).slice(0,70)}`);
+  }
+  assert.equal(story.featureBlocks.filter(b=>b.heading).length,5,'Every supplied section heading is retained');
+  const chase=story.featureBlocks.find(b=>b.type==='standings');
+  assert.deepEqual(chase.rows.map(r=>[r.driver,Number(r.points.replaceAll(',',''))]),[['Will',2329],['Clutch',2287],['Hailey',2229],['Trent',2192],['Outlaw',2162]]);
+  const old=seed.news.find(s=>s.slug==='bells-road-course-struggles-deepen-at-portland');
+  const standings=old.featureBlocks.find(b=>b.type==='standings').rows;
+  const leader=standings.find(r=>r.driver==='Will');assert.equal(leader.points,'2,286');
+  assert.equal(2286-Number(standings.find(r=>r.driver==='Hailey').points.replaceAll(',','')),96,'Owner corrected Portland gap is 96');
+  for(const row of standings.filter(r=>r.driver!=='Will'))assert.equal(row.gap,`${2286-Number(row.points.replaceAll(',',''))} BACK`);
+  assert.ok(JSON.stringify(old).includes('63 championship points'));
 }
 console.log('PASS: all program publications, Eastern time/DST, moved rounds, cancelled/postponed/completed races, atomic snapshots, labeled cache/fallback, and sourced October results without invented fields.');

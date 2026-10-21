@@ -436,17 +436,18 @@ if(siteDataV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {..
 if(siteAdminV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 Admin migration must not overwrite venue edits with the old Las Vegas R22 venue.');
 console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin track/title edits and live event identity hydrates on-page.');
 
-// v2.0.28 — retain Talladega's feature format and permalink; Portland now leads the Team Wire.
+// Retain historical recap formats and permalinks; New Hampshire leads Team Wire.
 {
   const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
   const talladega=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
   const portland=newsNow.find((item)=>item?.slug==='bells-road-course-struggles-deepen-at-portland');
-  if(!talladega||!portland||talladega.featured||!portland.featured||newsNow.filter((item)=>item?.featured).length!==1)throw Error('Portland must be the sole Team Wire feature; Talladega must remain archived.');
+  const newHampshire=newsNow.find(item=>item?.slug==='pole-position-fading-pace-bell-salvages-third-at-new-hampshire');
+  if(!talladega||!portland||!newHampshire||talladega.featured||portland.featured||!newHampshire.featured||newsNow.filter(item=>item?.featured).length!==1)throw Error('New Hampshire must be the sole Team Wire feature; prior recaps must remain archived.');
   if(portland.featureLayout!=='race-stat-feature'||portland.dateIso!=='2026-10-13'||!portland.featureBlocks.some((block)=>block.type==='standings'))throw Error('Portland post-race feature modules missing.');
   const standings=portland.featureBlocks.find((block)=>block.type==='standings').rows;
   const leader=Number(standings.find((row)=>row.driver==='Will')?.points?.replace(/,/g,''));
   const bell=Number(standings.find((row)=>row.driver==='Hailey')?.points?.replace(/,/g,''));
-  if(leader!==2296||bell!==2190||leader-bell!==106)throw Error('Portland Chase standings must reflect the official 106-point deficit.');
+  if(leader!==2286||bell!==2190||leader-bell!==96)throw Error('Portland Chase standings must reflect the owner-corrected 96-point deficit.');
   const oldPositions=new Map(talladega.featureBlocks.find((b)=>b.type==='standings').rows.map((row)=>[row.driver,Number(row.position)]));
   for(const row of standings){
     if(!oldPositions.has(row.driver)||row.positionChange!==oldPositions.get(row.driver)-Number(row.position))throw Error(`Portland Chase position movement incorrect for ${row.driver}.`);
@@ -463,7 +464,7 @@ console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin trac
   const admin=readFileSync('public/admin/content-admin.js','utf8');
   for(const [name,src] of [['site-content',siteContent],['live API',siteData],['Admin',admin]])if(!src.includes(portland.slug))throw Error(`Portland featured-story migration missing from ${name}.`);
 }
-console.log('Team Wire verified: Portland featured; Talladega retained; championship figures reconciled.');
+console.log('Team Wire verified: New Hampshire featured; prior recaps retained; Portland owner correction reconciled.');
 
 // v2.0.29 Talladega prose revision is superseded by the v2.0.37 replacement feature.
 console.log('v2.0.29 historical Talladega prose revision superseded by v2.0.37.');

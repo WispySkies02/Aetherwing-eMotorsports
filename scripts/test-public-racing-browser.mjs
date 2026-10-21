@@ -19,8 +19,8 @@ const datasets=structuredClone(seed);
 delete datasets.competitions; // The live API legitimately omits this dataset.
 const board=datasets.standings.find(b=>b.id==='nrrs');
 board.subtitle='Town Fair Cup · Season 3 · After R23/25 · Portland · Chase Race 4 · Oct. 13, 2026';
-const hailey=board.rows.find(r=>r.highlight);Object.assign(hailey,{driver:'Hailey',position:'P4',points:2190,delta:'-106',positionChange:1});
-Object.assign(board.rows[0],{driver:'Will',points:2296});
+const hailey=board.rows.find(r=>r.highlight);Object.assign(hailey,{driver:'Hailey',position:'P4',points:2190,delta:'-96',positionChange:1});
+Object.assign(board.rows[0],{driver:'Will',points:2286});
 const uarl=datasets['schedule-events'].find(e=>e.league==='uarl-d1'&&e.round==='ROUND 4');
 Object.assign(uarl,{date:'2026-10-18',track:'Echo Park Speedway',title:'Echo Park Thunder 400'});
 const published={revision:90,datasets};
@@ -65,10 +65,11 @@ try {
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.equal(await page.locator('[data-battle-heading]').textContent(),'Hailey · P4');
     assert.match(await page.locator('[data-battle-context]').textContent(),/R23\/25.*2,190 PTS/);
-    assert.equal(await page.locator('[data-battle-gap]').textContent(),'-106');
+    assert.equal(await page.locator('[data-battle-gap]').textContent(),'-96');
     assert.match(await page.locator('[data-tower-context]').textContent(),/R23\/25/);
-    assert.equal(await page.locator('[data-latest-title]').textContent(),'Portland (Chase Race 4)');
-    assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/nrrs-round-23/');
+    assert.equal(await page.locator('[data-latest-title]').textContent(),'Comcast 301');
+    assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),'/news/pole-position-fading-pace-bell-salvages-third-at-new-hampshire/');
+    assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/nrrs-round-24/');
     assert.equal(await page.locator('[data-team-stat="rootsSince"]').textContent(),'2015');
     if(viewport.width<1100) {
       const dock=page.locator('[data-aw-dock]');assert.equal(await dock.isVisible(),true);
@@ -130,7 +131,7 @@ try {
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.match(await page.locator('[data-board="nrrs"] header').textContent(),/R23\/25/);
     const row=page.locator('[data-board="nrrs"] .standing-row').filter({hasText:'Hailey'});
-    assert.match(await row.textContent(),/P4.*2,190 PTS.*-106/);
+    assert.match(await row.textContent(),/P4.*2,190 PTS.*-96/);
     for(const program of seed.competitions.filter(p=>p.id!=='uarl-d2')) {
       await page.goto(`${base}/programs/${program.id}/`,{waitUntil:'domcontentloaded'});
       await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
@@ -158,6 +159,24 @@ try {
     await page.goto(`${base}/event/sunoco-2026-10-17/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.match(await page.locator('[data-event-summary]').textContent(),/Oct 24, 2026/);
+    const recapSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
+    await page.goto(`${base}/news/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),`/news/${recapSlug}/`);
+    await page.goto(`${base}/news/${recapSlug}/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    assert.equal(await page.locator('h1').textContent(),'Pole Position, Fading Pace: Bell Salvages Third at New Hampshire');
+    assert.equal(await page.locator('.news-feature-prose h2').count(),5,'All source headings survive live article hydration');
+    assert.match(await page.locator('.news-change-grid').textContent(),/−96.*−100/s,'Owner-confirmed previous gap remains 96');
+    assert.match(await page.locator('.news-standing-card__row').filter({hasText:'Hailey'}).textContent(),/2,229.*100 BACK/s);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'Article remains within the viewport');
+    for(const cell of await page.locator('.news-race-strip__grid > div,.news-numbers-grid > div').all())assert.equal(await cell.evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,'Race facts fit their existing card layout');
+    await page.locator('.news-race-strip').screenshot({path:`/tmp/aetherwing-new-hampshire-recap-${viewport.width}.png`});
+    await page.goto(`${base}/event/nrrs-round-24/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    assert.match(await page.locator('[data-event-summary]').textContent(),/Oct 20, 2026/);
+    assert.match(await page.locator('[data-event-result]').textContent(),/P3.*Hailey.*P1.*P4.*P3.*39.*two laps down/s);
+    assert.equal(await page.locator('[data-event-result] a').getAttribute('href'),`/news/${recapSlug}/`);
     await page.goto(`${base}/event/nrrs-round-23/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.equal(await page.locator('[data-event-track]').textContent(),'Portland International Raceway');
