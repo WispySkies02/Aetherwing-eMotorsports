@@ -22,10 +22,10 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);if(!fresh)return normalized;if(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text))return fresh;return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};});
   if(Array.isArray(datasets.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);datasets.news=datasets.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(datasets.news)){
-    // Keep both race articles visible when an older Admin snapshot has not yet been republished.
-    // Portland replaces Talladega as the single featured story and homepage lead.
-    const featuredSlug='bells-road-course-struggles-deepen-at-portland';
-    const raceSlugs=['talladega-leaves-bell-frustrated-championship-gap-grows',featuredSlug];
+    // Keep the confirmed race articles visible when an older Admin snapshot has not yet been republished.
+    // New Hampshire is the single featured story and homepage lead.
+    const featuredSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
+    const raceSlugs=['talladega-leaves-bell-frustrated-championship-gap-grows','bells-road-course-struggles-deepen-at-portland',featuredSlug];
     const seedBySlug=new Map((seed.news||[]).map((story)=>[story.slug,story]));
     for(const slug of raceSlugs){
       if(!datasets.news.some((story)=>story?.slug===slug)&&seedBySlug.has(slug))datasets.news.push(seedBySlug.get(slug));
@@ -45,7 +45,12 @@ function mergeCanonical(datasets){
       return e;
     });
   }
-  if(Array.isArray(datasets.results))datasets.results=normalize('results',datasets.results);
+  if(Array.isArray(datasets.results)){
+    const recap=seed.results.find(race=>race.scheduleId==='nrrs-round-24');
+    const recorded=datasets.results.some(race=>race.league==='nrrs'&&String(race.date||'').slice(0,4)==='2026'&&(race.scheduleId===recap?.scheduleId||String(race.round||'').match(/\d+/)?.[0]==='24'||(race.date===recap?.date&&(race.track===recap?.track||race.title===recap?.title))));
+    if(recap&&!recorded)datasets.results=[...datasets.results,structuredClone(recap)];
+    datasets.results=normalize('results',datasets.results);
+  }
   // Published standings are authoritative. Historical repair migrations belong at release time,
   // never in the live read path, or fresh Admin edits can be silently replaced by bundled seeds.
   // Keep published assignment numbers while retaining legacy identity/roster filtering.
@@ -74,3 +79,5 @@ exports.handler = async (event) => {
     return json(503, { error:'Published site content is temporarily unavailable.' });
   }
 };
+
+exports._test={mergeCanonical};
