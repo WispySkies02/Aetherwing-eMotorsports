@@ -1,8 +1,10 @@
 ---
 import { trackDetails, trackFacts } from '../../lib/track-details.mjs';
+import { weatherProvider } from '../../lib/weather-provider.mjs';
 import '../../styles/race-track-info.css';
 const { track } = Astro.props;
 const info = trackDetails(track);
+const provider = weatherProvider(info);
 ---
 <div class="race-track-info" data-race-track-info data-track={track || ''}>
   <dl class="race-track-facts" data-track-facts>
@@ -19,7 +21,7 @@ const info = trackDetails(track);
       <div class="race-track-weather__forecast" data-weather-forecast></div>
       <p class="race-track-weather__issued" data-weather-issued></p>
     </div>
-    <p class="race-track-weather__credit">Real-world forecast · simulator conditions may differ.<br/><a href="https://www.met.no/en/free-meteorological-data" target="_blank" rel="noopener noreferrer">Weather: MET Norway (CC BY 4.0) ↗</a></p>
+    <p class="race-track-weather__credit">Real-world forecast · simulator conditions may differ.<br/><a data-weather-provider href={provider.url} target="_blank" rel="noopener noreferrer">{provider.label} ↗</a></p>
     <noscript><p>Enable JavaScript to load the venue forecast.</p></noscript>
   </section>
 </div>

@@ -1,5 +1,6 @@
 import { trackDetails, trackFacts } from './track-details.mjs';
 import { createWeatherIcon } from './weather-icons.mjs';
+import { weatherProvider } from './weather-provider.mjs';
 
 const symbols = {
   clearsky:'Clear', fair:'Mostly clear', partlycloudy:'Partly cloudy', cloudy:'Cloudy', fog:'Fog',
@@ -38,21 +39,22 @@ export function mountTrackInfo(root, { fetcher = fetch, refreshMs = 600000 } = {
     select('track-weather').setAttribute('aria-busy', 'true');
     status('Loading venue weather…');
     try {
-      const response = await fetcher(`/api/track-weather?track=${encodeURIComponent(venue.name)}`, { signal: requestController.signal });
+      const response = await fetcher(`/api/track-weather?track=${encodeURIComponent(venue.name)}&v=2`, { signal: requestController.signal });
       if (!response.ok) throw new Error('Weather unavailable');
       const weather = await response.json();
       if (id !== requestId || destroyed) return;
       const validPeriod = period => period && Number.isFinite(Date.parse(period.time)) && Number.isFinite(period.temperatureF) && Number.isFinite(period.windMph);
-      if (weather.venue !== venue.name || !validPeriod(weather.current) || !Number.isFinite(Date.parse(weather.issuedAt)) || !Array.isArray(weather.forecast) || weather.forecast.length !== 3 || !weather.forecast.every(validPeriod)) throw new Error('Invalid weather');
+      if (weather.venue !== venue.name || weather.provider !== weatherProvider(venue).id || !validPeriod(weather.current) || !Number.isFinite(Date.parse(weather.issuedAt)) || !Array.isArray(weather.forecast) || weather.forecast.length !== 3 || !weather.forecast.every(validPeriod)) throw new Error('Invalid weather');
       select('weather-current-icon').replaceChildren(createWeatherIcon(document, weather.current.condition));
       text('weather-temperature', `${weather.current.temperatureF}°F`);
-      text('weather-condition', weatherCondition(weather.current.condition));
-      text('weather-wind', `Wind ${weather.current.windMph} mph`);
+      text('weather-condition', weather.current.description || weatherCondition(weather.current.condition));
+      text('weather-wind', `Wind ${weather.current.windDescription || `${weather.current.windMph} mph`}`);
       text('weather-valid', `Current forecast · ${time(weather.current.time)}`);
       const periods = weather.forecast.map(period => {
         const tile = element('div', '');
         const stamp = element('time', time(period.time)); stamp.dateTime = period.time;
-        tile.append(stamp, createWeatherIcon(document, period.condition), element('strong', `${period.temperatureF}°F`), element('span', weatherCondition(period.condition)));
+        tile.append(stamp, createWeatherIcon(document, period.condition), element('strong', `${period.temperatureF}°F`), element('span', period.description || weatherCondition(period.condition)));
+        if (Number.isFinite(period.precipitationChance)) tile.append(element('small', `Precip. chance ${Math.round(period.precipitationChance)}%`));
         if (Number.isFinite(period.rainInches)) tile.append(element('small', `Rain ${period.rainInches.toFixed(2)} in / hr`));
         return tile;
       });
@@ -80,6 +82,8 @@ export function mountTrackInfo(root, { fetcher = fetch, refreshMs = 600000 } = {
     text('track-note', !venue ? 'Track information will appear once the venue is confirmed.' : !venue.length ? 'Layout specifications have not been confirmed.' : 'Venue reference · league layouts may vary.');
     const source = select('track-source'); source.hidden = !venue?.source;
     if (venue?.source) source.href = venue.source; else source.removeAttribute('href');
+    const provider = weatherProvider(venue), credit = select('weather-provider');
+    credit.textContent = `${provider.label} ↗`; credit.href = provider.url;
     select('track-weather').hidden = !venue;
     select('weather-report').hidden = true;
     void loadWeather();
