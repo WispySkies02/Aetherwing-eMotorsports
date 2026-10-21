@@ -1,8 +1,45 @@
 {
-  "id": "confirmed-october-2026-results-v1",
-  "reviewDate": "2026-10-18",
-  "source": "Owner-provided official screenshots and explicit corrections recorded in this change",
+  "id": "confirmed-october-2026-results-v2-new-hampshire",
+  "reviewDate": "2026-10-20",
+  "source": "Owner-provided official screenshots and explicit corrections recorded in this change; October 20 New Hampshire owner recap",
   "results": [
+    {
+      "scheduleId": "nrrs-round-24",
+      "league": "nrrs",
+      "leagueName": "NRRS Town Fair Cup Series",
+      "title": "Comcast 301",
+      "track": "New Hampshire Motor Speedway",
+      "date": "2026-10-20",
+      "round": "ROUND 24",
+      "status": "The Chase",
+      "specialTag": "CHASE RACE 5",
+      "featured": true,
+      "pointsSource": "official-recap",
+      "coverage": "team-only",
+      "standingsMode": "record-only",
+      "sourceUrl": "/news/pole-position-fading-pace-bell-salvages-third-at-new-hampshire/",
+      "sourceNote": "Team-owner recap supplied October 20, 2026: pole, stage finishes P4/P3, P3 two laps down, 39 total points including five stage points. Individual stage awards and other Aetherwing participation were not supplied.",
+      "headline": "POLE TO PODIUM",
+      "headlineAccent": "NEW HAMPSHIRE · CHASE RACE 5",
+      "summary": "Hailey #32 started on pole, finished P4 in Stage 1 and P3 in Stage 2, and finished P3 two laps down. The owner-confirmed total is 39 points, including five stage points.",
+      "entries": [
+        {
+          "assignmentId": "wispy-nrrs",
+          "driver": "Hailey",
+          "number": "32",
+          "start": 1,
+          "stage1Finish": 4,
+          "stage1Points": null,
+          "stage2Finish": 3,
+          "stage2Points": null,
+          "stagePoints": 5,
+          "finish": 3,
+          "lapsDown": 2,
+          "racePoints": 39,
+          "featuredDriver": true
+        }
+      ]
+    },
     {
       "scheduleId": "nrrs-round-23",
       "league": "nrrs",
@@ -13,7 +50,7 @@
       "round": "ROUND 23",
       "status": "The Chase",
       "specialTag": "CHASE RACE 4",
-      "featured": true,
+      "featured": false,
       "pointsSource": "official-recap",
       "coverage": "team-only",
       "sourceUrl": "/news/bells-road-course-struggles-deepen-at-portland/",
@@ -328,6 +365,15 @@
         "date": "2026-11-07",
         "routeId": "sunoco-2026-10-31",
         "track": "Homestead-Miami Speedway"
+      }
+    },
+    {
+      "eventId": "nrrs-round-24",
+      "before": {
+        "date": "2026-10-13"
+      },
+      "after": {
+        "date": "2026-10-20"
       }
     }
   ],

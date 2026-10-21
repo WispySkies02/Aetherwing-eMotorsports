@@ -78,6 +78,9 @@ const scorePublishedRace=(race)=>{
 };
 const canonicalResults=resultsSeed.filter((result)=>(result.league==='nrrs'&&result.date==='2026-09-22')||(result.league==='kmart'&&result.date==='2026-09-28')||(result.league==='uarl-d2'&&result.date==='2026-09-12'));
 const mergedResults=normalizeResults(choose('results', resultsSeed));
+// An older publication must not hide the result linked by the new featured recap.
+const featuredRecapResult=resultsSeed.find(race=>race.scheduleId==='nrrs-round-24');
+if(featuredRecapResult&&!mergedResults.some(race=>race.league==='nrrs'&&String(race.date||'').slice(0,4)==='2026'&&(race.scheduleId===featuredRecapResult.scheduleId||String(race.round||'').match(/\d+/)?.[0]==='24'||(race.date===featuredRecapResult.date&&(race.track===featuredRecapResult.track||race.title===featuredRecapResult.title)))))mergedResults.push(featuredRecapResult);
 for(const official of canonicalResults){
   const i=mergedResults.findIndex((result)=>result?.league===official.league&&result?.date===official.date);
   if(i===-1)mergedResults.push(official);
@@ -137,9 +140,9 @@ const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=
 export const charters = enforceCurrentCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
-const currentFeaturedNewsSlug='bells-road-course-struggles-deepen-at-portland';
+const currentFeaturedNewsSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
 const priorFeaturedNewsSlug='talladega-leaves-bell-frustrated-championship-gap-grows';
-const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',priorFeaturedNewsSlug,currentFeaturedNewsSlug]);
+const requiredNewsSlugs = new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',priorFeaturedNewsSlug,'bells-road-course-struggles-deepen-at-portland',currentFeaturedNewsSlug]);
 const newsSeedBySlug = new Map(newsSeed.map((story)=>[story.slug,story]));
 // v2.0.11 — Team Wire uses Hailey consistently in all reader-facing copy.
 // Keep legacy slugs/routes stable so old links do not break.
@@ -175,7 +178,7 @@ const migrateStaleNewsStory = (story) => {
     const serialized = JSON.stringify(normalized);
     if ((normalized.metrics || []).some((metric)=>metric?.value === 'CONTINUES') || /SCR\/Aetherwing partnership|SCR × Aetherwing partnership|one of her personal partners|Hailey personal partner|relationship follows Bell|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized)) return fresh;
   }
-  if ([currentFeaturedNewsSlug,priorFeaturedNewsSlug].includes(normalized.slug) && normalized.contentRevision !== fresh.contentRevision) return fresh;
+  if ([currentFeaturedNewsSlug,priorFeaturedNewsSlug,'bells-road-course-struggles-deepen-at-portland'].includes(normalized.slug) && normalized.contentRevision !== fresh.contentRevision) return fresh;
   if (normalized.slug === 'hailey-bell-to-step-back-from-full-time-competition-after-season-4') {
     const serialized = JSON.stringify(normalized);
     if (!/FULL HEART/i.test(serialized) || /FULL CIRCLE/i.test(serialized) || !/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized) || !/Cheddar/i.test(serialized) || !/Apex Sim Racing/i.test(serialized) || !/Ironmouse/i.test(serialized) || /Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized)) return fresh;
@@ -191,7 +194,7 @@ const migrateStaleNewsStory = (story) => {
 const mergedNews=Array.isArray(publishedNews)
   ? [...publishedNews, ...newsSeed.filter((story)=>requiredNewsSlugs.has(story.slug)&&!publishedNews.some((item)=>item?.slug===story.slug))].map(migrateStaleNewsStory)
   : newsSeed;
-// Portland is the sole featured story, even if an older Admin snapshot still features Talladega.
+// New Hampshire leads the newsroom; retain the corrected archived recaps.
 export const news = mergedNews.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
 const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
