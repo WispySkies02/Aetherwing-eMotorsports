@@ -1,4 +1,6 @@
 import { trackDetails } from '../../src/lib/track-details.mjs';
+import { weatherProvider } from '../../src/lib/weather-provider.mjs';
+import { createNwsFetcher, normalizeNwsWeather } from './_nws-weather.mjs';
 
 const TTL = 10 * 60 * 1000;
 const number = value => typeof value === 'number' && Number.isFinite(value);
@@ -30,6 +32,7 @@ export function normalizeWeather(data, now = Date.now()) {
 export function createWeatherHandler({ fetcher = fetch, now = Date.now } = {}) {
   // Coordinates are catalog-owned, not arbitrary input; bounded cache also joins concurrent requests.
   const cache = new Map();
+  const nws = createNwsFetcher({ fetcher, now });
   return async request => {
     const json = (data, status = 200) => Response.json(data, { status, headers: status === 200 ? {
       'Cache-Control': 'public, max-age=300, s-maxage=600',
@@ -39,13 +42,14 @@ export function createWeatherHandler({ fetcher = fetch, now = Date.now } = {}) {
     const venue = trackDetails(new URL(request.url).searchParams.get('track'));
     if (!venue) return json({ error: 'Unknown venue' }, 404);
     const key = `${venue.lat.toFixed(4)},${venue.lon.toFixed(4)}`;
+    const provider = weatherProvider(venue);
     try {
       let entry = cache.get(key);
       if (!entry || entry.expires <= now()) {
         entry = { expires: now() + TTL };
         const pending = entry;
         entry.promise = (async () => {
-          const response = await fetcher(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${venue.lat.toFixed(4)}&lon=${venue.lon.toFixed(4)}`, {
+          const response = provider.id === 'nws' ? await nws(key) : await fetcher(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${venue.lat.toFixed(4)}&lon=${venue.lon.toFixed(4)}`, {
             headers: { 'User-Agent': 'Aetherwing-eMotorsports/1.0 (https://aetherwing.net/)', Accept: 'application/json' },
             signal: AbortSignal.timeout(8000)
           });
@@ -58,8 +62,8 @@ export function createWeatherHandler({ fetcher = fetch, now = Date.now } = {}) {
         cache.set(key, entry);
       }
       // Re-select the current hour from the cached model as the clock advances.
-      const weather = normalizeWeather(await entry.promise, now());
-      return json({ ...weather, venue: venue.name, timeZone: venue.timeZone });
+      const weather = (provider.id === 'nws' ? normalizeNwsWeather : normalizeWeather)(await entry.promise, now());
+      return json({ ...weather, provider:provider.id, venue: venue.name, timeZone: venue.timeZone });
     } catch {
       cache.delete(key);
       return json({ error: 'Weather is temporarily unavailable' }, 502);

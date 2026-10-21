@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { eventEnd } from '../src/lib/race-clock.mjs';
 import { eventSlug } from '../src/lib/schedule-events.mjs';
 import { createWeatherHandler } from '../netlify/lib/_track-weather.mjs';
+import { nwsFixture, nwsPoint } from './fixtures/nws-weather.mjs';
 const require=createRequire(import.meta.url);
 const {chromium}=await import(pathToFileURL(path.join(process.env.PAINT_TEST_MODULES||'/tmp/aetherwing-browser-tests/node_modules','playwright-core/index.mjs')));
 const seed=require('../netlify/lib/_content.cjs').seeds();
@@ -25,7 +26,11 @@ const uarl=datasets['schedule-events'].find(e=>e.league==='uarl-d1'&&e.round==='
 Object.assign(uarl,{date:'2026-10-18',track:'Echo Park Speedway',title:'Echo Park Thunder 400'});
 const published={revision:90,datasets};
 const weatherNow=Date.parse('2026-10-18T12:00:00Z');
-const weatherHandler=createWeatherHandler({now:()=>weatherNow,fetcher:async()=>Response.json({properties:{meta:{updated_at:'2026-10-18T12:00:00Z'},timeseries:Array.from({length:24},(_,i)=>({time:new Date(weatherNow+i*3600000).toISOString(),data:{instant:{details:{air_temperature:20,wind_speed:5}},next_1_hours:{summary:{symbol_code:'fair_day'},details:{precipitation_amount:0}}}}))}})});
+const weatherHandler=createWeatherHandler({now:()=>weatherNow,fetcher:async url=>{
+  if(url.startsWith('https://api.weather.gov/points/'))return Response.json(nwsPoint);
+  if(url.startsWith('https://api.weather.gov/'))return Response.json(nwsFixture(weatherNow,'sct','sct'));
+  return Response.json({properties:{meta:{updated_at:'2026-10-18T12:00:00Z'},timeseries:Array.from({length:24},(_,i)=>({time:new Date(weatherNow+i*3600000).toISOString(),data:{instant:{details:{air_temperature:20,wind_speed:5}},next_1_hours:{summary:{symbol_code:'fair_day'},details:{precipitation_amount:0}}}}))}});
+}});
 const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
 const root=path.resolve('dist');
 assert.ok(fs.existsSync(path.join(root,'index.html')),'Build the production site before running this browser check');
@@ -92,9 +97,13 @@ try {
     assert.match(await page.locator('[data-track-facts]').textContent(),/TALLADEGA, AL.*2.66 mi.*16.5–33°/s);
     assert.equal(await page.locator('[data-weather-temperature]').textContent(),'68°F');
     assert.equal(await page.locator('[data-weather-forecast] time').count(),3);
+    assert.equal(await page.locator('[data-weather-current-icon] svg[data-weather-icon=partly-day]').count(),1);
+    assert.equal(await page.locator('[data-weather-forecast] svg[data-weather-icon=partly-day]').count(),3);
+    for(const icon of await page.locator('.race-weather-icon').all())assert.equal(await icon.isVisible(),true,'Current and forecast icons render at every viewport');
     assert.match(await page.locator('[data-weather-valid]').textContent(),/CDT/);
     assert.match(await page.locator('[data-weather-issued]').textContent(),/Issued.*times local/);
-    assert.match(await page.locator('.race-track-weather__credit').textContent(),/MET Norway.*CC BY 4.0/);
+    assert.match(await page.locator('[data-weather-provider]').textContent(),/National Weather Service/);
+    assert.match(await page.locator('[data-weather-forecast]').textContent(),/Precip. chance 40%/);
     assert.equal(await page.locator('[data-track-source]').getAttribute('href'),'https://www.talladegasuperspeedway.com/track-facts/');
     await page.locator('.story-grid > .story-panel').first().screenshot({path:`/tmp/aetherwing-race-weekend-${viewport.width}.png`});
     const updateVenue=async track=>page.evaluate(({track,datasets})=>{
@@ -112,6 +121,11 @@ try {
     await page.locator('[data-weather-report]').waitFor({state:'visible'});
     assert.match(await page.locator('[data-track-facts]').textContent(),/0.40 mi.*Dirt/s);
     assert.doesNotMatch(await page.locator('[data-track-facts]').textContent(),/1.50 mi|24°/);
+    await updateVenue('Silverstone');
+    await page.locator('[data-weather-report]').waitFor({state:'visible'});
+    assert.match(await page.locator('[data-weather-provider]').textContent(),/MET Norway.*CC BY 4.0/);
+    assert.equal(await page.locator('[data-weather-current-icon] svg[data-weather-icon=partly-day]').count(),1);
+    assert.match(await page.locator('[data-weather-forecast]').textContent(),/Rain 0.00 in \/ hr/);
     await updateVenue('Track TBD');
     assert.equal(await page.locator('[data-track-weather]').isVisible(),false);
     assert.equal(await page.locator('[data-track-facts]').textContent(),'');

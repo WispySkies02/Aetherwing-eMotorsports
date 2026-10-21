@@ -27,11 +27,23 @@ No API key or user location permission is required. Only catalog-owned
 coordinates can be queried; callers cannot provide arbitrary coordinates or
 upstream URLs.
 
-MET Norway's Locationforecast supplies an updated model forecast, not an
-observation or the simulator's weather. The card identifies this distinction,
-links the provider's CC BY 4.0 attribution, shows current forecast conditions,
-wind and three later forecast times (+3/+6/+9 hours). Precipitation is the
-forecast accumulation during the next hour, expressed in inches. Times are local
+U.S. tracks use the National Weather Service's hourly forecast, resolved through
+`api.weather.gov/points` using catalog-owned coordinates. Point-to-grid metadata
+is cached for 24 hours; forecast requests share the existing ten-minute cache.
+Both calls share an eight-second timeout, and grid URLs are restricted to the
+official NWS hourly forecast endpoint. No API key is needed.
+The browser adds `v=2` to its weather request so the provider-aware response is
+not confused with an older cached MET-only response during deployment.
+
+International tracks retain MET Norway's Locationforecast. Provider selection
+uses the catalog's city/state geography, not the browser location. The provider
+link updates with the selected venue, including its required attribution.
+
+Both sources supply forecasts, not live observations or simulator weather. The
+card shows current forecast conditions, wind and three later forecast times
+(+3/+6/+9 hours). NWS precipitation is labeled as a chance in percent; MET
+precipitation is forecast accumulation during the next hour in inches. Unknown
+precipitation values stay absent rather than being presented as zero. Times are local
 to the venue; forecast issue and valid times remain visible on historical event
 pages too, so current weather is not mistaken for race-day weather.
 
@@ -48,6 +60,15 @@ publication behavior changes.
 Local cloud shells using an outbound HTTPS proxy may need
 `NODE_USE_ENV_PROXY=1` when starting Astro or running a live upstream smoke check.
 Production Netlify uses its normal network access. No credentials are saved.
+
+## Weather icons
+
+Current and forecast conditions include local SVG icons for clear day/night,
+partly cloudy day/night, overcast, rain, sleet, snow, fog and thunderstorms.
+They retain the readable condition text, use the site's active accent colors,
+and make no extra image requests. Unknown condition codes use a neutral icon.
+Both providers use these local icons; NWS condition codes are normalized while
+its original forecast descriptions remain readable alongside the artwork.
 
 ## Verification
 
