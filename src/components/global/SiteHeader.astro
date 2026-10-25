@@ -26,7 +26,7 @@ const groups = ['Team', 'Race', 'Connect']
       </div>
     ))}
   </nav>
-  <a class="header-chip" href="/schedule/" data-race-chip hidden><i aria-hidden="true"></i><span><small data-chip-series>NEXT</small><b data-chip-clock></b></span></a>
+  <a class="header-chip" href="/schedule/" data-race-chip data-schedule-state="loading" aria-label="Loading published schedule…"><i aria-hidden="true"></i><span><small data-chip-series>LOADING PUBLISHED</small><b data-chip-clock>SCHEDULE…</b></span></a>
 </header>
 <MobileNav />
 

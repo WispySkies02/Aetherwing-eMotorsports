@@ -1,14 +1,16 @@
 ---
 // Broadcast lower-third for the mobile hero: the next Aetherwing session with a
 // live countdown, both clocks, and a one-tap calendar file. Reads the shared
-// race feed that MobileNav prints, so live Admin schedule edits apply here too.
+// published race feed, so live Admin schedule edits apply here too. Until the
+// publication arrives (or if it fails) the card keeps its size and shows only
+// a status line and the general Schedule link.
 import { scheduleEvents, results } from '../../lib/site-content.mjs';
 import { buildRaceFeed, nextRace, countdownParts, whenLabel, seriesLogo, seriesShort, pad } from '../../lib/race-clock.mjs';
 const now = new Date();
 const race = nextRace(buildRaceFeed(scheduleEvents, results, { from: new Date(now.getTime() - 3 * 86400000).toISOString().slice(0, 10) }), now);
 const parts = race ? countdownParts(race, now) : null;
 ---
-<article class="aw-next" data-on-track-next aria-labelledby="aw-next-track" hidden={!race}>
+<article class="aw-next" data-on-track-next aria-labelledby="aw-next-track" data-schedule-state="loading" aria-busy="true">
   <header class="aw-next__bug">
     <span class="aw-next__state"><i aria-hidden="true"></i><b data-next-state>{parts?.pending?'START TIME PENDING':parts?.live ? 'LIVE NOW' : 'ON TRACK NEXT'}</b></span>
     <span data-next-series>{race ? `${seriesShort[race.league] || race.leagueName} · ${race.round}` : ''}</span>
@@ -34,21 +36,50 @@ const parts = race ? countdownParts(race, now) : null;
       Add to calendar
     </button>
   </div>
+  <div class="aw-sched-status" data-schedule-status role="status">
+    <p data-schedule-message>Loading published schedule…</p>
+    <a class="ux-more" href="/schedule/" data-schedule-link hidden>Schedule</a>
+  </div>
 </article>
 
 <script>
-  import { subscribeFeed, nextRace, countdownParts, whenLabel, localTimeLabel, calendarFile, seriesLogo, seriesShort, pad } from '../../lib/race-clock.mjs';
+  import { subscribeFeed, nextRace, countdownParts, whenLabel, localTimeLabel, calendarFile, seriesLogo, seriesShort, pad, SCHEDULE_COPY } from '../../lib/race-clock.mjs';
 
   const card = document.querySelector('[data-on-track-next]');
   if (card instanceof HTMLElement) {
     let feed = [];
+    let status = 'loading';
     let shown = '';
     const q = (selector) => card.querySelector(selector);
     const units = ['d', 'h', 'm', 's'].map((key) => [key, q(`[data-unit="${key}"]`)]);
 
+    // Loading / unavailable: blank every event detail so nothing stale can
+    // show, leave the general Schedule link only when loading failed.
+    const showStatus = () => {
+      card.hidden = false;
+      // Hold the height the card had with content so nothing below it jumps.
+      if (!card.style.minHeight && card.offsetHeight) card.style.minHeight = `${card.offsetHeight}px`;
+      card.dataset.scheduleState = status;
+      card.setAttribute('aria-busy', String(status === 'loading'));
+      card.classList.remove('is-live');
+      q('[data-schedule-message]').textContent = SCHEDULE_COPY[status];
+      q('[data-schedule-link]').hidden = status !== 'unavailable';
+      ['[data-next-series]', '[data-next-track]', '[data-next-title]', '[data-next-when]', '[data-next-local]'].forEach((selector) => { q(selector).textContent = ''; });
+      units.forEach(([, node]) => { if (node) node.textContent = '--'; });
+      q('[data-next-ics]').hidden = true;
+      q('[data-next-logo]')?.removeAttribute('src');
+      const link = q('[data-next-link]');
+      if (link instanceof HTMLAnchorElement) link.href = '/schedule/';
+      shown = '';
+    };
+
     const render = () => {
+      if (status !== 'ready') { showStatus(); return; }
       const now = new Date();
       const race = nextRace(feed, now);
+      card.dataset.scheduleState = 'ready';
+      card.setAttribute('aria-busy', 'false');
+      card.style.minHeight = '';
       card.hidden = !race;
       if (!race) return;
       const parts = countdownParts(race, now);
@@ -75,7 +106,7 @@ const parts = race ? countdownParts(race, now) : null;
     };
 
     q('[data-next-ics]')?.addEventListener('click', () => {
-      const race = nextRace(feed, new Date());
+      const race = status === 'ready' ? nextRace(feed, new Date()) : null;
       if (!race || race.timePending) return;
       const blob = new Blob([calendarFile(race, location.origin)], { type: 'text/calendar;charset=utf-8' });
       const href = URL.createObjectURL(blob);
@@ -86,7 +117,7 @@ const parts = race ? countdownParts(race, now) : null;
       window.setTimeout(() => URL.revokeObjectURL(href), 4000);
     });
 
-    subscribeFeed((next) => { feed = next; shown = ''; render(); });
+    subscribeFeed((next, state) => { feed = next; status = state; shown = ''; render(); });
     let timer = window.setInterval(render, 1000);
     document.addEventListener('visibilitychange', () => {
       window.clearInterval(timer);

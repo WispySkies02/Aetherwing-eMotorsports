@@ -1,17 +1,14 @@
 ---
 // Phone/tablet navigation: a thumb-reach tab dock plus a "Pit Wall" sheet that
 // holds every Admin-managed navigation link. Desktop (>980px) never renders it.
-import { navigation, siteSettings, scheduleEvents, results } from '../../lib/site-content.mjs';
+import { navigation, siteSettings } from '../../lib/site-content.mjs';
 import '../../styles/mobile-nav.css';
-import { buildRaceFeed } from '../../lib/race-clock.mjs';
 const path = Astro.url.pathname;
 const groups = ['Team', 'Race', 'Connect']
   .map((label) => ({ label, links: navigation.filter((item) => item.group === label) }))
   .filter((group) => group.links.length);
 const isActive = (href = '') => href.startsWith('/') && (href === '/' ? path === '/' : path.startsWith(href));
 const isExternal = (href = '') => /^https?:\/\//i.test(href) && !/^https:\/\/paint\.aetherwing\.net/i.test(href);
-const fromDate = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
-const feed = buildRaceFeed(scheduleEvents, results, { from: fromDate }).slice(0, 40);
 const dock = [
   { key: 'home', label: 'Home', href: '/', match: (p) => p === '/' },
   { key: 'schedule', label: 'Schedule', href: '/schedule/', match: (p) => p.startsWith('/schedule/') || p.startsWith('/event/') },
@@ -20,7 +17,6 @@ const dock = [
 ];
 const dockActive = dock.find((item) => item.match(path))?.key || 'more';
 ---
-<script is:inline type="application/json" id="aw-race-feed" set:html={JSON.stringify(feed)} />
 
 <nav class="aw-dock" aria-label="Quick navigation" data-aw-dock>
   {dock.map((item) => (
@@ -49,7 +45,7 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
       </button>
     </header>
-    <a class="aw-sheet__next" href="/schedule/" data-sheet-next hidden>
+    <a class="aw-sheet__next" href="/schedule/" data-sheet-next data-schedule-state="loading">
       <span class="aw-sheet__next-logo"><img alt="" data-next-logo width="56" height="42" /></span>
       <span class="aw-sheet__next-copy"><small data-next-kicker>ON TRACK NEXT</small><strong data-next-track></strong><em data-next-when></em></span>
       <b class="aw-sheet__next-clock" data-next-clock></b>
@@ -72,7 +68,7 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
 </dialog>
 
 <script>
-  import { subscribeFeed, nextRace, compactCountdown, whenLabel, seriesLogo } from '../../lib/race-clock.mjs';
+  import { subscribeFeed, nextRace, compactCountdown, whenLabel, seriesLogo, SCHEDULE_COPY } from '../../lib/race-clock.mjs';
 
   const sheet = document.querySelector('[data-aw-sheet]');
   const panel = sheet?.querySelector('[data-sheet-panel]');
@@ -175,10 +171,36 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
   // Header chip + sheet card share one ticking clock.
   const chip = document.querySelector('[data-race-chip]');
   const card = sheet?.querySelector('[data-sheet-next]');
-  let current = null;
+  let current = [];
+  let status = 'loading';
+  // Loading / unavailable: no event name, countdown or event link, only the
+  // general Schedule link. The chip splits the message over its two lines.
+  const showStatus = () => {
+    const [top, bottom] = status === 'loading' ? ['LOADING PUBLISHED', 'SCHEDULE…'] : ['SCHEDULE', 'UNAVAILABLE'];
+    for (const node of [chip, card]) {
+      if (!(node instanceof HTMLAnchorElement)) continue;
+      node.hidden = false;
+      node.href = '/schedule/';
+      node.dataset.scheduleState = status;
+      node.classList.remove('is-live');
+      node.setAttribute('aria-label', SCHEDULE_COPY[status]);
+    }
+    if (chip instanceof HTMLElement) {
+      chip.querySelector('[data-chip-series]').textContent = top;
+      chip.querySelector('[data-chip-clock]').textContent = bottom;
+    }
+    if (card instanceof HTMLElement) {
+      card.querySelector('[data-next-kicker]').textContent = status === 'loading' ? 'RACE CONTROL' : 'RACE CONTROL · SCHEDULE';
+      card.querySelector('[data-next-track]').textContent = SCHEDULE_COPY[status];
+      card.querySelector('[data-next-when]').textContent = status === 'loading' ? '' : 'Open the full schedule';
+      card.querySelector('[data-next-clock]').textContent = '';
+      card.querySelector('[data-next-logo]')?.removeAttribute('src');
+    }
+  };
   const paint = () => {
+    if (status !== 'ready') { showStatus(); return; }
     const now = new Date();
-    const race = current ? nextRace(current, now) : null;
+    const race = nextRace(current, now);
     if (!race) {
       if (chip instanceof HTMLElement) chip.hidden = true;
       if (card instanceof HTMLElement) card.hidden = true;
@@ -189,6 +211,7 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
     const series = { nrrs: 'NRRS', kmart: 'KMART', sunoco: 'SUNOCO', 'uarl-d1': 'UARL D1', open: 'OPEN', iracing: 'IRACING' }[race.league] || race.leagueName;
     if (chip instanceof HTMLAnchorElement) {
       chip.hidden = false;
+      chip.dataset.scheduleState = 'ready';
       chip.href = race.url;
       chip.classList.toggle('is-live', live);
       chip.querySelector('[data-chip-series]').textContent = live ? `LIVE · ${series}` : `NEXT · ${series}`;
@@ -197,6 +220,8 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
     }
     if (card instanceof HTMLAnchorElement) {
       card.hidden = false;
+      card.dataset.scheduleState = 'ready';
+      card.removeAttribute('aria-label');
       card.href = race.url;
       card.classList.toggle('is-live', live);
       const logo = card.querySelector('[data-next-logo]');
@@ -207,7 +232,7 @@ const dockActive = dock.find((item) => item.match(path))?.key || 'more';
       card.querySelector('[data-next-clock]').textContent = clock;
     }
   };
-  subscribeFeed((feed) => { current = feed; paint(); });
+  subscribeFeed((feed, next) => { current = feed; status = next; paint(); });
   let timer = window.setInterval(paint, 1000);
   document.addEventListener('visibilitychange', () => {
     window.clearInterval(timer);

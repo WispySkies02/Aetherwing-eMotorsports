@@ -152,3 +152,10 @@
   .hub-partners>a{min-height:110px}
   .hub-partners strong{font-size:1.1rem}
 }
+
+/* Schedule loading states (see ux.css): event details are hidden, not removed,
+   so the featured race and Up next keep their size while the status shows. */
+html[data-content-state] .aw-next:not([data-schedule-state="ready"]) > :not(.aw-sched-status){visibility:hidden}
+.ux-upnext-shell{position:relative}
+.ux-upnext-shell:not([data-schedule-state="ready"]) .ux-upnext{min-height:268px}
+html[data-content-state] .ux-upnext-shell:not([data-schedule-state="ready"]) .ux-upnext>li{visibility:hidden}

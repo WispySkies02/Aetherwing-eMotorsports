@@ -181,3 +181,17 @@ html[data-anniversary-retro="true"] :is(.ux-card,.ux-list,.ux-stats){background:
 .ux-topnav__menu a[aria-current="page"]{background:linear-gradient(90deg,color-mix(in srgb,var(--ux-accent) 22%,transparent),transparent);color:#fff;box-shadow:inset 3px 0 var(--ux-accent)}
 .ux-topnav__menu small{color:var(--ux-ink-3);font:400 .74rem/1 var(--ux-mono)}
 @media(prefers-reduced-motion:reduce){.ux-topnav__menu,.ux-topnav__link svg,.ux-topnav__link:after{transition:none}}
+
+/* Schedule loading states: the header chip, the featured race and Up next only
+   show events from the current publication. While it loads, or if it fails,
+   they keep their size and show a status line (scripts set data-schedule-state). */
+.aw-sched-status{display:none}
+html[data-content-state] :is(.aw-next,.ux-upnext-shell):not([data-schedule-state="ready"]) .aw-sched-status{position:absolute;inset:0;z-index:1;display:grid;align-content:center;justify-items:center;gap:12px;padding:18px;text-align:center}
+.aw-sched-status p{display:flex;align-items:center;gap:10px;margin:0;color:var(--ux-ink-2);font:400 .78rem/1.4 var(--ux-mono);letter-spacing:.14em;text-transform:uppercase}
+.aw-sched-status p:before{content:'';flex:none;width:8px;height:8px;border-radius:50%;background:var(--ux-ink-3)}
+[data-schedule-state="loading"] .aw-sched-status p:before{background:var(--ux-accent);animation:ux-pulse 1.3s ease-in-out infinite}
+.aw-sched-status .ux-more[hidden]{display:none}
+.ux .header-chip span{min-width:7.6rem}
+.ux .header-chip:not([data-schedule-state="ready"]) b{color:var(--ux-ink-2);font-size:.74rem;letter-spacing:.08em}
+html:not([data-content-state]) :is([data-race-chip],[data-sheet-next])[data-schedule-state="loading"]{display:none!important}
+@media(prefers-reduced-motion:reduce){[data-schedule-state="loading"] .aw-sched-status p:before{animation:none}}
