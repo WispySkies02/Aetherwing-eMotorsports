@@ -104,16 +104,17 @@ Driver livery brands are not automatically team partners.
 
 ## Current UARL D1 charter allocation
 
-Five full-time charters plus one shared Aetherwing Open Charter:
+Current allocation, checked October 25, 2026. This supersedes the older shared-number recommendation:
 
-- #28 — Wispy (`@Aokikoto`)
+- #28 — Hailey (`@Aokikoto`)
 - #32 — BurgerTown2Good (`@uhhbzb`)
-- #52 — Gk3r (`@sealsntags`)
-- #54 — OPEN
-- #92 — Rocky
-- Aetherwing Open Charter — #62 Part-Time / #82 Development
+- #46 — Rocky
+- #56 — OPEN
+- Aetherwing Open Charter — #62 flexible part-time entry
 
-#62 and #82 are two uses of one shared charter and must never be displayed as simultaneous separate charter slots.
+#82 is retired from the active UARL D1 flex entry. Keep one #62 entry without
+adding another slot or changing #56. Other series and historical records retain
+their own number identities.
 
 ## Weekly schedule times
 

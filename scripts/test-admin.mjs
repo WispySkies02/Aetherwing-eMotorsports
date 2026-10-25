@@ -140,6 +140,19 @@ for(const title of [null,42,false,[],{},'<b>Sponsor</b>']){
 }
 const partnerFixture=structuredClone(seeds.partners);partnerFixture[0].logo='data:image/webp;base64,UklGRg==';assert.equal(content.validate('partners',partnerFixture),'','Team partner logo uploads must validate through the publication API');
 let revision=response.body.registry.revision;
+// The approved D1 retirement applies to the CMS seed and stale public records.
+const d1=seeds.charters.find(board=>board.id==='uarl-d1');
+assert.deepEqual(d1.fullTime.map(slot=>[slot.number,slot.driver]),[['28','Hailey'],['32','BurgerTown2Good'],['46','Rocky'],['56','Open']]);
+assert.equal(d1.openCharters.length,1);
+assert.deepEqual(d1.openCharters[0].uses.map(use=>use.number),['62']);
+assert.doesNotMatch(JSON.stringify(d1.openCharters),/82|shared/i);
+const legacyCharters=structuredClone(seeds.charters);
+const legacyD1=legacyCharters.find(board=>board.id==='uarl-d1');
+legacyD1.openCharters[0].slotLabel='SHARED CHARTER';
+legacyD1.openCharters[0].uses.push({number:'82',label:'Development',active:true});
+const reconciled=require('../netlify/lib/_site-data.cjs')._test.mergeCanonical({charters:legacyCharters}).charters;
+assert.deepEqual(reconciled.find(board=>board.id==='uarl-d1'),d1,'A stale registry must agree with the #62-only CMS seed');
+assert.deepEqual(reconciled.find(board=>board.id==='nrrs'),seeds.charters.find(board=>board.id==='nrrs'),'D1 retirement does not alter NRRS');
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.
 const directSchedule=structuredClone(seeds['schedule-events']);
 directSchedule[0].title='Direct Publication Fixture';
@@ -161,6 +174,7 @@ for(const [key,data] of Object.entries(seeds)) {
   assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],beforeDraft,'Draft must remain private');
   const published=await call(siteAdmin,{action:'publish',dataset:key,revision});assert.equal(published.status,200,`${key} publish`);revision=published.body.registry.revision;
   assert.deepEqual((await call(siteData,undefined,null)).body.datasets[key],content.normalize(key,data));
+  if(key==='charters')assert.deepEqual((await call(siteAdmin)).body.registry.published.charters.find(board=>board.id==='uarl-d1'),d1,'Reloaded CMS record matches the published D1 board');
 }
 // Multiple saved drafts publish atomically and queue only one rebuild.
 for(const key of ['wins','milestones']) {

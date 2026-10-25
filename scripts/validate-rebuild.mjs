@@ -117,8 +117,10 @@ for(const boardId of ['nrrs','uarl-d1']){
   const board=charters.find((item)=>item.id===boardId);
   const shared=(board?.openCharters||[]).find((item)=>item.active!==false);
   const uses=(shared?.uses||[]).filter((item)=>item.active!==false);
-  if(!shared||uses.length!==2||!['62','82'].every((number)=>uses.some((use)=>String(use.number)===number)))throw Error(`${boardId} must preserve #62 PT and #82 Development as two identities of one shared open charter.`);
-  if(uses.some((use)=>Object.hasOwn(use,'driver')&&String(use.driver||'').trim()))throw Error(`${boardId} shared #62/#82 charter identities must not carry permanent driver assignments.`);
+  const expected=boardId==='uarl-d1'?['62']:['62','82'];
+  if(!shared||uses.length!==expected.length||!expected.every((number)=>uses.some((use)=>String(use.number)===number)))throw Error(`${boardId} active flex identities must be ${expected.join(' / ')} within one open charter.`);
+  if(boardId==='uarl-d1'&&((board.openCharters||[]).filter(c=>c.active!==false).length!==1||/82|shared/i.test(JSON.stringify(board.openCharters))))throw Error('UARL D1 must retain one #62 flexible entry without retired #82 or shared-number copy.');
+  if(uses.some((use)=>Object.hasOwn(use,'driver')&&String(use.driver||'').trim()))throw Error(`${boardId} open charter identities must not carry permanent driver assignments.`);
 }
 if(drivers.some((driver)=>driver.competitionId==='uarl-d2')||scheduleEvents.some((event)=>event.league==='uarl-d2'))throw Error('Closed UARL D2 must not reappear in active driver or schedule filters.');
 const currentNumbers={
@@ -364,7 +366,7 @@ console.log('v2.0.20 verified: Team Wire shows the FULL HEART logo in-article, u
 // v2.0.21 — October 4 shared roster canon
 {
  const comps=JSON.parse(readFileSync('src/data/competitions.json','utf8')), d1=comps.find(x=>x.id==='uarl-d1'), km=comps.find(x=>x.id==='kmart');
- if(!d1||d1.machine!=='BBR Next-Gen Toyota'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#32 BurgerTown2Good','#46 Rocky','#56 OPEN','AETHERWING OPEN CHARTER · #62 PT / #82 DEVELOPMENT'])) throw Error('Current UARL D1 canon mismatch after GK3R departure.');
+ if(!d1||d1.machine!=='BBR Next-Gen Toyota'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#32 BurgerTown2Good','#46 Rocky','#56 OPEN','AETHERWING FLEX ENTRY · #62 PART-TIME'])) throw Error('Current UARL D1 canon must retain the assigned entries, #56 OPEN, and one #62 flexible entry.');
  if((km?.roster||[]).some(x=>/Jaxon/i.test(x))) throw Error('v2.0.21 Jaxon must not remain in active Kmart roster.');
  const drivers=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
  if(drivers.some(x=>x.id==='jaxon-kmart')) throw Error('v2.0.21 Jaxon active assignment still present.');
