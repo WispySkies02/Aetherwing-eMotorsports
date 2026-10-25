@@ -179,25 +179,41 @@ export function calendarFile(event, origin = 'https://aetherwing.net') {
   ].join('\r\n');
 }
 
-// Live Admin data arrives through the `aetherwing:content` event; keep every
-// surface on the same feed without each one re-deriving it.
-export function readFeed() {
-  const node = document.getElementById('aw-race-feed');
-  try { return JSON.parse(node?.textContent || '[]'); } catch { return []; }
+// Schedule surfaces only present events from the current publication:
+// 'loading' until it arrives, 'ready' once it has, 'unavailable' when it
+// failed (a cached or bundled copy is never shown as the current schedule).
+export const SCHEDULE_COPY = {
+  loading: 'Loading published schedule…',
+  unavailable: 'Schedule temporarily unavailable.'
+};
+
+export function scheduleStatus() {
+  const publication = window.__AETHERWING_PUBLICATION__;
+  if (!publication) return 'loading';
+  return publication.state === 'published' ? 'ready' : 'unavailable';
 }
 
+// Live Admin data arrives through the `aetherwing:content` event; every
+// surface shares this one feed. callback(feed, status): feed is empty unless
+// status is 'ready'.
 export function subscribeFeed(callback) {
-  let feed = readFeed();
-  callback(feed);
+  let feed = [];
+  let status = 'loading';
   const apply = (datasets) => {
+    status = scheduleStatus();
     const events = datasets?.['schedule-events'];
-    if (!Array.isArray(events)) return;
-    const results = Array.isArray(datasets.results) ? datasets.results : [];
-    const today = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
-    feed = buildRaceFeed(events.filter((event) => event?.league !== 'uarl-d2'), results, { from: today });
-    callback(feed);
+    if (status === 'ready' && Array.isArray(events)) {
+      const results = Array.isArray(datasets.results) ? datasets.results : [];
+      const today = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
+      feed = buildRaceFeed(events.filter((event) => event?.league !== 'uarl-d2'), results, { from: today });
+    } else {
+      if (status === 'ready') status = 'unavailable';
+      feed = [];
+    }
+    callback(feed, status);
   };
   window.addEventListener('aetherwing:content', (event) => apply(event.detail));
   if (window.__AETHERWING_CONTENT__) apply(window.__AETHERWING_CONTENT__);
+  else callback(feed, status);
   return () => feed;
 }

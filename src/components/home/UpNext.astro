@@ -1,6 +1,7 @@
 ---
-// The next four Aetherwing sessions as a compact list. Shares the race feed
-// that MobileNav prints, so live Admin schedule edits update it too.
+// The next four Aetherwing sessions as a compact list, from the same published
+// race feed as the header chip and the featured race. While it loads (or if it
+// fails) the list keeps its height and shows only a status line.
 import { scheduleEvents, results } from '../../lib/site-content.mjs';
 import { buildRaceFeed, eventEnd, eventStart, seriesLogo, seriesShort } from '../../lib/race-clock.mjs';
 const now = new Date();
@@ -9,6 +10,7 @@ const rows = buildRaceFeed(scheduleEvents, results, { from: new Date(now.getTime
 const day = (event) => eventStart(event).toLocaleDateString('en-US', { month: 'short', timeZone: 'America/New_York' });
 const date = (event) => eventStart(event).toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/New_York' });
 ---
+<div class="ux-upnext-shell" data-up-next-shell data-schedule-state="loading" aria-busy="true">
 <ol class="ux-list ux-upnext" data-up-next>
   {rows.map((event) => (
     <li><a class="ux-row" href={event.url}>
@@ -18,15 +20,32 @@ const date = (event) => eventStart(event).toLocaleDateString('en-US', { day: 'nu
     </a></li>
   ))}
 </ol>
+<div class="aw-sched-status" data-schedule-status role="status">
+  <p data-schedule-message>Loading published schedule…</p>
+  <a class="ux-more" href="/schedule/" data-schedule-link hidden>Schedule</a>
+</div>
+</div>
 
 <script>
-  import { subscribeFeed, eventEnd, eventStart, seriesLogo, seriesShort } from '../../lib/race-clock.mjs';
-  const list = document.querySelector('[data-up-next]');
-  if (list instanceof HTMLElement) {
+  import { subscribeFeed, eventEnd, eventStart, seriesLogo, seriesShort, SCHEDULE_COPY } from '../../lib/race-clock.mjs';
+  const shell = document.querySelector('[data-up-next-shell]');
+  const list = shell?.querySelector('[data-up-next]');
+  if (shell instanceof HTMLElement && list instanceof HTMLElement) {
     const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
     const part = (event, opts) => eventStart(event).toLocaleDateString('en-US', { ...opts, timeZone: 'America/New_York' });
     let signature = '';
-    subscribeFeed((feed) => {
+    subscribeFeed((feed, status) => {
+      shell.dataset.scheduleState = status;
+      shell.setAttribute('aria-busy', String(status === 'loading'));
+      shell.querySelector('[data-schedule-message]').textContent = SCHEDULE_COPY[status] || '';
+      shell.querySelector('[data-schedule-link]').hidden = status !== 'unavailable';
+      if (status !== 'ready') {
+        // Bundled rows only hold the space while loading; a failure removes them.
+        if (!list.style.minHeight && list.offsetHeight) list.style.minHeight = `${list.offsetHeight}px`;
+        if (status === 'unavailable') { list.innerHTML = ''; signature = ''; }
+        return;
+      }
+      list.style.minHeight = '';
       const now = new Date();
       const rows = feed.filter((event) => !event.done && (event.timePending || eventEnd(event) >= now)).slice(0, 4);
       const next = rows.map((event) => event.url + event.track + event.time).join('|');

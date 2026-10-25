@@ -48,6 +48,8 @@
   .aw-sheet__next-copy em{color:#9aa1a7;font:400 .7rem/1.2 var(--font-mono);font-style:normal}
   .aw-sheet__next-clock{font:400 1rem/1 var(--font-mono);font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap}
   .aw-sheet__next.is-live .aw-sheet__next-clock{color:var(--aw-accent);animation:aw-live 1.4s ease-in-out infinite}
+  .aw-sheet__next:not([data-schedule-state="ready"]) .aw-sheet__next-logo{visibility:hidden}
+  .aw-sheet__next:not([data-schedule-state="ready"]) .aw-sheet__next-copy strong{white-space:normal;color:var(--ux-ink-2,#b8bec4);font-size:.95rem}
 
   .aw-sheet__groups{display:grid;gap:1.15rem}
   .aw-sheet__group h3{display:flex;align-items:center;gap:.6rem;margin:0 0 .55rem;color:#c9ced2;font:700 .66rem/1 var(--font-mono);letter-spacing:.22em;text-transform:uppercase}
