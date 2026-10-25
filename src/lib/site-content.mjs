@@ -130,12 +130,13 @@ const normalizeCharters = (boards) => (boards ?? []).map((board) => {
 });
 const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=>{
   if(board?.id!=='uarl-d1')return board;
+  const flex=chartersSeed.find(item=>item.id==='uarl-d1').openCharters[0];
   return {...board,fullTime:[
     {number:'28',driver:'Hailey',numberImage:board.fullTime?.find(x=>String(x.number)==='28')?.numberImage||''},
     {number:'32',driver:'BurgerTown2Good',numberImage:board.fullTime?.find(x=>String(x.number)==='32')?.numberImage||''},
     {number:'46',driver:'Rocky',numberImage:board.fullTime?.find(x=>['46','92'].includes(String(x.number)))?.numberImage||''},
     {number:'56',driver:'Open',numberImage:board.fullTime?.find(x=>['56','54'].includes(String(x.number)))?.numberImage||''}
-  ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:'SHARED CHARTER',uses:[{...(charter.uses||[]).find(u=>String(u.number)==='62'),number:'62',label:'Part-Time',active:true},{...(charter.uses||[]).find(u=>String(u.number)==='82'),number:'82',label:'Development',active:true}]}))};
+  ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:flex.slotLabel,uses:[{...flex.uses[0],...(charter.uses||[]).find(u=>String(u.number)==='62'),description:flex.uses[0].description,number:'62',label:'Part-Time',active:true}]}))};
 });
 export const charters = enforceCurrentCharters(choose('charters', chartersSeed));
 export const iracingGarage = choose('iracing-garage', iracingSeed);
