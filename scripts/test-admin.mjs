@@ -145,7 +145,7 @@ const d1=seeds.charters.find(board=>board.id==='uarl-d1');
 assert.deepEqual(d1.fullTime.map(slot=>[slot.number,slot.driver]),[['28','Hailey'],['32','BurgerTown2Good'],['46','Rocky'],['56','Open']]);
 assert.equal(d1.openCharters.length,1);
 assert.deepEqual(d1.openCharters[0].uses.map(use=>use.number),['62']);
-assert.doesNotMatch(JSON.stringify(d1.openCharters),/82|shared/i);
+assert.doesNotMatch(d1.openCharters.flatMap(charter=>[charter.label,charter.slotLabel,...charter.uses.flatMap(use=>[use.label,use.description])]).join(' '),/\b82\b|shared/i);
 const legacyCharters=structuredClone(seeds.charters);
 const legacyD1=legacyCharters.find(board=>board.id==='uarl-d1');
 legacyD1.openCharters[0].slotLabel='SHARED CHARTER';

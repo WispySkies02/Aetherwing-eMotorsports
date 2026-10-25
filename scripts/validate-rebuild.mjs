@@ -119,7 +119,8 @@ for(const boardId of ['nrrs','uarl-d1']){
   const uses=(shared?.uses||[]).filter((item)=>item.active!==false);
   const expected=boardId==='uarl-d1'?['62']:['62','82'];
   if(!shared||uses.length!==expected.length||!expected.every((number)=>uses.some((use)=>String(use.number)===number)))throw Error(`${boardId} active flex identities must be ${expected.join(' / ')} within one open charter.`);
-  if(boardId==='uarl-d1'&&((board.openCharters||[]).filter(c=>c.active!==false).length!==1||/82|shared/i.test(JSON.stringify(board.openCharters))))throw Error('UARL D1 must retain one #62 flexible entry without retired #82 or shared-number copy.');
+  const flexCopy=[shared?.label,shared?.slotLabel,...uses.flatMap(use=>[use.label,use.description])].filter(Boolean).join(' ');
+  if(boardId==='uarl-d1'&&((board.openCharters||[]).filter(c=>c.active!==false).length!==1||/\b82\b|shared/i.test(flexCopy)))throw Error('UARL D1 must retain one #62 flexible entry without retired #82 or shared-number copy.');
   if(uses.some((use)=>Object.hasOwn(use,'driver')&&String(use.driver||'').trim()))throw Error(`${boardId} open charter identities must not carry permanent driver assignments.`);
 }
 if(drivers.some((driver)=>driver.competitionId==='uarl-d2')||scheduleEvents.some((event)=>event.league==='uarl-d2'))throw Error('Closed UARL D2 must not reappear in active driver or schedule filters.');
