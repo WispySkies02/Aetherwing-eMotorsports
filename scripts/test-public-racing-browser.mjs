@@ -154,6 +154,18 @@ try {
       assert.ok(links.every(link=>{const event=datasets['schedule-events'].find(e=>`/event/${eventSlug(e)}/`===link);return event && (event.timePending||eventEnd(event)>=new Date('2026-10-18T12:00:00Z'));}),`${program.id}: no finished event windows in Upcoming (ongoing multi-day events remain visible)`);
       if(program.id==='uarl-d1')assert.match(await page.locator('[data-program-next]').textContent(),/Echo Park Speedway/);
     }
+    await page.goto(`${base}/drivers/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    const haileyCard=page.locator('[data-lineup-grid] article').filter({has:page.locator('a[href="/drivers/hailey/"]')});
+    const directoryPrograms=await haileyCard.locator('.aw-lineup__summary-rides > span').allTextContents();
+    assert.match(await haileyCard.locator('.aw-lineup__plate > small').textContent(),/^6 ACTIVE PROGRAMS$/);
+    assert.equal(await page.locator('[data-lineup-grid] article').count(),8);
+    await page.goto(`${base}/drivers/hailey/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    const profilePrograms=await page.locator('[data-profile-assignments] .profile-assignment').allTextContents();
+    assert.equal(profilePrograms.length,directoryPrograms.length);
+    assert.ok(directoryPrograms.some(text=>/iRacing Factory Program.*#28/.test(text)));
+    for(const assignment of datasets.drivers.filter(row=>row.profile==='hailey'))assert.ok(profilePrograms.some(text=>text.includes(assignment.competition)&&text.includes(`#${assignment.number}`)));
     await page.goto(`${base}/schedule/uarl-d1/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.match(await page.locator('[data-calendar-hero]').textContent(),/Echo Park Speedway/);

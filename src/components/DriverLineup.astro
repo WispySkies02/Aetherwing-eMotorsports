@@ -1,7 +1,7 @@
 ---
 import { drivers, rosterProfiles, charters } from '../lib/site-content.mjs';
 import '../styles/driver-lineup.css';
-const entries = drivers.filter(e=>e.competitionId!=='iracing-factory');
+const entries = drivers;
 const people = rosterProfiles;
 const boards = charters;
 const profileSlugs = rosterProfiles.map(profile=>profile.slug);
@@ -20,7 +20,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   let assignments=entries,profiles=people,charters=boards,series='all';
   const publishedArtById=new Map(),publishedSignatureBySlug=new Map();
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const programOrder={kmart:1,sunoco:2,nrrs:3,'uarl-d1':4,'uarl-open':5};
+  const programOrder={kmart:1,sunoco:2,nrrs:3,'uarl-d1':4,'uarl-open':5,'iracing-factory':6};
   const artChoiceByDriver=new Map();
   const shuffle=(items)=>{const copy=[...items];for(let i=copy.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;};
   const chooseDriverArt=(driverKey,items)=>{
@@ -79,14 +79,15 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   root.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__signature'))tightenSignature(image);if(image.closest('.aw-lineup__number')){tightenNumber(image);if(matchMedia('(max-width: 600px)').matches)requestAnimationFrame(()=>fitNumberVisual(image));}},true);
   root.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement))return;if(image.closest('.aw-lineup__number')){const backup=image.dataset.backupSrc||'';if(backup&&image.dataset.backupTried!=='1'&&image.getAttribute('src')!==backup){image.dataset.backupTried='1';image.src=backup;return;}const fallback=document.createElement('b');fallback.className=image.closest('.aw-lineup__dual-slot')?'':'aw-lineup__number-fallback is-single';fallback.textContent=`#${image.alt.replace('Number ','')||image.closest('[data-number]')?.dataset.number||''}`;image.replaceWith(fallback);return;}if(image.closest('.aw-lineup__signature'))image.closest('.aw-lineup__signature')?.remove();},true);
   const label=e=>e.competitionId==='uarl-d1'?'UARL D1':e.competition||e.competitionId;
-  const shortProgram=(id,name='')=>({nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[id]||name||id);
+  const shortProgram=(id,name='')=>({nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO','iracing-factory':'IRACING'}[id]||name||id);
   const programLogo={
     all:'/images/brand/aetherwing-logo.png',
     nrrs:'/images/schedule-logos/nrrs.png',
     kmart:'/images/schedule-logos/kmart-regular.jpg',
     sunoco:'/images/schedule-logos/sunoco.png',
     'uarl-d1':'/images/schedule-logos/uarl-d1.png',
-    'uarl-open':'/images/schedule-logos/open.png'
+    'uarl-open':'/images/schedule-logos/open.png',
+    'iracing-factory':'/images/schedule-logos/iracing.png'
   };
   const rememberPublishedArt=(driverRows=[],profileRows=[])=>{
     for(const row of Array.isArray(driverRows)?driverRows:[]){
@@ -110,7 +111,7 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   const profileWithPublishedSignature=(profile)=>profile&&publishedSignatureBySlug.has(profile.slug)?{...profile,signatureLogo:publishedSignatureBySlug.get(profile.slug)}:profile;
   const programFilter=(key,labelText)=>{const logo=programLogo[key]||'';const label=key==='all'?'All Drivers':labelText||key;return `<button type="button" data-program="${esc(key)}" aria-pressed="${series===key}" aria-label="${esc(label)}"><span class="aw-lineup__filter-logo">${logo?`<img src="${esc(logo)}" alt="" loading="lazy">`:`<b>${esc(label)}</b>`}</span><span>${esc(label)}</span></button>`;};
   function render(){
-    const rawActive=assignments.filter(e=>e.competitionId!=='iracing-factory').map(assignmentWithPublishedArt);
+    const rawActive=assignments.filter(e=>e.competitionId!=='iracing-factory'||profiles.some(person=>person.slug===e.profile)).map(assignmentWithPublishedArt);
     const sharedKmart29=rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImageBackup)||rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImage);
     const sharedKmartUpload=sharedKmart29?.numberImageBackup||'';
     const sharedKmartSource=sharedKmart29?.numberImage||sharedKmartUpload;
