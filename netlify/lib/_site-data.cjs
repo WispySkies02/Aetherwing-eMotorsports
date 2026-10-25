@@ -1,4 +1,5 @@
 const { read, json, normalizeDriverAssignments, seeds, normalize } = require('./_content.cjs');
+const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
 function replaceFullCirclePartner(value){
   if(Array.isArray(value))return value.map(replaceFullCirclePartner);
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
@@ -46,10 +47,7 @@ function mergeCanonical(datasets){
     });
   }
   if(Array.isArray(datasets.results)){
-    const recap=seed.results.find(race=>race.scheduleId==='nrrs-round-24');
-    const recorded=datasets.results.some(race=>race.league==='nrrs'&&String(race.date||'').slice(0,4)==='2026'&&(race.scheduleId===recap?.scheduleId||String(race.round||'').match(/\d+/)?.[0]==='24'||(race.date===recap?.date&&(race.track===recap?.track||race.title===recap?.title))));
-    if(recap&&!recorded)datasets.results=[...datasets.results,structuredClone(recap)];
-    datasets.results=normalize('results',datasets.results);
+    datasets.results=normalize('results',appendReviewedResults(datasets.results,seed.results));
   }
   // Published standings are authoritative. Historical repair migrations belong at release time,
   // never in the live read path, or fresh Admin edits can be silently replaced by bundled seeds.

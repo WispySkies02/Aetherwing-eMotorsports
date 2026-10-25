@@ -24,7 +24,9 @@ const hailey=board.rows.find(r=>r.highlight);Object.assign(hailey,{driver:'Haile
 Object.assign(board.rows[0],{driver:'Will',points:2286});
 const uarl=datasets['schedule-events'].find(e=>e.league==='uarl-d1'&&e.round==='ROUND 4');
 Object.assign(uarl,{date:'2026-10-18',track:'Echo Park Speedway',title:'Echo Park Thunder 400'});
-const published={revision:90,datasets};
+const legacyResults=structuredClone(datasets.results.filter(result=>result.date<'2026-10-01'));
+const resolvedResults=require('../netlify/lib/_site-data.cjs')._test.mergeCanonical({results:legacyResults}).results;
+const published={revision:90,datasets:{...datasets,results:resolvedResults}};
 const weatherNow=Date.parse('2026-10-18T12:00:00Z');
 const weatherHandler=createWeatherHandler({now:()=>weatherNow,fetcher:async url=>{
   if(url.startsWith('https://api.weather.gov/points/'))return Response.json(nwsPoint);
@@ -173,6 +175,21 @@ try {
     await page.goto(`${base}/event/sunoco-2026-10-17/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.match(await page.locator('[data-event-summary]').textContent(),/Oct 24, 2026/);
+    await page.goto(`${base}/history/`,{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    const archive=page.locator('[data-results-list] article');
+    const dates=await archive.locator(':scope > span').allTextContents();
+    for(const date of ['2026-10-20','2026-10-13','2026-10-10','2026-10-06','2026-10-05'])assert.ok(dates.some(text=>text.startsWith(date)),`Approved ${date} result remains visible after hydration`);
+    assert.ok(!dates.some(text=>text.startsWith('2026-10-19')),'No unsupported October 19 result');
+    for(const id of ['nrrs-round-22','nrrs-round-23','nrrs-round-24']) {
+      const link=page.locator(`[data-results-list] a[href="/event/${id}/"]`);
+      assert.equal(await link.count(),1,'The approved result links once to its event');
+      await page.goto(`${base}/event/${id}/`,{waitUntil:'domcontentloaded'});
+      await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+      assert.ok((await page.locator('[data-event-result]').textContent()).includes('Hailey'));
+      await page.goto(`${base}/history/`,{waitUntil:'domcontentloaded'});
+      await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
+    }
     const recapSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
     await page.goto(`${base}/news/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
