@@ -144,6 +144,34 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   assert.equal(JSON.stringify(JSON.parse(w.localStorage.getItem('aetherwing-site-admin')).published.standings),standingsBefore);
   w.close();
 }
+// A September-only publication must expose all approved October records together.
+{
+  const {mergeCanonical}=createRequire(import.meta.url)('../netlify/lib/_site-data.cjs')._test;
+  const approved=requireReview().results;
+  const oldResults=structuredClone(seed.results.filter(result=>result.date<'2026-10-01'));
+  const original=JSON.stringify(oldResults);
+  const standings=structuredClone(seed.standings),before=JSON.stringify(standings);
+  const merged=mergeCanonical({results:oldResults,standings});
+  assert.equal(JSON.stringify(oldResults),original,'Read reconciliation does not mutate the stored publication');
+  assert.equal(JSON.stringify(standings),before,'Archive repair cannot advance standings');
+  assert.equal(merged.results.filter(result=>result.date>='2026-10-01').length,approved.length);
+  assert.deepEqual(merged.results.map(result=>result.date),merged.results.map(result=>result.date).sort().reverse());
+  for(const result of approved){
+    const matches=merged.results.filter(row=>sameReviewedEvent(row,result));
+    assert.equal(matches.length,1,result.scheduleId);
+    for(let i=0;i<result.entries.length;i++)for(const key of ['driver','number','start','finish','racePoints','stage1Finish','stage2Finish'])assert.equal(matches[0].entries[i][key],result.entries[i][key],`${result.scheduleId}: preserve approved ${key}`);
+    const corrected=structuredClone(matches[0]);corrected.entries[0].racePoints+=1;
+    const resolved=mergeCanonical({results:[corrected]});
+    assert.equal(resolved.results.filter(row=>sameReviewedEvent(row,result)).length,1);
+    assert.equal(resolved.results.find(row=>sameReviewedEvent(row,result)).entries[0].racePoints,corrected.entries[0].racePoints,'A later Admin correction wins for every approved event');
+  }
+  assert.deepEqual(mergeCanonical(merged).results,merged.results,'Repeated reads are idempotent');
+  const unsupported={...structuredClone(seed.results[0]),scheduleId:'kmart-round-10',league:'kmart',round:'ROUND 10',date:'2026-10-19'};
+  assert.ok(!appendReviewedResults([], [...seed.results,unsupported]).some(result=>result.scheduleId==='kmart-round-10'),'An unapproved seed row cannot become an official result');
+  assert.equal(merged.results.some(result=>result.date==='2026-10-19'),false,'October 19 stays pending official source');
+}
+function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/confirmed-racing-updates.json',import.meta.url),'utf8'));}
+
 // The owner-supplied New Hampshire article and canonical result stay linked
 // when the live registry still contains the older September-only collection.
 {
@@ -193,31 +221,4 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   for(const row of standings.filter(r=>r.driver!=='Will'))assert.equal(row.gap,`${2286-Number(row.points.replaceAll(',',''))} BACK`);
   assert.ok(JSON.stringify(old).includes('63 championship points'));
 }
-// A September-only publication must expose all approved October records together.
-{
-  const {mergeCanonical}=createRequire(import.meta.url)('../netlify/lib/_site-data.cjs')._test;
-  const approved=requireReview().results;
-  const oldResults=structuredClone(seed.results.filter(result=>result.date<'2026-10-01'));
-  const original=JSON.stringify(oldResults);
-  const standings=structuredClone(seed.standings),before=JSON.stringify(standings);
-  const merged=mergeCanonical({results:oldResults,standings});
-  assert.equal(JSON.stringify(oldResults),original,'Read reconciliation does not mutate the stored publication');
-  assert.equal(JSON.stringify(standings),before,'Archive repair cannot advance standings');
-  assert.equal(merged.results.filter(result=>result.date>='2026-10-01').length,approved.length);
-  assert.deepEqual(merged.results.map(result=>result.date),merged.results.map(result=>result.date).sort().reverse());
-  for(const result of approved){
-    const matches=merged.results.filter(row=>sameReviewedEvent(row,result));
-    assert.equal(matches.length,1,result.scheduleId);
-    for(let i=0;i<result.entries.length;i++)for(const key of ['driver','number','start','finish','racePoints','stage1Finish','stage2Finish'])assert.equal(matches[0].entries[i][key],result.entries[i][key],`${result.scheduleId}: preserve approved ${key}`);
-    const corrected=structuredClone(matches[0]);corrected.entries[0].racePoints+=1;
-    const resolved=mergeCanonical({results:[corrected]});
-    assert.equal(resolved.results.filter(row=>sameReviewedEvent(row,result)).length,1);
-    assert.equal(resolved.results.find(row=>sameReviewedEvent(row,result)).entries[0].racePoints,corrected.entries[0].racePoints,'A later Admin correction wins for every approved event');
-  }
-  assert.deepEqual(mergeCanonical(merged).results,merged.results,'Repeated reads are idempotent');
-  const unsupported={...structuredClone(seed.results[0]),scheduleId:'kmart-round-10',league:'kmart',round:'ROUND 10',date:'2026-10-19'};
-  assert.ok(!appendReviewedResults([], [...seed.results,unsupported]).some(result=>result.scheduleId==='kmart-round-10'),'An unapproved seed row cannot become an official result');
-  assert.equal(merged.results.some(result=>result.date==='2026-10-19'),false,'October 19 stays pending official source');
-}
-function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/confirmed-racing-updates.json',import.meta.url),'utf8'));}
 console.log('PASS: all program publications, Eastern time/DST, moved rounds, cancelled/postponed/completed races, atomic snapshots, labeled cache/fallback, and sourced October results without invented fields.');
