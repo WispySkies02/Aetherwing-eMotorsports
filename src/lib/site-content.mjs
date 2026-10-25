@@ -104,12 +104,12 @@ const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filt
 export const drivers = enforceCurrentAssignments(choose('drivers', driversSeed));
 const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',
-  kmart:'Kmart', sunoco:'Sunoco'
+  kmart:'Kmart', sunoco:'Sunoco', 'iracing-factory':'iRacing Factory Program'
 };
 const rosterBase = choose('roster-profiles', rosterSeed).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags');
 export const rosterProfiles = rosterBase.map((sourceProfile) => {
   const profile=sourceProfile?.slug==='wispy'?{...sourceProfile,slug:'hailey'}:sourceProfile;
-  const assignments = drivers.filter((entry) => entry.profile === profile.slug && entry.competitionId !== 'iracing-factory');
+  const assignments = drivers.filter((entry) => entry.profile === profile.slug);
   if (!assignments.length) return profile;
   return {
     ...profile,

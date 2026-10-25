@@ -188,4 +188,29 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   for(const row of standings.filter(r=>r.driver!=='Will'))assert.equal(row.gap,`${2286-Number(row.points.replaceAll(',',''))} BACK`);
   assert.ok(JSON.stringify(old).includes('63 championship points'));
 }
-console.log('PASS: all program publications, Eastern time/DST, moved rounds, cancelled/postponed/completed races, atomic snapshots, labeled cache/fallback, and sourced October results without invented fields.');
+// Directory summaries use the same assignment set as an existing driver's profile.
+{
+  const source=fs.readFileSync(new URL('../src/components/DriverLineup.astro',import.meta.url),'utf8');
+  const script=source.match(/<script define:vars=[^>]+>([\s\S]*?)<\/script>/)[1];
+  const dom=new JSDOM('<section data-lineup><div data-lineup-filters></div><div data-lineup-program></div><div data-lineup-grid></div></section>',{url:'https://example.test/drivers/',runScripts:'outside-only'});
+  const w=dom.window;
+  Object.assign(w,{entries:structuredClone(seed.drivers),people:structuredClone(seed['roster-profiles']),boards:structuredClone(seed.charters),profileSlugs:seed['roster-profiles'].map(p=>p.slug),fetch:()=>new Promise(()=>{})});
+  w.eval(script);
+  const check=rows=>{
+    const card=w.document.querySelector('a[href="/drivers/hailey/"]').closest('article');
+    const expected=rows.filter(row=>row.profile==='hailey');
+    const programs=[...new Set(expected.map(row=>row.competitionId))];
+    assert.match(card.querySelector('.aw-lineup__plate > small').textContent,new RegExp(`^${programs.length} ACTIVE PROGRAMS$`));
+    const rides=[...card.querySelectorAll('.aw-lineup__summary-rides > span')];
+    assert.equal(rides.length,expected.length,'Each profile assignment appears in the summary');
+    for(const assignment of expected)assert.ok(rides.some(ride=>ride.textContent.includes(assignment.competitionId==='uarl-d1'?'UARL D1':assignment.competition)&&ride.textContent.includes(`#${assignment.number}`)));
+    assert.equal(w.document.querySelectorAll('[data-lineup-grid] article').length,8,'Factory-only entries without directory profiles do not add unapproved driver cards');
+  };
+  check(seed.drivers);
+  const removed=seed.drivers.filter(row=>!(row.profile==='hailey'&&row.competitionId==='iracing-factory'));
+  w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:{drivers:removed}}));check(removed);
+  const updated=structuredClone(seed.drivers);updated.find(row=>row.profile==='hailey'&&row.competitionId==='iracing-factory').number='88';
+  w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:{drivers:updated}}));check(updated);
+  dom.window.close();
+}
+console.log('PASS: all program publications, derived directory assignments, Eastern time/DST, moved rounds, cancelled/postponed/completed races, atomic snapshots, labeled cache/fallback, and sourced October results without invented fields.');
