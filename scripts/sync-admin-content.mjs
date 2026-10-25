@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { appendReviewedResults } from '../src/lib/reviewed-results.mjs';
 const target = new URL('../src/data/admin-content.json', import.meta.url);
 const configured = process.env.AETHERWING_CONTENT_URL;
 const endpoint = configured || (process.env.NETLIFY ? 'https://aetherwing.net/api/site-content' : '');
@@ -74,7 +75,7 @@ async function canonicalizeBuildContent(payload){
   d.partners=ensureCoreTeamPartners(Array.isArray(d.partners)?d.partners:[],seed.partners||[]);
   if(Array.isArray(d['driver-portfolios']))d['driver-portfolios']=normalize('driver-portfolios',d['driver-portfolios']);
   if(Array.isArray(d['schedule-events']))d['schedule-events']=normalize('schedule-events',d['schedule-events'].filter((event)=>event?.league!=='uarl-d2'));
-  if(Array.isArray(d.results))d.results=normalize('results',d.results);
+  if(Array.isArray(d.results))d.results=normalize('results',appendReviewedResults(d.results,seed.results));
   // Do not seed-repair standings here. A published standings board is authoritative.
   return next;
 }

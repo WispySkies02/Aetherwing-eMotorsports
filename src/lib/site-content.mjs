@@ -18,6 +18,7 @@ import navigationSeed from '../data/navigation.json';
 import liveryBrandsSeed from '../data/livery-brands.json';
 import driverPortfoliosSeed from '../data/driver-portfolios.json';
 import pageOverridesSeed from '../data/page-overrides.json';
+import { appendReviewedResults } from './reviewed-results.mjs';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 
 const normalizeDriverAssignments = (rows=[]) => {
@@ -77,10 +78,7 @@ const scorePublishedRace=(race)=>{
   return {...race,entries:race.entries.map((entry)=>{const stage1Points=stage(entry.stage1Finish),stage2Points=stage(entry.stage2Finish),base=finishPoints(entry.finish),bonusPoints=Math.max(0,Number(entry.bonusPoints||0)||0),pointsEligible=entry.pointsEligible!==false;return {...entry,stage1Points,stage2Points,finishPoints:base,bonusPoints,pointsEligible,racePoints:pointsEligible?base+stage1Points+stage2Points+bonusPoints:0};})};
 };
 const canonicalResults=resultsSeed.filter((result)=>(result.league==='nrrs'&&result.date==='2026-09-22')||(result.league==='kmart'&&result.date==='2026-09-28')||(result.league==='uarl-d2'&&result.date==='2026-09-12'));
-const mergedResults=normalizeResults(choose('results', resultsSeed));
-// An older publication must not hide the result linked by the new featured recap.
-const featuredRecapResult=resultsSeed.find(race=>race.scheduleId==='nrrs-round-24');
-if(featuredRecapResult&&!mergedResults.some(race=>race.league==='nrrs'&&String(race.date||'').slice(0,4)==='2026'&&(race.scheduleId===featuredRecapResult.scheduleId||String(race.round||'').match(/\d+/)?.[0]==='24'||(race.date===featuredRecapResult.date&&(race.track===featuredRecapResult.track||race.title===featuredRecapResult.title)))))mergedResults.push(featuredRecapResult);
+const mergedResults=appendReviewedResults(normalizeResults(choose('results', resultsSeed)),resultsSeed);
 for(const official of canonicalResults){
   const i=mergedResults.findIndex((result)=>result?.league===official.league&&result?.date===official.date);
   if(i===-1)mergedResults.push(official);
