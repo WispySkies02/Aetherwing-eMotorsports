@@ -1,3 +1,4 @@
+import { reconcileTeamPartners } from './team-partner-content.mjs';
 import overlay from '../data/admin-content.json';
 import scheduleSeed from '../data/schedule-events.json';
 import resultsSeed from '../data/results.json';
@@ -214,5 +215,5 @@ export const leadership = (Array.isArray(publishedLeadership)?publishedLeadershi
   return entry;
 });
 const publishedPartners = choose('partners', partnersSeed);
-const normalizeTeamPartners=(rows=[])=>{const list=Array.isArray(rows)?[...rows]:[];for(const name of ['Palmetto Gaming','Apex Sim Racing']){const canonical=partnersSeed.find((item)=>item?.name===name);if(!canonical)continue;const index=list.findIndex((item)=>item?.name===name);if(index===-1)list.push({...canonical});else if(name==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};}const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((name,index)=>[name,index]));return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));};
+const normalizeTeamPartners=(rows=[])=>reconcileTeamPartners(rows,partnersSeed,['Palmetto Gaming','Apex Sim Racing']);
 export const partners = normalizeTeamPartners(Array.isArray(publishedPartners)?publishedPartners:partnersSeed);
