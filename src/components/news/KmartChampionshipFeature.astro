@@ -1,0 +1,69 @@
+---
+import { season, checkpoints, latest, drivers, presets, transferIndex, math, nextRaces, dateLabel, chartModel } from '../../lib/kmart-season2.mjs';
+import '../../styles/kmart-championship.css';
+const { story } = Astro.props;
+const chart=chartModel();
+---
+<div class="km-feature" data-kmart-feature>
+  <dl class="km-achievements" aria-label="Championship snapshot">
+    <div><dt>Official championship points</dt><dd>{latest.haileyOfficial}</dd></div>
+    <div><dt>Lead over Will</dt><dd>+{math.lead}</dd></div>
+    <div><dt>Regular-season races left</dt><dd>{season.remainingRegularSeasonRaces}</dd></div>
+  </dl>
+  <p class="km-breakdown"><b>{latest.haileyRaceEarned} earned on track</b><span>+</span><b>{season.transferPoints} league-approved transfer</b><span>=</span><b>{latest.haileyOfficial} official points.</b> The transfer changed the standings; it was not a race result.</p>
+
+  <section class="km-section km-chart-panel" aria-labelledby="km-chart-title">
+    <header class="km-section-head"><div><p class="km-eyebrow">01 / The championship story</p><h2 class="km-heading" id="km-chart-title">The climb. The turning point.</h2></div><span class="km-snapshot">10 races · 11 checkpoints</span></header>
+    <p id="km-chart-summary">Follow the standings from Daytona to Talladega. Portland appears twice: before and after the administrative transfer. Missing values stay unplotted; a flat line can mean a driver did not attend.</p>
+    <fieldset class="km-controls" data-km-controls disabled>
+      <legend class="aw-sr">Chart controls</legend>
+      <div class="km-mode" role="group" aria-label="Points view">
+        <label><input type="radio" name="km-points-mode" value="official" checked/><span>Official standings</span></label>
+        <label><input type="radio" name="km-points-mode" value="earned"/><span>Race-earned only</span></label>
+      </div>
+      <label class="km-compare">Compare<select data-km-comparison><option value="story">The championship story</option><option value="chase">Current Chase field</option><option value="custom">Custom selection</option></select></label>
+      <div class="km-driver-controls" role="group" aria-label="Drivers on the chart">
+        {drivers.map(driver=><label style={`--driver-color:${driver.color}`}><input type="checkbox" data-km-driver value={driver.id} checked={presets.story.includes(driver.id)}/><span><i aria-hidden="true"></i>{driver.name}</span></label>)}
+      </div>
+    </fieldset>
+    <p class="km-chart-note" data-km-mode-note>Official points include the +310 league-approved transfer after Portland.</p>
+    <div class="km-chart-wrap" data-km-chart-wrap>
+      <svg class="km-chart" data-km-chart viewBox={`0 0 ${chart.width} ${chart.height}`} role="group" aria-labelledby="km-chart-title" aria-describedby="km-chart-summary">
+        <title>Season 2 cumulative points through Talladega</title>
+        {chart.ticks.map(tick=><g><line x1={chart.left} x2={chart.width-chart.right} y1={chart.y(tick)} y2={chart.y(tick)} class="km-gridline"/><text x={chart.left-10} y={chart.y(tick)+4} text-anchor="end">{tick}</text></g>)}
+        <rect x={chart.x(transferIndex)-10} y={chart.top} width="20" height={chart.height-chart.top-chart.bottom} class="km-transfer-band"/>
+        <text x={chart.x(transferIndex)} y="18" text-anchor="middle" class="km-transfer-label">+310 TRANSFER</text>
+        {chart.labels.map(tick=><text x={tick.x} y={chart.height-20} text-anchor="middle">{tick.label}</text>)}
+        {chart.series.map(series=><g data-chart-driver={series.id}><path d={series.path} stroke={series.color} class:list={['km-chart-line',{'is-hailey':series.id==='hailey'}]}/>{series.points.map(point=><circle cx={point.x} cy={point.y} r={series.id==='hailey'?4:2.5} fill={series.color}/>)}</g>)}
+      </svg>
+    </div>
+    <p class="km-chart-empty" data-km-chart-empty hidden>Select a driver to compare.</p>
+    <label class="km-event-select">Explore a checkpoint<select data-km-checkpoint disabled>{checkpoints.map((point,index)=><option value={index} selected={index===checkpoints.length-1}>{point.label}{point.isAdministrativeTransfer?' · administrative checkpoint':''}</option>)}</select></label>
+    <div class="km-chart-detail" data-km-tooltip aria-live="polite" aria-atomic="true"><h3>{latest.label} · {dateLabel(latest.date)}</h3><p>{latest.summary}</p><ul>{drivers.filter(d=>presets.story.includes(d.id)).map(driver=><li>{driver.name}: {driver.id==='hailey'?latest.haileyOfficial:latest[driver.id]??'Departed'}</li>)}</ul></div>
+    <p class="km-source">Owner-supplied Season 2 standings and research · Snapshot: {dateLabel(season.asOf)} · Through R{season.pointsEventsComplete} Talladega, {dateLabel(latest.date)}. Static historical data; not a live standings feed.</p>
+    <details class="km-data"><summary>Read the chart as a table</summary><div class="km-table-wrap" role="region" aria-label="Historical checkpoint data" tabindex="0"><table><caption>Cumulative points · missing values are not zero</caption><thead><tr><th scope="col">Checkpoint</th>{drivers.map(driver=><th scope="col">{driver.name}</th>)}</tr></thead><tbody>{checkpoints.map((point,index)=><tr><th scope="row">{point.label} · {point.date}{point.isAdministrativeTransfer?' · transfer':''}</th>{drivers.map(driver=><td data-km-table-driver={driver.id} data-index={index}>{(driver.id==='hailey'?point.haileyOfficial:point[driver.id])??'—'}</td>)}</tr>)}</tbody></table></div></details>
+    <noscript><p>The chart and data table show the official snapshot. Enable JavaScript to compare drivers and explore the timeline.</p></noscript>
+  </section>
+
+  <section class="km-section km-timeline" aria-labelledby="km-timeline-title">
+    <header class="km-section-head"><div><p class="km-eyebrow">02 / How she got here</p><h2 class="km-heading" id="km-timeline-title">Every step changed the story.</h2></div></header>
+    <div class="km-timeline-controls"><button type="button" data-km-previous disabled aria-label="Previous checkpoint">←</button><label><span class="aw-sr">Championship milestone</span><input type="range" min="0" max={checkpoints.length-1} value={checkpoints.length-1} step="1" data-km-timeline disabled aria-valuetext={`${latest.label}, ${latest.haileyOfficial} official points`}/></label><button type="button" data-km-next disabled aria-label="Next checkpoint">→</button></div>
+    <div class="km-jumps" role="group" aria-label="Jump to a milestone">{[['Fontana',1],['Before transfer',transferIndex-1],['After transfer',transferIndex],['Talladega',checkpoints.length-1]].map(([label,index])=><button type="button" data-km-jump={index} disabled>{label}</button>)}</div>
+    <div class="km-milestone" data-km-milestone><div><span class="km-eyebrow" data-km-race>R{season.pointsEventsComplete} · {dateLabel(latest.date)}</span><h3 data-km-milestone-title>{latest.label}</h3><p data-km-milestone-story>{latest.summary}</p></div><dl><div><dt>Official points</dt><dd data-km-milestone-points>{latest.haileyOfficial}</dd></div><div><dt>Championship position</dt><dd data-km-milestone-rank>{latest.haileyRank}</dd></div></dl></div>
+  </section>
+
+  <article class="km-prose" aria-label="Championship feature article" data-kmart-prose>{story.sections?.map(section=><section><h2>{section.heading}</h2>{section.paragraphs?.map(paragraph=><p>{paragraph}</p>)}</section>)}</article>
+  <aside class="km-pull" hidden={!story.callout?.title}><p>{story.callout?.title}</p><p>{story.callout?.text}</p><small>{story.callout?.label}</small></aside>
+
+  <section class="km-section km-whats-next" aria-labelledby="km-next-title">
+    <header class="km-section-head"><div><p class="km-eyebrow">03 / The first crown is still ahead</p><h2 class="km-heading" id="km-next-title">The berth is hers. The title isn’t.</h2></div><a href="/schedule/kmart/#full">Full Kmart schedule ↗</a></header>
+    <p class="km-exhibition">October 26 · Charlotte All-Star: an exhibition, with no championship points. It is not a points checkpoint on this chart.</p>
+    <div class="km-next-grid">{nextRaces.map(race=><article><time datetime={race.date}>{dateLabel(race.date)}</time><small>{race.eyebrow}</small><h3>{race.track}</h3><p class="km-next-name">{race.title}</p><p>{race.detail}</p></article>)}</div>
+    <p class="km-source">Schedule context supplied for this October 26 story. Consult the series calendar for later changes. The Chase finale is scheduled for January 25, 2027 at Homestead-Miami.</p>
+  </section>
+  <details class="km-math"><summary>How the math works</summary><div><p>Each points race offers at most {season.maximumRacePoints} points. Seven remaining races offer {math.remainingMaximum}. The highest driver currently outside the six-driver Chase, {math.chaseCutoffDriver}, has {math.chaseCutoffPoints}; even reaching {math.chaseCutoffPoints+math.remainingMaximum} cannot catch Bell’s existing {latest.haileyOfficial}. This secures her berth under the supplied eligibility and roster rules.</p><p>An outright regular-season clinch needs a lead greater than all remaining points over <strong>every eligible rival</strong>. Thresholds: {math.thresholdAfter(1)} after Iowa, {math.thresholdAfter(2)} after Mexico City, {math.thresholdAfter(3)} after New Hampshire, {math.thresholdAfter(4)} after Charlotte. Ties require separate tiebreakers; they are not treated as clinches here.</p><p>After Portland’s transfer, Bell earned 33 + 40 = 73 points; Will added 0 + 37 = 37. Her lead grew by 36, from 245 to {math.lead}. Will did not participate at Martinsville; that flat checkpoint is not a zero-point finish.</p><p>At Mexico City, Carl must also remain beyond reach: his gap to Bell is currently {latest.haileyOfficial-latest.carl}, so he can gain at most {latest.haileyOfficial-latest.carl-math.thresholdAfter(2)} over Iowa and Mexico for a {math.thresholdAfter(2)}-point margin to hold. Beating Will alone is not sufficient.</p><p>Chase seeding resets to 2,100 / 2,075 / 2,065 / 2,060 / 2,055 / 2,050. Six drivers contest six races with no eliminations. There is no automatic win-and-in. Chase qualification is secured; the regular-season and overall championships remain undecided.</p></div></details>
+</div>
+<script>
+  import { mountKmartFeature } from '../../lib/kmart-feature-client.mjs';
+  document.querySelectorAll('[data-kmart-feature]').forEach(root=>mountKmartFeature(root));
+</script>

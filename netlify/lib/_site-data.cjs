@@ -24,9 +24,9 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);datasets.news=datasets.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(datasets.news)){
     // Keep the confirmed race articles visible when an older Admin snapshot has not yet been republished.
-    // New Hampshire is the single featured story and homepage lead.
-    const featuredSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
-    const raceSlugs=['talladega-leaves-bell-frustrated-championship-gap-grows','bells-road-course-struggles-deepen-at-portland',featuredSlug];
+    // The seed identifies the current editorial feature; previous recaps remain available.
+    const featuredSlug=seed.news.find(story=>story.featured)?.slug;
+    const raceSlugs=['talladega-leaves-bell-frustrated-championship-gap-grows','bells-road-course-struggles-deepen-at-portland','pole-position-fading-pace-bell-salvages-third-at-new-hampshire',featuredSlug];
     const seedBySlug=new Map((seed.news||[]).map((story)=>[story.slug,story]));
     for(const slug of raceSlugs){
       if(!datasets.news.some((story)=>story?.slug===slug)&&seedBySlug.has(slug))datasets.news.push(seedBySlug.get(slug));

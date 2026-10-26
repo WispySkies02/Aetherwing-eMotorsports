@@ -58,7 +58,7 @@ try {
   const editedNumbers=new Map([['wispy-nrrs','08'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
   for(const entry of data.drivers)if(editedNumbers.has(entry.id))entry.number=editedNumbers.get(entry.id);
   const nrrs=data.standings.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
-  // The current release selects New Hampshire as the featured story in
+  // The current release selects the Kmart Chase-clinch feature in
   // Admin, the live API and static pages. Verify published edits to that lead
   // separately from adding an unfeatured article; do not change that policy.
   const lead=data.news.find((story)=>story.featured);

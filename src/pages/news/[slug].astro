@@ -1,15 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { news } from '../../lib/site-content.mjs';
+import KmartChampionshipFeature from '../../components/news/KmartChampionshipFeature.astro';
 import '../../styles/records.css';
 export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
 const {story}=Astro.props;
 const compactDescription=(value='',limit=170)=>{const clean=String(value||'').replace(/\s+/g,' ').trim();if(clean.length<=limit)return clean;const slice=clean.slice(0,limit+1);const cut=slice.lastIndexOf(' ');return `${slice.slice(0,cut>90?cut:limit).replace(/[.,;:!?-]+$/,'')}…`;};
 const shareDescription=story.embedDescription || compactDescription(story.summary);
 const isRaceFeature=story.featureLayout==='race-stat-feature';
+const isChampionshipFeature=story.featureLayout==='championship-feature';
 ---
 <Base title={story.title} description={shareDescription} image={story.socialImage || story.image}>
-  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature}]} data-news-story-root data-story-slug={story.slug}>
+  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature||isChampionshipFeature,'news-article--championship':isChampionshipFeature}]} data-news-story-root data-story-slug={story.slug}>
     <div class="wrap">
       <header class="news-article__hero">
         <a class="news-article__back" href="/news/">← Team Newsroom</a>
@@ -22,6 +24,7 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
         <div class:list={['news-article__hero-grid',{'has-mark':story.articleLogo || story.headlineMark?.value || story.heroGhost,'has-logo':story.articleLogo}] }>
           <div class="news-article__headline">
             <p class="news-article__kicker">{story.kicker}</p>
+            {isChampionshipFeature&&<span class="km-clinched">Chase berth clinched</span>}
             <h1>{story.title}</h1>
             <p class="news-article__summary">{story.summary}</p>
           </div>
@@ -41,7 +44,7 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
           ) : null}
         </div>
 
-        {!isRaceFeature && story.tags?.length>0 && (
+        {!isRaceFeature && !isChampionshipFeature && story.tags?.length>0 && (
           <div class="news-article__tags" aria-label="Story tags">
             {story.tags.map(tag=><span>{tag}</span>)}
           </div>
@@ -49,7 +52,7 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
       </header>
 
       <div class="news-article__body">
-        {isRaceFeature ? (
+        {isChampionshipFeature ? <KmartChampionshipFeature story={story}/> : isRaceFeature ? (
           <>
             {story.raceSummary && (
               <section class="news-race-strip" aria-label="Race summary">
@@ -207,8 +210,24 @@ const isRaceFeature=story.featureLayout==='race-stat-feature';
     const apply=(datasets)=>{
       const live=(datasets?.news||[]).find((item)=>item?.slug===slug);
       if(!live)return;
-      root.classList.toggle('news-article--race-feature',live.featureLayout==='race-stat-feature');
-      root.innerHTML=storyHtml(live);
+      if(root.querySelector('[data-kmart-feature]')&&live.featureLayout==='championship-feature'){
+        // This story's chart is a dated snapshot. Preserve its controls and state
+        // while published editorial text updates through the existing CMS feed.
+        root.querySelector('h1').textContent=live.title;
+        root.querySelector('.news-article__summary').textContent=live.summary;
+        root.querySelector('.news-article__kicker').textContent=live.kicker;
+        root.querySelector('.news-article__meta .eyebrow').textContent=`${live.category} · ${live.date}`;
+        const meta=root.querySelectorAll('.news-article__meta > span');
+        if(meta[0])meta[0].textContent=live.context;
+        if(meta[1])meta[1].textContent=live.byline||'Aetherwing eMotorsports';
+        const prose=root.querySelector('[data-kmart-prose]');
+        prose.replaceChildren(...(live.sections||[]).map(section=>{const node=document.createElement('section'),h=document.createElement('h2');h.textContent=section.heading;node.append(h);for(const paragraph of section.paragraphs||[]){const p=document.createElement('p');p.textContent=paragraph;node.append(p);}return node;}));
+        const pull=root.querySelector('.km-pull');pull.hidden=!live.callout?.title;
+        if(live.callout){pull.querySelector('p').textContent=live.callout.title||'';pull.querySelectorAll('p')[1].textContent=live.callout.text||'';pull.querySelector('small').textContent=live.callout.label||'';}
+      }else{
+        root.classList.toggle('news-article--race-feature',live.featureLayout==='race-stat-feature');
+        root.innerHTML=storyHtml(live);
+      }
       document.title=`${live.title} | Aetherwing eMotorsports`;
       const shareDescription=live.embedDescription||compactDescription(live.summary||'');
       const description=document.querySelector('meta[name="description"]'); if(description)description.setAttribute('content',shareDescription);
