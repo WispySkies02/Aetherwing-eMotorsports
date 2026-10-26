@@ -148,17 +148,17 @@
       if(recap&&!value.some(race=>race.league==='nrrs'&&String(race.date||'').slice(0,4)==='2026'&&(race.scheduleId===recap.scheduleId||String(race.round||'').match(/\d+/)?.[0]==='24'||(race.date===recap.date&&(race.track===recap.track||race.title===recap.title)))))return [structuredClone(recap),...value];
     }
     if(name==='news'&&Array.isArray(value)){
-      const currentFeaturedNewsSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
+      const currentFeaturedNewsSlug=(seeds.news||[]).find(story=>story.featured)?.slug;
       const priorFeaturedNewsSlug='talladega-leaves-bell-frustrated-championship-gap-grows';
-      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',priorFeaturedNewsSlug,'bells-road-course-struggles-deepen-at-portland',currentFeaturedNewsSlug]);
-      // New Hampshire is the current editorial selection.
+      const requiredNewsSlugs=new Set(['hailey-bell-joins-starclutch-racing-nrrs-season-4','hailey-bell-to-step-back-from-full-time-competition-after-season-4',priorFeaturedNewsSlug,'bells-road-course-struggles-deepen-at-portland','pole-position-fading-pace-bell-salvages-third-at-new-hampshire',currentFeaturedNewsSlug]);
+      // The current seed selects the feature; archived recaps remain available.
       const seedBySlug=new Map((seeds.news||[]).map((story)=>[story.slug,story]));
       const merged=[...value];
       for(const story of (seeds.news||[]))if(requiredNewsSlugs.has(story.slug)&&!merged.some((item)=>item?.slug===story.slug))merged.push(structuredClone(story));
       const normalizedStories=merged.map((story)=>{
         const normalized=normalizeNewsIdentity(story);
         const fresh=seedBySlug.get(normalized?.slug);if(!fresh)return normalized;
-        if([currentFeaturedNewsSlug,priorFeaturedNewsSlug,'bells-road-course-struggles-deepen-at-portland'].includes(normalized.slug)&&normalized.contentRevision!==fresh.contentRevision)return structuredClone(fresh);
+        if([currentFeaturedNewsSlug,priorFeaturedNewsSlug,'bells-road-course-struggles-deepen-at-portland','pole-position-fading-pace-bell-salvages-third-at-new-hampshire'].includes(normalized.slug)&&normalized.contentRevision!==fresh.contentRevision)return structuredClone(fresh);
         if(normalized.slug==='hailey-bell-joins-starclutch-racing-nrrs-season-4'){const serialized=JSON.stringify(normalized);if((normalized.metrics||[]).some((metric)=>metric?.value==='CONTINUES')||/SCR\/Aetherwing partnership|SCR × Aetherwing partnership|one of her personal partners|Hailey personal partner|relationship follows Bell|final full-time|Post-S4 Focus|Full-Time Competition Steps Back|One Final Full-Time Chapter/i.test(serialized))return structuredClone(fresh);}
         if(normalized.slug==='hailey-bell-to-step-back-from-full-time-competition-after-season-4'){const serialized=JSON.stringify(normalized);if(!/FULL HEART/i.test(serialized)||/FULL CIRCLE/i.test(serialized)||!/Toys [“"]R[”"] Us|Toys R Us/i.test(serialized)||!/Cheddar/i.test(serialized)||!/Apex Sim Racing/i.test(serialized)||!/Ironmouse/i.test(serialized)||/Driver Second\. Team Builder First|AFTER NRRS SEASON 4/i.test(serialized))return structuredClone(fresh);return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};}
         return normalized;
