@@ -3915,26 +3915,54 @@
       "name": "Palmetto Gaming",
       "role": "Gaming Partner",
       "featured": true,
-      "description": "A gaming and collectibles relationship centered on retro and modern games, accessories, Funko Pops, Pokémon cards, and similar inventory.",
+      "description": "Palmetto Gaming is a game shop focused on video games, accessories, and collectibles, with its branding represented across select Aetherwing race cars and team creative.",
       "url": "https://www.palmettogaming.com",
       "logo": "https://1e7ea100626cc069b156.cdn6.editmysite.com/uploads/b/1e7ea100626cc069b1563209b0ec867317428e47fa0b74a79813b09076b7c39c/PalmettoSNEScontrollerLogoWithBackgroundSquare_1727985535.png?width=2400&optimize=medium",
       "tags": [
         "Video Games",
         "Accessories",
         "Collectibles"
+      ],
+      "contentRevision": "2026-10-26-owner-approved-partner-profiles",
+      "badge": "Featured Brand",
+      "category": "Gaming / Collectibles",
+      "profileLabel": "Brand Profile",
+      "presenceTitle": "Gaming represented across the team.",
+      "presenceParagraphs": [
+        "Palmetto Gaming branding is carried across select Aetherwing race cars, liveries, graphics, and team creative. It gives the gaming side of Aetherwing a visible place alongside the motorsports side instead of keeping the two separated.",
+        "That presence also gives us room to highlight the kind of gaming culture Palmetto is built around — video games, accessories, collectibles, and the people around them — while keeping the presentation tied directly to Aetherwing’s own visual identity."
+      ],
+      "presenceTags": [
+        "Race Cars",
+        "Team Creative",
+        "Gaming Identity"
       ]
     },
     {
       "name": "Apex Sim Racing",
       "role": "Affiliate Partner",
       "featured": true,
-      "description": "Aetherwing participates in the Apex Sim Racing affiliate program, connecting the Factory Program with the sim-racing hardware ecosystem.",
+      "description": "Apex Sim Racing is built around sim-racing hardware and equipment, covering everything from wheelbases and steering wheels to pedals, rigs, accessories, and the gear racers actually build their setups around.",
       "url": "https://www.apexsimracing.com/",
       "logo": "https://sksimracing.com/wp-content/uploads/2022/09/Apex_Sim_Racing_Logo_500.png.webp",
       "tags": [
         "Hardware",
         "Rigs + Accessories",
         "Sim Racing"
+      ],
+      "contentRevision": "2026-10-26-owner-approved-partner-profiles",
+      "badge": "Affiliate Partner",
+      "category": "Sim Racing / Affiliate",
+      "profileLabel": "Affiliate Profile",
+      "presenceTitle": "Part of Aetherwing’s sim-racing program.",
+      "presenceParagraphs": [
+        "Apex Sim Racing is Aetherwing’s affiliate connection for sim-racing hardware and equipment, putting the hardware side of the hobby directly alongside the team’s iRacing program and sim-racing content.",
+        "Its presence gives Aetherwing a dedicated place to feature the rigs, wheelbases, pedals, accessories, and other equipment that make up the racing setups behind the drivers, while keeping that hardware coverage connected to the competition side of the team."
+      ],
+      "presenceTags": [
+        "iRacing",
+        "Sim Hardware",
+        "Affiliate Program"
       ]
     }
   ],

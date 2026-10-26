@@ -139,6 +139,21 @@ for(const title of [null,42,false,[],{},'<b>Sponsor</b>']){
   assert.notEqual(content.validate('driver-portfolios',portfolioFixture),'','Sponsor titles must reject invalid types and HTML');
 }
 const partnerFixture=structuredClone(seeds.partners);partnerFixture[0].logo='data:image/webp;base64,UklGRg==';assert.equal(content.validate('partners',partnerFixture),'','Team partner logo uploads must validate through the publication API');
+const {reconcileTeamPartners,approvedPartnerFields}=require('../src/lib/team-partner-content.mjs');
+const oldPartners=seeds.partners.map(partner=>({name:partner.name,role:partner.role,description:'Old generic summary',tags:[],logo:'https://example.test/custom-logo.png',url:'https://example.test/custom-destination'}));
+const oldCopy=JSON.stringify(oldPartners);
+const approvedPartners=reconcileTeamPartners(oldPartners,seeds.partners);
+assert.equal(JSON.stringify(oldPartners),oldCopy,'Copy reconciliation must not mutate a stored publication');
+for(let i=0;i<seeds.partners.length;i++){
+  for(const field of approvedPartnerFields)assert.deepEqual(approvedPartners[i][field],seeds.partners[i][field],`Restore approved ${field} for ${seeds.partners[i].name}`);
+  assert.equal(approvedPartners[i].logo,oldPartners[i].logo,'Preserve later uploaded logos');
+  assert.equal(approvedPartners[i].url,oldPartners[i].url,'Preserve published destinations');
+}
+const editedPartners=structuredClone(approvedPartners);editedPartners[0].description='A later approved CMS edit';editedPartners[0].presenceParagraphs=['An updated presence paragraph.'];
+assert.deepEqual(reconcileTeamPartners(editedPartners,seeds.partners),editedPartners,'Once migrated, future Admin text changes remain authoritative');
+const {partnerCardHtml}=require('../src/lib/team-partner-card.mjs');
+for(const partner of seeds.partners){const html=partnerCardHtml(partner);for(const text of [partner.description,partner.presenceTitle,...partner.presenceParagraphs,...partner.tags,...partner.presenceTags])assert.ok(html.includes(text),`Render approved text for ${partner.name}`);}
+assert.ok(partnerCardHtml({...seeds.partners[0],presenceTitle:'<img src=x onerror=alert(1)>'}).includes('&lt;img'),'Profile text stays escaped');
 let revision=response.body.registry.revision;
 // The approved D1 retirement applies to the CMS seed and stale public records.
 const d1=seeds.charters.find(board=>board.id==='uarl-d1');
@@ -184,6 +199,13 @@ const all=await call(siteAdmin,{action:'publishAll',revision});assert.equal(all.
 assert.deepEqual(all.body.publication.datasets,['wins','milestones']);
 assert.equal(Object.keys(all.body.registry.drafts).length,0);
 assert.equal(buildCount,Object.keys(seeds).length+2);
+const partnerDraft=structuredClone(seeds.partners);partnerDraft[0].presenceTitle='Private partner profile fixture';partnerDraft[0].presenceParagraphs=['Updated fixture paragraph.'];
+let partnerSave=await call(siteAdmin,{action:'saveDraft',dataset:'partners',data:partnerDraft,revision});assert.equal(partnerSave.status,200);revision=partnerSave.body.registry.revision;
+assert.deepEqual((await call(siteData,undefined,null)).body.datasets.partners,seeds.partners,'A partner draft must not change public copy');
+partnerSave=await call(siteAdmin,{action:'publish',dataset:'partners',revision});assert.equal(partnerSave.status,200);revision=partnerSave.body.registry.revision;
+assert.deepEqual((await call(siteData,undefined,null)).body.datasets.partners,partnerDraft,'Published profile edits survive read reconciliation and reload');
+partnerSave=await call(siteAdmin,{action:'publish',dataset:'partners',data:seeds.partners,revision});assert.equal(partnerSave.status,200);revision=partnerSave.body.registry.revision;
+assert.deepEqual((await call(siteData,undefined,null)).body.datasets.partners,seeds.partners,'Republishing the previous approved snapshot restores the copy');
 assert.equal((await call(siteAdmin,{action:'saveDraft',dataset:'wins',data:seeds.wins,revision:0})).status,409);
 assert.notEqual(content.validate('news',seeds.news.map((s)=>({...s,featured:false}))), '');
 assert.notEqual(content.validate('roster-profiles', [{...seeds['roster-profiles'][0],name:'<script>alert(1)</script>'}]),'');

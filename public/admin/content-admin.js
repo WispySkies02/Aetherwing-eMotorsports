@@ -48,7 +48,7 @@
     'iracing-garage':{factoryDrivers:'Factory driver count',teamEntries:'Team entry count',schemes:'Published scheme count',entries:'Garage entries',driver:'Driver / team name',number:'Car number(s)',placeholder:'Placeholder entry'},
     competitions:{id:'League ID',name:'League / program name',type:'Relationship type',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'},
     leadership:{name:'Current public name',roles:'Leadership roles'},
-    partners:{name:'Partner name',role:'Relationship / role',featured:'Featured partner',description:'Public description',url:'Official website URL',logo:'Logo image URL',tags:'Partner tags'},
+    partners:{name:'Partner name',role:'Relationship / role',featured:'Featured partner',description:'Public description',url:'Official website URL',logo:'Logo image URL',tags:'Partner tags',badge:'Public badge',category:'Category',profileLabel:'Profile label',presenceTitle:'Aetherwing presence headline',presenceParagraphs:'Aetherwing presence paragraphs',presenceTags:'Aetherwing presence tags'},
     site:{name:'Organization name',founded:'Founded year',description:'Organization description',url:'Main site URL',logo:'Main logo URL',discordUrl:'Discord invite URL',tagline:'Public tagline',footerEyebrow:'Footer eyebrow',faithEyebrow:'Faith section eyebrow',faithTitle:'Faith section headline',faithStatement:'Faith statement',faithVerse:'Faith verse reference',faithDriversLine:'Drivers page faith line',faithScheduleLine:'Schedule page faith line',faithHistoryLine:'History page faith line',faithRaceDayLine:'Race weekend faith line',legalNotice:'Footer legal notice',mobileSummary:'Mobile navigation summary',featuredPartners:'Featured partner count',verifiedWins:'Verified win count',estimatedStarts:'Estimated starts',competitionRelationships:'Competition relationship count',activeRoRacingDrivers:'Active RoRacing driver count',aetherwingDrivers:'Aetherwing driver count',allianceOnlyDrivers:'Alliance-only driver count'},
     navigation:{label:'Link label',href:'Destination URL / path',group:'Navigation group'},
     'page-overrides':{id:'Content rule ID',page:'Public page path',type:'Content type',label:'Admin label',original:'Current page value',value:'Published replacement',enabled:'Apply this replacement'},
@@ -166,7 +166,7 @@
       // Keep one canonical featured article even when a previously published snapshot selects Talladega.
       return normalizedStories.map((story)=>({...story,featured:story?.slug===currentFeaturedNewsSlug}));
     }
-    if(name==='partners'&&Array.isArray(value)){const list=[...value];for(const partnerName of ['Palmetto Gaming','Apex Sim Racing']){const canonical=(seeds.partners||[]).find((item)=>item?.name===partnerName);if(!canonical)continue;const index=list.findIndex((item)=>item?.name===partnerName);if(index===-1)list.push(structuredClone(canonical));else if(partnerName==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]=structuredClone(canonical);}const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((partnerName,index)=>[partnerName,index]));return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));}
+    if(name==='partners'&&Array.isArray(value)){const list=[...value];for(const partnerName of ['Palmetto Gaming','Apex Sim Racing']){const canonical=(seeds.partners||[]).find((item)=>item?.name===partnerName);if(!canonical)continue;const index=list.findIndex((item)=>item?.name===partnerName);if(index===-1)list.push(structuredClone(canonical));else{const current={...list[index]};if(current.contentRevision!==canonical.contentRevision)for(const field of ['description','badge','category','profileLabel','tags','presenceTitle','presenceParagraphs','presenceTags','contentRevision'])if(Object.hasOwn(canonical,field))current[field]=structuredClone(canonical[field]);if(partnerName==='Palmetto Gaming'&&/hailey|personal/i.test(String(current.role||'')))current.role=canonical.role;list[index]=current;}}const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((partnerName,index)=>[partnerName,index]));return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));}
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));
@@ -887,6 +887,7 @@
     if(key==='driver-portfolios'&&path.length===2&&path[0]==='brands')value={...value,sponsorTitle:value.sponsorTitle??''};
     const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
     return Object.entries(value).map(([k,v])=>{
+      if(key==='partners'&&k==='contentRevision')return '';
       if(key==='drivers'&&k==='numberImageBackup')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
       if (key==='standings' && k==='highlight') {

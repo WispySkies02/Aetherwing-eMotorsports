@@ -1,3 +1,4 @@
+const { reconcileTeamPartners } = require('../../src/lib/team-partner-content.mjs');
 const { read, json, normalizeDriverAssignments, seeds, normalize } = require('./_content.cjs');
 const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
 function replaceFullCirclePartner(value){
@@ -6,16 +7,7 @@ function replaceFullCirclePartner(value){
   return typeof value==='string'?value.replace(/Pokémon|Pokemon/g,'Ironmouse'):value;
 }
 function ensureCoreTeamPartners(rows=[],seedPartners=[]){
-  const list=Array.isArray(rows)?[...rows]:[];
-  for(const name of ['Palmetto Gaming','Apex Sim Racing']){
-    const canonical=(seedPartners||[]).find((item)=>item?.name===name);
-    if(!canonical)continue;
-    const index=list.findIndex((item)=>item?.name===name);
-    if(index===-1)list.push({...canonical});
-    else if(name==='Palmetto Gaming'&&/hailey|personal/i.test(String(list[index]?.role||'')))list[index]={...canonical};
-  }
-  const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((name,index)=>[name,index]));
-  return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));
+  return reconcileTeamPartners(rows,seedPartners,['Palmetto Gaming','Apex Sim Racing']);
 }
 
 function mergeCanonical(datasets){
