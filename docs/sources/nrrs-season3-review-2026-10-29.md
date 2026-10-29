@@ -17,4 +17,4 @@ Verified against that handoff:
 - Homestead qualifying P4 is not a race start or finishing position.
 - 2027 planned final full-time NRRS campaign: #28 StarClutch Racing Cadillac. This future article statement does not replace Bell’s active assignment records.
 
-No further field sizes, full-field finishing orders, points, final championship position or approved on-track photography were supplied. None have been fabricated. Historical result-feed corrections are outside this focused article update.
+The subsequent owner-supplied **Verified Field Sizes (2026)** correction provides all 25 field sizes, counted from final finishing orders in the supplied Discord results recording, including listed DNFs and parked entries. These sum to 221 (8.84 average); the largest is R10 Talladega (12) and the smallest is R24 New Hampshire (5). Full-field finishing orders, points, final championship position and approved on-track photography were not supplied as part of this correction. None have been fabricated. Historical result-feed corrections are outside this focused article update.

@@ -43,7 +43,7 @@ try{
   assert.match(await page.locator('.s3-tour').textContent(),/#28 StarClutch Racing Cadillac/);
   assert.equal(await page.locator('.s3-tour a').getAttribute('href'),'/news/hailey-bell-to-step-back-from-full-time-competition-after-season-4/');
   assert.equal(await page.locator('[data-s3-feature]').getByText('[INSERT COMPONENT]',{exact:false}).count(),0);
-  for(const round of [10,15,18,21,25]){
+  for(const round of races.map(race=>race.round)){
    await page.locator('[data-s3-picker]').selectOption(String(round));
    assert.equal(await page.locator('[data-s3-detail]').textContent(),raceDetail(races[round-1]));
   }
@@ -55,8 +55,11 @@ try{
   assert.equal(await page.locator('[data-s3-picker]').inputValue(),'1');await page.keyboard.press('ArrowRight');assert.equal(await page.locator('[data-s3-picker]').inputValue(),'2');await page.keyboard.press('End');assert.equal(await page.locator('[data-s3-picker]').inputValue(),'25');
   const scroll=await page.evaluate(()=>scrollY);await page.keyboard.press('Space');assert.equal(await page.evaluate(()=>scrollY),scroll);
   const target=page.locator('[data-s3-race="24"] .s3-hit');await target.scrollIntoViewIfNeeded();if(width<700)await target.tap();else await target.click();
-  assert.equal(await page.locator('[data-s3-detail]').textContent(),'R24 · New Hampshire · P3');
+  assert.equal(await page.locator('[data-s3-detail]').textContent(),'R24 · New Hampshire · P3 of 5');
   await page.locator('.s3-data summary').click();assert.equal(await page.locator('.s3-data tbody tr').count(),25);
+  assert.deepEqual(await page.locator('.s3-data tbody tr td:nth-child(4)').allTextContents(),races.map(race=>String(race.fieldSize)),'All 25 verified field sizes render in the table');
+  assert.match(await page.locator('.s3-data caption').textContent(),/including listed DNFs and parked entries/);
+  assert.match(await page.locator('.s3-dashboard .s3-note').textContent(),/Largest field: 12 at Talladega \(R10\); smallest: 5 at New Hampshire \(R24\)/);
   await page.screenshot({path:`/tmp/nrrs-season3-debug-${width}.png`});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${width}px: no page overflow`);
   for(const box of await page.locator('.s3-stats > div,.s3-spotlights > div,.s3-incident > li,.s3-race-detail,.s3-prose h2,h1,.s3-tour').all())assert.equal(await box.evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,`${width}px: ${await box.evaluate(el=>`${el.className}: ${el.textContent.slice(0,100)} (${el.scrollWidth}/${el.clientWidth})`)} text stays inside its panel`);

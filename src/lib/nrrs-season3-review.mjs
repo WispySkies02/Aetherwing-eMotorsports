@@ -2,17 +2,21 @@ import data from '../data/nrrs-season3-review.json' with {type:'json'};
 
 export const storySlug='hailey-bell-nrrs-season-3-review';
 export const races=data.races;
+export const fieldSizeSource=data.fieldSizeSource;
 export const chase=races.filter(race=>race.round>=20);
 const started=rows=>rows.filter(race=>race.finish!==null);
 const sum=rows=>started(rows).reduce((total,race)=>total+race.finish,0);
 const average=rows=>sum(rows)/started(rows).length;
 const starts=started(races);
+const totalEntries=races.reduce((total,race)=>total+race.fieldSize,0);
 export const superspeedways=races.filter(race=>['Daytona','Talladega'].includes(race.track));
 export const otherTracks=races.filter(race=>!superspeedways.includes(race));
 export const stats={
   scheduled:races.length,starts:starts.length,missed:races.length-starts.length,
-  sum:sum(races),average:average(races),totalEntries:data.totalEntries,
-  averageFieldSize:data.totalEntries/races.length,
+  sum:sum(races),average:average(races),totalEntries,
+  averageFieldSize:totalEntries/races.length,
+  largestField:races.reduce((largest,race)=>race.fieldSize>largest.fieldSize?race:largest),
+  smallestField:races.reduce((smallest,race)=>race.fieldSize<smallest.fieldSize?race:smallest),
   topFive:starts.filter(race=>race.finish<=5).length,
   podiums:starts.filter(race=>race.finish<=3).length,
   wins:starts.filter(race=>race.finish===1).length,
@@ -24,7 +28,7 @@ export const stats={
   chasePodiums:started(chase).filter(race=>race.finish<=3).length,
 };
 export const resultLabel=race=>race.finish===null?`DNS — ${race.dnsReason}`:`P${race.finish}`;
-export const raceDetail=race=>`R${race.round} · ${race.track} · ${resultLabel(race)}${race.fieldSize?` of ${race.fieldSize}`:''}${race.qualifyingPosition?` · Qualified P${race.qualifyingPosition}; did not start`:''}`;
+export const raceDetail=race=>`R${race.round} · ${race.track} · ${resultLabel(race)}${race.fieldSize?(race.finish===null?` · Field: ${race.fieldSize} cars`:` of ${race.fieldSize}`):''}${race.qualifyingPosition?` · Qualified P${race.qualifyingPosition}; did not start`:''}`;
 // Fixed readable spacing makes the chart scroll inside its panel on small screens.
 // DNS is not a number on the finish axis and ends the current line segment.
 export function finishChart(){

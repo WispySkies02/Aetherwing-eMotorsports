@@ -6,47 +6,56 @@
     {
       "round": 1,
       "track": "Daytona",
-      "finish": 5
+      "finish": 5,
+      "fieldSize": 11
     },
     {
       "round": 2,
       "track": "Chicagoland",
-      "finish": 8
+      "finish": 8,
+      "fieldSize": 9
     },
     {
       "round": 3,
       "track": "Watkins Glen",
-      "finish": 8
+      "finish": 8,
+      "fieldSize": 8
     },
     {
       "round": 4,
       "track": "Auto Club",
-      "finish": 3
+      "finish": 3,
+      "fieldSize": 10
     },
     {
       "round": 5,
       "track": "Rockingham",
-      "finish": 8
+      "finish": 8,
+      "fieldSize": 8
     },
     {
       "round": 6,
       "track": "Las Vegas",
-      "finish": 5
+      "finish": 5,
+      "fieldSize": 10
     },
     {
       "round": 7,
       "track": "Charlotte",
-      "finish": 7
+      "finish": 7,
+      "fieldSize": 10
     },
     {
       "round": 8,
       "track": "Phoenix",
-      "finish": 5
+      "finish": 5,
+      "fieldSize": 9
     },
     {
       "round": 9,
       "track": "Sonoma",
-      "finish": 8
+      "finish": 8,
+      "fieldSize": 11
     },
     {
       "round": 10,
@@ -57,22 +66,26 @@
     {
       "round": 11,
       "track": "Road America",
-      "finish": 5
+      "finish": 5,
+      "fieldSize": 7
     },
     {
       "round": 12,
       "track": "Richmond",
-      "finish": 5
+      "finish": 5,
+      "fieldSize": 11
     },
     {
       "round": 13,
       "track": "Bristol",
-      "finish": 6
+      "finish": 6,
+      "fieldSize": 8
     },
     {
       "round": 14,
       "track": "Mexico City",
-      "finish": 6
+      "finish": 6,
+      "fieldSize": 8
     },
     {
       "round": 15,
@@ -83,56 +96,67 @@
     {
       "round": 16,
       "track": "COTA",
-      "finish": 6
+      "finish": 6,
+      "fieldSize": 9
     },
     {
       "round": 17,
       "track": "Martinsville",
-      "finish": 4
+      "finish": 4,
+      "fieldSize": 8
     },
     {
       "round": 18,
       "track": "Indianapolis Raceway Park",
       "finish": null,
-      "dnsReason": "Work"
+      "dnsReason": "Work",
+      "fieldSize": 8
     },
     {
       "round": 19,
       "track": "Daytona",
-      "finish": 4
+      "finish": 4,
+      "fieldSize": 10
     },
     {
       "round": 20,
       "track": "Darlington",
-      "finish": 5
+      "finish": 5,
+      "fieldSize": 10
     },
     {
       "round": 21,
       "track": "North Wilkesboro",
       "finish": null,
-      "dnsReason": "Work"
+      "dnsReason": "Work",
+      "fieldSize": 7
     },
     {
       "round": 22,
       "track": "Talladega",
-      "finish": 4
+      "finish": 4,
+      "fieldSize": 6
     },
     {
       "round": 23,
       "track": "Portland",
-      "finish": 8
+      "finish": 8,
+      "fieldSize": 8
     },
     {
       "round": 24,
       "track": "New Hampshire",
-      "finish": 3
+      "finish": 3,
+      "fieldSize": 5
     },
     {
       "round": 25,
       "track": "Homestead-Miami",
       "finish": null,
       "dnsReason": "Technical Issues",
-      "qualifyingPosition": 4
+      "qualifyingPosition": 4,
+      "fieldSize": 8
     }
-  ]
+  ],
+  "fieldSizeSource": "Final finishing orders in the supplied Discord results recording, including listed DNFs and parked entries."
 }
