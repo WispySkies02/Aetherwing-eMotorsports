@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {createRequire} from 'node:module';
 import {races,chase,superspeedways,otherTracks,stats,resultLabel,raceDetail,finishChart,storySlug} from '../src/lib/nrrs-season3-review.mjs';
 const require=createRequire(import.meta.url);
@@ -15,7 +16,15 @@ assert.equal(stats.superspeedwayAverage,3.75);assert.equal(stats.otherAverage.to
 assert.deepEqual(chase.map(r=>r.track),['Darlington','North Wilkesboro','Talladega','Portland','New Hampshire','Homestead-Miami']);
 assert.equal(stats.chaseStarts,4);assert.equal(stats.chaseAverage,5);assert.equal(stats.chasePodiums,1);
 assert.equal(stats.best.round,10);assert.equal(stats.best.fieldSize,12);assert.equal(stats.worst.round,15);assert.equal(stats.worst.fieldSize,10);
-assert.deepEqual(races.filter(r=>r.fieldSize).map(r=>r.round),[10,15],'Never invent individual field sizes from the season average');
+assert.deepEqual(races.map(r=>r.fieldSize),[11,9,8,10,8,10,10,9,11,12,7,11,8,8,10,9,8,8,10,10,7,6,8,5,8],'Preserve every owner-verified field size');
+const source=JSON.parse(fs.readFileSync(new URL('../src/data/nrrs-season3-review.json',import.meta.url),'utf8'));
+assert.equal(source.totalEntries,races.reduce((total,race)=>total+race.fieldSize,0),'Declared season entries must match all 25 fields, including DNS events');
+assert.equal(stats.largestField.round,10);assert.equal(stats.largestField.fieldSize,12);
+assert.equal(stats.smallestField.round,24);assert.equal(stats.smallestField.fieldSize,5);
+assert.ok(races.every(r=>Number.isInteger(r.fieldSize)&&r.fieldSize>0&&(r.finish===null||r.finish<=r.fieldSize)),'Finishes must fit verified fields without treating DNS as a finish');
+assert.equal(raceDetail(races[23]),'R24 · New Hampshire · P3 of 5');
+assert.equal(raceDetail(races[17]),'R18 · Indianapolis Raceway Park · DNS — Work · Field: 8 cars');
+assert.equal(raceDetail(races[24]),'R25 · Homestead-Miami · DNS — Technical Issues · Field: 8 cars · Qualified P4; did not start');
 assert.equal(races[24].qualifyingPosition,4);assert.equal(races[24].finish,null);assert.match(raceDetail(races[24]),/DNS — Technical Issues.*Qualified P4; did not start/);
 assert.equal(resultLabel(races[17]),'DNS — Work');
 const chart=finishChart();assert.ok(chart.y(1)<chart.y(9));assert.ok(chart.dnsY>chart.bottom);

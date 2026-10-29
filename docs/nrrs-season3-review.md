@@ -9,7 +9,7 @@ The article emphasizes Bell’s dissatisfaction, technical setbacks, enjoyment o
 - `src/data/news.json`: complete approved eight-section editorial, headline, subtitle, October 29 publication date, metadata and feature selection. Normal Admin draft/publication text updates are supported without replacing the interactive chart or resetting the selected race.
 - `src/data/nrrs-season3-review.json`: owner-supplied 25-race dataset and 221 total entries. This is a dated article snapshot, separate from public standings, roster and race-result collections. No automatic migration changes those records.
 - `src/lib/nrrs-season3-review.mjs`: statistics calculated from those results; DNS stays `null`. The average field size uses all 25 events; average finish uses only the 22 starts.
-- The only supplied individual field sizes are R10 Talladega (12) and R15 Charlotte (10). No other race fields are inferred from 8.84.
+- All 25 individual field sizes are verified in the owner’s follow-up, counted from final finishing orders in the supplied Discord results recording, including listed DNFs and parked entries. The total (221), mean (8.84), largest field (R10 Talladega, 12) and smallest (R24 New Hampshire, 5) derive from the individual fields. DNS races remain part of field statistics without counting as Bell starts.
 - R18 and R21 are work DNS; R25 is technical DNS. Homestead P4 is qualifying only, never a finish, start or DNF.
 - The non-points All-Star is excluded. Chase is R20–R25, with North Wilkesboro / Talladega / Portland / New Hampshire / Homestead as supplied.
 

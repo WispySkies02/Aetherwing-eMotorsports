@@ -1,5 +1,5 @@
 ---
-import {races,finishChart,resultLabel,raceDetail} from '../../../lib/nrrs-season3-review.mjs';
+import {races,finishChart,resultLabel,raceDetail,fieldSizeSource} from '../../../lib/nrrs-season3-review.mjs';
 const c=finishChart();
 ---
 <section class="s3-panel s3-finish" aria-labelledby="s3-chart-title" data-s3-chart-root>
@@ -24,6 +24,6 @@ const c=finishChart();
   </div>
   <label class="s3-race-picker">Explore a race<select data-s3-picker disabled>{races.map(race=><option value={race.round}>R{race.round} · {race.track} · {resultLabel(race)}</option>)}</select></label>
   <div class="s3-race-detail" data-s3-detail role="status" aria-live="polite" aria-atomic="true">{raceDetail(races[0])}</div>
-  <details class="s3-data"><summary>Read all 25 race results</summary><div class="s3-table-scroll" role="region" tabindex="0" aria-label="Complete Season 3 result data"><table><caption>Owner-approved Season 3 results · October 29, 2026. Only verified field sizes are shown.</caption><thead><tr><th scope="col">Race</th><th scope="col">Track</th><th scope="col">Finish / status</th><th scope="col">Verified field size</th><th scope="col">Note</th></tr></thead><tbody>{races.map(race=><tr><th scope="row">R{race.round}</th><td>{race.track}</td><td>{resultLabel(race)}</td><td>{race.fieldSize??'Not supplied'}</td><td>{race.qualifyingPosition?`Qualified P${race.qualifyingPosition}; did not start`:race.round>=20?'Chase':'Regular season'}</td></tr>)}</tbody></table></div></details>
+  <details class="s3-data"><summary>Read all 25 race results</summary><div class="s3-table-scroll" role="region" tabindex="0" aria-label="Complete Season 3 result data"><table><caption>Owner-approved Season 3 results · October 29, 2026. All 25 field sizes are verified. {fieldSizeSource}</caption><thead><tr><th scope="col">Race</th><th scope="col">Track</th><th scope="col">Finish / status</th><th scope="col">Verified field size</th><th scope="col">Note</th></tr></thead><tbody>{races.map(race=><tr><th scope="row">R{race.round}</th><td>{race.track}</td><td>{resultLabel(race)}</td><td>{race.fieldSize??'Not supplied'}</td><td>{race.qualifyingPosition?`Qualified P${race.qualifyingPosition}; did not start`:race.round>=20?'Chase':'Regular season'}</td></tr>)}</tbody></table></div></details>
   <noscript><p>The chart, article and full result table remain available without JavaScript.</p></noscript>
 </section>
