@@ -439,14 +439,15 @@ if(siteDataV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {..
 if(siteAdminV2027.includes("e?.league==='nrrs'&&e?.date==='2026-09-29')return {...e,track:'Las Vegas Motor Speedway'"))throw Error('v2.0.27 Admin migration must not overwrite venue edits with the old Las Vegas R22 venue.');
 console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin track/title edits and live event identity hydrates on-page.');
 
-// Retain historical recap formats and permalinks; the Kmart championship feature leads Team Wire.
+// Retain historical recap formats and permalinks; the NRRS season review leads Team Wire.
 {
   const newsNow=JSON.parse(readFileSync('src/data/news.json','utf8'));
   const talladega=newsNow.find((item)=>item?.slug==='talladega-leaves-bell-frustrated-championship-gap-grows');
   const portland=newsNow.find((item)=>item?.slug==='bells-road-course-struggles-deepen-at-portland');
   const newHampshire=newsNow.find(item=>item?.slug==='pole-position-fading-pace-bell-salvages-third-at-new-hampshire');
   const kmart=newsNow.find(item=>item.slug==='from-fourth-to-first-hailey-bell-kmart-chase');
-  if(!talladega||!portland||!newHampshire||!kmart||talladega.featured||portland.featured||newHampshire.featured||!kmart.featured||newsNow.filter(item=>item?.featured).length!==1)throw Error('The Kmart Chase-clinch story must be the sole feature; all prior recaps must remain archived.');
+  const seasonReview=newsNow.find(item=>item.slug==='hailey-bell-nrrs-season-3-review');
+  if(!talladega||!portland||!newHampshire||!kmart||!seasonReview||talladega.featured||portland.featured||newHampshire.featured||kmart.featured||!seasonReview.featured||newsNow.filter(item=>item?.featured).length!==1)throw Error('The NRRS Season 3 review must be the sole feature; Kmart and all prior recaps must remain archived.');
   if(portland.featureLayout!=='race-stat-feature'||portland.dateIso!=='2026-10-13'||!portland.featureBlocks.some((block)=>block.type==='standings'))throw Error('Portland post-race feature modules missing.');
   const standings=portland.featureBlocks.find((block)=>block.type==='standings').rows;
   const leader=Number(standings.find((row)=>row.driver==='Will')?.points?.replace(/,/g,''));
@@ -468,7 +469,7 @@ console.log('v2.0.27 verified: Race Weekend routes remain valid after Admin trac
   const admin=readFileSync('public/admin/content-admin.js','utf8');
   for(const [name,src] of [['site-content',siteContent],['live API',siteData],['Admin',admin]])if(!src.includes(portland.slug))throw Error(`Portland featured-story migration missing from ${name}.`);
 }
-console.log('Team Wire verified: Kmart Chase feature selected; all prior recaps and owner corrections retained.');
+console.log('Team Wire verified: NRRS season review selected; Kmart, prior recaps and owner corrections retained.');
 
 // v2.0.29 Talladega prose revision is superseded by the v2.0.37 replacement feature.
 console.log('v2.0.29 historical Talladega prose revision superseded by v2.0.37.');

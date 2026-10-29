@@ -180,7 +180,7 @@ function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/
   const older={news:structuredClone(seed.news.filter(s=>s.slug!==slug)),results:structuredClone(seed.results.filter(r=>r.scheduleId!=='nrrs-round-24')),standings:structuredClone(seed.standings)};
   const beforeStandings=JSON.stringify(older.standings);
   const merged=mergeCanonical(older);
-  assert.deepEqual(merged.news.filter(s=>s.featured).map(s=>s.slug),['from-fourth-to-first-hailey-bell-kmart-chase']);
+  assert.deepEqual(merged.news.filter(s=>s.featured).map(s=>s.slug),['hailey-bell-nrrs-season-3-review']);
   assert.ok(merged.news.some(s=>s.slug===slug&&!s.featured),'New Hampshire stays available as an archived recap');
   assert.equal(JSON.stringify(merged.standings),beforeStandings,'A recap does not replace an Admin championship snapshot');
   const race=merged.results[0];

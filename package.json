@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-rebuild.mjs",
-    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-3d-client-contract.mjs && node scripts/test-race-calendar.mjs && node scripts/test-published-racing-data.mjs && node scripts/test-confirmed-racing-updates.mjs && node scripts/test-race-weekend-track-info.mjs && node scripts/test-schedule-loading.mjs && node scripts/test-kmart-season2.mjs",
+    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-3d-client-contract.mjs && node scripts/test-race-calendar.mjs && node scripts/test-published-racing-data.mjs && node scripts/test-confirmed-racing-updates.mjs && node scripts/test-race-weekend-track-info.mjs && node scripts/test-schedule-loading.mjs && node scripts/test-kmart-season2.mjs && node scripts/test-nrrs-season3.mjs",
     "test:public:browser": "node scripts/test-public-racing-browser.mjs",
     "test:news:browser": "node scripts/test-news-layout-browser.mjs",
     "test:dev": "node scripts/test-dev.mjs",
@@ -16,7 +16,8 @@
     "test:all": "npm run validate && npm test && npm run test:dev && npm run test:publication && npm run test:functions",
     "build": "npm run validate && node scripts/prepare-admin.mjs && node scripts/sync-admin-content.mjs && astro build",
     "preview": "astro preview",
-    "test:kmart:browser": "node scripts/test-kmart-feature-browser.mjs"
+    "test:kmart:browser": "node scripts/test-kmart-feature-browser.mjs",
+    "test:nrrs:browser": "node scripts/test-nrrs-season3-browser.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.0",

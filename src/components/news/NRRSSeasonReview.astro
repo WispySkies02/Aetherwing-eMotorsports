@@ -1,0 +1,26 @@
+---
+import Season3PerformanceDashboard from './season3/Season3PerformanceDashboard.astro';
+import Season3FinishTimeline from './season3/Season3FinishTimeline.astro';
+import Season3TrackTypeComparison from './season3/Season3TrackTypeComparison.astro';
+import Season3ChaseResults from './season3/Season3ChaseResults.astro';
+import HomesteadFinaleTimeline from './season3/HomesteadFinaleTimeline.astro';
+import '../../styles/nrrs-season3-review.css';
+const {story}=Astro.props;
+---
+<div class="s3-feature" data-s3-feature>
+  <Season3PerformanceDashboard/>
+  {story.sections.map((section,index)=><>
+    <section class="s3-prose" data-s3-section={index}><h2>{section.heading}</h2>{section.paragraphs.map(p=><p>{p}</p>)}</section>
+    {index===0&&<Season3FinishTimeline/>}
+    {index===2&&<><Season3TrackTypeComparison/><blockquote class="s3-quote"><p>“I wish I were more of a competitor and not a spectator.”</p><cite>— Hailey Bell, NRRS Season 3 Postseason Reflection</cite></blockquote></>}
+    {index===3&&<Season3ChaseResults/>}
+    {index===4&&<HomesteadFinaleTimeline/>}
+    {index===6&&<blockquote class="s3-quote s3-quote--spotlight"><p>“I want to be a part of the action and a part of the memories that are made on the track.”</p><cite>— Hailey Bell</cite></blockquote>}
+  </>)}
+  <footer class="s3-tour"><p class="s3-kicker">2027 Full Heart Tour</p><img src="/images/social/full-heart-tour-2027-logo.png" alt="Hailey Bell’s Full Heart Tour 2027" width="1563" height="556" loading="lazy" decoding="async"/><h2>Hailey Bell <span>#28 StarClutch Racing Cadillac</span></h2><p>One More Season. Full Heart.</p><a href="/news/hailey-bell-to-step-back-from-full-time-competition-after-season-4/">Explore the Full Heart Tour ↗</a><small>To God Be The Glory · Matthew 17:20</small></footer>
+  <p class="s3-source">Season snapshot supplied and approved by Hailey Bell · October 29, 2026. 25 championship races. The non-points All-Star Race is excluded.</p>
+</div>
+<script>
+  import {mountSeason3Chart} from '../../lib/nrrs-season3-client.mjs';
+  document.querySelectorAll('[data-s3-chart-root]').forEach(root=>mountSeason3Chart(root));
+</script>

@@ -18,7 +18,7 @@ function mergeCanonical(datasets){
     // Keep the confirmed race articles visible when an older Admin snapshot has not yet been republished.
     // The seed identifies the current editorial feature; previous recaps remain available.
     const featuredSlug=seed.news.find(story=>story.featured)?.slug;
-    const raceSlugs=['talladega-leaves-bell-frustrated-championship-gap-grows','bells-road-course-struggles-deepen-at-portland','pole-position-fading-pace-bell-salvages-third-at-new-hampshire',featuredSlug];
+    const raceSlugs=['from-fourth-to-first-hailey-bell-kmart-chase','talladega-leaves-bell-frustrated-championship-gap-grows','bells-road-course-struggles-deepen-at-portland','pole-position-fading-pace-bell-salvages-third-at-new-hampshire',featuredSlug];
     const seedBySlug=new Map((seed.news||[]).map((story)=>[story.slug,story]));
     for(const slug of raceSlugs){
       if(!datasets.news.some((story)=>story?.slug===slug)&&seedBySlug.has(slug))datasets.news.push(seedBySlug.get(slug));
