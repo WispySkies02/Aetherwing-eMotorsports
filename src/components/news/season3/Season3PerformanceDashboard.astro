@@ -1,0 +1,11 @@
+---
+import {stats} from '../../../lib/nrrs-season3-review.mjs';
+const tiles=[['Starts',`${stats.starts} / ${stats.scheduled}`],['Average finish',stats.average.toFixed(2)],['Average field size',stats.averageFieldSize.toFixed(2)],['Top-five finishes',stats.topFive],['Top-three finishes',stats.podiums],['Victories',stats.wins]];
+---
+<section class="s3-dashboard s3-panel" aria-labelledby="s3-stats-title">
+  <header><p class="s3-kicker">The season in numbers</p><h2 id="s3-stats-title">22 starts. The whole story goes deeper.</h2></header>
+  <dl class="s3-stats">{tiles.map(([label,value])=><div><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+  <div class="s3-spotlights">{[['Best finish',stats.best],['Worst finish',stats.worst]].map(([label,race])=><div><small>{label}</small><strong>P{race.finish} <span>/ {race.fieldSize}</span></strong><p>R{race.round} · {race.track}</p></div>)}</div>
+  <div class="s3-rate"><label for="s3-top-five">Top-five rate <b>{stats.topFiveRate.toFixed(1)}%</b></label><progress id="s3-top-five" value={stats.topFive} max={stats.starts}>{stats.topFiveRate.toFixed(1)}%</progress></div>
+  <p class="s3-note">Average finish covers Bell’s {stats.starts} starts. Average field size covers all {stats.scheduled} championship races ({stats.totalEntries} total entries). {stats.missed} missed starts: two for work; one for technical issues. The non-points All-Star Race is excluded.</p>
+</section>

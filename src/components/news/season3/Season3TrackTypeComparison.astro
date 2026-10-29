@@ -1,0 +1,10 @@
+---
+import {stats,superspeedways} from '../../../lib/nrrs-season3-review.mjs';
+---
+<section class="s3-comparison s3-panel" aria-labelledby="s3-comparison-title">
+  <header><p class="s3-kicker">Four races that felt different</p><h2 id="s3-comparison-title">Where Bell Was Most Competitive</h2></header>
+  <p>Average finishing position · <strong>Lower is better.</strong></p>
+  <dl class="s3-bars">{[['Daytona & Talladega',4,stats.superspeedwayAverage],['All Other Tracks',18,stats.otherAverage]].map(([label,starts,value],index)=><div class:list={[{'is-other':index===1}]}><dt>{label}<small>{starts} starts</small></dt><dd><strong>{value.toFixed(2)}</strong><span class="s3-bar-track" aria-hidden="true"><i style={`width:${value/9*100}%`}></i></span></dd></div>)}</dl>
+  <ul class="s3-speedway-results">{superspeedways.map(race=><li><small>R{race.round} · {race.track}</small><b>P{race.finish}</b></li>)}</ul>
+  <p class="s3-note">Bell averaged a 3.75 finish at Daytona and Talladega, compared with 6.06 across all other tracks. More importantly, those were the races she identified as her most enjoyable.</p>
+</section>

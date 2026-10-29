@@ -1,0 +1,29 @@
+---
+import {races,finishChart,resultLabel,raceDetail} from '../../../lib/nrrs-season3-review.mjs';
+const c=finishChart();
+---
+<section class="s3-panel s3-finish" aria-labelledby="s3-chart-title" data-s3-chart-root>
+  <header><p class="s3-kicker">Race by race</p><h2 id="s3-chart-title">A Season of Ups and Downs</h2></header>
+  <p id="s3-chart-description">Hailey Bell’s finishing positions across the 25-race NRRS Season 3 calendar. P1 is at the top. Gold diamonds mark podiums; × marks a DNS, outside the finish scale. The shaded Chase begins at R20. Lines stop at missed starts.</p>
+  <p class="s3-note">Explore with a tap, pointer or keyboard arrows. On smaller screens, scroll the chart sideways or choose a race below.</p>
+  <div class="s3-chart-scroll" tabindex="0" role="region" aria-label="Scrollable season finishing-position chart">
+    <svg class="s3-chart" viewBox={`0 0 ${c.width} ${c.height}`} role="group" aria-labelledby="s3-chart-title" aria-describedby="s3-chart-description">
+      <title>NRRS Season 3 finishes, R1 through R25</title>
+      <rect x={c.chaseX} y="17" width={c.width-c.right-c.chaseX} height={c.dnsY+18-17} class="s3-chase-band"/>
+      <text x={c.chaseX+10} y="27" class="s3-chase-label">THE CHASE · R20–R25</text>
+      {[1,3,5,7,9].map(tick=><g><line x1={c.left} x2={c.width-c.right} y1={c.y(tick)} y2={c.y(tick)} class="s3-gridline"/><text x="10" y={c.y(tick)+5}>P{tick}</text></g>)}
+      <text x="10" y={c.dnsY+5}>DNS</text>
+      {c.paths.map(d=><path d={d} class="s3-finish-line"/>)}
+      {races.map(race=><g data-s3-race={race.round} role="button" tabindex="-1" aria-label={raceDetail(race)} aria-pressed="false">
+        <title>{raceDetail(race)}</title>
+        {race.finish===null?<text x={c.x(race.round)} y={c.dnsY+7} text-anchor="middle" class="s3-dns-mark">×</text>:race.finish<=3?<path d={`M${c.x(race.round)},${c.y(race.finish)-8} l8,8 l-8,8 l-8,-8 Z`} class="s3-podium"/>:<circle cx={c.x(race.round)} cy={c.y(race.finish)} r="5" class="s3-dot"/>}
+        <rect x={c.x(race.round)-22} y={c.top-14} width="44" height={c.dnsY-c.top+30} fill="transparent" class="s3-hit"/>
+        <text x={c.x(race.round)} y="359" text-anchor="middle">R{race.round}</text>
+      </g>)}
+    </svg>
+  </div>
+  <label class="s3-race-picker">Explore a race<select data-s3-picker disabled>{races.map(race=><option value={race.round}>R{race.round} · {race.track} · {resultLabel(race)}</option>)}</select></label>
+  <div class="s3-race-detail" data-s3-detail role="status" aria-live="polite" aria-atomic="true">{raceDetail(races[0])}</div>
+  <details class="s3-data"><summary>Read all 25 race results</summary><div class="s3-table-scroll" role="region" tabindex="0" aria-label="Complete Season 3 result data"><table><caption>Owner-approved Season 3 results · October 29, 2026. Only verified field sizes are shown.</caption><thead><tr><th scope="col">Race</th><th scope="col">Track</th><th scope="col">Finish / status</th><th scope="col">Verified field size</th><th scope="col">Note</th></tr></thead><tbody>{races.map(race=><tr><th scope="row">R{race.round}</th><td>{race.track}</td><td>{resultLabel(race)}</td><td>{race.fieldSize??'Not supplied'}</td><td>{race.qualifyingPosition?`Qualified P${race.qualifyingPosition}; did not start`:race.round>=20?'Chase':'Regular season'}</td></tr>)}</tbody></table></div></details>
+  <noscript><p>The chart, article and full result table remain available without JavaScript.</p></noscript>
+</section>

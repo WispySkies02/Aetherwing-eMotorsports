@@ -1,0 +1,8 @@
+---
+import {chase,stats,resultLabel} from '../../../lib/nrrs-season3-review.mjs';
+---
+<section class="s3-panel" aria-labelledby="s3-chase-title">
+  <header><p class="s3-kicker">The postseason</p><h2 id="s3-chase-title">The Final Six</h2></header>
+  <div class="s3-table-scroll" role="region" tabindex="0" aria-label="Six Chase race results"><table class="s3-chase-table"><caption>NRRS Season 3 · Chase results</caption><thead><tr><th scope="col">Race</th><th scope="col">Track</th><th scope="col">Result</th></tr></thead><tbody>{chase.map(race=><tr class:list={[{'is-podium':race.finish!==null&&race.finish<=3,'is-dns':race.finish===null}]}><th scope="row">R{race.round}</th><td>{race.track}</td><td>{resultLabel(race)}</td></tr>)}</tbody></table></div>
+  <p class="s3-note">{stats.chaseStarts} starts in six races · {stats.chasePodiums} podium finish · Two missed starts · Average finish in Chase starts: <strong>{stats.chaseAverage.toFixed(2)}</strong>.</p>
+</section>

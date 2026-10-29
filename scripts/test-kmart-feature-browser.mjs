@@ -73,9 +73,9 @@ try{
   assert.equal(await page.locator('h1').textContent(),'Published Championship Feature');assert.match(await page.locator('[data-kmart-prose]').textContent(),/Published editorial text/);
   await page.locator('[data-km-jump="8"]').click();assert.equal(await page.locator('[data-km-milestone-points]').textContent(),'533','Controls remain live after CMS edits');
   await page.goto(`${base}/`,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
-  assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),`/news/${storySlug}/`);
+  assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),`/news/${seed.news.find(s=>s.featured).slug}/`);
   await page.goto(`${base}/news/`,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
-  assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),`/news/${storySlug}/`);
+  assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),`/news/${seed.news.find(s=>s.featured).slug}/`);
   assert.deepEqual(errors,[],'No runtime errors');console.log(`PASS: ${width}px chart modes/series/nulls, timeline/keyboard${width<700?'/emulated touch':''}, CMS state preservation, source label, layout and featured links.`);
   await context.close();
  }

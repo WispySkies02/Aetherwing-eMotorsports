@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { news } from '../../lib/site-content.mjs';
+import NRRSSeasonReview from '../../components/news/NRRSSeasonReview.astro';
 import KmartChampionshipFeature from '../../components/news/KmartChampionshipFeature.astro';
 import '../../styles/records.css';
 export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
@@ -8,24 +9,26 @@ const {story}=Astro.props;
 const compactDescription=(value='',limit=170)=>{const clean=String(value||'').replace(/\s+/g,' ').trim();if(clean.length<=limit)return clean;const slice=clean.slice(0,limit+1);const cut=slice.lastIndexOf(' ');return `${slice.slice(0,cut>90?cut:limit).replace(/[.,;:!?-]+$/,'')}…`;};
 const shareDescription=story.embedDescription || compactDescription(story.summary);
 const isRaceFeature=story.featureLayout==='race-stat-feature';
+const isSeasonReview=story.featureLayout==='nrrs-season-review';
 const isChampionshipFeature=story.featureLayout==='championship-feature';
 ---
-<Base title={story.title} description={shareDescription} image={story.socialImage || story.image}>
-  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature||isChampionshipFeature,'news-article--championship':isChampionshipFeature}]} data-news-story-root data-story-slug={story.slug}>
+<Base title={story.seoTitle || story.title} description={shareDescription} image={story.socialImage || story.image} stylesheets={isSeasonReview?['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap']:[]} ogType={isSeasonReview?'article':'website'} publishedTime={isSeasonReview?story.dateIso:undefined}>
+  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature||isChampionshipFeature,'news-article--championship':isChampionshipFeature,'news-article--season3':isSeasonReview}]} data-news-story-root data-story-slug={story.slug}>
     <div class="wrap">
       <header class="news-article__hero">
         <a class="news-article__back" href="/news/">← Team Newsroom</a>
-        <div class="news-article__meta">
+        {!isSeasonReview&&<div class="news-article__meta">
           <p class="eyebrow">{story.category} · {story.date}</p>
           <span>{story.context}</span>
           <span>{story.byline || 'Aetherwing eMotorsports'}</span>
-        </div>
+        </div>}
 
         <div class:list={['news-article__hero-grid',{'has-mark':story.articleLogo || story.headlineMark?.value || story.heroGhost,'has-logo':story.articleLogo}] }>
           <div class="news-article__headline">
             <p class="news-article__kicker">{story.kicker}</p>
             {isChampionshipFeature&&<span class="km-clinched">Chase berth clinched</span>}
             <h1>{story.title}</h1>
+            {isSeasonReview&&<><p class="s3-subtitle">{story.subtitle}</p><div class="news-article__meta"><p class="eyebrow">{story.category} · {story.date}</p><span>{story.context}</span><span>{story.byline || 'Aetherwing eMotorsports'}</span></div></>}
             <p class="news-article__summary">{story.summary}</p>
           </div>
 
@@ -44,7 +47,7 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
           ) : null}
         </div>
 
-        {!isRaceFeature && !isChampionshipFeature && story.tags?.length>0 && (
+        {!isRaceFeature && !isChampionshipFeature && !isSeasonReview && story.tags?.length>0 && (
           <div class="news-article__tags" aria-label="Story tags">
             {story.tags.map(tag=><span>{tag}</span>)}
           </div>
@@ -52,7 +55,7 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
       </header>
 
       <div class="news-article__body">
-        {isChampionshipFeature ? <KmartChampionshipFeature story={story}/> : isRaceFeature ? (
+        {isSeasonReview ? <NRRSSeasonReview story={story}/> : isChampionshipFeature ? <KmartChampionshipFeature story={story}/> : isRaceFeature ? (
           <>
             {story.raceSummary && (
               <section class="news-race-strip" aria-label="Race summary">
@@ -171,6 +174,7 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
 </Base>
 
 <script>
+  import { updateSeason3Story } from '../../lib/nrrs-season3-client.mjs';
   (()=>{
     const root=document.querySelector('[data-news-story-root]');
     if(!root)return;
@@ -210,7 +214,9 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
     const apply=(datasets)=>{
       const live=(datasets?.news||[]).find((item)=>item?.slug===slug);
       if(!live)return;
-      if(root.querySelector('[data-kmart-feature]')&&live.featureLayout==='championship-feature'){
+      if(root.querySelector('[data-s3-feature]')&&live.featureLayout==='nrrs-season-review'){
+        updateSeason3Story(root,live);
+      }else if(root.querySelector('[data-kmart-feature]')&&live.featureLayout==='championship-feature'){
         // This story's chart is a dated snapshot. Preserve its controls and state
         // while published editorial text updates through the existing CMS feed.
         root.querySelector('h1').textContent=live.title;
@@ -228,7 +234,7 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
         root.classList.toggle('news-article--race-feature',live.featureLayout==='race-stat-feature');
         root.innerHTML=storyHtml(live);
       }
-      document.title=`${live.title} | Aetherwing eMotorsports`;
+      document.title=`${live.seoTitle||live.title} | Aetherwing eMotorsports`;
       const shareDescription=live.embedDescription||compactDescription(live.summary||'');
       const description=document.querySelector('meta[name="description"]'); if(description)description.setAttribute('content',shareDescription);
       const ogTitle=document.querySelector('meta[property="og:title"]'); if(ogTitle)ogTitle.setAttribute('content',document.title);

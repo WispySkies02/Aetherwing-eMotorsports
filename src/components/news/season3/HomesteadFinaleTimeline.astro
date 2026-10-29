@@ -1,0 +1,8 @@
+---
+const steps=[{name:'Qualifying',icon:'M5 21V3m0 1h14l-3 4 3 4H5',text:['Qualified P4.','Earned a starting position for the championship finale.']},{name:'Game Update',icon:'M4 5h16v12H4zM8 21h8m-4-4v4M9 11l3-3 3 3m-3-3v6',text:['Game update failed to complete.','Delayed access to the race.']},{name:'Controller Failure',icon:'M7 7h10c3 0 5 9 3 11-2 2-4-3-5-3H9c-1 0-3 5-5 3-2-2 0-11 3-11zM7 10v4m-2-2h4m6-1h.1m2 2h.1',text:['Controller malfunctioned.','Problems extended beyond the game itself.']},{name:'Too Late',icon:'M5 21V3m0 1h14v10H5m0-5h14M10 4v10m5-10v10',text:['Bell eventually entered the game with functioning controls.','The race had already ended.','Official status: DNS.']}];
+---
+<section class="s3-panel s3-homestead" aria-labelledby="s3-homestead-title">
+  <header><p class="s3-kicker">Homestead-Miami / Technical DNS</p><h2 id="s3-homestead-title">Qualified Fourth. Never Started.</h2></header>
+  <ol class="s3-incident">{steps.map((step,index)=><li><span class="s3-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={step.icon}/></svg></span><small>Step {index+1}</small><h3>{step.name}</h3>{step.text.map(p=><p>{p}</p>)}</li>)}</ol>
+  <p class="s3-note">P4 was her qualifying position only. Homestead is a DNS, not a fourth-place finish or a DNF.</p>
+</section>

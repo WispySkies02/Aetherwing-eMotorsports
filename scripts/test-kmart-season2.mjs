@@ -31,13 +31,13 @@ assert.equal(official.series.find(s=>s.id==='will').points[0].index,1,'Unknown D
 assert.equal(chartModel('official',presets.chase).series.length,6);
 const gapped=chartModel('official',['jaxon']);assert.ok(gapped.series[0].path.startsWith('M'));
 const feature=seed.news.find(s=>s.slug===storySlug);
-assert.ok(feature.featured);assert.equal(feature.featureLayout,'championship-feature');
+assert.equal(feature.featured,false,'The previous feature remains archived');assert.equal(feature.featureLayout,'championship-feature');
 assert.equal(feature.dateIso,'2026-10-26');assert.equal(feature.sections.length,5);
-assert.deepEqual(seed.news.filter(s=>s.featured).map(s=>s.slug),[storySlug]);
+assert.deepEqual(seed.news.filter(s=>s.featured).map(s=>s.slug),[seed.news.find(s=>s.featured).slug]);
 const old=structuredClone(seed.news.filter(s=>s.slug!==storySlug));old[0].featured=true;
 const before=JSON.stringify(seed.standings),results=JSON.stringify(seed.results);
 const merged=mergeCanonical({news:old,standings:structuredClone(seed.standings),results:structuredClone(seed.results)});
-assert.deepEqual(merged.news.filter(s=>s.featured).map(s=>s.slug),[storySlug]);
+assert.deepEqual(merged.news.filter(s=>s.featured).map(s=>s.slug),[seed.news.find(s=>s.featured).slug]);
 for(const slug of ['talladega-leaves-bell-frustrated-championship-gap-grows','bells-road-course-struggles-deepen-at-portland','pole-position-fading-pace-bell-salvages-third-at-new-hampshire'])assert.ok(merged.news.some(s=>s.slug===slug&&!s.featured));
 assert.equal(JSON.stringify(merged.standings),before,'Publishing a story never changes the standings');
 assert.deepEqual(merged.results.map(r=>[r.scheduleId,r.entries]),JSON.parse(results).map(r=>[r.scheduleId,r.entries]),'The article does not publish a new race result');

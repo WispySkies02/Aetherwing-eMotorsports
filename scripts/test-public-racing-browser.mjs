@@ -75,7 +75,7 @@ try {
     assert.equal(await page.locator('[data-battle-gap]').textContent(),'-96');
     assert.match(await page.locator('[data-tower-context]').textContent(),/R23\/25/);
     assert.equal(await page.locator('[data-latest-title]').textContent(),'Comcast 301');
-    assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),'/news/from-fourth-to-first-hailey-bell-kmart-chase/');
+    assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),'/news/hailey-bell-nrrs-season-3-review/');
     assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/nrrs-round-24/');
     assert.equal(await page.locator('[data-team-stat="rootsSince"]').textContent(),'2015');
     if(viewport.width<1100) {
@@ -214,7 +214,7 @@ try {
     const recapSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
     await page.goto(`${base}/news/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
-    assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),'/news/from-fourth-to-first-hailey-bell-kmart-chase/');
+    assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),'/news/hailey-bell-nrrs-season-3-review/');
     await page.goto(`${base}/news/${recapSlug}/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.equal(await page.locator('h1').textContent(),'Pole Position, Fading Pace: Bell Salvages Third at New Hampshire');
