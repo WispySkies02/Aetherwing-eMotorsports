@@ -372,6 +372,11 @@ html[data-anniversary-retro="true"] :is(.news-race-strip__eyebrow,.news-stat-car
 }
 
 .profile-partners .driver-sponsor-title{max-width:100%;font:700 .7rem/1.5 var(--font-mono);color:#aaa;text-align:center;overflow-wrap:anywhere}
+/* Fit personal sponsor notes within the existing two-column phone cards.
+   Keep wrapping available for longer published notes and font-loading failures. */
+@media(max-width:640px){
+  .profile-partners .driver-sponsor-title{font:600 clamp(.625rem,3vw,.75rem)/1.5 'Saira Condensed',var(--font-condensed);letter-spacing:0}
+}
 
 /* Keep comparisons intact as units, and allow long published values to wrap. */
 .news-article--race-feature .news-change-grid strong.is-negative{color:#ff8e93}
