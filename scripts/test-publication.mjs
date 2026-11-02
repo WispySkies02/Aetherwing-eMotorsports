@@ -40,6 +40,10 @@ try {
   const baselineOverlay=fs.readFileSync(overlayFile,'utf8');
   const {seeds,normalize}=createRequire(join(cwd,'package.json'))('./netlify/lib/_content.cjs');
   const data=seeds();
+  data.alliances.push({id:'publication-fixture-alliance',name:'Publication Fixture Racing',shortName:'Fixture Racing'});
+  data.drivers.find(row=>row.id==='matty-kmart').allianceId='publication-fixture-alliance';
+  data['roster-profiles'].find(row=>row.slug==='matty').allianceId='publication-fixture-alliance';
+  data.competitions.find(row=>row.id==='kmart').allianceId='publication-fixture-alliance';
   const event={...data['schedule-events'][0],date:'2027-02-01',title:'Publication Fixture Race',eventId:'publication-fixture-race'};
   data['schedule-events'].push(event);
   data['schedule-events'].push({...event,league:'fixture-league',leagueName:'Fixture League',eventId:'fixture-league-race'});
@@ -71,6 +75,11 @@ try {
   try {
     await build({AETHERWING_CONTENT_URL:`http://127.0.0.1:${server.address().port}/content`});
     assert.ok(read('schedule/index.html').includes('Publication Fixture Race'));
+    const allianceProfile=new JSDOM(read('drivers/matty/index.html'));
+    assert.match(allianceProfile.window.document.querySelector('[data-profile-affiliation]').textContent,/PUBLICATION FIXTURE RACING/);
+    assert.match(allianceProfile.window.document.querySelector('[data-profile-assignments]').textContent,/PUBLICATION FIXTURE RACING/);
+    allianceProfile.window.close();
+    for(const path of ['index.html','programs/index.html','programs/kmart/index.html','mission-values/index.html'])assert.ok(read(path).includes('Publication Fixture Racing Alliance'),`${path}: published alliance relationship survives rebuild/canonical repairs`);
     for(const text of ['Publication Fixture Result','Publication Fixture Milestone','Publication Fixture Win'])assert.ok(read('history/index.html').includes(text),`History must render ${text}`);
     assert.ok(read('drivers/index.html').includes('Publication Fixture Driver'));
     const sponsorTitles=sponsorPortfolio.brands.filter(brand=>brand.sponsorTitle?.trim()).map(brand=>brand.sponsorTitle.trim());

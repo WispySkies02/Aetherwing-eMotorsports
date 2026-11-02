@@ -68,7 +68,8 @@
     "status": "Active",
     "affiliation": "alliance",
     "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
-    "numberImage": ""
+    "numberImage": "",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "will-kmart",
@@ -79,7 +80,8 @@
     "competitionId": "kmart",
     "status": "Active",
     "affiliation": "alliance",
-    "numberImage": ""
+    "numberImage": "",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "clutch-kmart",
@@ -91,7 +93,8 @@
     "competitionId": "kmart",
     "status": "Shared Part-Time Entry",
     "affiliation": "alliance",
-    "car": "SCR #29 PT"
+    "car": "SCR #29 PT",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "eazy-kmart",
@@ -103,7 +106,8 @@
     "competitionId": "kmart",
     "status": "Shared Part-Time Entry",
     "affiliation": "alliance",
-    "car": "SCR #29 PT"
+    "car": "SCR #29 PT",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "matty-kmart",
@@ -116,7 +120,8 @@
     "status": "Full-Time",
     "affiliation": "alliance",
     "car": "SCR #3",
-    "currentRosterRevision": "2026-11-01-v1"
+    "currentRosterRevision": "2026-11-01-v1",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "eazy-sunoco",
@@ -128,7 +133,8 @@
     "status": "Active",
     "affiliation": "alliance",
     "car": "RAM",
-    "numberImage": ""
+    "numberImage": "",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "will-sunoco",
@@ -140,7 +146,8 @@
     "status": "Active",
     "affiliation": "alliance",
     "car": "RAM",
-    "numberImage": ""
+    "numberImage": "",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "clutch-sunoco",
@@ -152,7 +159,8 @@
     "status": "Active",
     "affiliation": "alliance",
     "car": "RAM",
-    "numberImage": ""
+    "numberImage": "",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "wispy-sunoco",
@@ -165,7 +173,8 @@
     "affiliation": "alliance",
     "car": "RAM",
     "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
-    "numberImage": ""
+    "numberImage": "",
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "levi-iracing",

@@ -1,3 +1,5 @@
+import {alliancePrograms,preserveAllianceRelationship} from './alliance-content.mjs';
+import {defaultAlliances} from './alliances.mjs';
 import { reconcileCurrentAssignments, reconcileCurrentProfiles } from './current-driver-updates.mjs';
 import { reconcileTeamPartners } from './team-partner-content.mjs';
 import overlay from '../data/admin-content.json';
@@ -22,13 +24,14 @@ import driverPortfoliosSeed from '../data/driver-portfolios.json';
 import pageOverridesSeed from '../data/page-overrides.json';
 import { appendReviewedResults } from './reviewed-results.mjs';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
+export const alliances = choose('alliances',defaultAlliances);
 
 const normalizeDriverAssignments = (rows=[]) => {
   const normalized=rows.flatMap((entry) => {
     if (entry?.id !== 'shared-kmart' && !(entry?.competitionId === 'kmart' && String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName || ''))) return [entry];
     const common = {
       number:'29', numberImage:entry.numberImage || '', numberImageBackup:entry.numberImageBackup || '', competition:entry.competition || 'Kmart Auto Parts Series', competitionId:'kmart',
-      status:entry.status || 'Shared Part-Time Entry', affiliation:entry.affiliation || 'alliance', car:entry.car || 'SCR #29 PT'
+      status:entry.status || 'Shared Part-Time Entry', affiliation:entry.affiliation || 'alliance', ...(Object.hasOwn(entry,'allianceId')?{allianceId:entry.allianceId}:{}), car:entry.car || 'SCR #29 PT'
     };
     return [
       {...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},
@@ -208,9 +211,9 @@ const staleCompetition = (item={}) => {
   if(item.id==='iracing-factory') return (item.roster||[]).some((entry)=>/Nicholas Waggoner/i.test(entry));
   return false;
 };
-export const competitions = (Array.isArray(publishedCompetitions)?publishedCompetitions:competitionsSeed)
+export const competitions = alliancePrograms((Array.isArray(publishedCompetitions)?publishedCompetitions:competitionsSeed)
   .filter((item)=>item?.id!=='uarl-d2')
-  .map((item)=>staleCompetition(item)?competitionSeedById.get(item.id)||item:item);
+  .map((item)=>staleCompetition(item)?preserveAllianceRelationship(competitionSeedById.get(item.id),item):item),alliances);
 const publishedLeadership = choose('leadership', leadershipSeed);
 export const leadership = (Array.isArray(publishedLeadership)?publishedLeadership:leadershipSeed).map((entry,index)=>{
   if(index===0 && /^(Wispy|WispySkies02|Hailey)$/i.test(String(entry?.name||''))) return leadershipSeed[0];

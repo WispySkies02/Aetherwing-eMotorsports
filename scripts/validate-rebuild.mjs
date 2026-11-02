@@ -25,7 +25,7 @@ if(charters.some((board)=>(board.fullTime||[]).some((slot)=>!Object.hasOwn(slot,
 const profileSource=readFileSync('src/pages/drivers/[slug].astro','utf8');
 if(!profileSource.includes("d['driver-portfolios']")||!profileSource.includes('data-profile-partners'))throw Error('Driver profiles must stay synchronized with live Driver Portfolios.');
 const lineupSource=readFileSync('src/components/DriverLineup.astro','utf8');
-if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.includes('STARCLUTCH RACING'))throw Error('Driver Lineup must retain partner-team roster support.');
+if(!lineupSource.includes("alliance=e.affiliation==='alliance'")||!lineupSource.includes('organizationName'))throw Error('Driver Lineup must retain partner-team roster support.');
 if(!lineupSource.includes('const groupedDrivers=')||!lineupSource.includes('ONE CARD EACH')||!lineupSource.includes('aw-lineup__summary-rides'))throw Error('Driver Lineup ALL filter must group league assignments into one card per driver.');
 if(!lineupSource.includes('chooseDriverArt')||!lineupSource.includes('uploadedByNumber')||!lineupSource.includes('Math.random()')||!lineupSource.includes('artCorrections'))throw Error('Driver Lineup must retain single-number normalization and randomized uploaded-art selection.');
 const lineupCss=readFileSync('src/styles/driver-lineup.css','utf8');
