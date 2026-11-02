@@ -1,3 +1,4 @@
+const { reconcileCurrentAssignments, reconcileCurrentProfiles } = require('../../src/lib/current-driver-updates.mjs');
 const fs = require('node:fs');
 const path = require('node:path');
 let blobsModulePromise;
@@ -19,11 +20,12 @@ function normalizeDriverAssignments(rows=[]) {
     const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
     return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
   });
-  const shared29=normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
-  if(!shared29)return normalized.map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
+  const updated=reconcileCurrentAssignments(normalized);
+  const shared29=updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
+  if(!shared29)return updated.map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
   const sharedUpload=shared29.numberImageBackup||'';
   const sharedSource=shared29.numberImage||sharedUpload;
-  return normalized.map((entry)=>{const canonical=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;return canonical?.competitionId==='kmart'&&String(canonical?.number)==='29'?{...canonical,numberImage:canonical.numberImage||sharedSource,numberImageBackup:canonical.numberImageBackup||sharedUpload}:canonical;});
+  return updated.map((entry)=>{const canonical=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;return canonical?.competitionId==='kmart'&&String(canonical?.number)==='29'?{...canonical,numberImage:canonical.numberImage||sharedSource,numberImageBackup:canonical.numberImageBackup||sharedUpload}:canonical;});
 }
 function validNumberImage(value='') {
   return !value || /^(https:\/\/|\/)/.test(value) || (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) && value.length<=160000);
@@ -64,7 +66,7 @@ function scoreKnownRace(race={}) {
 function normalize(key,data) {
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
-  if(key==='roster-profiles'&&Array.isArray(data))return data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug}));
+  if(key==='roster-profiles'&&Array.isArray(data))return reconcileCurrentProfiles(data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug})));
   if(key==='driver-profiles'&&Array.isArray(data))return data.map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
   if(key==='driver-portfolios'&&Array.isArray(data))return data.map((portfolio)=>portfolio?.profile==='wispy'?{...portfolio,profile:'hailey'}:portfolio);
   if(key==='results'&&Array.isArray(data)){const sorted=[...data].map(scoreKnownRace).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));return sorted.map((race,index)=>({...race,featured:index===0}));}

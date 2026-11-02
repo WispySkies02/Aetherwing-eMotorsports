@@ -3390,7 +3390,7 @@
     {
       "slug": "eazy",
       "name": "Eazy",
-      "handle": "@Eazyonthafarilla",
+      "handle": "@deadmansrisin27_",
       "role": "Alliance Driver",
       "affiliation": "alliance",
       "numbers": "27 / 29",
@@ -3400,21 +3400,23 @@
       ],
       "feature": "StarClutch Alliance",
       "signatureLogo": "",
-      "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM."
+      "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM.",
+      "currentRosterRevision": "2026-11-01-v1"
     },
     {
       "slug": "matty",
       "name": "Matty",
-      "handle": "@mymainisgone98",
+      "handle": "@matty_campbell",
       "role": "Alliance Driver",
       "affiliation": "alliance",
-      "numbers": "29",
+      "numbers": "3",
       "programs": [
         "Kmart"
       ],
-      "feature": "Part-Time Entry",
+      "feature": "Full-Time Entry",
       "signatureLogo": "",
-      "bio": "StarClutch Racing alliance driver sharing the part-time Kmart #29 entry."
+      "bio": "StarClutch Racing alliance driver driving the full-time Kmart #3 entry.",
+      "currentRosterRevision": "2026-11-01-v1"
     }
   ],
   "driver-profiles": [
@@ -3563,13 +3565,14 @@
       "id": "matty-kmart",
       "profile": "matty",
       "displayName": "Matty",
-      "number": "29",
+      "number": "3",
       "numberImage": "",
       "competition": "Kmart Auto Parts Series",
       "competitionId": "kmart",
-      "status": "Shared Part-Time Entry",
+      "status": "Full-Time",
       "affiliation": "alliance",
-      "car": "SCR #29 PT"
+      "car": "SCR #3",
+      "currentRosterRevision": "2026-11-01-v1"
     },
     {
       "id": "eazy-sunoco",
@@ -3861,7 +3864,8 @@
       "roster": [
         "#15 Hailey",
         "#24 Will",
-        "#29 PT · Clutch / Eazy / Matty"
+        "#3 Matty · Full-Time",
+        "#29 PT · Clutch / Eazy"
       ]
     },
     {

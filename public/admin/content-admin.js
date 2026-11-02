@@ -116,16 +116,56 @@
   const status = (message) => { $('[data-content-status]').textContent=message; };
   const account = () => window.netlifyIdentity?.currentUser();
   const authorized = () => local || (account()?.app_metadata?.roles || account()?.app_metadata?.authorization?.roles || []).includes('admin');
+  // Apply confirmed current identities once; retain later saved Admin edits.
+  const migrateCurrentRoster=(name,rows=[])=>rows.map((row)=>{
+    const profile=name==='drivers'?(row.id==='matty-kmart'?'matty':row.profile):row.slug;
+    const identity=(seeds['roster-profiles']||[]).find(item=>item.slug===profile);
+    const fresh=(seeds[name]||[]).find(item=>name==='drivers'?item.id===row.id:item.slug===row.slug);
+    const optionalIdentity=name==='drivers'&&profile==='eazy'&&['handle','username','robloxUsername'].some(field=>Object.hasOwn(row,field));
+    const revision=fresh?.currentRosterRevision||(optionalIdentity?identity?.currentRosterRevision:'');
+    if(!revision||row.currentRosterRevision===revision)return row;
+    const legacy={matty:'mymainisgone98',eazy:'Eazyonthafarilla'}[profile],handle=identity?.handle||fresh?.handle;
+    const media=field=>/(?:image|photo|avatar|logo|signature|source)/i.test(field);
+    const linkField=field=>/(?:url|href|links?)$/i.test(field)&&!media(field);
+    const token=legacy?new RegExp(`(^|%40|[^a-z0-9_])${legacy}(?=$|[^a-z0-9_])`,'gi'):null;
+    const url=value=>typeof value==='string'&&/^(?:https?:\/\/|\/(?!\/))/i.test(value);
+    const replace=value=>token&&handle?value.replace(token,(_match,prefix)=>prefix+handle.replace(/^@/,'')):value;
+    const links=(value,inLinks=false)=>{
+      if(Array.isArray(value))return value.map(item=>typeof item==='string'&&inLinks&&url(item)?replace(item):links(item,inLinks));
+      if(!value||typeof value!=='object')return value;
+      return Object.fromEntries(Object.entries(value).map(([field,item])=>{
+        if(media(field))return[field,item];
+        const target=inLinks||linkField(field);
+        if(typeof item==='string'&&target&&url(item))return[field,replace(item)];
+        return[field,item&&typeof item==='object'?links(item,target):item];
+      }));
+    };
+    const next={...links(row),currentRosterRevision:revision};
+    if(handle)for(const field of ['handle','username','robloxUsername'])if(Object.hasOwn(row,field)&&typeof row[field]==='string')next[field]=field==='handle'||row[field].trim().startsWith('@')?handle:handle.replace(/^@/,'');
+    if(name==='drivers'){
+      if(row.id==='matty-kmart'){
+        const oldNumber=String(row.number||''),sharedArt=new Set(rows.filter(item=>item.competitionId==='kmart'&&String(item.number)==='29'&&item.id!==row.id).flatMap(item=>[item.numberImage,item.numberImageBackup]).filter(Boolean));
+        next.number=fresh.number;next.status=fresh.status;
+        if(!String(row.car||'').trim()||/^SCR\s*#29\s*PT$/i.test(row.car))next.car=fresh.car;
+        if(oldNumber!==String(fresh.number)||sharedArt.has(row.numberImage))next.numberImage='';
+        if(oldNumber!==String(fresh.number)||sharedArt.has(row.numberImageBackup))next.numberImageBackup='';
+      }
+      return next;
+    }
+    for(const field of row.slug==='matty'?['handle','numbers','feature','bio']:['handle'])next[field]=fresh[field];
+    return next;
+  });
   const normalizeDriverAssignments = (rows=[]) => {
     const normalized=rows.flatMap((entry)=>{
       if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||'')))return [entry];
       const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
       return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
     });
-    const shared29=normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
-    if(!shared29)return normalized;
+    const updated=migrateCurrentRoster('drivers',normalized);
+    const shared29=updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
+    if(!shared29)return updated;
     const sharedUpload=shared29.numberImageBackup||'',sharedSource=shared29.numberImage||sharedUpload;
-    return normalized.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
+    return updated.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
   };
   // v2.0.11 — normalize legacy Wispy references in Team Wire without changing old story URLs.
   const normalizeNewsIdentityValue=(value)=>{
@@ -170,7 +210,7 @@
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));
-      return value.map((profile)=>({...seedBySlug.get(profile.slug),...profile,signatureLogo:profile.signatureLogo||''}));
+      return migrateCurrentRoster(name,value).map((profile)=>({...seedBySlug.get(profile.slug),...profile,signatureLogo:profile.signatureLogo||''}));
     }
     return value;
   };
@@ -493,7 +533,7 @@
     }
   };
   const standingsDriverAliases={
-    wispy:'hailey',aokikoto:'hailey',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',player13:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',sbnjco:'nico',sbnjc:'nico',matts1964:'matt',tnfanracing:'tnfan',evilcharms:'ryan',emoflamingo:'flamingo',hotline:'hotline'
+    wispy:'hailey',aokikoto:'hailey',mymainisgone98:'matty',eazyonthafarilla:'eazy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',player13:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',sbnjco:'nico',sbnjc:'nico',matts1964:'matt',tnfanracing:'tnfan',evilcharms:'ryan',emoflamingo:'flamingo',hotline:'hotline'
   };
   const standingsManufacturerIconPaths={
     chevrolet:'/images/manufacturers/chevrolet.png',
@@ -889,6 +929,7 @@
     return Object.entries(value).map(([k,v])=>{
       if(key==='partners'&&k==='contentRevision')return '';
       if(key==='drivers'&&k==='numberImageBackup')return '';
+      if(['drivers','roster-profiles'].includes(key)&&k==='currentRosterRevision')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
       if (key==='standings' && k==='highlight') {
         return shell(pretty,`<input type="text" readonly value="${v?'Highlighted':'Not highlighted'}">`,'Use the ☆ Highlight Driver / ★ Highlighted button above this standings row.','is-readonly');
@@ -957,7 +998,7 @@
       if(key==='drivers'&&k==='numberImage') {
         const upload=current()?.numberImageBackup||'',primary=upload||v||'',secondary=upload&&v&&v!==upload?v:'';
         const preview=primary?`<img class="driver-number-preview" src="${esc(primary)}" ${secondary?`data-backup-src="${esc(secondary)}"`:''} alt="Current number artwork preview">`:'';
-        const sharedNote=current()?.competitionId==='kmart'&&String(current()?.number)==='29'?' Kmart #29 is shared, so this artwork is synchronized to Clutch, Eazy, and Matty.':'';
+        const sharedNote=current()?.competitionId==='kmart'&&String(current()?.number)==='29'?' Kmart #29 artwork is synchronized across its current shared entries.':'';
         const source=!primary?'No image · the car number will be shown.':primary.startsWith('data:')?'Current source: uploaded file':'Current source: image link';
         const urlValue=v&&!String(v).startsWith('data:')?v:'';
         return `<div class="admin-field is-wide driver-number-field"><span class="admin-field__label">Number artwork</span>${preview}<strong data-number-image-source>${esc(source)}</strong><div class="number-image-options"><label><span>Upload a file</span><input type="file" accept="image/png,image/jpeg,image/webp" data-number-image-upload><small class="admin-field__help">Choose PNG, JPG, or WebP. The file is optimized and replaces the current image.</small></label><div><label><span>Use a hosted image</span><input type="text" inputmode="url" data-number-image-url value="${esc(urlValue)}" placeholder="https://example.com/number.png"></label><button type="button" data-number-image-use-url>Use image URL</button><small class="admin-field__help">Paste a direct HTTPS image link or site-relative path, then select Use image URL to replace the current image. The image must stay publicly accessible at that address.</small></div></div><button type="button" data-number-image-remove ${primary?'':'disabled'}>Remove number artwork</button><small class="admin-field__help">Review the preview, then Save private draft or Publish changes.${esc(sharedNote)}</small><small data-number-image-feedback role="status" aria-live="polite"></small></div>`;

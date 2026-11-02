@@ -1,3 +1,4 @@
+import { reconcileCurrentAssignments, reconcileCurrentProfiles } from './current-driver-updates.mjs';
 // One atomic publication for every public surface. A failed request can expose
 // a saved snapshot, but must label it rather than silently imply it is current.
 const validDatasets = datasets => Boolean(datasets && !Array.isArray(datasets) && typeof datasets === 'object' && ['standings','results','schedule-events'].every(key=>!(key in datasets)||Array.isArray(datasets[key])));
@@ -23,6 +24,8 @@ export async function loadPublishedContent({ fetcher = fetch, storage = localSto
 
 export function applyPublication(snapshot, fallback, { document, window }) {
   const datasets = { ...fallback, ...snapshot.datasets };
+  if(Array.isArray(datasets.drivers))datasets.drivers=reconcileCurrentAssignments(datasets.drivers);
+  if(Array.isArray(datasets['roster-profiles']))datasets['roster-profiles']=reconcileCurrentProfiles(datasets['roster-profiles']);
   window.__AETHERWING_CONTENT__ = datasets;
   window.__AETHERWING_PUBLICATION__ = snapshot;
   // All subscribers render the same complete object before any region reveals it.

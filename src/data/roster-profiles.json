@@ -111,7 +111,7 @@
   {
     "slug": "eazy",
     "name": "Eazy",
-    "handle": "@Eazyonthafarilla",
+    "handle": "@deadmansrisin27_",
     "role": "Alliance Driver",
     "affiliation": "alliance",
     "numbers": "27 / 29",
@@ -121,20 +121,22 @@
     ],
     "feature": "StarClutch Alliance",
     "signatureLogo": "",
-    "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM."
+    "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM.",
+    "currentRosterRevision": "2026-11-01-v1"
   },
   {
     "slug": "matty",
     "name": "Matty",
-    "handle": "@mymainisgone98",
+    "handle": "@matty_campbell",
     "role": "Alliance Driver",
     "affiliation": "alliance",
-    "numbers": "29",
+    "numbers": "3",
     "programs": [
       "Kmart"
     ],
-    "feature": "Part-Time Entry",
+    "feature": "Full-Time Entry",
     "signatureLogo": "",
-    "bio": "StarClutch Racing alliance driver sharing the part-time Kmart #29 entry."
+    "bio": "StarClutch Racing alliance driver driving the full-time Kmart #3 entry.",
+    "currentRosterRevision": "2026-11-01-v1"
   }
 ]

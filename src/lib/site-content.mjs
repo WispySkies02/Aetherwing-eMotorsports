@@ -1,3 +1,4 @@
+import { reconcileCurrentAssignments, reconcileCurrentProfiles } from './current-driver-updates.mjs';
 import { reconcileTeamPartners } from './team-partner-content.mjs';
 import overlay from '../data/admin-content.json';
 import scheduleSeed from '../data/schedule-events.json';
@@ -35,11 +36,12 @@ const normalizeDriverAssignments = (rows=[]) => {
       {...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}
     ];
   });
-  const shared29=normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||normalized.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
-  if(!shared29)return normalized;
+  const updated=reconcileCurrentAssignments(normalized);
+  const shared29=updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
+  if(!shared29)return updated;
   const sharedUpload=shared29.numberImageBackup||'';
   const sharedSource=shared29.numberImage||sharedUpload;
-  return normalized.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
+  return updated.map((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'?{...entry,numberImage:entry.numberImage||sharedSource,numberImageBackup:entry.numberImageBackup||sharedUpload}:entry);
 };
 const normalizeLegacyKmartResult = (result) => ({...result, entries:(result.entries||[]).map((entry) => {
   if (entry?.assignmentId === 'shared-kmart' || (String(entry?.number) === '29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.driver || ''))) {
@@ -105,7 +107,7 @@ const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',
   kmart:'Kmart', sunoco:'Sunoco', 'iracing-factory':'iRacing Factory Program'
 };
-const rosterBase = choose('roster-profiles', rosterSeed).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags');
+const rosterBase = reconcileCurrentProfiles(choose('roster-profiles', rosterSeed)).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags');
 export const rosterProfiles = rosterBase.map((sourceProfile) => {
   const profile=sourceProfile?.slug==='wispy'?{...sourceProfile,slug:'hailey'}:sourceProfile;
   const assignments = drivers.filter((entry) => entry.profile === profile.slug);
