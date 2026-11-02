@@ -77,7 +77,8 @@
     ],
     "feature": "StarClutch Alliance",
     "signatureLogo": "",
-    "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor."
+    "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor.",
+    "allianceId": "starclutch-racing"
   },
   {
     "slug": "jaxon",
@@ -91,7 +92,8 @@
     ],
     "feature": "Former Competition Driver",
     "signatureLogo": "",
-    "bio": "Aetherwing Media Specialist and former #34 Kmart alliance competitor. Historical results and paint records remain part of the team archive."
+    "bio": "Aetherwing Media Specialist and former #34 Kmart alliance competitor. Historical results and paint records remain part of the team archive.",
+    "allianceId": "starclutch-racing"
   },
   {
     "slug": "clutch",
@@ -106,7 +108,8 @@
     ],
     "feature": "StarClutch Alliance",
     "signatureLogo": "",
-    "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46."
+    "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46.",
+    "allianceId": "starclutch-racing"
   },
   {
     "slug": "eazy",
@@ -122,7 +125,8 @@
     "feature": "StarClutch Alliance",
     "signatureLogo": "",
     "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM.",
-    "currentRosterRevision": "2026-11-01-v1"
+    "currentRosterRevision": "2026-11-01-v1",
+    "allianceId": "starclutch-racing"
   },
   {
     "slug": "matty",
@@ -137,6 +141,7 @@
     "feature": "Full-Time Entry",
     "signatureLogo": "",
     "bio": "StarClutch Racing alliance driver driving the full-time Kmart #3 entry.",
-    "currentRosterRevision": "2026-11-01-v1"
+    "currentRosterRevision": "2026-11-01-v1",
+    "allianceId": "starclutch-racing"
   }
 ]

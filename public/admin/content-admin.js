@@ -5,11 +5,12 @@
   const modules = {
     schedule: { title:'Schedule Manager', sections:[['schedule-events','Race calendar']] },
     results: { title:'Results & Milestones', sections:[['results','Race results'],['wins','Win archive'],['standings','Standings snapshots'],['milestones','Milestones']] },
-    roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['driver-profiles','Driver profiles'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['competitions','League details']] },
+    roster: { title:'Roster Manager', sections:[['drivers','Driver league assignments'],['roster-profiles','Driver directory & bios'],['driver-profiles','Driver profiles'],['charters','Charter boards'],['iracing-garage','iRacing roster'],['competitions','League details'],['alliances','Team alliances']] },
     organization: { title:'Organization', sections:[['leadership','Leadership'],['partners','Team partners'],['site','Site settings'],['navigation','Navigation'],['page-overrides','Page Content'],['driver-portfolios','Driver portfolios']] },
     news: { title:'Team Wire', sections:[['news','Stories & featured homepage headline']] }
   };
   const datasetMeta = {
+    alliances:{number:'19',kicker:'PEOPLE + PROGRAMS',title:'Team Alliances',description:'Add, rename or remove racing-team alliances and select them on current driver and program records.',guide:'Add an alliance, enter its name, then save a draft or publish. Assign it in Driver League Assignments, Driver Directory and League Details. Before removal, reassign linked current records and review biography text. Publish those changes first, or stage all changes and use Publish all. Historical results, news and paints stay unchanged.'},
     'schedule-events':{number:'01',kicker:'RACE OPERATION',title:'Calendar',description:'Add or edit every race, off-week, special event, event window, status badge, track, date, start time, and race-specific entry list. New races automatically move into chronological order when saved or published.',guide:'Choose Add Race, then complete its league, date, and start time. Entry List Mode can stay Auto (published results after the race, otherwise the league roster) or switch to Custom so you can select exactly who is expected to race. The Calendar places events by date, parsed 12-hour time, and league.'},
     results:{number:'02',kicker:'RACE OPERATION',title:'Race Results',description:'Choose a scheduled race, paste the full finishing order, and let scoring plus Latest Result update automatically.',guide:'Paste Position, driver, start, Stage_1, Stage_2 as CSV/TSV to load the complete field. Use - in a stage column when the driver finished outside the top five; it displays as a dash and scores zero stage points. Finishing/stage points are derived from the league scoring profile. Featured Driver and Chase Driver remain manual controls. Publishing a result can advance any standings board with Auto Points enabled.'},
     wins:{number:'03',kicker:'RACE OPERATION',title:'Win Archive',description:'Add, correct, or remove individual wins used by Wins & History.',guide:'One row equals one recorded win. Keep historical driver names when that is how the result was originally recorded.'},
@@ -36,17 +37,18 @@
   ];
   const statusChoices = ['Full-Time','Part-Time','Development','Active','Shared Part-Time Entry','Factory Driver','Team Entry','OPEN'];
   const fieldLabels = {
+    alliances:{id:'Alliance key',name:'Alliance name',shortName:'Short name (optional)'},
     'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD',entryListMode:'Event entry list mode',entries:'Event entry list',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',entryStatus:'Entry note / status'},
     results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Automatic Latest Result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',finishPoints:'Finish points',bonusPoints:'Bonus / adjustment points',pointsEligible:'Championship points eligible',racePoints:'Total race points',featuredDriver:'Featured driver',chaseDriver:'Chase driver'},
     wins:{assignmentId:'Linked driver assignment',league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
     standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change (+/-)',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
-    drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Competing organization',car:'Car / body',identityNote:'Identity note'},
-    'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary affiliation',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',signatureLogo:'Signature logo URL',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
+    drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Relationship',allianceId:'Alliance team',car:'Car / body',identityNote:'Identity note'},
+    'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary relationship',allianceId:'Alliance team',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',signatureLogo:'Signature logo URL',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
     'driver-profiles':{slug:'Profile ID',displayName:'Current RoRacing display name',iracingName:'Current iRacing name',subtitle:'Profile subtitle',intro:'Profile introduction',stats:'Career stat tiles',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
     charters:{id:'League / charter board ID',label:'Public series label',seriesNote:'Board note',fullTime:'Full-time charters',openCharters:'Open Charters',uses:'Number identities / uses',number:'Car number',numberImage:'Number image URL',driver:'Assigned driver',slotLabel:'Slot label',active:'Active / public',description:'Public explanation'},
     'iracing-garage':{factoryDrivers:'Factory driver count',teamEntries:'Team entry count',schemes:'Published scheme count',entries:'Garage entries',driver:'Driver / team name',number:'Car number(s)',placeholder:'Placeholder entry'},
-    competitions:{id:'League ID',name:'League / program name',type:'Relationship type',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'},
+    competitions:{id:'League ID',name:'League / program name',type:'Relationship type',allianceId:'Alliance team',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'},
     leadership:{name:'Current public name',roles:'Leadership roles'},
     partners:{name:'Partner name',role:'Relationship / role',featured:'Featured partner',description:'Public description',url:'Official website URL',logo:'Logo image URL',tags:'Partner tags',badge:'Public badge',category:'Category',profileLabel:'Profile label',presenceTitle:'Aetherwing presence headline',presenceParagraphs:'Aetherwing presence paragraphs',presenceTags:'Aetherwing presence tags'},
     site:{name:'Organization name',founded:'Founded year',description:'Organization description',url:'Main site URL',logo:'Main logo URL',discordUrl:'Discord invite URL',tagline:'Public tagline',footerEyebrow:'Footer eyebrow',faithEyebrow:'Faith section eyebrow',faithTitle:'Faith section headline',faithStatement:'Faith statement',faithVerse:'Faith verse reference',faithDriversLine:'Drivers page faith line',faithScheduleLine:'Schedule page faith line',faithHistoryLine:'History page faith line',faithRaceDayLine:'Race weekend faith line',legalNotice:'Footer legal notice',mobileSummary:'Mobile navigation summary',featuredPartners:'Featured partner count',verifiedWins:'Verified win count',estimatedStarts:'Estimated starts',competitionRelationships:'Competition relationship count',activeRoRacingDrivers:'Active RoRacing driver count',aetherwingDrivers:'Aetherwing driver count',allianceOnlyDrivers:'Alliance-only driver count'},
@@ -158,7 +160,7 @@
   const normalizeDriverAssignments = (rows=[]) => {
     const normalized=rows.flatMap((entry)=>{
       if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||'')))return [entry];
-      const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
+      const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',...(Object.hasOwn(entry,'allianceId')?{allianceId:entry.allianceId}:{}),car:entry.car||'SCR #29 PT'};
       return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
     });
     const updated=migrateCurrentRoster('drivers',normalized);
@@ -787,7 +789,7 @@
   }
   async function verifyPublicRevision(expectedRevision,dataset,publishedData) {
     if(local)return { verified:true, local:true };
-    const exactSections=new Set(['standings','drivers','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles','driver-portfolios']);
+    const exactSections=new Set(['alliances','standings','drivers','navigation','page-overrides','site','wins','milestones','iracing-garage','leadership','livery-brands','driver-profiles','driver-portfolios']);
     let problem='The public content feed has not confirmed this publication.';
     for(let attempt=0;attempt<3;attempt++){
       try {
@@ -888,6 +890,7 @@
       if(type==='nullable-number')value=field.value.trim()===''?null:Number(field.value);
       assign(current(),path,value);
     });
+    if(key==='alliances'&&current()&&!String(current().id||'').trim()&&current().name)current().id=slugifyResultPart(current().name);
   }
   const adminEditorVersion='2026-10-17.4';
   function saveFeedback(message,state='neutral'){
@@ -913,6 +916,7 @@
     if(name==='schedule-events')next=next.map((r)=>({offWeek:false,tbd:false,timePending:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
     if(name==='results'){next=migrateResults(next).sort(compareResults);next=next.map((race,i)=>({...race,featured:i===0}));}
     if(name==='drivers')next=next.map((row)=>({numberImage:'',...row}));
+    if(['drivers','roster-profiles','competitions'].includes(name))next=next.map(row=>({...row,allianceId:Object.hasOwn(row,'allianceId')?row.allianceId:(row.affiliation==='alliance'||row.type==='alliance'?'starclutch-racing':'')}));
     if(['wins','milestones'].includes(name))next=next.map((row)=>({assignmentId:'',...row}));
     return next;
   }
@@ -1038,8 +1042,18 @@
       if (key==='drivers' && k==='competitionId') return shell(pretty,`<select ${attr} data-field-type="string" data-competition-choice>${competitionChoices().map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
       if (key==='drivers' && k==='competition') return shell(pretty,`<input ${attr} data-field-type="string" data-competition-name readonly value="${esc(v)}">`,'Filled automatically from the League selector.','is-readonly');
       if (key==='drivers' && k==='status') return shell(pretty,`<select ${attr} data-field-type="string">${[...new Set([...statusChoices,v])].filter(Boolean).map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
-      if (key==='drivers' && k==='affiliation') return shell(pretty,`<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing eMotorsports</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select>`,help);
-      if (key==='competitions' && k==='type') return shell(pretty,`<select ${attr} data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing Program</option><option value="alliance" ${v==='alliance'?'selected':''}>StarClutch Racing Alliance</option></select>`,help);
+      if (['drivers','roster-profiles'].includes(key) && k==='affiliation') return shell(pretty,`<select ${attr} data-alliance-category data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing eMotorsports</option><option value="alliance" ${v==='alliance'?'selected':''}>Alliance team</option></select>`,'Choose Alliance team to select a named organization below.');
+      if (key==='competitions' && k==='type') return shell(pretty,`<select ${attr} data-alliance-category data-field-type="string"><option value="aetherwing" ${v==='aetherwing'?'selected':''}>Aetherwing Program</option><option value="alliance" ${v==='alliance'?'selected':''}>Alliance program</option></select>`,help);
+      if(['drivers','roster-profiles','competitions'].includes(key)&&k==='allianceId'){
+        if(current()?.affiliation!=='alliance'&&current()?.type!=='alliance')return '';
+        const options=base('alliances')||[],known=options.some(row=>row.id===v);
+        return shell(pretty,`<select ${attr} data-field-type="string"><option value="" ${!v?'selected':''}>Choose an alliance</option>${v&&!known?`<option value="${esc(v)}" selected>Unavailable alliance — reassign</option>`:''}${options.map(row=>`<option value="${esc(row.id)}" ${row.id===v?'selected':''}>${esc(row.name)}</option>`).join('')}</select>`,'Manage these choices in Team Alliances. Review biography text when changing organizations.');
+      }
+      if(key==='competitions'&&k==='label'&&current()?.type==='alliance'){
+        const team=(base('alliances')||[]).find(item=>item.id===current().allianceId),text=team?`${team.name} Alliance`:'Alliance program';
+        return shell(pretty,`<input ${attr} data-field-type="string" value="${esc(text)}" readonly>`,'Uses the selected alliance name.','is-readonly');
+      }
+      if(key==='alliances'&&k==='id')return shell(pretty,`<input ${attr} data-field-type="string" value="${esc(v)}" placeholder="Generated from the name when saved">`,'Keep this key stable after linking records. Change the name to rename an alliance.');
       if (key==='news' && k==='category') {
         const values=[...new Set(['Race & Competition','Team & Organization','Milestones',v])].filter(Boolean);
         return shell(pretty,`<select ${attr} data-field-type="string">${values.map((name)=>`<option value="${esc(name)}" ${name===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
@@ -1198,8 +1212,9 @@
     const search=$('[data-content-search]').value.toLowerCase();
     $('[data-content-list]').innerHTML=Array.isArray(data)?data.map((r,i)=>({r,i})).filter(({r})=>JSON.stringify(r).toLowerCase().includes(search)).map(({r,i})=>`<button type="button" data-entry="${i}" aria-pressed="${i===index}"><strong>${esc(title(r,i))}</strong><small>${esc([r.leagueName||r.competition||r.category||'',r.date||r.numbers||r.slug||''].filter(Boolean).join(' · '))}</small></button>`).join(''):'<p>This section is one complete record. Edit its fields on the right.</p>';
     $('[data-content-add]').hidden=!Array.isArray(data);
-    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':key==='results'?'Choose race above':key==='driver-portfolios'?'Add driver portfolio':'Add new entry';
+    $('[data-content-add]').textContent=key==='schedule-events'?'Add race':key==='results'?'Choose race above':key==='driver-portfolios'?'Add driver portfolio':key==='alliances'?'Add alliance':'Add new entry';
     $('[data-content-remove]').hidden=!Array.isArray(data)||!data.length;
+    $('[data-content-remove]').textContent=key==='alliances'?'Remove alliance':'Remove this entry';
   }
   function featureSelectedStory() {
     if (key!=='news' || !current()) return;
@@ -1393,6 +1408,7 @@
   };
   $('[data-content-form]').addEventListener('input',markDatasetFieldDirty);
   $('[data-content-form]').addEventListener('change',markDatasetFieldDirty);
+  $('[data-content-form]').addEventListener('change',event=>{if(!event.target.matches('[data-alliance-category]'))return;commit();if(event.target.value!=='alliance'||!Object.hasOwn(current(),'allianceId'))current().allianceId='';if(key==='competitions'&&event.target.value!=='alliance')current().label='Aetherwing Program';dirty=true;render();});
   function numberImageFeedback(message){
     const feedback=$('[data-number-image-feedback]');
     if(feedback)feedback.textContent=message;
@@ -1563,8 +1579,8 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}if(key==='news'&&!Array.isArray(added.timeline))added.timeline=[];data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
-  $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data))return;const row=current(),message=key==='roster-profiles'?`Remove ${row?.name||row?.slug||'this driver'} from the Driver Directory? When you publish, all of this driver’s current league assignments will also be removed from the public site. Historical results and wins are kept.`:'Remove this entry from the section draft? It stays public until you publish.';if(!confirm(message))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();if(key==='roster-profiles')status('Driver removed from this draft. Publish Driver Directory to remove the profile and current league assignments from the public site; historical results remain.');});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=key==='alliances'?{id:'',name:'',shortName:''}:blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['drivers','roster-profiles','competitions'].includes(key))added.allianceId='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}if(key==='news'&&!Array.isArray(added.timeline))added.timeline=[];data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
+  $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data))return;const row=current(),message=key==='alliances'?`Remove ${row?.name||'this alliance'} from this section draft? Current linked records must be reassigned before publication. Historical results, news and paints are kept.`:key==='roster-profiles'?`Remove ${row?.name||row?.slug||'this driver'} from the Driver Directory? When you publish, all of this driver’s current league assignments will also be removed from the public site. Historical results and wins are kept.`:'Remove this entry from the section draft? It stays public until you publish.';if(!confirm(message))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();if(key==='roster-profiles')status('Driver removed from this draft. Publish Driver Directory to remove the profile and current league assignments from the public site; historical results remain.');});
   async function action(name) {
     if(!loaded||!key)throw new Error('Open an editor first.');
     if(busy)throw new Error('A save is already in progress.');

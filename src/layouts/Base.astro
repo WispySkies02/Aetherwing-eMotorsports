@@ -1,5 +1,5 @@
 ---
-import { siteSettings, standings, results, scheduleEvents } from '../lib/site-content.mjs';
+import { siteSettings, standings, results, scheduleEvents, alliances } from '../lib/site-content.mjs';
 import SiteHeader from '../components/global/SiteHeader.astro';
 import '../styles/site.css';
 import '../styles/ux.css';
@@ -41,7 +41,7 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
       </footer>
     </div>
   </div>
-  <script is:inline type="application/json" id="aw-content-fallback" set:html={JSON.stringify({standings, results, 'schedule-events':scheduleEvents})} />
+  <script is:inline type="application/json" id="aw-content-fallback" set:html={JSON.stringify({standings, results, alliances, 'schedule-events':scheduleEvents})} />
   <script>
     import { loadPublishedContent, applyPublication } from '../lib/published-content.mjs';
     const page=location.pathname.replace(/\/+$/,'/')||'/';

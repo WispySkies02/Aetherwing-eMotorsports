@@ -1,3 +1,4 @@
+const {alliancePrograms,preserveAllianceRelationship}=require('../../src/lib/alliance-content.mjs');
 const { reconcileTeamPartners } = require('../../src/lib/team-partner-content.mjs');
 const { read, json, normalizeDriverAssignments, seeds, normalize } = require('./_content.cjs');
 const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
@@ -12,6 +13,7 @@ function ensureCoreTeamPartners(rows=[],seedPartners=[]){
 
 function mergeCanonical(datasets){
   const seed=seeds();
+  datasets.alliances=Array.isArray(datasets.alliances)?datasets.alliances:seed.alliances;
   if(Array.isArray(datasets.news))datasets.news=datasets.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);if(!fresh)return normalized;if(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text))return fresh;return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};});
   if(Array.isArray(datasets.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);datasets.news=datasets.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(datasets.news)){
@@ -49,7 +51,8 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets['roster-profiles']))datasets['roster-profiles']=normalize('roster-profiles',datasets['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(datasets['driver-profiles']))datasets['driver-profiles']=normalize('driver-profiles',datasets['driver-profiles']);
   if(Array.isArray(datasets.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');datasets.charters=datasets.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
-  if(Array.isArray(datasets.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));datasets.competitions=datasets.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id)||x:x);}
+  if(Array.isArray(datasets.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));datasets.competitions=datasets.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?preserveAllianceRelationship(fresh.get(x.id),x):x);}
+  if(Array.isArray(datasets.competitions))datasets.competitions=alliancePrograms(datasets.competitions,datasets.alliances);
   if(Array.isArray(datasets.partners))datasets.partners=ensureCoreTeamPartners(datasets.partners,seed.partners||[]);else datasets.partners=ensureCoreTeamPartners([],seed.partners||[]);
   if(Array.isArray(datasets['driver-portfolios']))datasets['driver-portfolios']=normalize('driver-portfolios',datasets['driver-portfolios']);
   return datasets;

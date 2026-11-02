@@ -1,3 +1,4 @@
+import {alliancePrograms,preserveAllianceRelationship} from '../src/lib/alliance-content.mjs';
 import { reconcileTeamPartners } from '../src/lib/team-partner-content.mjs';
 import fs from 'node:fs';
 import { appendReviewedResults } from '../src/lib/reviewed-results.mjs';
@@ -40,6 +41,7 @@ async function canonicalizeBuildContent(payload){
   const seed=seeds();
   const next={...payload,datasets:{...(payload?.datasets||{})}};
   const d=next.datasets;
+  d.alliances=Array.isArray(d.alliances)?d.alliances:seed.alliances;
 
   // Build-time pages must never resurrect retired roster/manufacturer data from an older
   // Admin publication. Results, standings and assignment numbers remain Admin-authoritative.
@@ -62,8 +64,9 @@ async function canonicalizeBuildContent(payload){
   }
   if(Array.isArray(d.competitions)){
     const current=new Map((seed.competitions||[]).map((item)=>[item.id,item]));
-    d.competitions=d.competitions.filter((item)=>item?.id!=='uarl-d2').map((item)=>['uarl-d1','kmart'].includes(item?.id)?current.get(item.id)||item:item);
+    d.competitions=d.competitions.filter((item)=>item?.id!=='uarl-d2').map((item)=>['uarl-d1','kmart'].includes(item?.id)?preserveAllianceRelationship(current.get(item.id),item):item);
   }
+  if(Array.isArray(d.competitions))d.competitions=alliancePrograms(d.competitions,d.alliances);
   d.partners=ensureCoreTeamPartners(Array.isArray(d.partners)?d.partners:[],seed.partners||[]);
   if(Array.isArray(d['driver-portfolios']))d['driver-portfolios']=normalize('driver-portfolios',d['driver-portfolios']);
   if(Array.isArray(d['schedule-events']))d['schedule-events']=normalize('schedule-events',d['schedule-events'].filter((event)=>event?.league!=='uarl-d2'));
@@ -94,7 +97,8 @@ if (endpoint) {
       const { createRequire } = await import('node:module');
       const { validate } = createRequire(import.meta.url)('../netlify/lib/_content.cjs');
       for (const [key,data] of Object.entries(next.datasets)) {
-        const error = validate(key,data);
+        const linkedSection=['alliances','drivers','roster-profiles','competitions'].includes(key);
+        const error = validate(key,data,linkedSection?{published:next.datasets}:{},linkedSection?{published:next.datasets}:{});
         if (error) throw new Error(`${key}: ${error}`);
       }
       content = await canonicalizeBuildContent(next);

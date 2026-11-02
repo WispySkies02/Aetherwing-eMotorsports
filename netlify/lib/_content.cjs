@@ -1,3 +1,4 @@
+const { allianceIdFor } = require('../../src/lib/alliances.mjs');
 const { reconcileCurrentAssignments, reconcileCurrentProfiles } = require('../../src/lib/current-driver-updates.mjs');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -6,7 +7,7 @@ async function getBlobsModule() {
   blobsModulePromise ||= import('@netlify/blobs');
   return blobsModulePromise;
 }
-const FILES = ['site', 'navigation', 'page-overrides', 'schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'partners', 'livery-brands', 'driver-portfolios', 'news'];
+const FILES = ['site', 'navigation', 'page-overrides', 'schedule-events', 'results', 'wins', 'standings', 'milestones', 'roster-profiles', 'driver-profiles', 'drivers', 'charters', 'iracing-garage', 'competitions', 'leadership', 'alliances', 'partners', 'livery-brands', 'driver-portfolios', 'news'];
 const SCHEDULE_LEAGUE_ORDER = ['nrrs','kmart','sunoco','uarl-d1','open','iracing','uarl-d2'];
 function scheduleTimeMinutes(value='') {
   const match=String(value).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
@@ -17,7 +18,7 @@ function scheduleTimeMinutes(value='') {
 function normalizeDriverAssignments(rows=[]) {
   const normalized=(rows||[]).flatMap((entry)=>{
     if(entry?.id!=='shared-kmart' && !(entry?.competitionId==='kmart' && String(entry?.number)==='29' && /Clutch\s*\/\s*Eazy\s*\/\s*Matty/i.test(entry?.displayName||''))) return [entry];
-    const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',car:entry.car||'SCR #29 PT'};
+    const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',...(Object.hasOwn(entry,'allianceId')?{allianceId:entry.allianceId}:{}),car:entry.car||'SCR #29 PT'};
     return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
   });
   const updated=reconcileCurrentAssignments(normalized);
@@ -64,6 +65,7 @@ function scoreKnownRace(race={}) {
   })};
 }
 function normalize(key,data) {
+  if(key==='alliances'&&Array.isArray(data))return data.map(row=>row&&typeof row==='object'?{...row,...(typeof row.name==='string'?{name:row.name.trim()}:{}),...(typeof row.shortName==='string'?{shortName:row.shortName.trim()}:{})}:row);
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
   if(key==='roster-profiles'&&Array.isArray(data))return reconcileCurrentProfiles(data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug})));
@@ -106,9 +108,9 @@ async function write(registry, etag) {
     throw new Error('STORAGE_WRITE_UNVERIFIED');
   }
 }
-function validate(key, data, registry={}) {
+function validate(key, data, registry={}, context={}) {
   if (!FILES.includes(key)) return 'Unknown content section.';
-  const seed = seeds()[key];
+  const seedData=seeds(),seed=seedData[key];
   if (Array.isArray(seed) !== Array.isArray(data) || !data || typeof data !== 'object') return 'Invalid section format.';
   if (JSON.stringify(data).length > (key==='driver-portfolios'?4000000:1500000)) return 'Section is too large.';
   if (Array.isArray(data) && data.length > 1500) return 'Too many entries.';
@@ -149,13 +151,18 @@ function validate(key, data, registry={}) {
     'roster-profiles':['slug','name','role','affiliation','numbers'],
     'driver-profiles':['slug','displayName','subtitle','intro'],
     drivers:['id','profile','displayName','competitionId','competition','number','status'], competitions:['id','name','type','label','schedule','machine','platform'],
-    standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'],'livery-brands':['name','order'],'driver-portfolios':['id','name','label','order'], news:['slug','title','summary','dateIso','date','category','context','kicker']
+    alliances:['id','name'], standings:['id','title','league'], charters:['id','label'], leadership:['name'], partners:['name','role','description','url','logo'],'livery-brands':['name','order'],'driver-portfolios':['id','name','label','order'], news:['slug','title','summary','dateIso','date','category','context','kicker']
   }[key] || [];
   for (const [index, row] of rows.entries()) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) return `Entry ${index + 1} must be an object.`;
     for (const field of required) {
       const value=row[field];
       if ((typeof value==='string'&&!value.trim()) || (typeof value==='number'&&!Number.isFinite(value)) || !['string','number'].includes(typeof value)) return `Entry ${index + 1}: complete ${field}.`;
+    }
+    if(key==='alliances'){
+      if(typeof row.id!=='string'||row.id.length>80||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.id))return `Alliance ${index+1}: use a lowercase ID containing letters, numbers and hyphens (up to 80 characters).`;
+      if(typeof row.name!=='string'||row.name.trim().length>120)return `Alliance ${index+1}: name must be plain text up to 120 characters.`;
+      if(row.shortName!==undefined&&(typeof row.shortName!=='string'||row.shortName.trim().length>80))return `Alliance ${index+1}: short name must be plain text up to 80 characters.`;
     }
     if (row.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.slug)) return `Entry ${index + 1}: invalid slug.`;
     if (key === 'schedule-events') {
@@ -236,8 +243,34 @@ function validate(key, data, registry={}) {
     if(key==='drivers'&&!validNumberImage(row.numberImage))return `Entry ${index+1}: number image must be an uploaded PNG/JPG/WebP, HTTPS URL, or site-relative path.`;
     if(key==='drivers'&&row.numberImageBackup&&!validNumberImage(row.numberImageBackup))return `Entry ${index+1}: uploaded number-image fallback is invalid.`;
   }
-  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios'].includes(key) ? 'id' : null;
+  const identity = ['news','roster-profiles','driver-profiles'].includes(key) ? 'slug' : ['page-overrides','drivers','standings','charters','competitions','driver-portfolios','alliances'].includes(key) ? 'id' : null;
   if (identity && new Set(rows.map((r) => r[identity])).size !== rows.length) return `Each ${identity} must be unique.`;
+  if(['alliances','drivers','roster-profiles','competitions'].includes(key)){
+    // Draft validation may use related private drafts; publication must use the
+    // complete candidate PUBLIC snapshot passed by the publishing action.
+    const pick=name=>context.published?context.published[name]??seedData[name]:registry.drafts?.[name]??registry.published?.[name]??seedData[name];
+    const alliances=key==='alliances'?data:pick('alliances');
+    const known=new Set((Array.isArray(alliances)?alliances:[]).map(alliance=>alliance.id));
+    const targets=key==='alliances'?['drivers','roster-profiles','competitions']:[key];
+    const currentDrivers=key==='drivers'?data:pick('drivers');
+    const recordedProfiles=[...(seedData['roster-profiles']||[]),...(registry.published?.['roster-profiles']||[])];
+    for(const section of targets){
+      const references=section===key?data:pick(section);
+      for(const row of Array.isArray(references)?references:[]){
+        const label=row.displayName||row.name||row.slug||row.id||'Entry';
+        if(Object.hasOwn(row,'allianceId')&&typeof row.allianceId!=='string')return `${section}: ${label} needs a text alliance ID.`;
+        const id=allianceIdFor(row),isAlliance=row.affiliation==='alliance'||row.type==='alliance';
+        // A former driver's recorded organization is historical context, not an
+        // active relationship that should prevent retiring the alliance.
+        const historicalProfile=section==='roster-profiles'&&!(currentDrivers||[]).some(driver=>driver.profile===row.slug)&&recordedProfiles.some(prior=>prior.slug===row.slug&&allianceIdFor(prior)===id);
+        if(historicalProfile)continue;
+        if(isAlliance&&!id)return `${section}: ${label} must choose a named alliance or change its organization before saving.`;
+        if(id&&!known.has(id))return key==='alliances'
+          ? `Alliance ${id} is still used by ${section}: ${label}. ${context.published?'Publish reassigned current records first, or publish all related drafts together.':'Reassign or clear its current relationship before removing the alliance.'}`
+          : `${section}: ${label} refers to unknown alliance ${id}. ${context.published?'Publish the alliance first, or publish all related saved drafts together.':'Add and save that alliance first.'}`;
+      }
+    }
+  }
   if (key==='schedule-events') {
     const clean=(v)=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
     const eventKey=(r)=>{const explicit=clean(r.routeId||r.eventId||'');if(explicit)return explicit;const league=clean(r.league||'event')||'event',round=String(r.round||'').match(/(\d+)/);return round?`${league}-round-${Number(round[1])}`:`${league}-${clean(r.date||'tbd')||'tbd'}`;};

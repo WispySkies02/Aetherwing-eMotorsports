@@ -125,7 +125,7 @@ function migrateKnownPublished(registry){
   if(Array.isArray(registry.published?.['roster-profiles']))registry.published['roster-profiles']=normalize('roster-profiles',registry.published['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(registry.published?.['driver-profiles']))registry.published['driver-profiles']=normalize('driver-profiles',registry.published['driver-profiles']);
   if(Array.isArray(registry.published?.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');registry.published.charters=registry.published.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
-  if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id)||x:x);}
+  if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>{const current=['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id):null;if(!current)return x;return Object.hasOwn(x,'allianceId')?{...current,allianceId:x.allianceId,type:x.type,label:x.label,platform:x.platform}:current;});}
   if(Array.isArray(registry.published?.partners))registry.published.partners=ensureCoreTeamPartners(registry.published.partners,seed.partners||[]);
   if(Array.isArray(registry.published?.['driver-portfolios']))registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']);
   if(Array.isArray(registry.drafts?.['roster-profiles']))registry.drafts['roster-profiles']=normalize('roster-profiles',registry.drafts['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags');
@@ -162,7 +162,8 @@ exports.handler = async (event, context) => {
     } else if (input.action === 'publish') {
       const data = normalize(key, input.data ?? registry.drafts[key]);
       if (!data) return json(400, { error:'Make a change or save a draft before publishing.' });
-      const error = validate(key, data, registry);
+      const candidate={...registry.published,[key]:data};
+      const error = validate(key, data, registry, {published:candidate});
       if (error) return json(400, { error });
       registry.published[key] = data;
       delete registry.drafts[key];
@@ -170,8 +171,9 @@ exports.handler = async (event, context) => {
     } else if (input.action === 'publishAll') {
       const entries = Object.entries(registry.drafts || {}).map(([draftKey,data])=>[draftKey,normalize(draftKey,data)]);
       if (!entries.length) return json(400, { error:'There are no saved drafts to publish.' });
+      const candidate={...registry.published,...Object.fromEntries(entries)};
       for (const [draftKey,data] of entries) {
-        const error = validate(draftKey, data, registry);
+        const error = validate(draftKey, data, registry, {published:candidate});
         if (error) return json(400, { error:`${draftKey}: ${error}` });
       }
       for (const [draftKey,data] of entries) registry.published[draftKey] = data;

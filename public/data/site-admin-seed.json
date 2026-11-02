@@ -3356,7 +3356,8 @@
       ],
       "feature": "StarClutch Alliance",
       "signatureLogo": "",
-      "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor."
+      "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor.",
+      "allianceId": "starclutch-racing"
     },
     {
       "slug": "jaxon",
@@ -3370,7 +3371,8 @@
       ],
       "feature": "Former Competition Driver",
       "signatureLogo": "",
-      "bio": "Aetherwing Media Specialist and former #34 Kmart alliance competitor. Historical results and paint records remain part of the team archive."
+      "bio": "Aetherwing Media Specialist and former #34 Kmart alliance competitor. Historical results and paint records remain part of the team archive.",
+      "allianceId": "starclutch-racing"
     },
     {
       "slug": "clutch",
@@ -3385,7 +3387,8 @@
       ],
       "feature": "StarClutch Alliance",
       "signatureLogo": "",
-      "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46."
+      "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46.",
+      "allianceId": "starclutch-racing"
     },
     {
       "slug": "eazy",
@@ -3401,7 +3404,8 @@
       "feature": "StarClutch Alliance",
       "signatureLogo": "",
       "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM.",
-      "currentRosterRevision": "2026-11-01-v1"
+      "currentRosterRevision": "2026-11-01-v1",
+      "allianceId": "starclutch-racing"
     },
     {
       "slug": "matty",
@@ -3416,7 +3420,8 @@
       "feature": "Full-Time Entry",
       "signatureLogo": "",
       "bio": "StarClutch Racing alliance driver driving the full-time Kmart #3 entry.",
-      "currentRosterRevision": "2026-11-01-v1"
+      "currentRosterRevision": "2026-11-01-v1",
+      "allianceId": "starclutch-racing"
     }
   ],
   "driver-profiles": [
@@ -3524,7 +3529,8 @@
       "status": "Active",
       "affiliation": "alliance",
       "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
-      "numberImage": ""
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "will-kmart",
@@ -3535,7 +3541,8 @@
       "competitionId": "kmart",
       "status": "Active",
       "affiliation": "alliance",
-      "numberImage": ""
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "clutch-kmart",
@@ -3547,7 +3554,8 @@
       "competitionId": "kmart",
       "status": "Shared Part-Time Entry",
       "affiliation": "alliance",
-      "car": "SCR #29 PT"
+      "car": "SCR #29 PT",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "eazy-kmart",
@@ -3559,7 +3567,8 @@
       "competitionId": "kmart",
       "status": "Shared Part-Time Entry",
       "affiliation": "alliance",
-      "car": "SCR #29 PT"
+      "car": "SCR #29 PT",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "matty-kmart",
@@ -3572,7 +3581,8 @@
       "status": "Full-Time",
       "affiliation": "alliance",
       "car": "SCR #3",
-      "currentRosterRevision": "2026-11-01-v1"
+      "currentRosterRevision": "2026-11-01-v1",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "eazy-sunoco",
@@ -3584,7 +3594,8 @@
       "status": "Active",
       "affiliation": "alliance",
       "car": "RAM",
-      "numberImage": ""
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "will-sunoco",
@@ -3596,7 +3607,8 @@
       "status": "Active",
       "affiliation": "alliance",
       "car": "RAM",
-      "numberImage": ""
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "clutch-sunoco",
@@ -3608,7 +3620,8 @@
       "status": "Active",
       "affiliation": "alliance",
       "car": "RAM",
-      "numberImage": ""
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "wispy-sunoco",
@@ -3621,7 +3634,8 @@
       "affiliation": "alliance",
       "car": "RAM",
       "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
-      "numberImage": ""
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "levi-iracing",
@@ -3860,13 +3874,14 @@
       "label": "StarClutch Racing Alliance",
       "schedule": "Mondays · 8:30 PM ET",
       "machine": "Dodge · BBR D2 Chevy Body",
-      "platform": "Roblox / StarClutch Racing",
+      "platform": "Roblox",
       "roster": [
         "#15 Hailey",
         "#24 Will",
         "#3 Matty · Full-Time",
         "#29 PT · Clutch / Eazy"
-      ]
+      ],
+      "allianceId": "starclutch-racing"
     },
     {
       "id": "sunoco",
@@ -3875,13 +3890,14 @@
       "label": "StarClutch Racing Alliance",
       "schedule": "Saturdays · 8:00 PM ET",
       "machine": "Dodge RAM · CWS15 Ford Body",
-      "platform": "Roblox / StarClutch Racing",
+      "platform": "Roblox",
       "roster": [
         "#27 Eazy",
         "#42 Will",
         "#46 Clutch",
         "#54 Hailey"
-      ]
+      ],
+      "allianceId": "starclutch-racing"
     }
   ],
   "leadership": [
@@ -3912,6 +3928,13 @@
       "roles": [
         "Media Specialist"
       ]
+    }
+  ],
+  "alliances": [
+    {
+      "id": "starclutch-racing",
+      "name": "StarClutch Racing",
+      "shortName": "StarClutch Racing"
     }
   ],
   "partners": [

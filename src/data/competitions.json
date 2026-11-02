@@ -65,13 +65,14 @@
     "label": "StarClutch Racing Alliance",
     "schedule": "Mondays · 8:30 PM ET",
     "machine": "Dodge · BBR D2 Chevy Body",
-    "platform": "Roblox / StarClutch Racing",
+    "platform": "Roblox",
     "roster": [
       "#15 Hailey",
       "#24 Will",
       "#3 Matty · Full-Time",
       "#29 PT · Clutch / Eazy"
-    ]
+    ],
+    "allianceId": "starclutch-racing"
   },
   {
     "id": "sunoco",
@@ -80,12 +81,13 @@
     "label": "StarClutch Racing Alliance",
     "schedule": "Saturdays · 8:00 PM ET",
     "machine": "Dodge RAM · CWS15 Ford Body",
-    "platform": "Roblox / StarClutch Racing",
+    "platform": "Roblox",
     "roster": [
       "#27 Eazy",
       "#42 Will",
       "#46 Clutch",
       "#54 Hailey"
-    ]
+    ],
+    "allianceId": "starclutch-racing"
   }
 ]

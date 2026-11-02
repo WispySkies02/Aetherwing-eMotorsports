@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, competitions } from '../lib/site-content.mjs';
+import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, competitions, alliances } from '../lib/site-content.mjs';
 import { eventSlug } from '../lib/schedule-events.mjs';
 import OnTrackNext from '../components/home/OnTrackNext.astro';
 import TimingTower from '../components/home/TimingTower.astro';
@@ -79,7 +79,7 @@ const programLogo={
 
   <section class="ux-section" aria-labelledby="programs-title">
     <div class="ux-section__head"><div><p class="ux-tag">Where we race</p><h2 class="ux-h2" id="programs-title">Programs</h2></div><a class="ux-more" href="/programs/">All programs</a></div>
-    <div class="home-programs__rail hub-rail">{competitions.map(program=><a href={`/programs/${program.id}/`} class:list={['ux-card','hub-program',{'is-alliance':program.label?.toLowerCase().includes('alliance')}]}><span class="hub-program__logo">{programLogo[program.id]?<img src={programLogo[program.id]} alt="" loading="lazy"/>:<b>{program.name}</b>}</span><small>{program.label}</small><strong>{program.name}</strong></a>)}</div>
+    <div class="home-programs__rail hub-rail" data-home-programs>{competitions.map(program=><a href={`/programs/${program.id}/`} class:list={['ux-card','hub-program',{'is-alliance':program.label?.toLowerCase().includes('alliance')}]}><span class="hub-program__logo">{programLogo[program.id]?<img src={programLogo[program.id]} alt="" loading="lazy"/>:<b>{program.name}</b>}</span><small>{program.label}</small><strong>{program.name}</strong></a>)}</div>
   </section>
 
   <section class="ux-section" aria-labelledby="garage-title">
@@ -126,4 +126,12 @@ const programLogo={
   partnerFallback();
   window.addEventListener('aetherwing:content',({detail})=>applyLiveHome(detail));
   if(window.__AETHERWING_CONTENT__)applyLiveHome(window.__AETHERWING_CONTENT__);
+</script>
+
+<script is:inline type="application/json" data-home-alliance-seed set:html={JSON.stringify({competitions,alliances})}/>
+<script>
+  import {alliancePrograms} from '../lib/alliance-content.mjs';
+  const seed=JSON.parse(document.querySelector('[data-home-alliance-seed]').textContent);let programs=seed.competitions,organizations=seed.alliances;
+  const renderProgramRelationships=d=>{if(Array.isArray(d?.competitions))programs=d.competitions;if(Array.isArray(d?.alliances))organizations=d.alliances;for(const program of alliancePrograms(programs,organizations)){const card=[...document.querySelectorAll('[data-home-programs] > a')].find(a=>a.getAttribute('href')===`/programs/${program.id}/`);if(card){card.querySelector('small').textContent=program.label;card.classList.toggle('is-alliance',program.type==='alliance');}}};
+  window.addEventListener('aetherwing:content',({detail})=>renderProgramRelationships(detail));if(window.__AETHERWING_CONTENT__)renderProgramRelationships(window.__AETHERWING_CONTENT__);
 </script>
