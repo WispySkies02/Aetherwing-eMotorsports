@@ -17,7 +17,9 @@ if(!Array.isArray(kmart.ptEntry?.drivers)||kmart.ptEntry.drivers.length<3)throw 
 
 const drivers=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
 const kmart29=drivers.filter((driver)=>driver.competitionId==='kmart'&&String(driver.number)==='29');
-if(kmart29.length!==3||!['Clutch','Eazy','Matty'].every((name)=>kmart29.some((driver)=>driver.displayName===name)))throw Error('Kmart #29 must remain three driver-specific part-time assignments.');
+if(kmart29.length!==2||!['Clutch','Eazy'].every((name)=>kmart29.some((driver)=>driver.displayName===name)))throw Error('Kmart #29 must retain Clutch/Eazy shared part-time assignments.');
+const mattyKmart=drivers.find(driver=>driver.id==='matty-kmart');
+if(mattyKmart?.number!=='3'||mattyKmart?.status!=='Full-Time')throw Error('Matty must have his confirmed current full-time Kmart #3 assignment.');
 const charters=JSON.parse(readFileSync('src/data/charters.json','utf8'));
 if(charters.some((board)=>(board.fullTime||[]).some((slot)=>!Object.hasOwn(slot,'numberImage'))||(board.openCharters||[]).some((charter)=>(charter.uses||[]).some((use)=>!Object.hasOwn(use,'numberImage')))))throw Error('Charter number identities must keep editable numberImage fields.');
 const profileSource=readFileSync('src/pages/drivers/[slug].astro','utf8');
@@ -33,7 +35,7 @@ const eventSource=readFileSync('src/pages/event/[slug].astro','utf8');
 const adminContentSource=readFileSync('public/admin/content-admin.js','utf8');
 if(!adminContentSource.includes('data-signature-upload-status')||!adminContentSource.includes('Math.pow(.84,pass)'))throw Error('Driver Directory signature upload must retain progressive downscale fallback and inline upload feedback.');
 if(!lineupSource.includes('data-backup-src')||!lineupSource.includes('e.numberImageBackup||e.numberImage')||!adminContentSource.includes('numberImageBackup')||!adminContentSource.includes('data-number-image-use-url')||!adminContentSource.includes("current().numberImageBackup=''"))throw Error('Driver number artwork must preserve legacy fallbacks and support explicit URL replacement of embedded artwork.');
-if(!lineupSource.includes('sharedKmart29')||!lineupSource.includes('chooseDriverArt')||!adminContentSource.includes('syncSharedKmart29Art'))throw Error('Kmart #29 artwork must synchronize across Clutch/Eazy/Matty and remain eligible for ALL-card randomized art selection.');
+if(!lineupSource.includes('sharedKmart29')||!lineupSource.includes('chooseDriverArt')||!adminContentSource.includes('syncSharedKmart29Art'))throw Error('Kmart #29 artwork must synchronize across the current Clutch/Eazy #29 entries and remain eligible for ALL-card randomized art selection.');
 if(!lineupSource.includes('const src=ride.numberImageBackup||ride.numberImage')||!lineupSource.includes('sessionStorage')||!lineupSource.includes('queue.shift()'))throw Error('ALL-card artwork pool must include every configured image source and cycle through a persistent randomized shuffle bag.');
 if(!lineupSource.includes('const tightenNumber=')||!lineupSource.includes('data-short=')||!(adminContentSource.includes('probeScale=Math.min(1,1200/Math.max(1,image.naturalWidth),800/Math.max(1,image.naturalHeight))')||adminContentSource.includes('probeScale=Math.min(1,1600/Math.max(1,image.naturalWidth),1100/Math.max(1,image.naturalHeight))')))throw Error('Driver number artwork normalization/mobile stage safeguards are missing.');
 if(!eventSource.includes("entryListMode==='custom'")||!eventSource.includes("status:'Raced'"))throw Error('Race Weekend pages must support custom event entry lists and result-driven Auto mode.');

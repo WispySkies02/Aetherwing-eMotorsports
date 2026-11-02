@@ -109,13 +109,14 @@
     "id": "matty-kmart",
     "profile": "matty",
     "displayName": "Matty",
-    "number": "29",
+    "number": "3",
     "numberImage": "",
     "competition": "Kmart Auto Parts Series",
     "competitionId": "kmart",
-    "status": "Shared Part-Time Entry",
+    "status": "Full-Time",
     "affiliation": "alliance",
-    "car": "SCR #29 PT"
+    "car": "SCR #3",
+    "currentRosterRevision": "2026-11-01-v1"
   },
   {
     "id": "eazy-sunoco",

@@ -153,7 +153,7 @@ try{
   assert.ok(sharedIndex>=0);$(`[data-entry="${sharedIndex}"]`).click();
   change(w,$('[data-number-image-url]'),'https://example.test/shared29.png');$('[data-number-image-use-url]').click();
   saved=await save();const shared=saved.filter(row=>row.competitionId==='kmart'&&String(row.number)==='29');
-  assert.equal(shared.length,3);assert.ok(shared.every(row=>row.numberImage==='https://example.test/shared29.png'&&row.numberImageBackup===''));
+  assert.equal(shared.length,2);assert.equal(saved.find(row=>row.id==='matty-kmart').number,'3');assert.ok(shared.every(row=>row.numberImage==='https://example.test/shared29.png'&&row.numberImageBackup===''));
   await upload();saved=await save();assert.ok(saved.filter(row=>row.competitionId==='kmart'&&String(row.number)==='29').every(row=>row.numberImage===uploaded&&!row.numberImageBackup));
   $('[data-number-image-remove]').click();saved=await save();assert.ok(saved.filter(row=>row.competitionId==='kmart'&&String(row.number)==='29').every(row=>!row.numberImage&&!row.numberImageBackup));
 }finally{art.close();}
