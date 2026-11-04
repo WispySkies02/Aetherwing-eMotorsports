@@ -67,7 +67,9 @@ const publicData=(await import('../netlify/functions/site-data.mjs')).default;
 const root=new URL('../',import.meta.url);
 const dom=new JSDOM(fs.readFileSync(new URL('public/admin/index.html',root),'utf8'),{url:'https://aetherwing.net/admin/',runScripts:'outside-only'});
 const w=dom.window;
-w.structuredClone=structuredClone;w.AbortSignal=AbortSignal;w.matchMedia=()=>({matches:true});
+// This fixture forwards browser reads into Node's Request constructor, which
+// requires AbortController and AbortSignal from the same runtime.
+w.structuredClone=structuredClone;w.AbortSignal=AbortSignal;w.AbortController=AbortController;w.matchMedia=()=>({matches:true});
 w.HTMLElement.prototype.scrollIntoView=()=>{};w.scrollTo=()=>{};
 const prompts=[],actions=[];
 w.confirm=(message)=>{prompts.push(String(message));return true;};
@@ -88,7 +90,7 @@ const $=(selector)=>w.document.querySelector(selector);
 const waitFor=async(predicate,label)=>{
   const deadline=Date.now()+8000;
   while(!predicate()) {
-    assert.ok(Date.now()<deadline,`${label}: ${$('[data-content-status]').textContent}`);
+    assert.ok(Date.now()<deadline,`${label}: ${$('[data-admin-section-message]').textContent || $('[data-content-status]').textContent}`);
     await new Promise(resolve=>setTimeout(resolve,15));
   }
 };

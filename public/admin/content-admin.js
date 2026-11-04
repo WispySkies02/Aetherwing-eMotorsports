@@ -778,7 +778,7 @@
     }
     return response;
   }
-  async function api(action, payload={}) {
+  async function api(action, payload={}, {signal}={}) {
     if (local) {
       if (!action) return {registry,seeds};
       if (action==='saveDraft') registry.drafts[payload.dataset]=structuredClone(payload.data);
@@ -791,7 +791,7 @@
     }
     const jwt=await account()?.jwt();
     if (!jwt) throw new Error('Sign in with an invited administrator account.');
-    const response=await adminFetch({method:action?'POST':'GET',headers:{authorization:`Bearer ${jwt}`,'content-type':'application/json'},...(action?{body:JSON.stringify({action,revision:registry.revision,...payload})}:{})});
+    const response=await adminFetch({method:action?'POST':'GET',headers:{authorization:`Bearer ${jwt}`,'content-type':'application/json'},...(signal?{signal}:{}),...(action?{body:JSON.stringify({action,revision:registry.revision,...payload})}:{})});
     const body=await response.json().catch(()=>({}));
     if (!response.ok) throw new Error(body.error || `Site editor returned ${response.status}.`);
     return body;
@@ -819,14 +819,39 @@
     }
     return { verified:false, message:problem };
   }
+  let contentLoad=null;
   async function load() {
     if (!authorized()) throw new Error('Main-site editors require the admin role.');
-    if (local) {
-      seeds=await fetch('/data/site-admin-seed.json').then((r)=>r.json());
-      try { registry=JSON.parse(localStorage.getItem('aetherwing-site-admin')||'null')||registry; } catch {}
-    } else { const result=await api(); registry=result.registry; seeds=result.seeds; publishConfigured=result.publishConfigured; status(result.publishConfigured?'Ready. Current changes can publish in one step.':'Draft editing is ready. Configure the main-site build hook before rebuilding the public pages.'); }
-    loaded=true;
-    updateControlCenterStatus();
+    if(contentLoad)return contentLoad.promise;
+    const user=account(),request={controller:new AbortController(),identity:user?.id||user?.email};
+    contentLoad=request;
+    request.promise=(async()=>{
+      let timer;
+      try{
+        const read=async()=>{
+          if(!local)return api(undefined,{}, {signal:request.controller.signal});
+          const response=await fetch('/data/site-admin-seed.json',{cache:'no-store',signal:request.controller.signal});
+          if(!response.ok)throw new Error('The editor seed could not be loaded. Try again.');
+          const localSeeds=await response.json();let localRegistry=registry;
+          try{localRegistry=JSON.parse(localStorage.getItem('aetherwing-site-admin')||'null')||registry;}catch{}
+          return {registry:localRegistry,seeds:localSeeds,publishConfigured:false};
+        };
+        // The deadline includes Identity token refresh, the request and JSON
+        // decoding. A late result must never restore a signed-out session.
+        const result=await Promise.race([read(),new Promise((resolve,reject)=>{
+          timer=setTimeout(()=>{reject(new Error('Loading saved content took too long. Check your connection and choose Try again.'));request.controller.abort();},20000);
+        })]);
+        if(contentLoad!==request||!authorized()||(!local&&(account()?.id||account()?.email)!==request.identity))throw new Error('Your sign-in changed while loading. Sign in again, then reopen the section.');
+        const record=value=>value&&typeof value==='object'&&!Array.isArray(value);
+        if(!record(result?.registry)||!record(result.registry.published)||!record(result.registry.drafts)||!record(result.seeds))throw new Error('Saved content could not be read. Try again.');
+        registry=result.registry;seeds=result.seeds;publishConfigured=!!result.publishConfigured;
+        loaded=true;updateControlCenterStatus();
+      }finally{
+        clearTimeout(timer);
+        if(contentLoad===request)contentLoad=null;
+      }
+    })();
+    return request.promise;
   }
   function blank(value) {
     if (Array.isArray(value)) return value.length ? [blank(value[0])] : [];
@@ -1253,7 +1278,7 @@
     if(key==='standings'&&row)renderStandingsImportTool();
     refreshResultsImportTool();
   }
-  let activeSection='overview', restoringRoute=false, routeIndex=Number.isInteger(history.state?.adminIndex)?history.state.adminIndex:0, restoringHistory=false;
+  let activeSection='overview', sectionRequest=0, restoringRoute=false, routeIndex=Number.isInteger(history.state?.adminIndex)?history.state.adminIndex:0, restoringHistory=false;
   const sectionUrl=(section)=>{
     const url=new URL(location.href);
     if(section==='overview')url.searchParams.delete('section');else url.searchParams.set('section',section);
@@ -1279,8 +1304,21 @@
     const panel=$('[data-admin-theme-preview]');
     if(panel)panel.hidden=true;
   }
+  function sectionLoadState(name,message,error=false){
+    const panel=$('[data-admin-section-state]');
+    $('[data-admin-overview]').hidden=true;
+    $('[data-content-editor]').hidden=true;
+    hidePaintPanels();hideThemePreview();
+    panel.hidden=false;panel.dataset.state=error?'error':'loading';panel.setAttribute('aria-busy',String(!error));
+    $('[data-admin-section-title]').textContent=datasetMeta[name]?.title||'Site editor';
+    $('[data-admin-section-message]').textContent=message;
+    $('[data-admin-section-retry]').hidden=!error;
+    panel.scrollIntoView({behavior:'auto',block:'start'});
+  }
   function showOverview() {
     if(refreshDirtyState()&&!confirm('Leave unsaved changes in this tab?'))return;
+    sectionRequest++;
+    $('[data-admin-section-state]').hidden=true;
     $('[data-admin-overview]').hidden=false;
     $('[data-content-editor]').hidden=true;
     hidePaintPanels();
@@ -1307,8 +1345,15 @@
     if (busy) return;
     if (activeSection===name&&key===name&&!$('[data-content-editor]').hidden) return;
     if (key!==name && refreshDirtyState() && !confirm('Leave unsaved changes in this tab?')) return;
+    const request=++sectionRequest;
     try {
+      key='';data=null;dirty=false;persistedSnapshot='';
+      $('[data-content-fields]').replaceChildren();
+      setActiveAdminTab('dataset',name);
+      sectionLoadState(name,'Loading saved content…');
+      if(!authorized())throw new Error('Main-site editors require the admin role.');
       if (!loaded) await load();
+      if(request!==sectionRequest)return;
       $('[data-admin-overview]').hidden=true;
       hidePaintPanels();
       hideThemePreview();
@@ -1316,9 +1361,13 @@
       const select=$('[data-content-dataset]');
       select.innerHTML=Object.entries(datasetMeta).map(([id,meta])=>`<option value="${id}">${esc(meta.title)}</option>`).join('');
       chooseDataset(name);
-      setActiveAdminTab('dataset',name);
+      $('[data-admin-section-state]').hidden=true;
       $('[data-content-editor]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
-    } catch(error) { status(error.message); }
+    } catch(error) {
+      if(request!==sectionRequest)return;
+      loaded=false;
+      sectionLoadState(name,`Could not open this section. ${error?.message||'Check your connection and choose Try again.'}`,true);
+    }
   }
   async function openModule(name) {
     const first=modules[name]?.sections?.[0]?.[0];
@@ -1326,6 +1375,8 @@
   }
   function openPaintTab(name) {
     if(refreshDirtyState()&&!confirm('Leave unsaved changes in this content tab?'))return;
+    sectionRequest++;
+    $('[data-admin-section-state]').hidden=true;
     dirty=false;
     $('[data-admin-overview]').hidden=true;
     $('[data-content-editor]').hidden=true;
@@ -1345,6 +1396,8 @@
   }
   function showThemePreview() {
     if(refreshDirtyState()&&!confirm('Leave unsaved changes in this content tab?'))return;
+    sectionRequest++;
+    $('[data-admin-section-state]').hidden=true;
     dirty=false;key='';data=null;
     $('[data-admin-overview]').hidden=true;
     $('[data-content-editor]').hidden=true;
@@ -1363,7 +1416,7 @@
   document.querySelectorAll('[data-admin-paint-tab]').forEach((button)=>button.addEventListener('click',sectionClick(()=>openPaintTab(button.dataset.adminPaintTab))));
   document.querySelector('[data-admin-tab="overview"]')?.addEventListener('click',sectionClick(showOverview));
   document.querySelector('[data-admin-tab="theme-preview"]')?.addEventListener('click',sectionClick(showThemePreview));
-  async function restoreSection(event) {
+  function restoreSection(event) {
     if(restoringRoute)return;
     if(restoringHistory){restoringHistory=false;return;}
     if(local?$('[data-workspace]').hidden:!account())return;
@@ -1371,7 +1424,9 @@
     const nextIndex=Number.isInteger(event?.state?.adminIndex)?event.state.adminIndex:routeIndex;
     restoringRoute=true;
     try {
-      if(Object.hasOwn(datasetMeta,requested))await openDatasetTab(requested);
+      // Navigation state changes synchronously; the data read may still be
+      // pending. Do not block Back/Forward or later taps while awaiting it.
+      if(Object.hasOwn(datasetMeta,requested))openDatasetTab(requested);
       else if(['paint-feature','paint-add','paint-library','paint-3d'].includes(requested))openPaintTab(requested.slice(6));
       else if(requested==='theme-preview')showThemePreview();
       else showOverview();
@@ -1390,6 +1445,9 @@
   window.addEventListener('aetherwing:admin-ready',restoreSection);
   window.addEventListener('aetherwing:paint-section',(event)=>{
     if(activeSection.startsWith('paint-'))setActiveAdminTab('paint',event.detail);
+  });
+  $('[data-admin-section-retry]').addEventListener('click',()=>{
+    if(Object.hasOwn(datasetMeta,activeSection))openDatasetTab(activeSection);
   });
   // Identity may already have restored its account before deferred scripts run.
   if(!local&&account())restoreSection();
@@ -1738,5 +1796,5 @@
     else if(key==='drivers')numberImageFeedback('The number preview could not load. For a hosted image, check that the link opens the image itself and is publicly accessible.');
   },true);
   window.addEventListener('beforeunload',(event)=>{if(refreshDirtyState()){event.preventDefault();event.returnValue='';}});
-  window.netlifyIdentity?.on('logout',()=>{loaded=false;data=null;key='';dirty=false;persistedSnapshot='';seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});
+  window.netlifyIdentity?.on('logout',()=>{sectionRequest++;contentLoad?.controller.abort();contentLoad=null;loaded=false;data=null;key='';dirty=false;persistedSnapshot='';seeds={};registry={revision:0,published:{},drafts:{},history:[]};$('[data-admin-section-state]').hidden=true;$('[data-content-editor]').hidden=true;$('[data-content-fields]').replaceChildren();});
 })();
