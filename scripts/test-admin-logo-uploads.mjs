@@ -28,21 +28,24 @@ function backend(){
 // File selection, validation, async/race handling, DOM updates, serialization,
 // authenticated handler validation and public readback all use application code.
 function imageBrowser(w){
- const blobs=new Map(),plans=new Map(),pending=new Map(),decoded=[],revoked=[];let serial=0,fastTimeout=false,lastDecodedFile;
+ const blobs=new Map(),plans=new Map(),pending=new Map(),decoded=[],revoked=[],draws=[],encodings=[];let serial=0,fastTimeout=false,lastDecodedFile;
  const timer=w.setTimeout.bind(w);
  w.setTimeout=(callback,delay,...args)=>timer(callback,fastTimeout&&delay===15000?5:delay,...args);
  w.URL.createObjectURL=file=>{if(plans.get(file.name)?.blobError)throw new Error('Selected image blob could not be opened.');const url=`blob:fixture-${++serial}`;blobs.set(url,file);return url;};
  w.URL.revokeObjectURL=url=>{revoked.push(url);blobs.delete(url);};
  w.Image=class{
   naturalWidth=1200;naturalHeight=400;
-  set src(url){this.file=blobs.get(url);assert.ok(this.file,'Decode must use the chosen file');const plan=plans.get(this.file.name)||{};if(plan.zeroDimensions){this.naturalWidth=0;this.naturalHeight=0;}
+  set src(url){this.file=blobs.get(url);assert.ok(this.file,'Decode must use the chosen file');const plan=plans.get(this.file.name)||{};this.naturalWidth=plan.naturalWidth??this.naturalWidth;this.naturalHeight=plan.naturalHeight??this.naturalHeight;if(plan.zeroDimensions){this.naturalWidth=0;this.naturalHeight=0;}
    const finish=()=>{lastDecodedFile=this.file;decoded.push(this.file.name);if(plan.decodeError)this.onerror?.(new Error('Corrupt image'));else this.onload?.();};
    if(plan.deferred){pending.set(this.file.name,finish);}else if(!plan.timeout)queueMicrotask(finish);
   }
  };
- w.HTMLCanvasElement.prototype.getContext=function(){if(plans.get(lastDecodedFile?.name)?.canvasUnavailable)return null;const canvas=this;return {drawImage(image){canvas.file=image.file;const plan=plans.get(canvas.file?.name)||{};if(plan.canvasError)throw new Error('Canvas drawing failed.');},getImageData:()=>({data:new Uint8ClampedArray(16).fill(255)})};};
- w.HTMLCanvasElement.prototype.toDataURL=function(){const plan=plans.get(this.file?.name)||{};if(plan.encodingError)throw new Error('Canvas encoding failed.');if(plan.tooLarge)return `data:image/webp;base64,${'A'.repeat(50010)}`;if(plan.invalidEncoding)return 'data:,';return `data:image/webp;base64,${Buffer.from(this.file?.name||'fixture').toString('base64')}`;};
- return {plans,decoded,revoked,get pending(){return pending;},set fastTimeout(value){fastTimeout=value;},release(name){const finish=pending.get(name);assert.ok(finish,`${name} should have a pending decode`);pending.delete(name);finish();},expected:name=>`data:image/webp;base64,${Buffer.from(name).toString('base64')}`};
+ w.HTMLCanvasElement.prototype.getContext=function(type,options){if(plans.get(lastDecodedFile?.name)?.canvasUnavailable)return null;const canvas=this;return {drawImage(image,...args){canvas.file=image.file;const plan=plans.get(canvas.file?.name)||{};if(plan.canvasError)throw new Error('Canvas drawing failed.');draws.push({name:canvas.file.name,width:canvas.width,height:canvas.height,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,args,alpha:options?.alpha!==false,opaqueFill:!!canvas.opaqueFill});},fillRect(){canvas.opaqueFill=true;},clearRect(){},getImageData:()=>({data:new Uint8ClampedArray(16).fill(255)})};};
+ w.HTMLCanvasElement.prototype.toDataURL=function(type,quality){const plan=plans.get(this.file?.name)||{};encodings.push({name:this.file?.name,width:this.width,height:this.height,type,quality,opaqueFill:!!this.opaqueFill});if(plan.encodingError)throw new Error('Canvas encoding failed.');if(plan.tooLarge)return `data:image/webp;base64,${'A'.repeat(50010)}`;if(plan.invalidEncoding)return 'data:,';
+  if(plan.complexByDimensions){const density=plan.pngFallback?1.35:.9+(quality??.9)*.3,length=Math.ceil(this.width*this.height*density/4)*4;return `data:image/${plan.pngFallback?'png':'webp'};base64,${'A'.repeat(length)}`;}
+  return `data:image/webp;base64,${Buffer.from(this.file?.name||'fixture').toString('base64')}`;
+ };
+ return {plans,decoded,revoked,draws,encodings,get pending(){return pending;},set fastTimeout(value){fastTimeout=value;},release(name){const finish=pending.get(name);assert.ok(finish,`${name} should have a pending decode`);pending.delete(name);finish();},expected:name=>`data:image/webp;base64,${Buffer.from(name).toString('base64')}`};
 }
 
 async function editor(server,section){
@@ -96,6 +99,28 @@ try{
     e.close();e=await editor(server,section);assert.equal(e.field(e.logoPath).value,e.images.expected(name),'Reload recovers the saved upload');await e.publish();const published=e.row();assert.equal(section==='partners'?published.logo:published.brands[0].logo,e.images.expected(name));assert.equal(section==='partners'?published.url:published.brands[0].sponsorTitle,metadata);assert.equal(server.stored.drafts[section],undefined);
     const feed=await (await e.w.fetch('/api/site-content')).json();const publicRow=feed.datasets[section].find(row=>section==='partners'?row.name==='Upload Fixture Partner':row.id==='upload-fixture');assert.equal(section==='partners'?publicRow.logo:publicRow.brands[0].logo,e.images.expected(name),'Verified public feed retains uploaded data and metadata');
    }
+   // Dense logos must shrink dimensions after exhausting quality at the
+   // original size. PNG fallback cannot respond to WebP quality changes.
+   for(const [name,plan] of [
+    ['detailed-logo.png',{complexByDimensions:true,naturalWidth:1200,naturalHeight:400}],
+    ['png-fallback-logo.png',{complexByDimensions:true,pngFallback:true,naturalWidth:3200,naturalHeight:400}],
+    ['small-transparent-logo.png',{naturalWidth:31,naturalHeight:19}],
+   ]){
+    const transfer=e.upload(name,'image/png',plan);await e.completed(transfer,'success');
+    const value=e.field(e.logoPath).value,draws=e.images.draws.filter(item=>item.name===name),encodings=e.images.encodings.filter(item=>item.name===name);
+    assert.ok(value.length<=50000,'A successful complex logo keeps the existing stored-logo limit');assert.match(value,/^data:image\/(?:png|webp);base64,/);
+    assert.equal(transfer.input.closest('.admin-field').querySelector('.portfolio-logo-preview').getAttribute('src'),value,'The optimized dimensions update the same selected preview');
+    assert.ok(draws.length>0);assert.ok(draws.every(item=>item.width>0&&item.height>0&&item.width<=640&&item.height<=260&&item.width<=item.naturalWidth&&item.height<=item.naturalHeight),'Optimization keeps the initial bounds and never magnifies a small logo');
+    assert.ok(draws.every(item=>Math.abs(item.width*item.naturalHeight-item.height*item.naturalWidth)<=item.naturalWidth+item.naturalHeight),'Every pass keeps the source aspect ratio within pixel rounding');
+    assert.ok(draws.every(item=>item.alpha&&!item.opaqueFill)&&encodings.every(item=>!item.opaqueFill),'Canvas keeps transparency instead of adding an opaque background');
+    assert.ok(draws.every(item=>item.args.length===4&&item.args[0]===0&&item.args[1]===0&&item.args[2]===item.width&&item.args[3]===item.height),'Every pass scales the full image without cropping');
+    if(plan.complexByDimensions){assert.ok(draws.length>1,'A too-large initial encoding retries at smaller dimensions');assert.ok(draws.at(-1).width<draws[0].width&&draws.at(-1).height<draws[0].height,'Dimension reduction makes the dense logo publishable');}
+    else{assert.equal(draws.length,1);assert.equal(draws[0].width,31);assert.equal(draws[0].height,19);}
+    if(plan.pngFallback){assert.match(value,/^data:image\/png;/);const sizes=new Map();for(const item of encodings){const size=`${item.width}x${item.height}`;sizes.set(size,(sizes.get(size)||0)+1);}assert.ok([...sizes.values()].every(count=>count===1),'Do not repeat ineffective quality attempts when the browser returns PNG');}
+    await e.save();const draft=e.row('drafts');assert.equal(draft.logo??draft.brands[0].logo,value,'Complex output survives a private draft');
+    const savedMetadata=section==='partners'?draft.url:draft.brands[0].sponsorTitle;
+    e.close();e=await editor(server,section);assert.equal(e.field(e.logoPath).value,value,'Reload preserves the optimized complex image');await e.publish();assert.equal(e.row().logo??e.row().brands[0].logo,value,'Explicit fixture publication keeps the same optimized image');assert.equal(section==='partners'?e.row().url:e.row().brands[0].sponsorTitle,savedMetadata,'Resizing keeps sponsor metadata intact');
+   }
    // A hosted URL remains equally usable and preserves sponsor metadata.
    const hosted='https://example.test/replacement-logo.png';e.set(e.logoPath,hosted);await e.save();await e.publish();assert.equal(e.row().logo??e.row().brands[0].logo,hosted);
    const existing=e.field(e.logoPath).value;
@@ -140,5 +165,5 @@ try{
   }finally{e.close();}
  }
  assert.deepEqual(unhandled,[],'No rejected upload promise may escape visible error handling');
- console.log('PASS: both sponsor-logo pickers show synchronous filename/status, optimize PNG/JPEG/WebP in place, retain metadata through authenticated mocked draft/publish/readback, expose validation/decode/canvas/commit/path/timeout errors, retry the same file, block pending saves, and reject stale or removed targets. No live writes or deployments.');
+ console.log('PASS: both sponsor-logo pickers show synchronous filename/status, optimize PNG/JPEG/WebP and dense/PNG-fallback logos within the unchanged cap in place without cropping, magnification or opaque fill, retain metadata through authenticated mocked draft/publish/readback, expose validation/decode/canvas/commit/path/timeout errors, retry the same file, block pending saves, and reject stale or removed targets. No live writes or deployments.');
 }finally{process.off('unhandledRejection',onUnhandled);}

@@ -78,7 +78,7 @@ async function editor(browser,width,section,server){
  const payload=(name,type,buffer)=>({name,mimeType:type,buffer});
  const fixture=extension=>{const {type,data}=fixtures[extension];assert.ok(data.startsWith(`data:${type};base64,`),'Input fixtures use their actual PNG/JPEG/WebP format');return payload(`native-logo.${extension}`,type,Buffer.from(data.split(',')[1],'base64'));};
  return {context,page,errors,unexpected,picker,valueField,field,feedback,fixture,payload,fixtureRow,target,
-  async upload(file,state='success'){
+  async upload(file,state='success',{expectedMime='image/webp'}={}){
    await picker().scrollIntoViewIfNeeded();const previous=await valueField().inputValue();
    await picker().setInputFiles(file);
    await page.waitForFunction(expected=>{const input=document.querySelector(expected.selector),status=input.closest('.admin-field').querySelector('[data-logo-upload-status]');return status.dataset.state===expected.state&&status.textContent.includes(expected.name);},{selector,state,name:file.name});
@@ -87,7 +87,7 @@ async function editor(browser,width,section,server){
    assert.equal(await picker().inputValue(),'','The file control resets so the same file can be retried');
    const captured=await page.evaluate(()=>window.__logoChangeFeedback.at(-1));assert.equal(captured.state,'working','The filename is acknowledged synchronously during the native file-change event');assert.ok(captured.text.includes(file.name));
    if(state==='success'){
-    const value=await valueField().inputValue();assert.match(value,/^data:image\/webp;base64,/);assert.ok(value.length<=50000,'Existing optimized-logo cap is preserved');
+    const value=await valueField().inputValue();assert.ok(value.startsWith(`data:${expectedMime};base64,`),'The stored image uses the expected actual encoder format');assert.ok(value.length<=50000,'Existing optimized-logo cap is preserved');
     assert.ok((await feedback().textContent()).includes('Ready to publish'));
     const preview=field().locator('.portfolio-logo-preview');assert.ok(await preview.evaluate(async(img,expected)=>{await img.decode();return img.src===expected&&img.naturalWidth>0&&img.naturalHeight>0;},value),'The actual optimized output decodes as the selected preview');
     return value;
@@ -107,6 +107,55 @@ try{
    let latest;
    for(const extension of ['png','jpg','webp'])latest=await e.upload(e.fixture(extension));
    assert.equal(server.actions.length,0,'Selecting files does not publish or save automatically');
+   if(width===390){
+    // A detailed transparent source stays under the input cap, while its first
+    // stage-sized encoding exceeds the output cap even at lower quality.
+    const data=await e.page.evaluate(()=>{
+     const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=650;
+     const context=canvas.getContext('2d'),image=context.createImageData(canvas.width,canvas.height);let random=0x6a09e667;
+     const next=()=>{random^=random<<13;random^=random>>>17;random^=random<<5;return random>>>0;};
+     for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++){
+      const i=(y*canvas.width+x)*4;image.data[i]=next()&255;image.data[i+1]=next()&255;image.data[i+2]=next()&255;
+      image.data[i+3]=x<160||x>=1440||y<65||y>=585?0:x>640&&x<960&&y>260&&y<390?128:x>320&&x<480&&y>130&&y<195?255:next()&255;
+     }
+     context.putImageData(image,0,0);return canvas.toDataURL('image/png');
+    });
+    const buffer=Buffer.from(data.split(',')[1],'base64');assert.ok(buffer.length<5000000,'The detailed fixture is an accepted source size');
+    await e.page.evaluate(()=>{
+     const native=HTMLCanvasElement.prototype.toDataURL;window.__logoEncoderCalls=[];window.__forceLogoPng=false;
+     HTMLCanvasElement.prototype.toDataURL=function(type,quality){
+      // This emulates browsers that return their real PNG encoder when WebP
+      // export is unavailable. Native PNG ignores the supplied quality value.
+      const result=window.__forceLogoPng?native.call(this,'image/png'):native.call(this,type,quality);
+      window.__logoEncoderCalls.push({width:this.width,height:this.height,requested:type,mime:result.slice(5,result.indexOf(';')),length:result.length,quality});return result;
+     };
+    });
+    for(const pngFallback of [false,true]){
+     await e.page.evaluate(force=>{window.__forceLogoPng=force;window.__logoEncoderCalls=[];},pngFallback);
+     const writes=server.actions.length,name=pngFallback?'detailed-png-fallback.png':'detailed-transparent-logo.png';
+     latest=await e.upload(e.payload(name,'image/png',buffer),'success',{expectedMime:pngFallback?'image/png':'image/webp'});
+     assert.equal(server.actions.length,writes,'Optimizing a detailed logo still requires an explicit save');
+     const calls=await e.page.evaluate(()=>window.__logoEncoderCalls);
+     assert.ok(calls[0].length>50000,'The fixture exercises the old too-complex failure');
+     assert.ok(calls.some(call=>call.width<calls[0].width||call.height<calls[0].height),'Oversize encoding progressively reduces image dimensions');
+     if(pngFallback)assert.ok(calls.every(call=>call.requested==='image/webp'&&call.mime==='image/png'),'Fallback testing uses actual native PNG bytes while WebP was requested');
+     const output=await e.field().locator('.portfolio-logo-preview').evaluate(async image=>{
+      await image.decode();const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const context=canvas.getContext('2d');context.drawImage(image,0,0);
+      const alpha=(x,y)=>context.getImageData(Math.floor(x*canvas.width),Math.floor(y*canvas.height),1,1).data[3];
+      return {width:canvas.width,height:canvas.height,cornerAlpha:alpha(.02,.02),opaqueAlpha:alpha(.25,.25),translucentAlpha:alpha(.5,.5)};
+     });
+     assert.ok(output.width<=640&&output.height<=260,'Output stays inside existing logo dimensions');
+     assert.ok(Math.abs(output.width*650-output.height*1600)<=1125,'Resizing retains the source aspect ratio within pixel rounding');
+     assert.equal(output.cornerAlpha,0,'Transparent edges are not flattened onto a background');assert.equal(output.opaqueAlpha,255);assert.ok(output.translucentAlpha>=120&&output.translucentAlpha<=136,'Partial transparency survives optimization');
+     await e.page.locator('[data-content-form] button[type="submit"]').click();await e.page.waitForFunction(()=>document.querySelector('[data-content-save-feedback]').textContent.startsWith('PRIVATE DRAFT SAVED'));
+     const saved=e.target(e.fixtureRow(server.stored.drafts[section]));assert.equal(saved.logo,latest,'The actual reduced image is saved without substitution');assert.ok(saved.logo.length<=50000);assert.deepEqual(withoutLogo(saved),metadata,'Detailed artwork preserves sponsor metadata');
+     assert.deepEqual(server.stored.published[section],server.initial[section],'Detailed-artwork draft saves do not publish');
+     // Partners have no stable row ID, so reselect the fixture after a save.
+     await e.page.locator('[data-entry]').filter({hasText:section==='partners'?'Upload Browser Partner':'Upload Browser Driver'}).evaluate(button=>button.click());
+    }
+    await e.page.evaluate(()=>{window.__forceLogoPng=false;});
+    console.log(`PASS: ${width}px ${section}: high-entropy transparent PNG and native PNG encoder fallback resize progressively, decode with preserved alpha/aspect ratio and save within 50,000 characters.`);
+   }
    await e.upload(e.payload('invalid.svg','image/svg+xml',Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>')),'error');assert.match(await e.feedback().textContent(),/PNG.*JPG.*WebP/);
    const corrupt=e.payload('corrupt.png','image/png',Buffer.from('not a PNG image'));
    await e.upload(corrupt,'error');await e.upload(corrupt,'error');assert.match(await e.feedback().textContent(),/could not be read|image/i);

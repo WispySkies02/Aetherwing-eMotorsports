@@ -239,15 +239,33 @@
       });
       if(!image.naturalWidth||!image.naturalHeight)throw new Error('That logo image has no readable dimensions.');
       const scale=Math.min(1,640/image.naturalWidth,260/image.naturalHeight),canvas=document.createElement('canvas');
-      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-      const context=canvas.getContext('2d');
-      if(!context)throw new Error('This browser could not prepare the logo preview. Try again or use the Logo URL field.');
-      context.drawImage(image,0,0,canvas.width,canvas.height);
-      let quality=.9,result=canvas.toDataURL('image/webp',quality);
-      while(result.length>50000&&quality>.45){quality-=.1;result=canvas.toDataURL('image/webp',quality);}
-      if(!/^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(result))throw new Error('This browser could not create the logo image. Try again or use the Logo URL field.');
-      if(result.length>50000)throw new Error('This logo is still too complex after optimization. Use the Logo URL field instead.');
-      return result;
+      const encode=quality=>{
+        const result=canvas.toDataURL('image/webp',quality);
+        if(!/^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(result))throw new Error('This browser could not create the logo image. Try again or use the Logo URL field.');
+        return result;
+      };
+      // Some browsers return PNG for a WebP request and ignore its quality
+      // setting. Reduce dimensions as well, drawing from the original each
+      // time so transparency and proportions survive without repeated scaling.
+      for(let pass=0;pass<16;pass++){
+        const dimensionScale=scale*Math.pow(.8,pass);
+        canvas.width=Math.max(1,Math.round(image.naturalWidth*dimensionScale));canvas.height=Math.max(1,Math.round(image.naturalHeight*dimensionScale));
+        const context=canvas.getContext('2d');
+        if(!context)throw new Error('This browser could not prepare the logo preview. Try again or use the Logo URL field.');
+        context.imageSmoothingEnabled=true;context.imageSmoothingQuality='high';
+        context.drawImage(image,0,0,canvas.width,canvas.height);
+        let result=encode(.9);
+        if(result.length<=50000)return result;
+        // PNG's encoder ignores quality; do not repeat the same expensive work.
+        if(result.startsWith('data:image/webp;'))for(const quality of [.8,.7,.6,.5]){
+          result=encode(quality);
+          if(result.length<=50000)return result;
+        }
+        if(canvas.width<=64&&canvas.height<=64)break;
+        // Keep file-selection feedback responsive while trying a smaller size.
+        await new Promise(resolve=>setTimeout(resolve,0));
+      }
+      throw new Error('This logo could not be reduced enough. Try re-saving it as PNG/WebP or use the Logo URL field.');
     } finally { URL.revokeObjectURL(source); }
   }
   async function uploadedSignatureData(file) {
