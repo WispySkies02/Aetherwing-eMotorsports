@@ -231,12 +231,21 @@
     if(file.size>5000000)throw new Error('Logo files must be 5 MB or smaller before optimization.');
     const source=URL.createObjectURL(file);
     try {
-      const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('That logo image could not be read.'));img.src=source;});
+      const image=await new Promise((resolve,reject)=>{
+        const img=new Image(),timer=setTimeout(()=>finish(new Error('That logo image took too long to read. Try the file again or use its HTTPS image URL.')),15000);
+        function finish(error){clearTimeout(timer);img.onload=null;img.onerror=null;error?reject(error):resolve(img);}
+        img.onload=()=>finish();img.onerror=()=>finish(new Error('That logo image could not be read.'));
+        try{img.src=source;}catch(error){finish(error);}
+      });
+      if(!image.naturalWidth||!image.naturalHeight)throw new Error('That logo image has no readable dimensions.');
       const scale=Math.min(1,640/image.naturalWidth,260/image.naturalHeight),canvas=document.createElement('canvas');
       canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      const context=canvas.getContext('2d');
+      if(!context)throw new Error('This browser could not prepare the logo preview. Try again or use the Logo URL field.');
+      context.drawImage(image,0,0,canvas.width,canvas.height);
       let quality=.9,result=canvas.toDataURL('image/webp',quality);
       while(result.length>50000&&quality>.45){quality-=.1;result=canvas.toDataURL('image/webp',quality);}
+      if(!/^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(result))throw new Error('This browser could not create the logo image. Try again or use the Logo URL field.');
       if(result.length>50000)throw new Error('This logo is still too complex after optimization. Use the Logo URL field instead.');
       return result;
     } finally { URL.revokeObjectURL(source); }
@@ -989,7 +998,7 @@
       }
       if(key==='partners'&&k==='logo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current partner logo preview">`:'';
-        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-partner-logo-upload>`,'Paste an HTTPS/site-relative logo URL, or upload a PNG, JPG, or WebP. The published Partners page uses this exact image.','is-wide portfolio-logo-field');
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-partner-logo-upload aria-describedby="partner-logo-status"><small id="partner-logo-status" class="admin-field__help admin-field__upload-status" data-logo-upload-status role="status" aria-live="polite">Choose a file to replace the logo. The current image stays unchanged until a new file is ready.</small>`,'Paste an HTTPS/site-relative logo URL, or upload a PNG, JPG, or WebP. The published Partners page uses this exact image.','is-wide portfolio-logo-field');
       }
       if(key==='roster-profiles'&&k==='signatureLogo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current driver signature logo preview">`:'';
@@ -997,7 +1006,8 @@
       }
       if(key==='driver-portfolios'&&k==='logo') {
         const preview=v?`<img class="portfolio-logo-preview" src="${esc(v)}" alt="Current brand logo preview">`:'';
-        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}">`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
+        const feedbackId=`portfolio-logo-status-${path.join('-')}`;
+        return shell(pretty,`${preview}<input ${attr} data-field-type="string" type="text" value="${esc(v)}" placeholder="https://… or upload a file below"><input type="file" accept="image/png,image/jpeg,image/webp" data-portfolio-logo-upload data-logo-path="${esc(JSON.stringify(p))}" aria-describedby="${esc(feedbackId)}"><small id="${esc(feedbackId)}" class="admin-field__help admin-field__upload-status" data-logo-upload-status role="status" aria-live="polite">Choose a file to replace the logo. The current image stays unchanged until a new file is ready.</small>`,'Paste a direct HTTPS/site-relative image URL, or choose a PNG, JPG, or WebP file. Uploaded files are optimized and stored with this portfolio.','is-wide portfolio-logo-field');
       }
       if(key==='drivers'&&k==='numberImage') {
         const upload=current()?.numberImageBackup||'',primary=upload||v||'',secondary=upload&&v&&v!==upload?v:'';
@@ -1438,6 +1448,51 @@
     }
     selectNumberImage(source);
   }
+  // Keep logo feedback beside the picker, including failures while committing
+  // the surrounding form. Replacing the whole form here loses that feedback
+  // and rebuilds every other brand's embedded image unnecessarily.
+  const sponsorLogoRequests=new Map();
+  async function uploadSponsorLogo(input,portfolio){
+    let file,field,request;
+    const feedback=(message,state)=>{
+      const el=field?.querySelector('[data-logo-upload-status]');
+      if(el){el.textContent=message;el.dataset.state=state;}
+      status(message);
+    };
+    try{
+      file=input.files?.[0];if(!file)return;
+      field=input.closest('.admin-field');
+      if(!field)throw new Error('The logo field is no longer available. Select the entry again.');
+      request={};sponsorLogoRequests.set(field,request);
+      input.removeAttribute('aria-invalid');
+      feedback(`${file.name} selected. Preparing logo preview…`,'working');
+      try{commit();}catch{throw new Error('The editor fields could not be read. Select this entry again, then retry the upload.');}
+      const section=key,rows=data,selected=current();
+      let path;
+      try{path=portfolio?JSON.parse(input.dataset.logoPath):['logo'];}catch{throw new Error('The logo field changed. Select the entry and upload again.');}
+      if(!Array.isArray(path)||(portfolio&&(path.length!==3||path[0]!=='brands'||!Number.isInteger(path[1])||path[1]<0||path[2]!=='logo')))throw new Error('The logo field changed. Select the entry and upload again.');
+      const target=portfolio?valueAt(selected,path.slice(0,-1)):selected;
+      if(!target||!Array.isArray(rows)||!rows.includes(selected)||(portfolio&&!selected.brands?.includes(target)))throw new Error('The sponsor entry changed. Select it and upload again.');
+      const valueField=[...field.querySelectorAll('[data-field-path]')].find(el=>el.dataset.fieldPath===JSON.stringify(path));
+      if(!valueField)throw new Error('The logo field changed. Select the entry and upload again.');
+      const previousLogo=valueField.value;
+      const logo=await uploadedLogoData(file);
+      if(sponsorLogoRequests.get(field)!==request)return;
+      if(key!==section||data!==rows||current()!==selected||!rows.includes(selected)||!field.isConnected||(portfolio&&!selected.brands.includes(target)))throw new Error('The sponsor entry changed during upload. Select it and upload again.');
+      if(valueField.value!==previousLogo)throw new Error('The logo URL changed during upload. Keep that URL or select the file again.');
+      let preview=field.querySelector('.portfolio-logo-preview');
+      if(!preview){preview=document.createElement('img');preview.className='portfolio-logo-preview';preview.alt=portfolio?'Current brand logo preview':'Current partner logo preview';field.insertBefore(preview,valueField);}
+      preview.src=logo;valueField.value=logo;target.logo=logo;dirty=true;
+      saveFeedback('UNSAVED LOGO · ready to publish or save a private draft','warning');
+      feedback(`${file.name}: Ready to publish. Preview updated; save a private draft or publish this section to keep the change.`,'success');
+    }catch(error){
+      if(request&&sponsorLogoRequests.get(field)!==request)return;
+      input.setAttribute('aria-invalid','true');
+      feedback(`${file?.name||'Logo'}: Upload failed. ${error?.message||'Try again or use the Logo URL field.'}`,'error');
+    }finally{
+      if(request&&sponsorLogoRequests.get(field)===request){sponsorLogoRequests.delete(field);input.value='';}
+    }
+  }
   $('[data-content-fields]').addEventListener('keydown',(event)=>{
     if(key==='drivers'&&event.key==='Enter'&&event.target.matches('[data-number-image-url]')){event.preventDefault();useNumberImageUrl();}
   });
@@ -1463,9 +1518,7 @@
     }
     const partnerLogoUpload=event.target.closest?.('[data-partner-logo-upload]');
     if(partnerLogoUpload&&key==='partners'){
-      const file=partnerLogoUpload.files?.[0];if(!file)return;
-      commit();const selected=current();
-      try{status(`Optimizing ${file.name}…`);const logo=await uploadedLogoData(file);if(!data.includes(selected))throw new Error('The partner entry changed during upload. Select it and upload again.');selected.logo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to ${selected.name}. Publish Partners to update the public page.`);}catch(error){status(error.message);}return;
+      await uploadSponsorLogo(partnerLogoUpload,false);return;
     }
     const signatureLogoUpload=event.target.closest?.('[data-signature-logo-upload]');
     if(signatureLogoUpload&&key==='roster-profiles'){
@@ -1488,9 +1541,7 @@
     }
     const logoUpload=event.target.closest?.('[data-portfolio-logo-upload]');
     if(logoUpload&&key==='driver-portfolios'){
-      const file=logoUpload.files?.[0];if(!file)return;
-      commit();const selected=current(),path=JSON.parse(logoUpload.dataset.logoPath),brand=valueAt(selected,path.slice(0,-1));
-      try{status(`Optimizing ${file.name}…`);const logo=await uploadedLogoData(file);if(!data.includes(selected)||!selected.brands.includes(brand))throw new Error('The portfolio changed during upload. Select the brand and upload again.');brand.logo=logo;dirty=true;if(current()===selected)render();status(`${file.name} is attached to this brand. Publish this section to show it on the Partners page.`);}catch(error){status(error.message);}return;
+      await uploadSponsorLogo(logoUpload,true);return;
     }
     const scheduleEntryDriver=event.target.closest?.('[data-schedule-entry-driver-choice]');
     if(scheduleEntryDriver&&key==='schedule-events'){
@@ -1582,6 +1633,7 @@
   $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=key==='alliances'?{id:'',name:'',shortName:''}:blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['drivers','roster-profiles','competitions'].includes(key))added.allianceId='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}if(key==='news'&&!Array.isArray(added.timeline))added.timeline=[];data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data))return;const row=current(),message=key==='alliances'?`Remove ${row?.name||'this alliance'} from this section draft? Current linked records must be reassigned before publication. Historical results, news and paints are kept.`:key==='roster-profiles'?`Remove ${row?.name||row?.slug||'this driver'} from the Driver Directory? When you publish, all of this driver’s current league assignments will also be removed from the public site. Historical results and wins are kept.`:'Remove this entry from the section draft? It stays public until you publish.';if(!confirm(message))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();if(key==='roster-profiles')status('Driver removed from this draft. Publish Driver Directory to remove the profile and current league assignments from the public site; historical results remain.');});
   async function action(name) {
+    if(['saveDraft','publish'].includes(name)&&[...sponsorLogoRequests.keys()].some(field=>field.isConnected))throw new Error('Wait for sponsor logo optimization to finish before saving or publishing.');
     if(!loaded||!key)throw new Error('Open an editor first.');
     if(busy)throw new Error('A save is already in progress.');
     if(['saveDraft','publish'].includes(name))commit();
