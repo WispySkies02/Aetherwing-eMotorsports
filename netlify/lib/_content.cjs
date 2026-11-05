@@ -145,6 +145,28 @@ function validate(key, data, registry={}, context={}) {
   }
   if (!structure(seed,data)) return 'A field has the wrong type. Use numeric inputs for points and finishes, and lists for grouped entries.';
   if (key==='schedule-events' && !data.length) return 'Keep at least one calendar entry.';
+  // An approved event entry records the identity used at that event. A later
+  // roster number/name change must not invalidate an unrelated calendar edit.
+  // Drafts and the proposed publication cannot authorize their own exceptions.
+  const approvedEventEntries=new Map();
+  const snapshotEventKey=(event)=>{
+    if(!event||typeof event.league!=='string')return null;
+    const clean=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[’']/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+    const explicit=clean(event.routeId||event.eventId),round=String(event.round||'').match(/\d+/);
+    if(explicit||round)return JSON.stringify([event.league,explicit||`${clean(event.league)}-round-${Number(round[0])}`]);
+    return JSON.stringify([event.league,event.date,event.title]);
+  };
+  const entrySnapshot=(entry)=>entry&&typeof entry==='object'&&!Array.isArray(entry)&&typeof entry.assignmentId==='string'&&entry.assignmentId.trim()&&typeof entry.driver==='string'&&entry.driver.trim()&&(typeof entry.number==='string'||typeof entry.number==='number'&&Number.isFinite(entry.number))
+    ?JSON.stringify([entry.assignmentId,entry.driver,String(entry.number)]):null;
+  if(key==='schedule-events'){
+    const approved=Object.hasOwn(registry.published||{},'schedule-events')?registry.published['schedule-events']:seedData['schedule-events'];
+    for(const event of Array.isArray(approved)?approved:[]){
+      const identity=snapshotEventKey(event);if(!identity)continue;
+      const signatures=approvedEventEntries.get(identity)||new Set();
+      for(const entry of Array.isArray(event.entries)?event.entries:[]){const signature=entrySnapshot(entry);if(signature)signatures.add(signature);}
+      approvedEventEntries.set(identity,signatures);
+    }
+  }
   const required = {
     navigation:['label','href','group'],'page-overrides':['id','page','type','label','original','value'],'schedule-events':['league','leagueName','title','track','date','time'], results:['scheduleId','league','leagueName','title','track','date'],
     wins:['league','track','driver','date'], milestones:['date','title','description'],
@@ -173,15 +195,18 @@ function validate(key, data, registry={}, context={}) {
       if (row.entryListMode && !['auto','custom'].includes(row.entryListMode)) return `Entry ${index + 1}: entry list mode must be Auto or Custom.`;
       if (row.entryListMode==='custom') {
         if (!Array.isArray(row.entries)) return `Entry ${index + 1}: custom event entries must be a list.`;
-        const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seeds().drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
+        const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seedData.drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
         const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
+        const approved=approvedEventEntries.get(snapshotEventKey(row));
         const seen=new Set();
         for (const eventEntry of row.entries) {
-          const assignment=eligible.get(eventEntry?.assignmentId);
-          if(!assignment)return `Entry ${index + 1}: ${eventEntry?.driver||'an event driver'} is not assigned to ${row.leagueName} in Driver League Assignments.`;
-          if(seen.has(assignment.id))return `Entry ${index + 1}: ${assignment.displayName} can appear only once in the event entry list.`;
-          seen.add(assignment.id);
-          if(eventEntry.driver!==assignment.displayName||String(eventEntry.number)!==String(assignment.number||''))return `Entry ${index + 1}: ${assignment.displayName}'s event name and number must match Driver League Assignments.`;
+          const assignment=eligible.get(eventEntry?.assignmentId),signature=entrySnapshot(eventEntry),recorded=signature&&approved?.has(signature);
+          if(!signature)return `Entry ${index + 1}: event entries need a text assignment ID and driver name, and a text or numeric car number.`;
+          if(!recorded&&!assignment)return `Entry ${index + 1}: ${eventEntry?.driver||'an event driver'} is not assigned to ${row.leagueName} in Driver League Assignments.`;
+          const id=eventEntry.assignmentId,name=assignment?.displayName||eventEntry.driver;
+          if(seen.has(id))return `Entry ${index + 1}: ${name} can appear only once in the event entry list.`;
+          seen.add(id);
+          if(!recorded&&(eventEntry.driver!==assignment.displayName||String(eventEntry.number)!==String(assignment.number||'')))return `Entry ${index + 1}: ${assignment.displayName}'s event name and number must match Driver League Assignments.`;
         }
       }
     }

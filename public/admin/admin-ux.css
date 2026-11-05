@@ -151,6 +151,8 @@ html:not(#adm) .ops-toast{left:50%!important;right:auto!important;bottom:24px!im
 /* ---------- Phone dock + section sheet ---------- */
 .adm-dock,.adm-scrim{display:none}
 @media(max-width:900px){
+  /* The workspace margin floats the dock 20px above the viewport edge. */
+  html:not(#adm) .ops-workspace{--adm-dock-clearance:calc(var(--adm-dock) + env(safe-area-inset-bottom,0px) + 20px)}
   html.adm-signed-in body{padding-bottom:calc(var(--adm-dock) + env(safe-area-inset-bottom,0px))}
   html:not(#adm) .ops-brand span{display:none}
   html:not(#adm) .ops-brand img{width:112px!important}
@@ -163,7 +165,7 @@ html:not(#adm) .ops-toast{left:50%!important;right:auto!important;bottom:24px!im
   html:not(#adm) .admin-publish-console>button{grid-column:1/-1;margin:12px!important}
   html:not(#adm) .content-layout{grid-template-columns:1fr!important}
   html:not(#adm) .content-layout>aside{position:static;max-height:280px}
-  html:not(#adm) [data-content-form]>.actions{bottom:calc(var(--adm-dock) + env(safe-area-inset-bottom,0px) + 8px)!important}
+  html:not(#adm) [data-content-form]>.actions{bottom:calc(var(--adm-dock-clearance) + 8px)!important}
   html:not(#adm) [data-content-form]>.actions>button{flex:1 1 calc(50% - 8px)!important}
   html:not(#adm) .ops-toast{bottom:calc(var(--adm-dock) + env(safe-area-inset-bottom,0px) + 80px)!important}
 
@@ -223,6 +225,13 @@ html:not(#adm) .adm-folded>.adm-tool-head:after{transform:rotate(-45deg)}
 html:not(#adm) .adm-folded>:not(.adm-tool-head){display:none!important}
 html:not(#adm) .adm-folded>.adm-tool-head{margin-bottom:0!important;padding-bottom:0!important;border-bottom:0!important}
 html:not(#adm) .adm-folded>.adm-tool-head p{display:none!important}
+/* Keep bulk-shift actions above the fixed phone dock while reviewing dates. */
+html:not(#adm) .schedule-shift-preview{scroll-margin-top:calc(var(--adm-head) + 16px)}
+html:not(#adm) .schedule-shift-tool :is(button,select,.adm-tool-head){scroll-margin-top:calc(var(--adm-head) + 16px)}
+@media(max-width:900px){
+  html:not(#adm) .schedule-shift-tool :is(button,select,.adm-tool-head){scroll-margin-bottom:calc(var(--adm-dock-clearance) + 16px)}
+  html:not(#adm) .schedule-shift-preview .schedule-shift-actions{position:sticky;bottom:calc(var(--adm-dock-clearance) + 8px);z-index:31;background:var(--adm-sink)}
+}
 
 @media(max-width:900px){
   /* No iOS auto-zoom when a field is tapped: inputs need 16px text. */

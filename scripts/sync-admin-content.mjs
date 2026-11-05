@@ -97,7 +97,9 @@ if (endpoint) {
       const { createRequire } = await import('node:module');
       const { validate } = createRequire(import.meta.url)('../netlify/lib/_content.cjs');
       for (const [key,data] of Object.entries(next.datasets)) {
-        const linkedSection=['alliances','drivers','roster-profiles','competitions'].includes(key);
+        // This response is already published. Its approved per-event driver
+        // snapshots may differ from today's roster, especially after a season.
+        const linkedSection=['alliances','drivers','roster-profiles','competitions','schedule-events'].includes(key);
         const error = validate(key,data,linkedSection?{published:next.datasets}:{},linkedSection?{published:next.datasets}:{});
         if (error) throw new Error(`${key}: ${error}`);
       }
