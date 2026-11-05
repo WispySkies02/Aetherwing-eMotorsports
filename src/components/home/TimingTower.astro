@@ -17,6 +17,11 @@ const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && 
 <script is:inline type="application/json" data-tower-seed set:html={JSON.stringify(board || null)} />
 
 <script>
+  // Keep this small classic-script mirror in step with standings-metadata.mjs.
+  const standingAliases={wispy:'hailey',aokikoto:'hailey',haileybell:'hailey',mymainisgone98:'matty',eazyonthafarilla:'eazy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',player13:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',sbnjco:'nico',sbnjc:'nico',matts1964:'matt',tnfanracing:'tnfan',evilcharms:'ryan',emoflamingo:'flamingo',hotline:'hotline'};
+  const standingIdentity=row=>{const value=typeof row==='string'?row:row?.driver;const name=String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');return standingAliases[name]||name;};
+  const standingMetadata=(board,row)=>{const result={...row},identity=standingIdentity(row),regular=identity&&Array.isArray(board?.rows)?board.rows.find(candidate=>standingIdentity(candidate)===identity):null,chase=identity&&Array.isArray(board?.chaseRows)?board.chaseRows.find(candidate=>standingIdentity(candidate)===identity):null;for(const key of ['manufacturer','chaseLocked','regularSeasonChampion']){const source=regular&&Object.hasOwn(regular,key)?regular:row&&Object.hasOwn(row,key)?row:chase&&Object.hasOwn(chase,key)?chase:null;if(source)result[key]=source[key];}return result;};
+  const standingLabels=row=>[row?.chaseLocked===true?'CHASE LOCKED':'',row?.regularSeasonChampion===true?'REGULAR-SEASON CHAMPION':''].filter(Boolean);
   const tower = document.querySelector('[data-timing-tower]');
   if (tower instanceof HTMLElement) {
     const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
@@ -40,7 +45,9 @@ const teamNumbers = drivers.filter((entry) => entry.competitionId === 'nrrs' && 
         const moveMark = move > 0 ? `<i class="is-up"><span aria-hidden="true">▲${move}</span><span class="aw-sr">up ${move}</span></i>` : move < 0 ? `<i class="is-down"><span aria-hidden="true">▼${Math.abs(move)}</span><span class="aw-sr">down ${Math.abs(move)}</span></i>` : '<i class="is-flat"><span aria-hidden="true">–</span><span class="aw-sr">no change</span></i>';
         const gap = index === 0 ? 'LEADER' : (row.delta && row.delta !== 'LEADER' ? row.delta : `-${leaderPts - (Number(row.points) || 0)}`);
         const classes = [isTeam(row) ? 'is-team' : '', cutoff && index === cutoff ? 'is-cut' : ''].filter(Boolean).join(' ');
-        return `${skipped}<li class="${classes}"><b class="aw-tower__pos">${esc(String(row.position || `P${index + 1}`).replace(/^P/i, ''))}</b>${moveMark}<span class="aw-tower__num">${esc(row.number)}</span><strong>${esc(row.driver)}</strong><em>${esc(gap)}</em></li>`;
+        const labels=standingLabels(standingMetadata(board,row));
+        const status=labels.length?`<small class="ux-tag" data-standing-status style="grid-column:4/-1;padding:.35rem 0 .5rem 4px;white-space:normal;line-height:1.4;letter-spacing:.04em">${esc(labels.join(' · '))}</small>`:'';
+        return `${skipped}<li class="${classes}"><b class="aw-tower__pos">${esc(String(row.position || `P${index + 1}`).replace(/^P/i, ''))}</b>${moveMark}<span class="aw-tower__num">${esc(row.number)}</span><strong>${esc(row.driver)}</strong><em>${esc(gap)}</em>${status}</li>`;
       }).join('');
       tower.querySelector('[data-tower-status]').textContent = board.status || 'STANDINGS';
       tower.querySelector('[data-tower-title]').textContent = board.title || 'NRRS Championship';

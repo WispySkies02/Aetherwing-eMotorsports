@@ -41,7 +41,7 @@
     'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD',entryListMode:'Event entry list mode',entries:'Event entry list',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',entryStatus:'Entry note / status'},
     results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Automatic Latest Result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',finishPoints:'Finish points',bonusPoints:'Bonus / adjustment points',pointsEligible:'Championship points eligible',racePoints:'Total race points',featuredDriver:'Featured driver',chaseDriver:'Chase driver'},
     wins:{assignmentId:'Linked driver assignment',league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
-    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',points:'Points',delta:'Gap / delta',positionChange:'Position change (+/-)',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
+    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',manufacturer:'Manufacturer',chaseLocked:'Chase berth locked',regularSeasonChampion:'Regular-season champion',points:'Points',delta:'Gap / delta',positionChange:'Position change (+/-)',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Relationship',allianceId:'Alliance team',car:'Car / body',identityNote:'Identity note'},
     'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary relationship',allianceId:'Alliance team',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',signatureLogo:'Signature logo URL',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
@@ -442,7 +442,7 @@
   function applyResultsImport(){
     if(key!=='results'||!current()||!resultsImportPreview.length)return status('Preview a full race-results CSV first.');commit();const race=current(),entries=resultsImportPreview.map(row=>importedResultEntry(race,row));const imported=fullFieldResult(race,entries);for(const field of ['pointsSource','coverage','sourceUrl','sourceNote'])if(!(field in imported))delete race[field];Object.assign(race,imported);dirty=true;resultsImportPreview=[];render();status(`${race.entries.length} finishers imported for ${race.title||race.track}. Points were ${autoResultScoringLeagues.has(race.league)?'calculated automatically':'left for manual review'}; Featured Driver and Chase Driver remain manual.`);
   }
-  const standingName=(value='')=>String(value).toLowerCase().replace(/[^a-z0-9]+/g,'').replace(/^wispy$/,'hailey');
+  const standingName=(value='')=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'').replace(/^wispy$/,'hailey');
   function recalcStandingBoard(board=current()) {
     if(!board?.rows?.length)return;
     const before=new Map(board.rows.map((row,i)=>[`${standingName(row.driver)}|${String(row.number||'')}`,i+1]));
@@ -492,9 +492,37 @@
     const map=new Map();for(const profile of base('roster-profiles')||[]){const canonical=profile.name||profile.slug;for(const value of [profile.name,profile.handle,profile.robloxDisplayName,profile.robloxUsername,profile.historicalRobloxDisplayName,profile.iracingName,profile.historicalIRacingName])if(value)map.set(standingName(value),standingName(canonical));}
     if(typeof standingsDriverAliases!=='undefined')for(const [alias,canonical] of Object.entries(standingsDriverAliases))map.set(standingName(alias),standingName(canonical));return map;
   }
-  function matchedStanding(board,row,sourceRows=null){
+  function matchedStanding(board,row,sourceRows=null,{numberFallback=true}={}){
     const aliases=standingAliasMap(),target=aliases.get(standingName(row.driver))||standingName(row.driver),rows=sourceRows||board.rows||[];
-    return rows.find(item=>row.number&&String(item.number||'')===String(row.number)&&(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||rows.find(item=>(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||rows.find(item=>row.number&&String(item.number||'')===String(row.number));
+    return rows.find(item=>row.number&&String(item.number||'')===String(row.number)&&(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||rows.find(item=>(aliases.get(standingName(item.driver))||standingName(item.driver))===target)||(numberFallback?rows.find(item=>row.number&&String(item.number||'')===String(row.number)):undefined);
+  }
+  const standingMetadataFields=['manufacturer','chaseLocked','regularSeasonChampion'];
+  function standingManufacturerChoices(board=current()){
+    const league=board?.league||board?.id||'';
+    if(['nrrs','uarl','uarl-d1'].includes(league))return ['Ford','Chevrolet','Toyota','Cadillac'];
+    if(league==='kmart')return ['Ford','Chevrolet','Toyota','Dodge'];
+    if(league==='sunoco')return ['Ford','Chevrolet','Toyota','RAM'];
+    return [];
+  }
+  function normalizeStandingManufacturer(value=''){
+    const name=String(value||'').trim(),key=name.toLowerCase();
+    return ({chevy:'Chevrolet',chevrolet:'Chevrolet',ford:'Ford',toyota:'Toyota',cadillac:'Cadillac',dodge:'Dodge',ram:'RAM'})[key]||name;
+  }
+  function standingRowMetadata(board,row){
+    const regular=matchedStanding(board,row,board.rows||[],{numberFallback:false}),chase=matchedStanding(board,row,board.chaseRows||[],{numberFallback:false}),next={...row};
+    for(const field of standingMetadataFields){
+      const source=[regular,row,chase].find(candidate=>candidate&&Object.hasOwn(candidate,field));
+      if(source)next[field]=source[field];
+    }
+    return next;
+  }
+  function syncStandingMetadata(board){
+    const regular=(board.rows||[]).map(row=>standingRowMetadata(board,row));
+    if(Array.isArray(board.chaseRows))board.chaseRows=board.chaseRows.map(row=>standingRowMetadata({...board,rows:regular},row));
+    board.rows=regular;
+  }
+  function manualStandingLabels(row){
+    return [row?.chaseLocked===true?'CHASE LOCKED':'',row?.regularSeasonChampion===true?'REGULAR-SEASON CHAMPION':''].filter(Boolean);
   }
   const standingRowKey=(row)=>`${standingName(row?.driver||'')}|${String(row?.number||'').trim()}`;
   function recalcStandaloneRows(rows=[]){
@@ -508,20 +536,20 @@
   let standingsImportPreview=[],sunocoChaseImportPreview=[];
   function drawStandingsImportPreview(rows=[],options={}){
     const selector=options.selector||'[data-standings-import-preview]',box=$(selector);if(!box)return;
-    const board=current(),sourceRows=options.sourceRows||board?.rows||[],label=options.label||'current rows';box.innerHTML=rows.length?`<div class="standings-import-summary"><strong>${rows.length} ROWS READY</strong><span>Review before replacing ${sourceRows.length||0} ${esc(label)}.</span></div><div class="standings-import-grid">${rows.map(row=>{const match=matchedStanding(board,row,sourceRows.length?sourceRows:(board?.rows||[]));return `<div class="${match?'is-matched':'is-new'}"><b>${esc(row.position)}</b><span>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}</span><strong>${Number(row.points).toLocaleString('en-US')} PTS</strong><small>${match?'MATCHED'+(match.driver!==row.driver?' → '+esc(match.driver):''):'NEW / REVIEW'}${row.positionChange!=null?' · '+esc(row.positionChange>0?`+${row.positionChange}`:row.positionChange):''}${row.delta?' · '+esc(row.delta):''}</small></div>`;}).join('')}</div>`:'<p>Paste standings or upload a CSV, then choose Preview import.</p>';
+    const board=current(),sourceRows=options.sourceRows||board?.rows||[],label=options.label||'current rows';box.innerHTML=rows.length?`<div class="standings-import-summary"><strong>${rows.length} ROWS READY</strong><span>Review before replacing ${sourceRows.length||0} ${esc(label)}.</span></div><div class="standings-import-grid">${rows.map(row=>{const match=matchedStanding(board,row,sourceRows.length?sourceRows:(board?.rows||[]),{numberFallback:false});return `<div class="${match?'is-matched':'is-new'}"><b>${esc(row.position)}</b><span>${row.number?'#'+esc(row.number)+' · ':''}${esc(row.driver)}</span><strong>${Number(row.points).toLocaleString('en-US')} PTS</strong><small>${match?'MATCHED'+(match.driver!==row.driver?' → '+esc(match.driver):''):'NEW / REVIEW'}${row.positionChange!=null?' · '+esc(row.positionChange>0?`+${row.positionChange}`:row.positionChange):''}${row.delta?' · '+esc(row.delta):''}</small></div>`;}).join('')}</div>`:'<p>Paste standings or upload a CSV, then choose Preview import.</p>';
   }
   function applyStandingsImport(){
     if(key!=='standings'||!standingsImportPreview.length)return status('Preview a standings import first.');
     commit();const board=current(),old=board.rows||[];
-    board.rows=standingsImportPreview.map((row,index)=>{const match=matchedStanding({...board,rows:old},row,old)||{};const next={...match,position:row.position||`P${index+1}`,number:row.number||match.number||'',driver:match.driver||row.driver||'',points:Number(row.points||0),delta:row.delta||match.delta||'',positionChange:row.positionChange??match.positionChange??0,chaseEligible:typeof match.chaseEligible==='boolean'?match.chaseEligible:index<Number(board.cutoffAfter||0),highlight:Boolean(match.highlight),...(match.note?{note:match.note}:{})};delete next.pointsPending;delete next.unranked;return next;});
-    if(!standingsImportPreview.some(row=>row.delta))recalcStandingBoard(board);syncSunocoChaseStatus(board);
+    board.rows=standingsImportPreview.map((row,index)=>{const match=matchedStanding({...board,rows:old},row,old,{numberFallback:false})||{};const next={...match,position:row.position||`P${index+1}`,number:row.number||match.number||'',driver:match.driver||row.driver||'',points:Number(row.points||0),delta:row.delta||match.delta||'',positionChange:row.positionChange??match.positionChange??0,chaseEligible:typeof match.chaseEligible==='boolean'?match.chaseEligible:index<Number(board.cutoffAfter||0),highlight:Boolean(match.highlight),...(match.note?{note:match.note}:{})};delete next.pointsPending;delete next.unranked;return next;});
+    if(!standingsImportPreview.some(row=>row.delta))recalcStandingBoard(board);syncSunocoChaseStatus(board);syncStandingMetadata(board);
     dirty=true;standingsImportPreview=[];render();status(`${board.rows.length} regular standings rows imported. Review the board, then Publish Standings.`);
   }
   function applySunocoChaseImport(){
     if(key!=='standings'||current()?.league!=='sunoco'||!sunocoChaseImportPreview.length)return status('Preview the Sunoco Chase points import first.');
     commit();const board=current(),regular=board.rows||[],old=board.chaseRows||[];
-    board.chaseRows=sunocoChaseImportPreview.map((row,index)=>{const regularMatch=matchedStanding(board,row,regular)||{},oldMatch=matchedStanding(board,row,old)||{},next={...regularMatch,...oldMatch,position:row.position||`P${index+1}`,number:row.number||regularMatch.number||oldMatch.number||'',driver:regularMatch.driver||oldMatch.driver||row.driver||'',points:Number(row.points||0),delta:row.delta||oldMatch.delta||'',positionChange:row.positionChange??oldMatch.positionChange??0,chaseStatus:'CHASE',chaseEligible:true,highlight:false};delete next.pointsPending;delete next.unranked;return next;});
-    if(!sunocoChaseImportPreview.some(row=>row.delta))board.chaseRows=recalcStandaloneRows(board.chaseRows);syncSunocoChaseStatus(board);
+    board.chaseRows=sunocoChaseImportPreview.map((row,index)=>{const regularMatch=matchedStanding(board,row,regular,{numberFallback:false})||{},oldMatch=matchedStanding(board,row,old,{numberFallback:false})||{},next={...regularMatch,...oldMatch,position:row.position||`P${index+1}`,number:row.number||regularMatch.number||oldMatch.number||'',driver:regularMatch.driver||oldMatch.driver||row.driver||'',points:Number(row.points||0),delta:row.delta||oldMatch.delta||'',positionChange:row.positionChange??oldMatch.positionChange??0,chaseStatus:'CHASE',chaseEligible:true,highlight:false};delete next.pointsPending;delete next.unranked;return next;});
+    if(!sunocoChaseImportPreview.some(row=>row.delta))board.chaseRows=recalcStandaloneRows(board.chaseRows);syncSunocoChaseStatus(board);syncStandingMetadata(board);
     dirty=true;sunocoChaseImportPreview=[];render();status(`${board.chaseRows.length} Sunoco Chase-only rows imported. Review, then Publish Standings.`);
   }
   function applyPublishedResultsToStanding(){
@@ -564,7 +592,7 @@
     }
   };
   const standingsDriverAliases={
-    wispy:'hailey',aokikoto:'hailey',mymainisgone98:'matty',eazyonthafarilla:'eazy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',player13:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',sbnjco:'nico',sbnjc:'nico',matts1964:'matt',tnfanracing:'tnfan',evilcharms:'ryan',emoflamingo:'flamingo',hotline:'hotline'
+    wispy:'hailey',aokikoto:'hailey',haileybell:'hailey',mymainisgone98:'matty',eazyonthafarilla:'eazy',willsracingdesigns:'will',deadmansrisin27:'eazy',gostclutch24:'clutch',mattycampbell:'matty',arcticblitzzzz:'jaxon',arctic:'jaxon',troopersregiment214:'cod',mannygtr:'manny',frogboy4783:'frogboy',player138164:'carl',player13:'carl',outlaw5948:'outlaw',trentplayz:'trent',retrosp4rkz:'sparklez',voidwinter:'alex',b4lalex:'alex',owenn001:'owen',montaque77:'tj',redfont:'redfont',rapperessnetioal:'chandler',stampy13:'stampy',bluelagoon1376:'nico',sbnjco:'nico',sbnjc:'nico',matts1964:'matt',tnfanracing:'tnfan',evilcharms:'ryan',emoflamingo:'flamingo',hotline:'hotline'
   };
   const standingsManufacturerIconPaths={
     chevrolet:'/images/manufacturers/chevrolet.png',
@@ -607,11 +635,11 @@
     return null;
   }
   function standingManufacturer(board,row,fallbackNumber=''){
+    if(String(row?.manufacturer||'').trim())return String(row.manufacturer).trim();
     const latest=latestStandingResultEntry(board,row);
     if(String(latest?.manufacturer||'').trim())return String(latest.manufacturer).trim();
     const map=standingsManufacturerByNumber[board?.league]||standingsManufacturerByNumber[board?.id]||{};
     const latestNumber=String(latest?.number||'').trim();if(latestNumber&&map[latestNumber])return map[latestNumber];
-    if(String(row?.manufacturer||'').trim())return String(row.manufacturer).trim();
     const number=String(row?.number||fallbackNumber||'').trim();return map[number]||'';
   }
   function standingManufacturerIconKey(board,manufacturer=''){
@@ -660,6 +688,7 @@
     const raw=String(value).trim();let numeric=Number(raw.replace(/^\+/,''));if(/^▲/.test(raw))numeric=Number(raw.replace(/[^0-9]/g,''));if(/^▼/.test(raw))numeric=-Number(raw.replace(/[^0-9]/g,''));if(!Number.isFinite(numeric)||numeric===0)return {value:0,label:'—',kind:'neutral'};return numeric>0?{value:numeric,label:`▲ ${numeric}`,kind:'up'}:{value:numeric,label:`▼ ${Math.abs(numeric)}`,kind:'down'};
   }
   function paintStandingRow(ctx,row,x,y,w,h,index,board,manufacturerIcons={}){
+    row=standingRowMetadata(board,row);
     const chaseDriver=isChaseDriver(board,row,index),cutoff=standingsPngCutoff(board),outsideCut=cutoff>0&&index>=cutoff,manufacturer=standingManufacturer(board,row),manufacturerKey=standingManufacturerIconKey(board,manufacturer),manufacturerImage=manufacturerIcons[manufacturerKey]||null;
     ctx.save();roundedRect(ctx,x,y,w,h-6,8);ctx.fillStyle=chaseDriver?'rgba(65,54,27,.96)':outsideCut?'rgba(10,12,14,.92)':'rgba(15,19,23,.94)';ctx.fill();
     if(chaseDriver){ctx.fillStyle='#e0c891';ctx.fillRect(x,y,7,h-6);ctx.strokeStyle='rgba(224,200,145,.48)';ctx.lineWidth=1.5;roundedRect(ctx,x+.75,y+.75,w-1.5,h-7.5,8);ctx.stroke();}
@@ -667,8 +696,8 @@
     ctx.textBaseline='middle';ctx.fillStyle=chaseDriver?'#f6f8fa':'#aeb9bf';ctx.font='900 24px Arial Narrow, Arial, sans-serif';ctx.textAlign='left';ctx.fillText(String(row.position||`P${index+1}`),posX,midY);
     ctx.fillStyle=movement.kind==='up'?'#61d98b':movement.kind==='down'?'#ff6464':movement.kind==='new'?'#6dc8ff':'#7f8a91';ctx.font='900 16px Arial, sans-serif';ctx.fillText(movement.label,moveX,midY);ctx.fillStyle='#e0c891';ctx.font='900 25px Arial Narrow, Arial, sans-serif';ctx.fillText(row.number?`#${row.number}`:'—',numX,midY);
     if(manufacturerImage){ctx.save();ctx.globalAlpha=.98;roundedRect(ctx,iconX-4,midY-iconH/2-2,iconW+8,iconH+4,7);ctx.fillStyle='rgba(255,255,255,.035)';ctx.fill();drawContained(ctx,manufacturerImage,iconX,midY-iconH/2,iconW,iconH);ctx.restore();}
-    const detail=[chaseDriver?'CHASE':'',row.note&&!/listed as wispy/i.test(String(row.note||''))?row.note:''].filter(Boolean).join(' · '),driver=String(row.driver||'—');fitCanvasText(ctx,driver,Math.max(150,pointsX-nameX-28),31,'900','Arial Narrow, Arial, sans-serif',20);ctx.fillStyle='#f6f8fa';ctx.fillText(driver.toUpperCase(),nameX,midY-(detail?8:0));
-    if(detail){ctx.fillStyle=chaseDriver?'#e0c891':'#7f8b92';ctx.font='800 13px Arial, sans-serif';ctx.fillText(String(detail).toUpperCase(),nameX,midY+15);}
+    const detail=[...manualStandingLabels(row),chaseDriver&&!row.chaseLocked?'CHASE':'',row.note&&!/listed as wispy/i.test(String(row.note||''))?row.note:''].filter(Boolean).join(' · '),driver=String(row.driver||'—'),detailWidth=Math.max(120,pointsX-nameX-28);fitCanvasText(ctx,driver,Math.max(150,detailWidth),31,'900','Arial Narrow, Arial, sans-serif',20);ctx.fillStyle='#f6f8fa';ctx.fillText(driver.toUpperCase(),nameX,midY-(detail?8:0));
+    if(detail){ctx.fillStyle=chaseDriver||manualStandingLabels(row).length?'#e0c891':'#7f8b92';fitCanvasText(ctx,detail,detailWidth,13,'800','Arial, sans-serif',10);ctx.fillText(String(detail).toUpperCase(),nameX,midY+15,detailWidth);}
     ctx.textAlign='right';ctx.fillStyle='#f6f8fa';ctx.font='900 27px Arial Narrow, Arial, sans-serif';ctx.fillText(row?.pointsPending||row?.points==null?'—':Number(row.points||0).toLocaleString('en-US'),pointsX,midY);
     ctx.fillStyle=row.delta==='LEADER'?'#e0c891':'#9ba6ac';ctx.font='900 18px Arial, sans-serif';ctx.fillText(String(row.delta||'—'),deltaX,midY);
     ctx.restore();
@@ -756,6 +785,16 @@
     const chaseBox=isSunoco?`<div class="standings-import-split is-chase"><div class="standings-import-split__head"><span>CHASE-ONLY POINTS CSV</span><strong>SEPARATE FROM REGULAR POINTS</strong></div><div class="standings-import-controls"><textarea data-sunoco-chase-import-text rows="6" placeholder="Position,Number,Driver,Points,Gap\nP1,42,Will,120,LEADER\nP2,46,Clutch,111,-9\n…"></textarea><div class="standings-import-actions"><label>Upload Chase CSV / TSV<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values,text/plain" data-sunoco-chase-import-file></label><button type="button" data-sunoco-chase-import-preview-button>Preview Chase import</button><button type="button" data-sunoco-chase-import-apply>Apply Chase preview</button><button type="button" data-sunoco-chase-recalc>Recalculate Chase order + gaps</button></div></div><div data-sunoco-chase-import-preview></div></div>`:'';
     panel.innerHTML=`<div class="standings-import-head"><div><span>${isSunoco?'DUAL SUNOCO POINTS':'AUTOMATED STANDINGS'}</span><h3>Import / advance ${esc(board.title||board.id)}</h3><p>${isSunoco?'Regular points and Chase-only points are independent datasets. Paste each CSV into its own box; publishing keeps both and the generated PNG shows them side by side.':'Paste a league table from Discord, Google Sheets, or Excel. CSV/TSV and simple position-driver-points lines are detected automatically.'}</p></div><strong>${board.autoPoints?'AUTO POINTS ON':'MANUAL ONLY'}</strong></div>${isSunoco?`<div class="standings-import-dual">${regularBox}${chaseBox}</div><div class="standings-import-shared-actions"><button type="button" data-standings-apply-results>Apply waiting race points</button><button type="button" data-standings-recalc>Recalculate regular order + gaps</button><button type="button" data-standings-export>Generate dual standings PNG</button></div>`:regularBox}<div class="standings-export-preview" data-standings-export-preview></div><p class="standings-import-foot">Last applied result: ${esc(board.lastResultDate||'none')} ${board.lastResultScheduleId?`· ${esc(board.lastResultScheduleId)}`:''}.${isSunoco?' Regular and Chase points publish together but remain separate.':' Publishing Race Results automatically advances boards with Auto Points enabled.'}</p>`;
     host.prepend(panel);drawStandingsImportPreview(standingsImportPreview);if(isSunoco)drawStandingsImportPreview(sunocoChaseImportPreview,{selector:'[data-sunoco-chase-import-preview]',sourceRows:board.chaseRows||[],label:'Chase-only rows'});
+    // Phone typing mode expands the focused CSV textarea. Keep it focused
+    // through the tap so its collapse cannot move the button before click.
+    panel.addEventListener('pointerdown',event=>{
+      const editor=document.activeElement,button=event.target.closest?.('button');
+      if(event.button===0&&button?.type==='button'&&document.documentElement.classList.contains('adm-typing')&&editor instanceof HTMLTextAreaElement&&panel.contains(editor))event.preventDefault();
+    });
+    panel.addEventListener('click',event=>{
+      const editor=document.activeElement;
+      if(event.target.closest?.('button')&&editor instanceof HTMLTextAreaElement&&panel.contains(editor))editor.blur();
+    });
     panel.querySelector('[data-standings-import-preview-button]')?.addEventListener('click',()=>{standingsImportPreview=parseStandingsImport(panel.querySelector('[data-standings-import-text]').value);drawStandingsImportPreview(standingsImportPreview);status(standingsImportPreview.length?`${standingsImportPreview.length} regular standings rows parsed. Review the matches, then Apply preview.`:'No standings rows could be parsed. Try CSV with Position, position_change, number, driver, points, gap headers.');});
     panel.querySelector('[data-standings-import-apply]')?.addEventListener('click',applyStandingsImport);
     panel.querySelector('[data-standings-apply-results]')?.addEventListener('click',applyPublishedResultsToStanding);
@@ -901,12 +940,12 @@
       if(league==='kmart'){
         const legacyScrOnly=liveRows.length>0&&seedRows.length>=10&&liveRows.length<seedRows.length&&liveRows.every((row)=>scrKmartNumbers.has(String(row?.number||'').trim()));if(!legacyScrOnly)return board;
         const liveByKey=new Map(liveRows.map((row)=>[`${standingName(row?.driver)}|${String(row?.number||'').trim()}`,row])),liveByNumber=new Map(liveRows.map((row)=>[String(row?.number||'').trim(),row]));
-        const mergedRows=seedRows.map((seedRow)=>{const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`,live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());return live?{...seedRow,...live}:{...seedRow};});const repaired={...seedBoard,...board,rows:mergedRows,ptEntry:board?.ptEntry||seedBoard?.ptEntry,chaseActive:false};recalcStandingBoard(repaired);return repaired;
+        const mergedRows=seedRows.map((seedRow)=>{const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`,live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());return live?{...seedRow,...live}:{...seedRow};});const repaired={...seedBoard,...board,rows:mergedRows,ptEntry:board?.ptEntry||seedBoard?.ptEntry,chaseActive:typeof board.chaseActive==='boolean'?board.chaseActive:false};recalcStandingBoard(repaired);return repaired;
       }
       if(league==='sunoco'){
         const liveByKey=new Map(liveRows.map((row)=>[`${standingName(row?.driver)}|${String(row?.number||'').trim()}`,row])),liveByNumber=new Map(liveRows.map((row)=>[String(row?.number||'').trim(),row]));
-        const shouldExpand=seedRows.length>liveRows.length,mergedRows=shouldExpand?seedRows.map((seedRow)=>{const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`,live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());return live?{...seedRow,...live,team:seedRow.team||live.team,manufacturer:seedRow.manufacturer||live.manufacturer}:{...seedRow};}):liveRows;
-        const repaired={...seedBoard,...board,title:board?.title==='Sunoco Truck Series Chase'?seedBoard.title:board?.title||seedBoard.title,subtitle:shouldExpand?seedBoard.subtitle:(board?.subtitle||seedBoard.subtitle),rows:mergedRows,chaseRows:Array.isArray(board?.chaseRows)?board.chaseRows:(seedBoard.chaseRows||[]),chaseTitle:board?.chaseTitle||seedBoard.chaseTitle,chaseSubtitle:board?.chaseSubtitle||seedBoard.chaseSubtitle,chaseEmptyMessage:board?.chaseEmptyMessage||seedBoard.chaseEmptyMessage,chaseActive:true};syncSunocoChaseStatus(repaired);return repaired;
+        const shouldExpand=seedRows.length>liveRows.length,mergedRows=shouldExpand?seedRows.map((seedRow)=>{const key=`${standingName(seedRow?.driver)}|${String(seedRow?.number||'').trim()}`,live=liveByKey.get(key)||liveByNumber.get(String(seedRow?.number||'').trim());if(!live)return {...seedRow};const merged={...seedRow,...live,team:seedRow.team||live.team};if(!Object.hasOwn(live,'manufacturer'))delete merged.manufacturer;return merged;}):liveRows;
+        const repaired={...seedBoard,...board,title:board?.title==='Sunoco Truck Series Chase'?seedBoard.title:board?.title||seedBoard.title,subtitle:shouldExpand?seedBoard.subtitle:(board?.subtitle||seedBoard.subtitle),rows:mergedRows,chaseRows:Array.isArray(board?.chaseRows)?board.chaseRows:(seedBoard.chaseRows||[]),chaseTitle:board?.chaseTitle||seedBoard.chaseTitle,chaseSubtitle:board?.chaseSubtitle||seedBoard.chaseSubtitle,chaseEmptyMessage:board?.chaseEmptyMessage||seedBoard.chaseEmptyMessage,chaseActive:typeof board.chaseActive==='boolean'?board.chaseActive:true};syncSunocoChaseStatus(repaired);return repaired;
       }
       return board;
     });
@@ -965,7 +1004,7 @@
   }
   function editorValue(name,value){
     let next=structuredClone(value);
-    if(name==='standings')next=repairLegacyPartialStandings(next);
+    if(name==='standings'){next=repairLegacyPartialStandings(next);next.forEach(syncStandingMetadata);}
     if(name==='charters')next=migrateCharters(next);
     if(name==='schedule-events')next=next.map((r)=>({offWeek:false,tbd:false,timePending:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
     if(name==='results'){next=migrateResults(next).sort(compareResults);next=next.map((race,i)=>({...race,featured:i===0}));}
@@ -982,6 +1021,10 @@
     rememberPersistedState();
   }
   function fields(value,path=[]) {
+    const standingRow=key==='standings'&&path.length===2&&['rows','chaseRows'].includes(path[0]);
+    const partTimeRow=key==='standings'&&path.length===3&&path[0]==='ptEntry'&&path[1]==='drivers';
+    if(standingRow)value={manufacturer:'',chaseLocked:false,regularSeasonChampion:false,...value};
+    else if(partTimeRow)value={manufacturer:'',...value};
     // Older portfolios and newly added brands may omit this optional field.
     if(key==='driver-portfolios'&&path.length===2&&path[0]==='brands')value={...value,sponsorTitle:value.sponsorTitle??''};
     const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
@@ -990,10 +1033,21 @@
       if(key==='drivers'&&k==='numberImageBackup')return '';
       if(['drivers','roster-profiles'].includes(key)&&k==='currentRosterRevision')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
+      if((standingRow||partTimeRow)&&k==='manufacturer'){
+        const choices=standingManufacturerChoices(),selected=normalizeStandingManufacturer(v),legacy=selected&&!choices.includes(selected);
+        if(choices.length)return shell(pretty,`<select ${attr} data-field-type="string" data-standing-manufacturer><option value="" ${!selected?'selected':''}>Auto / not specified</option>${legacy?`<option value="${esc(v)}" selected>${esc(v)} (existing value)</option>`:''}${choices.map(make=>`<option value="${esc(make)}" ${make===selected?'selected':''}>${esc(make==='Chevrolet'?'Chevy':make)}</option>`).join('')}</select>`,'Choose this driver’s manufacturer for this league. Auto keeps the existing automatic lookup.');
+      }
+      if(standingRow&&['chaseLocked','regularSeasonChampion'].includes(k)){
+        const marker=k==='chaseLocked'?'data-standing-chase-locked':'data-standing-season-champion',copy=k==='chaseLocked'?'Mark an officially clinched Chase berth, including during the regular season.':'Select the confirmed regular-season winner. Choosing a winner replaces the previous selection in this league board.';
+        return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" ${marker} ${v===true?'checked':''}><span><b>${esc(pretty)}</b><small>${esc(copy)}</small></span></label>`;
+      }
       if (key==='standings' && k==='highlight') {
         return shell(pretty,`<input type="text" readonly value="${v?'Highlighted':'Not highlighted'}">`,'Use the ☆ Highlight Driver / ★ Highlighted button above this standings row.','is-readonly');
       }
-      if (key==='standings' && k==='chaseRows' && current()?.league==='sunoco') return '';
+      if(key==='standings'&&k==='chaseRows'&&current()?.league==='sunoco'){
+        const rows=Array.isArray(v)?v:[];
+        return `<fieldset class="admin-fieldset"><legend><span>Chase driver details</span><small>Choose league manufacturers and season marks here. Import Chase points above.</small></legend><div class="admin-array">${rows.map((row,index)=>`<details open><summary><span>${esc(row.driver||'Driver')}${row.number?` · #${esc(row.number)}`:''}</span></summary><div class="admin-nested-fields">${fields(Object.fromEntries(standingMetadataFields.filter(field=>Object.hasOwn(row,field)).map(field=>[field,row[field]])),[...p,index])}</div></details>`).join('')||'<p>Chase driver details appear after importing Chase rows.</p>'}</div></fieldset>`;
+      }
       if (key==='roster-profiles' && (k==='programs' || k==='numbers')) {
         const shown=Array.isArray(v)?v.join(' · '):String(v||'');
         return shell(pretty,`<input type="text" readonly value="${esc(shown)}">`,'Automatically generated from Driver League Assignments when the site builds.','is-readonly');
@@ -1610,6 +1664,24 @@
     if(key==='drivers'&&event.key==='Enter'&&event.target.matches('[data-number-image-url]')){event.preventDefault();useNumberImageUrl();}
   });
   $('[data-content-fields]').addEventListener('change',async(event)=>{
+    const standingMetadataControl=event.target.closest?.('[data-standing-manufacturer],[data-standing-chase-locked],[data-standing-season-champion]');
+    if(key==='standings'&&standingMetadataControl){
+      try{
+        commit();
+        const path=JSON.parse(standingMetadataControl.dataset.fieldPath),field=path.at(-1),row=valueAt(current(),path.slice(0,-1));
+        const value=field==='manufacturer'?standingMetadataControl.value:standingMetadataControl.checked;
+        const rows=['rows','chaseRows'].includes(path[0])?[...(current().rows||[]),...(current().chaseRows||[])]:[];
+        for(const candidate of rows){
+          const match=matchedStanding(current(),row,[candidate],{numberFallback:false});
+          if(match)candidate[field]=value;
+          else if(field==='regularSeasonChampion'&&value===true)candidate.regularSeasonChampion=false;
+        }
+        row[field]=value;syncStandingMetadata(current());dirty=true;render();
+        saveFeedback('UNSAVED STANDINGS EDIT · save a draft or publish','warning');
+        status(`${row.driver||'Driver'} updated. Review the standings, then save a private draft or publish.`);
+      }catch(error){status(error?.message||'The standings choice could not be applied.');}
+      return;
+    }
     const scoreField=event.target.closest?.('[data-field-path]');
     if(scoreField&&key==='results'&&['nrrs','kmart','uarl-d1'].includes(current()?.league)){
       const path=JSON.parse(scoreField.dataset.fieldPath||'[]'),field=path.at(-1);
