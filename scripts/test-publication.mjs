@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { eventSlug, legacyEventSlug } from '../src/lib/schedule-events.mjs';
+import { standingIdentity } from '../src/lib/standings-metadata.mjs';
 import { JSDOM } from 'jsdom';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
@@ -71,6 +72,23 @@ try {
   const editedNumbers=new Map([[nrrsAssignment.id,'28'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
   for(const entry of data.drivers)if(editedNumbers.has(entry.id))entry.number=editedNumbers.get(entry.id);
   const nrrs=data.standings.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
+  const nrrsManual=nrrs.rows.find(row=>standingIdentity(row)==='hailey');
+  assert.ok(nrrsManual,'Metadata publication fixture needs Hailey’s NRRS standings row');
+  nrrs.chaseActive=false;
+  Object.assign(nrrsManual,{manufacturer:'Cadillac',chaseLocked:true,regularSeasonChampion:true});
+  const kmartMetadata=data.standings.find(board=>board.id==='kmart'),kmartManual=kmartMetadata.rows[0];
+  Object.assign(kmartManual,{manufacturer:'Ford',chaseLocked:true,regularSeasonChampion:true});
+  const ptMetadata={driver:kmartManual.driver,number:kmartMetadata.ptEntry.number,points:17,manufacturer:'Toyota',chaseLocked:false,regularSeasonChampion:false};
+  kmartMetadata.ptEntry.drivers.push(ptMetadata);
+  const sunocoMetadata=data.standings.find(board=>board.id==='sunoco');
+  const sunocoRegular=name=>sunocoMetadata.rows.find(row=>row.driver===name),sunocoChase=name=>sunocoMetadata.chaseRows.find(row=>row.driver===name);
+  Object.assign(sunocoRegular('Will'),{manufacturer:'Toyota',chaseLocked:true,regularSeasonChampion:true});
+  Object.assign(sunocoChase('Will'),{manufacturer:'RAM',chaseLocked:false,regularSeasonChampion:false});
+  Object.assign(sunocoRegular('Clutch'),{manufacturer:'Chevrolet',chaseLocked:false,regularSeasonChampion:false});
+  Object.assign(sunocoChase('Clutch'),{manufacturer:'RAM',chaseLocked:true,regularSeasonChampion:false});
+  // Published manual choices are persisted independently of points/result
+  // inference. Regular/Chase copies agree; a separate PT car keeps its make.
+  data.standings=normalize('standings',data.standings);
   // The current release selects the Kmart Chase-clinch feature in
   // Admin, the live API and static pages. Verify published edits to that lead
   // separately from adding an unfeatured article; do not change that policy.
@@ -166,7 +184,31 @@ try {
       assert.equal(program.querySelector('strong').textContent,`#${number}`,'Production driver profiles must render the published number');
       profile.window.close();
     }
-    const championships=new JSDOM(read('championships/index.html'));
+    const championships=new JSDOM(read('championships/index.html'),{runScripts:'outside-only'});
+    const bothAwards=['CHASE LOCKED','REGULAR-SEASON CHAMPION'];
+    const checkStandingsMetadata=(doc,mode)=>{
+      const checkRow=(id,row,make,labels,chase=false)=>{
+        const board=doc.querySelector(`[data-board="${id}"]`);
+        const rows=Array.from(board.querySelectorAll(chase?'.standings-chase-panel .standing-row':':scope > .standings-board__rows > .standing-row'));
+        const rendered=rows.find(node=>node.querySelector('strong')?.textContent.startsWith(`#${row.number} · ${row.driver}`));
+        assert.ok(rendered,`${mode}: ${id} ${chase?'Chase':'regular'} ${row.driver} row renders`);
+        const image=rendered.querySelector('.standing-row__make img');
+        assert.equal(image?.getAttribute('alt'),make,`${mode}: published ${row.driver} manufacturer beats older result/number inference`);
+        assert.equal(image?.getAttribute('src'),`/images/manufacturers/${make.toLowerCase()}.png`);
+        assert.deepEqual(Array.from(rendered.querySelectorAll('[data-standing-status]'),node=>node.textContent),labels,`${mode}: manual awards remain explicit and synchronized`);
+      };
+      checkRow('nrrs',nrrsManual,'Cadillac',bothAwards);
+      checkRow('kmart',kmartManual,'Ford',bothAwards);
+      for(const chase of [false,true]){
+        checkRow('sunoco',sunocoRegular('Will'),'Toyota',bothAwards,chase);
+        checkRow('sunoco',sunocoRegular('Clutch'),'Chevrolet',[],chase);
+      }
+      const partTime=Array.from(doc.querySelectorAll('[data-board="kmart"] .standings-pt__driver')).find(node=>node.textContent.startsWith(`${ptMetadata.driver} · ${ptMetadata.points} PTS`));
+      assert.ok(partTime,`${mode}: the same-name separate part-time car renders`);
+      assert.equal(partTime.querySelector('img')?.getAttribute('alt'),'Toyota',`${mode}: a PT car does not inherit the regular car’s Ford manufacturer`);
+      assert.equal(partTime.querySelector('img')?.getAttribute('src'),'/images/manufacturers/toyota.png');
+    };
+    checkStandingsMetadata(championships.window.document,'SSR');
     for(const [id,position] of [['nrrs',5],['kmart',6]]) {
       const cutoff=championships.window.document.querySelector(`[data-board="${id}"] .standings-cutoff`);
       assert.ok(cutoff,`${id} cutoff must render`);
@@ -174,6 +216,15 @@ try {
       assert.equal(cutoff.nextElementSibling.querySelector('.standing-row__position').textContent,`P${position+1}`);
     }
     assert.equal(championships.window.document.querySelector('[data-board="nrrs"] .standings-cutoff').textContent,'Chase cutoff · Top 5');
+    const championshipScript=fs.readFileSync(join(cwd,'src/pages/championships/index.astro'),'utf8').match(/<script>([\s\S]*?)<\/script>/)?.[1];
+    assert.ok(championshipScript,'Championship page must retain its published-data renderer');
+    championships.window.eval(championshipScript);
+    championships.window.dispatchEvent(new championships.window.CustomEvent('aetherwing:content',{detail:synced.datasets}));
+    checkStandingsMetadata(championships.window.document,'live hydration');
+    const clearedStandings=structuredClone(synced.datasets.standings);
+    for(const board of clearedStandings)for(const row of [...board.rows,...(board.chaseRows||[])])Object.assign(row,{chaseLocked:false,regularSeasonChampion:false});
+    championships.window.dispatchEvent(new championships.window.CustomEvent('aetherwing:content',{detail:{...synced.datasets,standings:clearedStandings}}));
+    assert.equal(championships.window.document.querySelectorAll('[data-standing-status]').length,0,'Cleared manual awards disappear without points or Chase eligibility restoring them');
     championships.window.close();
     // The homepage has its own timing tower. Exercise its actual built markup
     // with an older Top 6 board, including both live-data loading orders.
@@ -186,6 +237,9 @@ try {
       home.window.eval(towerScript);
       if(mode==='event')home.window.dispatchEvent(new home.window.CustomEvent('aetherwing:content',{detail:data}));
       const tower=home.window.document.querySelector('[data-timing-tower]');
+      const manualTowerRow=Array.from(tower.querySelectorAll('[data-tower-rows] > li')).find(row=>row.querySelector('strong')?.textContent===nrrsManual.driver);
+      assert.ok(manualTowerRow,`${mode}: the manually awarded NRRS driver remains in the homepage tower`);
+      assert.equal(manualTowerRow.querySelector('[data-standing-status]')?.textContent,bothAwards.join(' · '),`${mode}: homepage tower reflects manual awards even before Chase activation`);
       const cut=tower.querySelector('.is-cut');
       assert.equal(tower.querySelectorAll('.is-cut').length,1,`${mode}: show one cutoff line`);
       assert.equal(cut.previousElementSibling.querySelector('.aw-tower__pos').textContent,'5',`${mode}: divider must follow P5`);
@@ -222,7 +276,7 @@ try {
         assert.deepEqual(entries(),expected,'Live event hydration must preserve historical #32 instead of substituting current #28');
       }finally{page.window.close();}
     }
-    console.log('PASS: rebuild rendered schedule, preserved historical custom entries through sync/calendar/SSR/live event hydration, stable/legacy event routes and share metadata, result, win, milestone, roster edit, featured story and article route.');
+    console.log('PASS: rebuild rendered schedule, historical custom entries, manual standings manufacturers/awards and separate PT cars through SSR/live hydration, homepage manual awards, stable/legacy event routes and share metadata, result, win, milestone, roster edit, featured story and article route.');
   } catch(error) {
     failure=error;
   }

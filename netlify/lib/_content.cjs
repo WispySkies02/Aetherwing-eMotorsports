@@ -1,5 +1,6 @@
 const { allianceIdFor } = require('../../src/lib/alliances.mjs');
 const { reconcileCurrentAssignments, reconcileCurrentProfiles } = require('../../src/lib/current-driver-updates.mjs');
+const { manufacturerChoices, normalizeManufacturer, standingIdentity, normalizeStandingMetadata } = require('../../src/lib/standings-metadata.mjs');
 const fs = require('node:fs');
 const path = require('node:path');
 let blobsModulePromise;
@@ -67,6 +68,7 @@ function scoreKnownRace(race={}) {
 function normalize(key,data) {
   if(key==='alliances'&&Array.isArray(data))return data.map(row=>row&&typeof row==='object'?{...row,...(typeof row.name==='string'?{name:row.name.trim()}:{}),...(typeof row.shortName==='string'?{shortName:row.shortName.trim()}:{})}:row);
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
+  if(key==='standings'&&Array.isArray(data))return data.map(normalizeStandingMetadata);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
   if(key==='roster-profiles'&&Array.isArray(data))return reconcileCurrentProfiles(data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug})));
   if(key==='driver-profiles'&&Array.isArray(data))return data.map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
@@ -240,6 +242,19 @@ function validate(key, data, registry={}, context={}) {
     if(key==='standings') {
       if(row.chaseRows!=null&&!Array.isArray(row.chaseRows))return 'Chase standings rows must be a list.';
       if([...row.rows,...(row.chaseRows||[])].some((entry)=>!validPositionChange(entry?.positionChange)))return 'Standings position change must be a finite number, signed number, NEW, or a dash.';
+      if(row.ptEntry?.drivers!=null&&!Array.isArray(row.ptEntry.drivers))return 'Part-time standings drivers must be a list.';
+      const entries=[...row.rows,...(row.chaseRows||[]),...(row.ptEntry?.drivers||[])],allowed=manufacturerChoices(row.league||row.id),champions=new Set();
+      for(const entry of entries){
+        if(!entry||typeof entry!=='object'||Array.isArray(entry))return 'Standings entries must be records.';
+        for(const field of ['chaseLocked','regularSeasonChampion'])if(Object.hasOwn(entry,field)&&typeof entry[field]!=='boolean')return `Standings ${field} must be a true/false value.`;
+        if(Object.hasOwn(entry,'manufacturer')){
+          if(typeof entry.manufacturer!=='string'||entry.manufacturer.length>80)return 'Standings manufacturer must be text up to 80 characters, or blank for Auto.';
+          const make=normalizeManufacturer(entry.manufacturer);
+          if(make&&allowed.length&&!allowed.includes(make))return `Standings manufacturer must be ${allowed.join(', ')}, or blank for Auto in this league.`;
+        }
+        if(entry.regularSeasonChampion===true){const identity=standingIdentity(entry);if(!identity)return 'A regular-season champion needs a driver name.';champions.add(identity);}
+      }
+      if(champions.size>1)return 'Choose at most one regular-season champion per standings board.';
     }
     if (key === 'charters') {
       if (!Array.isArray(row.fullTime) || !Array.isArray(row.openCharters)) return 'Charter boards need full-time entries and an Open Charters list.';
