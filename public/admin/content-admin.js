@@ -369,7 +369,9 @@
   function normalizeScheduleEntries(event={}) {
     return (Array.isArray(event.entries)?event.entries:[]).map((entry)=>{
       const assignment=resultRoster(event.league||'').find((driver)=>driver.id===entry?.assignmentId||(driver.displayName===entry?.driver&&String(driver.number)===String(entry?.number)));
-      return {assignmentId:assignment?.id||entry?.assignmentId||'',driver:assignment?.displayName||entry?.driver||'',number:String(assignment?.number||entry?.number||''),entryStatus:entry?.entryStatus||''};
+      // A custom list records this event's identities. A later roster-number
+      // change must not rewrite an older event when Calendar is simply opened.
+      return {...entry,assignmentId:entry?.assignmentId||assignment?.id||'',driver:entry?.driver??assignment?.displayName??'',number:String(entry?.number??assignment?.number??''),entryStatus:entry?.entryStatus||''};
     });
   }
   function scheduleRosterEntries(event={}) {
@@ -974,6 +976,7 @@
   }
   const rowIdentity=(row)=>row?.scheduleId?`schedule:${row.scheduleId}`:row?.id?`id:${row.id}`:row?.slug?`slug:${row.slug}`:row?.title?`title:${row.title}`:'';
   function loadPersistedEditorValue(name,value,preferredIdentity=''){
+    resetScheduleShift();
     data=editorValue(name,value);index=0;
     if(Array.isArray(data)&&preferredIdentity){const found=data.findIndex((row)=>rowIdentity(row)===preferredIdentity);if(found>=0)index=found;}
     rememberPersistedState();
@@ -1012,8 +1015,8 @@
         return shell(pretty,`<select ${attr} data-field-type="string"><option value="auto" ${v!=='custom'?'selected':''}>Auto · results after race / roster before race</option><option value="custom" ${v==='custom'?'selected':''}>Custom · only selected event entries</option></select>`,help||'Auto keeps older events useful without manual maintenance. Custom makes the public Event page use only the list below.');
       }
       if(key==='schedule-events'&&k==='assignmentId'&&path[0]==='entries') {
-        const choices=resultRoster(current()?.league||'');
-        return shell(pretty,`<select ${attr} data-field-type="string" data-schedule-entry-driver-choice>${!v?'<option value="" selected disabled>Choose roster driver</option>':''}${choices.map((driver)=>`<option value="${esc(driver.id)}" ${driver.id===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,choices.length?'Only drivers assigned to this event league are available.':'No drivers are assigned to this league yet. Add them in Driver League Assignments first.');
+        const choices=resultRoster(current()?.league||''),recorded=v&&!choices.some(driver=>driver.id===v),entry=valueAt(current(),path);
+        return shell(pretty,`<select ${attr} data-field-type="string" data-schedule-entry-driver-choice>${!v?'<option value="" selected disabled>Choose roster driver</option>':''}${recorded?`<option value="${esc(v)}" selected>Recorded entry · ${esc(entry?.driver||v)}${entry?.number?` #${esc(entry.number)}`:''}</option>`:''}${choices.map((driver)=>`<option value="${esc(driver.id)}" ${driver.id===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,recorded?'This event retains a recorded entry. Choosing a current driver replaces it.':choices.length?'Only drivers assigned to this event league are available.':'No drivers are assigned to this league yet. Add them in Driver League Assignments first.');
       }
       if(key==='schedule-events'&&['driver','number'].includes(k)&&path[0]==='entries') {
         return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Filled automatically from the selected Driver League Assignment.','is-readonly');
@@ -1123,7 +1126,22 @@
     }).join('');
   }
   function title(row,i) { if(key==='drivers') return `${row.displayName||row.profile||'Driver'} · ${row.competition||'Choose league'}${row.number?` · #${row.number}`:''}`; if(key==='driver-portfolios')return `${row.name||'New driver'} · ${(row.brands||[]).length} brand${(row.brands||[]).length===1?'':'s'}`; return row.title||row.name||row.displayName||row.label||row.track||row.driver||row.id||row.slug||`Entry ${i+1}`; }
-  const shiftState={days:0,indexes:[],snapshot:null};
+  const shiftState={days:0,indexes:[],preview:null,snapshot:null};
+  const shiftDateKeys=['date','endDate','displayDate'];
+  const shiftDates=event=>Object.fromEntries(shiftDateKeys.filter(name=>Object.hasOwn(event,name)).map(name=>[name,event[name]]));
+  function clearShiftPreview(){
+    shiftState.days=0;shiftState.indexes=[];shiftState.preview=null;
+    $('[data-shift-preview-panel]').hidden=true;
+  }
+  function resetScheduleShift(){
+    clearShiftPreview();shiftState.snapshot=null;
+    $('[data-shift-result]').hidden=true;$('[data-shift-undo]').hidden=true;$('[data-shift-feedback]').hidden=true;
+  }
+  function shiftFeedback(message,state='neutral'){
+    const feedback=$('[data-shift-feedback]');feedback.textContent=message;feedback.dataset.state=state;feedback.hidden=!message;
+    status(message);
+    if(state==='error')feedback.scrollIntoView({behavior:'auto',block:'center'});
+  }
   const shiftLeagueNames={nrrs:'NRRS','uarl-d1':'UARL D1',open:'UARL Open',kmart:'Kmart',sunoco:'Sunoco',iracing:'iRacing','uarl-d2':'UARL D2'};
   function shiftIsoDate(value,days) {
     if(!/^\d{4}-\d{2}-\d{2}$/.test(String(value||'')))return value;
@@ -1158,7 +1176,7 @@
   function refreshScheduleShiftTool(){
     const tool=scheduleShiftTool();if(!tool)return;
     tool.hidden=key!=='schedule-events';
-    $('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];
+    clearShiftPreview();
     if(key!=='schedule-events'||!Array.isArray(data))return;
     const currentLeague=current()?.league;
     const leagues=[...new Set(data.map((event)=>event.league).filter(Boolean))];
@@ -1169,12 +1187,14 @@
   }
   function previewScheduleShift(days){
     if(key!=='schedule-events'||!Array.isArray(data))return;
+    try{
     commit();
     const league=$('[data-shift-league]').value,startIndex=Number($('[data-shift-start]').value),start=data[startIndex];
-    if(!start||start.league!==league||!start.date)return status('Choose a valid series and starting event.');
-    const indexes=data.map((event,i)=>({event,i})).filter(({event})=>event.league===league&&event.date&&String(event.date)>=String(start.date)).sort((a,b)=>String(a.event.date).localeCompare(String(b.event.date))||a.i-b.i).map(({i})=>i);
-    if(!indexes.length)return status('No dated events are available to shift from that point.');
+    if(!start||start.league!==league||!start.date)throw new Error('Choose a valid series and starting event.');
+    const indexes=data.map((event,i)=>({event,i})).filter(({event})=>event.league===league&&/^\d{4}-\d{2}-\d{2}$/.test(String(event.date||''))&&String(event.date)>=String(start.date)).sort((a,b)=>String(a.event.date).localeCompare(String(b.event.date))||a.i-b.i).map(({i})=>i);
+    if(!indexes.length)throw new Error('No dated events are available to shift from that point.');
     shiftState.days=days;shiftState.indexes=indexes;
+    shiftState.preview={league,start,rows:indexes.map(i=>({event:data[i],before:shiftDates(data[i])}))};
     const direction=days>0?'later':'earlier',panel=$('[data-shift-preview-panel]');
     $('[data-shift-preview-heading]').textContent=`${shiftLeagueNames[league]||start.leagueName||league} · ${days>0?'+1 week':'−1 week'}`;
     $('[data-shift-preview-summary]').textContent=`${indexes.length} event${indexes.length===1?'':'s'} will move 7 days ${direction}, starting with ${start.title||start.track}.`;
@@ -1182,29 +1202,46 @@
     if(indexes.length>10)rows.push(`<li class="is-more"><strong>+ ${indexes.length-10} more event${indexes.length-10===1?'':'s'}</strong><span>All move by the same 7 days.</span></li>`);
     $('[data-shift-preview-list]').innerHTML=rows.join('');
     $('[data-shift-apply]').textContent=`Apply ${days>0?'+1':'−1'} Week Shift`;
-    panel.hidden=false;panel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
-    status(`Preview ready. Nothing has changed yet. Review ${indexes.length} affected event${indexes.length===1?'':'s'}, then apply the shift.`);
+    shiftFeedback(`Preview ready. No dates changed. Review ${indexes.length} affected event${indexes.length===1?'':'s'}, then apply the shift.`);
+    panel.hidden=false;panel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+    }catch(error){clearShiftPreview();shiftFeedback(error?.message||'The shift preview could not be prepared. Reopen Calendar and try again.','error');}
   }
   function applyScheduleShift(){
-    if(!shiftState.days||!shiftState.indexes.length)return status('Preview a schedule shift first.');
-    const first=data[shiftState.indexes[0]],days=shiftState.days,direction=days>0?'later':'earlier';
-    if(!confirm(`Move ${shiftState.indexes.length} ${shiftLeagueNames[first.league]||first.leagueName||first.league} event${shiftState.indexes.length===1?'':'s'} 7 days ${direction}, starting with ${first.title||first.track}?\n\nThis changes the open Calendar workspace. Use Publish current changes when the dates look right.`))return;
-    const shiftedCount=shiftState.indexes.length;
-    shiftState.snapshot=structuredClone(data);
-    shiftState.indexes.forEach((i)=>{
-      const event=data[i];event.date=shiftIsoDate(event.date,days);
+    try{
+    if(key!=='schedule-events'||!Array.isArray(data))return;
+    if(!shiftState.days||!shiftState.preview)throw new Error('Preview a schedule shift first.');
+    commit();
+    const preview=shiftState.preview,expected=data.filter(event=>event.league===preview.league&&/^\d{4}-\d{2}-\d{2}$/.test(String(event.date||''))&&event.date>=preview.start.date);
+    if($('[data-shift-league]').value!==preview.league||data[Number($('[data-shift-start]').value)]!==preview.start||expected.length!==preview.rows.length||preview.rows.some(row=>!expected.includes(row.event)||JSON.stringify(shiftDates(row.event))!==JSON.stringify(row.before)))throw new Error('The affected schedule changed after this preview. Preview the shift again before applying it.');
+    const first=preview.rows[0].event,days=shiftState.days,direction=days>0?'later':'earlier',shiftedCount=preview.rows.length;
+    if(!confirm(`Move ${shiftedCount} ${shiftLeagueNames[first.league]||first.leagueName||first.league} event${shiftedCount===1?'':'s'} 7 days ${direction}, starting with ${first.title||first.track}?\n\nThis changes the open Calendar workspace. Use Publish current changes when the dates look right.`))return;
+    shiftState.snapshot=preview.rows.map(row=>({...row}));
+    preview.rows.forEach(({event})=>{
+      event.date=shiftIsoDate(event.date,days);
       if(event.endDate)event.endDate=shiftIsoDate(event.endDate,days);
       if(event.endDate&&event.displayDate)event.displayDate=eventWindow(event.date,event.endDate);
     });
-    dirty=true;render();
+    shiftState.snapshot.forEach(row=>{row.after=shiftDates(row.event);});
+    index=data.indexOf(first);dirty=true;render();
     const selected=index;refreshScheduleShiftTool();
     const leagueSelect=$('[data-shift-league]');if(first?.league&&[...leagueSelect.options].some((option)=>option.value===first.league)){leagueSelect.value=first.league;populateShiftStarts(selected);}
-    $('[data-shift-undo]').hidden=false;
-    status(`${shiftedCount} event${shiftedCount===1?'':'s'} moved 7 days ${direction} in the Calendar workspace. Review the dates, then use Publish current changes.`);
+    $('[data-shift-result]').hidden=false;$('[data-shift-undo]').hidden=false;
+    saveFeedback('UNSAVED SCHEDULE SHIFT · save a private draft or publish','warning');
+    shiftFeedback(`${shiftedCount} ${shiftLeagueNames[first.league]||first.leagueName||first.league} event${shiftedCount===1?'':'s'} moved 7 days ${direction}. ${first.title||first.track} is now ${shortDate(first.date)}. Save a private draft or publish to keep the new dates.`,'success');
+    $('[data-shift-feedback]').scrollIntoView({behavior:'auto',block:'center'});
+    }catch(error){clearShiftPreview();shiftFeedback(error?.message||'The shift could not be applied. Preview it again.','error');}
   }
   function undoScheduleShift(){
-    if(!shiftState.snapshot)return status('There is no bulk shift to undo in this session.');
-    data=structuredClone(shiftState.snapshot);shiftState.snapshot=null;dirty=true;render();refreshScheduleShiftTool();$('[data-shift-undo]').hidden=true;status('Last bulk week shift undone. The Schedule Manager still has unsaved changes.');
+    try{
+      if(key!=='schedule-events'||!shiftState.snapshot)throw new Error('There is no unsaved bulk shift to undo.');
+      commit();
+      const rows=shiftState.snapshot.filter(row=>data.includes(row.event));
+      if(rows.some(row=>JSON.stringify(shiftDates(row.event))!==JSON.stringify(row.after)))throw new Error('A shifted date was edited manually. Review those dates before undoing this shift.');
+      rows.forEach(({event,before})=>{shiftDateKeys.forEach(name=>{if(Object.hasOwn(before,name))event[name]=before[name];else delete event[name];});});
+      shiftState.snapshot=null;dirty=editorSnapshot()!==persistedSnapshot;render();refreshScheduleShiftTool();$('[data-shift-result]').hidden=true;$('[data-shift-undo]').hidden=true;
+      saveFeedback(dirty?'UNSAVED EDIT · save a draft or publish':'No unsaved changes · schedule shift undone',dirty?'warning':'neutral');
+      shiftFeedback('Last week shift undone. Other Calendar edits were kept.','success');
+    }catch(error){shiftFeedback(error?.message||'The shift could not be undone.','error');}
   }
   function refreshResultsRaceOptions(preferredId='') {
     const tool=$('[data-results-race-tool]');if(!tool)return;
@@ -1470,10 +1507,10 @@
   // Identity may already have restored its account before deferred scripts run.
   if(!local&&account())restoreSection();
   $('[data-content-dataset]').addEventListener('change',(event)=>{ if(refreshDirtyState()&&!confirm('Leave unsaved section changes?')) {event.target.value=key;return;} openDatasetTab(event.target.value); });
-  $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
-  $('[data-shift-start]').addEventListener('change',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];});
+  $('[data-shift-league]').addEventListener('change',()=>{populateShiftStarts();clearShiftPreview();shiftFeedback('Choose Preview to review the dates before applying a shift.');});
+  $('[data-shift-start]').addEventListener('change',()=>{clearShiftPreview();shiftFeedback('Choose Preview to review the dates before applying a shift.');});
   document.querySelectorAll('[data-shift-preview]').forEach((button)=>button.addEventListener('click',()=>previewScheduleShift(Number(button.dataset.shiftPreview))));
-  $('[data-shift-cancel]').addEventListener('click',()=>{$('[data-shift-preview-panel]').hidden=true;shiftState.days=0;shiftState.indexes=[];status('Bulk schedule preview cancelled. No dates were changed.');});
+  $('[data-shift-cancel]').addEventListener('click',()=>{clearShiftPreview();shiftFeedback('Preview cancelled. Existing Calendar edits are unchanged.');});
   $('[data-shift-apply]').addEventListener('click',applyScheduleShift);
   $('[data-shift-undo]').addEventListener('click',undoScheduleShift);
   $('[data-results-load-race]').addEventListener('click',loadSelectedResultRace);
@@ -1622,6 +1659,7 @@
     const scheduleEntryDriver=event.target.closest?.('[data-schedule-entry-driver-choice]');
     if(scheduleEntryDriver&&key==='schedule-events'){
       const path=JSON.parse(scheduleEntryDriver.dataset.fieldPath),entry=valueAt(current(),path.slice(0,-1)),assignment=resultRoster(current()?.league||'').find((driver)=>driver.id===scheduleEntryDriver.value);
+      if(!assignment&&scheduleEntryDriver.value===entry.assignmentId)return status('Recorded event entry retained.');
       entry.assignmentId=scheduleEntryDriver.value;entry.driver=assignment?.displayName||'';entry.number=String(assignment?.number||'');entry.entryStatus=entry.entryStatus||'Confirmed';current().entryListMode='custom';dirty=true;render();status(`${entry.driver} added to the custom entry list for ${current().title||'this event'}.`);return;
     }
     const resultDriver=event.target.closest?.('[data-result-driver-choice]');

@@ -29,7 +29,7 @@ const resolveEventEntries=(raceEvent,raceResult)=>{
   if(raceEvent.entryListMode==='custom'){
     return (raceEvent.entries||[]).map((entry)=>{
       const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));
-      return {displayName:assignment?.displayName||entry.driver||'Entry',number:String(assignment?.number||entry.number||''),status:entry.entryStatus||'Confirmed'};
+      return {displayName:entry.driver||assignment?.displayName||'Entry',number:String(entry.number??assignment?.number??''),status:entry.entryStatus||'Confirmed'};
     }).filter(entry=>entry.displayName||entry.number);
   }
   if(raceResult?.entries?.length)return raceResult.entries.map(entry=>({displayName:entry.driver,number:String(entry.number||''),status:'Raced'}));
@@ -66,7 +66,7 @@ const entries=resolveEventEntries(event,result);
     const roster=Array.isArray(d.drivers)?d.drivers.filter(v=>v.competitionId===leagueId):[];
     let eventEntries=[];
     if(e.entryListMode==='custom'){
-      eventEntries=(e.entries||[]).map(entry=>{const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{displayName:assignment?.displayName||entry.driver||'Entry',number:String(assignment?.number||entry.number||''),status:entry.entryStatus||'Confirmed'};}).filter(entry=>entry.displayName||entry.number);
+      eventEntries=(e.entries||[]).map(entry=>{const assignment=roster.find(driver=>driver.id===entry.assignmentId||(driver.displayName===entry.driver&&String(driver.number)===String(entry.number)));return{displayName:entry.driver||assignment?.displayName||'Entry',number:String(entry.number??assignment?.number??''),status:entry.entryStatus||'Confirmed'};}).filter(entry=>entry.displayName||entry.number);
     }else if(result?.entries?.length){
       eventEntries=result.entries.map(entry=>({displayName:entry.driver,number:String(entry.number||''),status:'Raced'}));
     }else eventEntries=roster.map(entry=>({displayName:entry.displayName,number:String(entry.number||''),status:entry.status||'Roster'}));

@@ -59,7 +59,16 @@ try {
   sponsorPortfolio.brands[0].sponsorTitle='Publication Fixture Primary & Apparel Partner';
   sponsorPortfolio.brands[1].logo='';sponsorPortfolio.brands[1].sponsorTitle='Publication Fixture Personal Partner';
   delete sponsorPortfolio.brands[2].sponsorTitle;sponsorPortfolio.brands[3].sponsorTitle='   ';
-  const editedNumbers=new Map([['wispy-nrrs','08'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
+  const nrrsAssignment=data.drivers.find(entry=>entry.competitionId==='nrrs'&&entry.profile==='hailey');
+  assert.ok(nrrsAssignment,'Historical entry regression needs Hailey’s current NRRS assignment');
+  const historicalEvent=data['schedule-events'].find(event=>event.league==='nrrs'&&event.date==='2026-10-06');
+  assert.ok(historicalEvent,'Historical entry regression needs the October 6 NRRS event');
+  historicalEvent.entryListMode='custom';
+  historicalEvent.entries=[{assignmentId:nrrsAssignment.id,driver:'Hailey',number:'32',entryStatus:'Confirmed'}];
+  const historicalEntries=structuredClone(historicalEvent.entries);
+  // A current-season number change must not rewrite an approved older event
+  // while an unrelated schedule publication passes through content sync.
+  const editedNumbers=new Map([[nrrsAssignment.id,'28'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
   for(const entry of data.drivers)if(editedNumbers.has(entry.id))entry.number=editedNumbers.get(entry.id);
   const nrrs=data.standings.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
   // The current release selects the Kmart Chase-clinch feature in
@@ -111,11 +120,17 @@ try {
       }
     }finally{profilePage.window.close();partnersPage.window.close();}
     const synced=JSON.parse(fs.readFileSync(overlayFile,'utf8'));
+    const findHistoricalEvent=events=>events.find(event=>event.league===historicalEvent.league&&event.date===historicalEvent.date);
+    assert.equal(synced.datasets.drivers.find(entry=>entry.id===nrrsAssignment.id).number,'28','The current NRRS number change survives publication');
+    assert.deepEqual(findHistoricalEvent(synced.datasets['schedule-events'])?.entries,historicalEntries,'Content sync must preserve approved historical custom entry names and numbers');
     const calendar=new JSDOM(read('schedule/index.html'),{url:'https://aetherwing.net/schedule/',runScripts:'outside-only'});
     try{
       calendar.window.setInterval=()=>0;
       const calendarScript=Array.from(calendar.window.document.scripts).find(script=>script.textContent.includes('[data-race-calendar]'));
       assert.ok(calendarScript,'Built schedule page must include its calendar renderer');
+      const calendarSeed=calendarScript.textContent.match(/const initial\s*=\s*(\[[\s\S]*?\]);\s*const initialResults\s*=/)?.[1];
+      assert.ok(calendarSeed,'Built calendar must embed its published schedule');
+      assert.deepEqual(findHistoricalEvent(JSON.parse(calendarSeed))?.entries,historicalEntries,'Built calendar data must keep the historical #32 despite the current #28 assignment');
       calendar.window.eval(calendarScript.textContent);
       const doc=calendar.window.document,rows=()=>Array.from(doc.querySelectorAll('[data-calendar-list] .aw-calendar__event'));
       assert.ok(rows().length<=5,'Production calendar must default to at most five upcoming races');
@@ -193,7 +208,21 @@ try {
       assert.ok(html.includes(`https://aetherwing.net/event/${slug}/`),'Event share link must use its canonical page URL');
       assert.ok(html.includes('https://aetherwing.net/images/social/default-social.png'),'Race Weekend uses the current default social image');
     }
-    console.log('PASS: rebuild rendered schedule, stable/legacy event routes and share metadata, result, win, milestone, roster edit, featured story and article route.');
+    for(const slug of new Set([eventSlug(historicalEvent),legacyEventSlug(historicalEvent)])){
+      const page=new JSDOM(read(`event/${slug}/index.html`),{url:`https://aetherwing.net/event/${slug}/`,runScripts:'outside-only'});
+      try{
+        const entries=()=>Array.from(page.window.document.querySelectorAll('[data-event-entries] .profile-assignment'),row=>({driver:row.querySelector('span').textContent,number:row.querySelector('strong').textContent}));
+        const expected=historicalEntries.map(entry=>({driver:entry.driver,number:`#${entry.number}`}));
+        assert.deepEqual(entries(),expected,'Server-rendered Race Entries must use the approved historical custom identities');
+        const script=Array.from(page.window.document.scripts).find(script=>script.textContent.includes('const applyLiveEvent='));
+        assert.ok(script,'Built event page must retain its live published event renderer');
+        page.window.document.querySelector('[data-event-entries]').replaceChildren();
+        page.window.eval(script.textContent);
+        page.window.dispatchEvent(new page.window.CustomEvent('aetherwing:content',{detail:synced.datasets}));
+        assert.deepEqual(entries(),expected,'Live event hydration must preserve historical #32 instead of substituting current #28');
+      }finally{page.window.close();}
+    }
+    console.log('PASS: rebuild rendered schedule, preserved historical custom entries through sync/calendar/SSR/live event hydration, stable/legacy event routes and share metadata, result, win, milestone, roster edit, featured story and article route.');
   } catch(error) {
     failure=error;
   }
