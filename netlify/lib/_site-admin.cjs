@@ -114,6 +114,14 @@ function ensureCoreTeamPartners(rows=[],seedPartners=[]){
 
 function migrateKnownPublished(registry){
   const seed=seeds();
+  if(Array.isArray(registry.published?.news)){
+    const fresh=seed.news.find(story=>story.slug==='bell-eyes-championship-mexico-city');
+    if(fresh){
+      const present=registry.published.news.some(story=>story?.slug===fresh.slug);
+      registry.published.news=registry.published.news.map(story=>story?.slug===fresh.slug&&story.contentRevision!==fresh.contentRevision?fresh:story);
+      if(!present)registry.published.news.push(fresh);
+    }
+  }
   if(Array.isArray(registry.published?.news))registry.published.news=registry.published.news.map((story)=>{if(story?.slug!=='hailey-bell-to-step-back-from-full-time-competition-after-season-4')return story;const normalized=replaceFullCirclePartner(story),text=JSON.stringify(normalized);const fresh=(seed.news||[]).find((item)=>item?.slug===story.slug);if(!fresh)return normalized;if(!/FULL HEART/i.test(text)||/FULL CIRCLE/i.test(text))return fresh;return {...normalized,socialImage:(!normalized.socialImage||/full-heart-tour-2027-logo\.jpg$/i.test(normalized.socialImage))?fresh.socialImage:normalized.socialImage,articleLogo:normalized.articleLogo||fresh.articleLogo,embedDescription:normalized.embedDescription||fresh.embedDescription};});
   if(Array.isArray(registry.published?.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);registry.published.news=registry.published.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(registry.published?.news)){const currentSlug=(seed.news||[]).find(story=>story.featured)?.slug,fresh=(seed.news||[]).find((story)=>story?.slug===currentSlug);let hadCurrent=false;registry.published.news=registry.published.news.map((story)=>{if(story?.slug!==currentSlug)return story;hadCurrent=true;return fresh&&story?.contentRevision!==fresh.contentRevision?fresh:story;});if(!hadCurrent&&fresh)registry.published.news.push(fresh);const archived=(seed.news||[]).find(story=>story.slug==='from-fourth-to-first-hailey-bell-kmart-chase');if(archived&&!registry.published.news.some(story=>story.slug===archived.slug))registry.published.news.push(archived);registry.published.news=registry.published.news.map((story)=>({...story,featured:story?.slug===currentSlug}));}

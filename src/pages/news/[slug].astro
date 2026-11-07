@@ -3,6 +3,8 @@ import Base from '../../layouts/Base.astro';
 import { news } from '../../lib/site-content.mjs';
 import NRRSSeasonReview from '../../components/news/NRRSSeasonReview.astro';
 import KmartChampionshipFeature from '../../components/news/KmartChampionshipFeature.astro';
+import MexicoCityFeature from '../../components/news/MexicoCityFeature.astro';
+import {articleStructuredData} from '../../lib/mexico-city-feature-client.mjs';
 import '../../styles/records.css';
 export function getStaticPaths(){return news.map(story=>({params:{slug:story.slug},props:{story}}));}
 const {story}=Astro.props;
@@ -11,10 +13,12 @@ const shareDescription=story.embedDescription || compactDescription(story.summar
 const isRaceFeature=story.featureLayout==='race-stat-feature';
 const isSeasonReview=story.featureLayout==='nrrs-season-review';
 const isChampionshipFeature=story.featureLayout==='championship-feature';
+const isMexicoCityFeature=story.featureLayout==='mexico-city-prerace';
+const canonicalUrl=new URL(Astro.url.pathname,Astro.site).href;
 ---
-<Base title={story.seoTitle || story.title} description={shareDescription} image={story.socialImage || story.image} stylesheets={isSeasonReview?['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap']:[]} ogType={isSeasonReview?'article':'website'} publishedTime={isSeasonReview?story.dateIso:undefined}>
-  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature||isChampionshipFeature,'news-article--championship':isChampionshipFeature,'news-article--season3':isSeasonReview}]} data-news-story-root data-story-slug={story.slug}>
-    <div class="wrap">
+<Base title={story.seoTitle || story.title} description={shareDescription} image={story.socialImage || story.image} stylesheets={isSeasonReview?['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap']:[]} ogType={isSeasonReview||isMexicoCityFeature?'article':'website'} publishedTime={isSeasonReview||isMexicoCityFeature?story.dateIso:undefined}>
+  <article class:list={['news-article',{'news-article--race-feature':isRaceFeature||isChampionshipFeature,'news-article--championship':isChampionshipFeature,'news-article--season3':isSeasonReview,'news-article--mexico':isMexicoCityFeature}]} data-news-story-root data-story-slug={story.slug}>
+    {isMexicoCityFeature ? <MexicoCityFeature story={story} canonicalUrl={canonicalUrl}/> : <div class="wrap">
       <header class="news-article__hero">
         <a class="news-article__back" href="/news/">← Team Newsroom</a>
         {!isSeasonReview&&<div class="news-article__meta">
@@ -169,12 +173,14 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
           </>
         )}
       </div>
-    </div>
+    </div>}
   </article>
+  {isMexicoCityFeature&&<script is:inline type="application/ld+json" data-mx-structured-data set:html={JSON.stringify(articleStructuredData(story,canonicalUrl)).replace(/</g,'\\u003c')}/>}
 </Base>
 
 <script>
   import { updateSeason3Story } from '../../lib/nrrs-season3-client.mjs';
+  import { updateMexicoCityStory } from '../../lib/mexico-city-feature-client.mjs';
   (()=>{
     const root=document.querySelector('[data-news-story-root]');
     if(!root)return;
@@ -214,7 +220,9 @@ const isChampionshipFeature=story.featureLayout==='championship-feature';
     const apply=(datasets)=>{
       const live=(datasets?.news||[]).find((item)=>item?.slug===slug);
       if(!live)return;
-      if(root.querySelector('[data-s3-feature]')&&live.featureLayout==='nrrs-season-review'){
+      if(root.querySelector('[data-mx-feature]')&&live.featureLayout==='mexico-city-prerace'){
+        updateMexicoCityStory(root,live);
+      }else if(root.querySelector('[data-s3-feature]')&&live.featureLayout==='nrrs-season-review'){
         updateSeason3Story(root,live);
       }else if(root.querySelector('[data-kmart-feature]')&&live.featureLayout==='championship-feature'){
         // This story's chart is a dated snapshot. Preserve its controls and state

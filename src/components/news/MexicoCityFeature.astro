@@ -1,0 +1,10 @@
+---
+import { renderMexicoCityFeature } from '../../lib/mexico-city-feature-client.mjs';
+import '../../styles/mexico-city-feature.css';
+const { story, canonicalUrl = new URL(Astro.url.pathname,Astro.site).href } = Astro.props;
+---
+<Fragment set:html={renderMexicoCityFeature(story,{canonicalUrl})}/>
+<script>
+  import { mountMexicoCityFeature } from '../../lib/mexico-city-feature-client.mjs';
+  document.querySelectorAll('[data-mx-feature]').forEach(root => mountMexicoCityFeature(root));
+</script>
