@@ -43,15 +43,15 @@ const canonical=new URL(Astro.url.pathname,Astro.site).href;
   </div>
   <script is:inline type="application/json" id="aw-content-fallback" set:html={JSON.stringify({standings, results, alliances, 'schedule-events':scheduleEvents})} />
   <script>
-    import { loadPublishedContent, applyPublication } from '../lib/published-content.mjs';
+    import { startPublicationUpdates, applyPublication } from '../lib/published-content.mjs';
     const page=location.pathname.replace(/\/+$/,'/')||'/';
     const apply=(rules)=>{for(const rule of Array.isArray(rules)?rules:[]){if(rule.enabled===false||!['*',page].includes(rule.page)||rule.value===rule.original)continue;if(rule.type==='link')document.querySelectorAll('a[href]').forEach(a=>{if(a.getAttribute('href')===rule.original)a.setAttribute('href',rule.value);});else if(rule.type==='image')document.querySelectorAll('img[src]').forEach(img=>{if(img.getAttribute('src')===rule.original)img.setAttribute('src',rule.value);});else if(rule.type==='text'){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while((node=walker.nextNode())){if(['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement?.tagName||''))continue;const raw=node.nodeValue||'';if(raw.trim().replace(/\s+/g,' ')===rule.original)node.nodeValue=raw.replace(rule.original,rule.value);}}}};
     const fallback=JSON.parse(document.getElementById('aw-content-fallback').textContent);
     let storage;
     try { storage=window.localStorage; } catch { storage={getItem:()=>null,setItem:()=>{}}; }
-    loadPublishedContent({storage}).then(snapshot=>{
+    startPublicationUpdates({storage,window,document,onSnapshot:snapshot=>{
       applyPublication(snapshot, fallback, {document,window});
       apply(snapshot.datasets['page-overrides']);
-    });
+    }});
   </script>
 </body></html>
