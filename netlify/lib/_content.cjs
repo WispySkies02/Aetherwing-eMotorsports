@@ -240,6 +240,9 @@ function validate(key, data, registry={}, context={}) {
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points)) || (Array.isArray(row.chaseRows) && row.chaseRows.some((r)=>!(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points))))) return 'Standings rows need numeric points (or an explicit pending placeholder before the first full-roster import).';
     if(key==='standings') {
+      if(Object.hasOwn(row,'featuredOnHome')&&typeof row.featuredOnHome!=='boolean')return 'Standings featuredOnHome must be a true/false value.';
+      if(Object.hasOwn(row,'homeTable')&&!['regular','chase'].includes(row.homeTable))return 'Homepage standings table must be regular or chase.';
+      if(row.homeTable==='chase'&&!Array.isArray(row.chaseRows))return 'Homepage Chase points need a separate Chase standings list.';
       if(row.chaseRows!=null&&!Array.isArray(row.chaseRows))return 'Chase standings rows must be a list.';
       if([...row.rows,...(row.chaseRows||[])].some((entry)=>!validPositionChange(entry?.positionChange)))return 'Standings position change must be a finite number, signed number, NEW, or a dash.';
       if(row.ptEntry?.drivers!=null&&!Array.isArray(row.ptEntry.drivers))return 'Part-time standings drivers must be a list.';
@@ -316,6 +319,7 @@ function validate(key, data, registry={}, context={}) {
     const eventKey=(r)=>{const explicit=clean(r.routeId||r.eventId||'');if(explicit)return explicit;const league=clean(r.league||'event')||'event',round=String(r.round||'').match(/(\d+)/);return round?`${league}-round-${Number(round[1])}`:`${league}-${clean(r.date||'tbd')||'tbd'}`;};
     if(new Set(rows.map(eventKey)).size!==rows.length)return 'Two calendar entries would have the same stable Race Weekend route. Use a unique series/round or series/date identity.';
   }
+  if(key==='standings'&&rows.filter(row=>row.featuredOnHome===true).length>1)return 'Choose at most one featured homepage standings board.';
   if (key === 'news' && rows.filter((r) => r.featured).length !== 1) return 'Choose exactly one featured Team Wire story.';
   if(key==='results'){
     if(!data.length)return 'Keep at least one race result.';

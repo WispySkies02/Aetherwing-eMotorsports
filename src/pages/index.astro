@@ -2,15 +2,16 @@
 import Base from '../layouts/Base.astro';
 import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, competitions, alliances } from '../lib/site-content.mjs';
 import { eventSlug } from '../lib/schedule-events.mjs';
+import { homeStandings } from '../lib/home-standings.mjs';
+import { homeFocusHeading, homeFocusContext } from '../lib/home-standings-client.mjs';
 import OnTrackNext from '../components/home/OnTrackNext.astro';
 import TimingTower from '../components/home/TimingTower.astro';
 import UpNext from '../components/home/UpNext.astro';
 import '../styles/ux-home.css';
 const teamStats=[[siteSettings.verifiedWins,'Verified wins','verifiedWins'],[siteSettings.estimatedStarts,'Race starts','estimatedStarts'],[siteSettings.competitionRelationships,'Programs','competitionRelationships'],[2015,'Roots since','rootsSince']].filter(([value])=>value!==undefined&&value!=='');
-const chase=standings.find(s=>s.id==='nrrs');
-const driver=chase?.rows?.find(r=>r.highlight);
-const battleAssignment=drivers.find(d=>d.competitionId==='nrrs'&&d.number===driver?.number);
-const leader=chase?.rows?.[0];
+const homeBoard=homeStandings(standings,drivers);
+const battleAssignment=homeBoard.focusAssignment;
+const battleNumber=String(homeBoard.focusRow?.number??'').trim();
 const latest=[...results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
 const compactResultEntries=(race)=>{const entries=race?.entries||[],featured=entries.filter(e=>e.featuredDriver);return (race.coverage==='team-only'?entries:featured.length?featured:entries).slice(0,3);};
 const leadNews=news.find(s=>s.featured)||news[0];
@@ -43,18 +44,18 @@ const programLogo={
   {teamStats.length>0&&<dl class="ux-stats hub-stats" aria-label="Aetherwing at a glance">{teamStats.map(([value,label,key])=><div><dt>{label}</dt><dd data-team-stat={key}>{value}</dd></div>)}</dl>}
 
   <div class="hub-grid">
-    <section class="ux-section hub-battle" aria-labelledby="battle-title">
-      <div class="ux-section__head"><div><p class="ux-tag"><b>●</b>{chase?.status||'Championship'}</p><h2 class="ux-h2" id="battle-title">The championship fight</h2></div><a class="ux-more" href="/championships/">Full standings</a></div>
-      <div class="ux-card hub-battle__card" data-live-region="standings">
+    <section class="ux-section hub-battle" aria-labelledby="battle-title" data-home-standings-root data-live-region="standings" data-home-standings-id={homeBoard.board?.id||''} data-home-standings-table={homeBoard.table} data-home-standings-league={homeBoard.league}>
+      <div class="ux-section__head"><div><p class="ux-tag"><b>●</b><span data-battle-status>{homeBoard.status}</span></p><h2 class="ux-h2" id="battle-title" data-battle-title>{homeBoard.title}</h2></div><a class="ux-more" href="/championships/">Full standings</a></div>
+      <div class="ux-card hub-battle__card" data-home-standings-id={homeBoard.board?.id||''} data-home-standings-table={homeBoard.table} data-home-standings-league={homeBoard.league}>
         <div class="hub-battle__driver">
-          <span class="hub-battle__number" data-battle-number>{(battleAssignment?.numberImageBackup||battleAssignment?.numberImage)?<img src={battleAssignment.numberImageBackup||battleAssignment.numberImage} alt={`Number ${battleAssignment.number}`} />:`#${driver?.number||'32'}`}</span>
+          <span class="hub-battle__number" data-battle-number data-number={battleNumber}>{(battleAssignment?.numberImageBackup||battleAssignment?.numberImage)?<img src={battleAssignment.numberImageBackup||battleAssignment.numberImage} alt={`Number ${battleNumber}`} />:battleNumber?`#${battleNumber}`:'—'}</span>
           <div>
-            <h3 data-battle-heading>{driver?`${driver.driver} · ${driver.position}`:'The championship fight'}</h3>
-            <p data-battle-context>{chase?.subtitle||'Season standings'} · {driver?.points?.toLocaleString('en-US')||'—'} PTS</p>
+            <h3 data-battle-heading style="overflow-wrap:anywhere">{homeFocusHeading(homeBoard)}</h3>
+            <p data-battle-context>{homeFocusContext(homeBoard)}</p>
           </div>
-          <dl class="hub-battle__marks"><div><dt>To leader</dt><dd data-battle-gap>{driver?.delta||'—'}</dd></div><div><dt>Points leader</dt><dd data-battle-leader>{leader?.driver||'—'}</dd></div></dl>
+          <dl class="hub-battle__marks"><div><dt>To leader</dt><dd data-battle-gap>{homeBoard.focusGap}</dd></div><div><dt>Points leader</dt><dd data-battle-leader>{homeBoard.leader?.driver||'—'}</dd></div></dl>
         </div>
-        <TimingTower />
+        <TimingTower model={homeBoard}/>
       </div>
     </section>
 
@@ -103,7 +104,7 @@ const programLogo={
 </Base>
 <script>
   import { eventSlug } from '../lib/schedule-events.mjs';
-  const applyLiveHome=(d)=>{const liveSite=d.site||{};const setText=(selector,value)=>{const el=document.querySelector(selector);if(el&&value)el.textContent=value;};const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));setText('[data-faith-eyebrow]',liveSite.faithEyebrow);setText('[data-faith-title]',liveSite.faithTitle);setText('[data-faith-statement]',liveSite.faithStatement);setText('[data-faith-verse]',liveSite.faithVerse);if(Array.isArray(d.partners)){const partnerRoot=document.querySelector('[data-home-partners]');if(partnerRoot){partnerRoot.innerHTML=d.partners.map(partner=>`<a href="${esc(/^https:\/\//i.test(String(partner.url||''))?partner.url:'#')}" target="_blank" rel="noopener noreferrer">${partner.logo?`<img src="${esc(partner.logo)}" alt="${esc(partner.name)}" loading="lazy">`:`<strong>${esc(partner.name)}</strong>`}<span>${esc(partner.role)}</span></a>`).join('');partnerFallback();}}document.querySelectorAll('[data-team-stat]').forEach(node=>{const value=liveSite[node.dataset.teamStat];if(value!==undefined&&value!=='')node.textContent=String(value);});if(Array.isArray(d.results))renderLatestResult(d.results);const board=d.standings?.find(s=>s.id==='nrrs'),row=board?.rows?.find(r=>r.highlight),lead=board?.rows?.[0];if(row){document.querySelector('[data-battle-heading]').textContent=`${row.driver} · ${row.position}`;document.querySelector('[data-battle-context]').textContent=`${board.subtitle} · ${Number(row.points||0).toLocaleString('en-US')} PTS`;document.querySelector('[data-battle-gap]').textContent=row.delta||'—';document.querySelector('[data-battle-leader]').textContent=lead?.driver||'—';}if(Array.isArray(d.standings)&&!row){setText('[data-battle-heading]','No published standings');setText('[data-battle-context]','Standings will appear after publication.');setText('[data-battle-gap]','—');setText('[data-battle-leader]','—');}if(!Array.isArray(d.drivers))return;const show=(element,number,art)=>{if(!element)return;element.textContent=`#${number}`;if(art){const img=document.createElement('img');img.alt=`Number ${number}`;img.src=art;img.addEventListener('error',()=>{element.textContent=`#${number}`;},{once:true});element.replaceChildren(img);}};if(row){const assignment=d.drivers.find(a=>a.competitionId==='nrrs'&&String(a.number)===String(row.number));show(document.querySelector('[data-battle-number]'),row.number,assignment?.numberImageBackup||assignment?.numberImage);}document.querySelectorAll('.ux-driver[data-profile]').forEach(tile=>{const rides=d.drivers.filter(a=>a.profile===tile.dataset.profile&&a.affiliation==='aetherwing').sort((a,b)=>({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[a.competitionId]||99)-({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[b.competitionId]||99));const assignment=rides[0]||d.drivers.find(a=>a.profile===tile.dataset.profile);if(assignment){tile.dataset.number=String(assignment.number||'');show(tile.querySelector('[data-number-art]'),assignment.number,assignment?.numberImageBackup||assignment?.numberImage);}const meta=tile.querySelector('[data-program-numbers]');if(meta)meta.textContent=rides.slice(0,2).map(a=>`#${a.number} ${{nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[a.competitionId]||a.competition}`).join(' / ');});};
+  const applyLiveHome=(d)=>{const liveSite=d.site||{};const setText=(selector,value)=>{const el=document.querySelector(selector);if(el&&value)el.textContent=value;};const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));setText('[data-faith-eyebrow]',liveSite.faithEyebrow);setText('[data-faith-title]',liveSite.faithTitle);setText('[data-faith-statement]',liveSite.faithStatement);setText('[data-faith-verse]',liveSite.faithVerse);if(Array.isArray(d.partners)){const partnerRoot=document.querySelector('[data-home-partners]');if(partnerRoot){partnerRoot.innerHTML=d.partners.map(partner=>`<a href="${esc(/^https:\/\//i.test(String(partner.url||''))?partner.url:'#')}" target="_blank" rel="noopener noreferrer">${partner.logo?`<img src="${esc(partner.logo)}" alt="${esc(partner.name)}" loading="lazy">`:`<strong>${esc(partner.name)}</strong>`}<span>${esc(partner.role)}</span></a>`).join('');partnerFallback();}}document.querySelectorAll('[data-team-stat]').forEach(node=>{const value=liveSite[node.dataset.teamStat];if(value!==undefined&&value!=='')node.textContent=String(value);});if(Array.isArray(d.results))renderLatestResult(d.results);if(!Array.isArray(d.drivers))return;const show=(element,number,art)=>{if(!element)return;element.textContent=`#${number}`;if(art){const img=document.createElement('img');img.alt=`Number ${number}`;img.src=art;img.addEventListener('error',()=>{element.textContent=`#${number}`;},{once:true});element.replaceChildren(img);}};document.querySelectorAll('.ux-driver[data-profile]').forEach(tile=>{const rides=d.drivers.filter(a=>a.profile===tile.dataset.profile&&a.affiliation==='aetherwing').sort((a,b)=>({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[a.competitionId]||99)-({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[b.competitionId]||99));const assignment=rides[0]||d.drivers.find(a=>a.profile===tile.dataset.profile);if(assignment){tile.dataset.number=String(assignment.number||'');show(tile.querySelector('[data-number-art]'),assignment.number,assignment?.numberImageBackup||assignment?.numberImage);}const meta=tile.querySelector('[data-program-numbers]');if(meta)meta.textContent=rides.slice(0,2).map(a=>`#${a.number} ${{nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[a.competitionId]||a.competition}`).join(' / ');});};
   function renderLatestResult(rows){
     const latest=[...rows].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
     const set=(selector,value)=>{const node=document.querySelector(selector);if(node)node.textContent=value;};

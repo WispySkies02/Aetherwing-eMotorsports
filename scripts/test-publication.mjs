@@ -8,6 +8,7 @@ import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { eventSlug, legacyEventSlug } from '../src/lib/schedule-events.mjs';
 import { standingIdentity } from '../src/lib/standings-metadata.mjs';
+import { mountHomeStandings } from '../src/lib/home-standings-client.mjs';
 import { JSDOM } from 'jsdom';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
@@ -234,7 +235,8 @@ try {
       const home=new JSDOM(read('index.html'),{runScripts:'outside-only'});
       assert.equal(home.window.document.querySelector('[data-tower-cut]').textContent,'Chase cutoff · Top 5','Server-rendered legend must use Top 5');
       if(mode==='cached')home.window.__AETHERWING_CONTENT__=data;
-      home.window.eval(towerScript);
+      home.window.mountHomeStandings=mountHomeStandings;
+      home.window.eval(towerScript.replace(/^\s*import .*;$/gm,''));
       if(mode==='event')home.window.dispatchEvent(new home.window.CustomEvent('aetherwing:content',{detail:data}));
       const tower=home.window.document.querySelector('[data-timing-tower]');
       const manualTowerRow=Array.from(tower.querySelectorAll('[data-tower-rows] > li')).find(row=>row.querySelector('strong')?.textContent===nrrsManual.driver);
@@ -245,8 +247,8 @@ try {
       assert.equal(cut.previousElementSibling.querySelector('.aw-tower__pos').textContent,'5',`${mode}: divider must follow P5`);
       assert.equal(cut.querySelector('.aw-tower__pos').textContent,'6',`${mode}: divider must precede P6`);
       assert.equal(tower.querySelector('[data-tower-cut]').textContent,'Chase cutoff · Top 5',`${mode}: old metadata must not restore Top 6`);
-      const teamNumbers=new Set(data.drivers.filter((entry)=>entry.competitionId==='nrrs'&&entry.affiliation==='aetherwing').map((entry)=>String(entry.number)));
-      const expected=nrrs.rows.filter((row,index)=>index<6||row.highlight||teamNumbers.has(String(row.number))).map((row)=>String(row.position).replace(/^P/i,''));
+      const teamAssignments=data.drivers.filter((entry)=>entry.competitionId==='nrrs'&&entry.affiliation==='aetherwing');
+      const expected=nrrs.rows.filter((row,index)=>index<6||row.highlight||teamAssignments.some(entry=>String(entry.number)===String(row.number)&&standingIdentity(entry.displayName||entry.profile)===standingIdentity(row))).map((row)=>String(row.position).replace(/^P/i,''));
       assert.deepEqual(Array.from(tower.querySelectorAll('.aw-tower__pos'),(node)=>node.textContent),expected,`${mode}: retain leaders and Aetherwing cars below the cutoff`);
       home.window.close();
     }

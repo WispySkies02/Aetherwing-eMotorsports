@@ -214,7 +214,7 @@ try {
     const recapSlug='pole-position-fading-pace-bell-salvages-third-at-new-hampshire';
     await page.goto(`${base}/news/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
-    assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),'/news/hailey-bell-nrrs-season-3-review/');
+    assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),`/news/${[...published.datasets.news].sort((a,b)=>String(b.dateIso).localeCompare(String(a.dateIso)))[0].slug}/`,'Newsroom leads with the newest published story; homepage feature is selected separately');
     await page.goto(`${base}/news/${recapSlug}/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     assert.equal(await page.locator('h1').textContent(),'Pole Position, Fading Pace: Bell Salvages Third at New Hampshire');
