@@ -41,7 +41,7 @@
     'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD',entryListMode:'Event entry list mode',entries:'Event entry list',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',entryStatus:'Entry note / status'},
     results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Automatic Latest Result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',finishPoints:'Finish points',bonusPoints:'Bonus / adjustment points',pointsEligible:'Championship points eligible',racePoints:'Total race points',featuredDriver:'Featured driver',chaseDriver:'Chase driver'},
     wins:{assignmentId:'Linked driver assignment',league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
-    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',manufacturer:'Manufacturer',chaseLocked:'Chase berth locked',regularSeasonChampion:'Regular-season champion',points:'Points',delta:'Gap / delta',positionChange:'Position change (+/-)',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
+    standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',featuredOnHome:'Feature on homepage',homeTable:'Homepage standings table',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',manufacturer:'Manufacturer',chaseLocked:'Chase berth locked',regularSeasonChampion:'Regular-season champion',points:'Points',delta:'Gap / delta',positionChange:'Position change (+/-)',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Relationship',allianceId:'Alliance team',car:'Car / body',identityNote:'Identity note'},
     'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary relationship',allianceId:'Alliance team',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',signatureLogo:'Signature logo URL',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
@@ -1023,7 +1023,8 @@
   function fields(value,path=[]) {
     const standingRow=key==='standings'&&path.length===2&&['rows','chaseRows'].includes(path[0]);
     const partTimeRow=key==='standings'&&path.length===3&&path[0]==='ptEntry'&&path[1]==='drivers';
-    if(standingRow)value={manufacturer:'',chaseLocked:false,regularSeasonChampion:false,...value};
+    if(key==='standings'&&path.length===0)value={featuredOnHome:false,...(Array.isArray(value.chaseRows)?{homeTable:'regular'}:{}),...value};
+    else if(standingRow)value={manufacturer:'',chaseLocked:false,regularSeasonChampion:false,...value};
     else if(partTimeRow)value={manufacturer:'',...value};
     // Older portfolios and newly added brands may omit this optional field.
     if(key==='driver-portfolios'&&path.length===2&&path[0]==='brands')value={...value,sponsorTitle:value.sponsorTitle??''};
@@ -1033,6 +1034,13 @@
       if(key==='drivers'&&k==='numberImageBackup')return '';
       if(['drivers','roster-profiles'].includes(key)&&k==='currentRosterRevision')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
+      if(key==='standings'&&path.length===0&&k==='featuredOnHome'){
+        return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" data-home-standings-feature ${v===true?'checked':''}><span><b>${esc(pretty)}</b><small>Choose this standings board for the homepage. Selecting it clears other boards. Without an explicit selection, NRRS remains the default. The first highlighted driver is featured; otherwise the points leader.</small></span></label>`;
+      }
+      if(key==='standings'&&path.length===0&&k==='homeTable'){
+        if(!Array.isArray(value.chaseRows))return '';
+        return shell(pretty,`<select ${attr} data-field-type="string" data-home-standings-table><option value="regular" ${v!=='chase'?'selected':''}>Regular standings</option><option value="chase" ${v==='chase'?'selected':''}>Chase standings</option></select>`,'Select the table used on the homepage for this board. Regular standings remain the default; an empty Chase table shows an empty state.');
+      }
       if((standingRow||partTimeRow)&&k==='manufacturer'){
         const choices=standingManufacturerChoices(),selected=normalizeStandingManufacturer(v),legacy=selected&&!choices.includes(selected);
         if(choices.length)return shell(pretty,`<select ${attr} data-field-type="string" data-standing-manufacturer><option value="" ${!selected?'selected':''}>Auto / not specified</option>${legacy?`<option value="${esc(v)}" selected>${esc(v)} (existing value)</option>`:''}${choices.map(make=>`<option value="${esc(make)}" ${make===selected?'selected':''}>${esc(make==='Chevrolet'?'Chevy':make)}</option>`).join('')}</select>`,'Choose this driver’s manufacturer for this league. Auto keeps the existing automatic lookup.');
@@ -1581,7 +1589,7 @@
   const markDatasetFieldDirty=(event)=>{
     if(!event.target?.closest?.('[data-field-path]'))return;
     dirty=true;
-    saveFeedback('UNSAVED EDIT · publish or save a draft before leaving','warning');
+    saveFeedback(event.target.matches('[data-home-standings-feature],[data-home-standings-table]')?'UNSAVED STANDINGS SELECTION · save a private draft or publish':'UNSAVED EDIT · publish or save a draft before leaving','warning');
   };
   $('[data-content-form]').addEventListener('input',markDatasetFieldDirty);
   $('[data-content-form]').addEventListener('change',markDatasetFieldDirty);
@@ -1664,6 +1672,19 @@
     if(key==='drivers'&&event.key==='Enter'&&event.target.matches('[data-number-image-url]')){event.preventDefault();useNumberImageUrl();}
   });
   $('[data-content-fields]').addEventListener('change',async(event)=>{
+    const homeStandingsControl=event.target.closest?.('[data-home-standings-feature],[data-home-standings-table]');
+    if(key==='standings'&&homeStandingsControl){
+      try{
+        commit();
+        if(homeStandingsControl.hasAttribute('data-home-standings-feature')&&homeStandingsControl.checked){
+          data.forEach(board=>{if(board!==current()&&board.featuredOnHome===true)board.featuredOnHome=false;});
+        }
+        dirty=true;render();
+        saveFeedback('UNSAVED STANDINGS SELECTION · save a private draft or publish','warning');
+        status('Homepage standings selection updated. Save a private draft or publish Standings to keep this selection. Without an explicit selection, the homepage uses NRRS.');
+      }catch(error){status(error?.message||'The homepage standings selection could not be applied.');}
+      return;
+    }
     const standingMetadataControl=event.target.closest?.('[data-standing-manufacturer],[data-standing-chase-locked],[data-standing-season-champion]');
     if(key==='standings'&&standingMetadataControl){
       try{
