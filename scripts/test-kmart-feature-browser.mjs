@@ -75,7 +75,7 @@ try{
   await page.goto(`${base}/`,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
   assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),`/news/${seed.news.find(s=>s.featured).slug}/`);
   await page.goto(`${base}/news/`,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
-  assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),`/news/${seed.news.find(s=>s.featured).slug}/`);
+  assert.equal(await page.locator('[data-news-list] > a').first().getAttribute('href'),`/news/${[...seed.news].sort((a,b)=>String(b.dateIso).localeCompare(String(a.dateIso)))[0].slug}/`,'Newsroom leads with the newest story while the homepage retains its separately selected feature');
   assert.deepEqual(errors,[],'No runtime errors');console.log(`PASS: ${width}px chart modes/series/nulls, timeline/keyboard${width<700?'/emulated touch':''}, CMS state preservation, source label, layout and featured links.`);
   await context.close();
  }

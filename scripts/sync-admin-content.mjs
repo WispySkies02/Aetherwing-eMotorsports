@@ -42,6 +42,14 @@ async function canonicalizeBuildContent(payload){
   const next={...payload,datasets:{...(payload?.datasets||{})}};
   const d=next.datasets;
   d.alliances=Array.isArray(d.alliances)?d.alliances:seed.alliances;
+  if(Array.isArray(d.news)){
+    const fresh=seed.news.find(story=>story.slug==='bell-eyes-championship-mexico-city');
+    if(fresh){
+      const present=d.news.some(story=>story?.slug===fresh.slug);
+      d.news=d.news.map(story=>story?.slug===fresh.slug&&story.contentRevision!==fresh.contentRevision?fresh:story);
+      if(!present)d.news.push(fresh);
+    }
+  }
 
   // Build-time pages must never resurrect retired roster/manufacturer data from an older
   // Admin publication. Results, standings and assignment numbers remain Admin-authoritative.

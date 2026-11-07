@@ -14,7 +14,9 @@ const leader=chase?.rows?.[0];
 const latest=[...results].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
 const compactResultEntries=(race)=>{const entries=race?.entries||[],featured=entries.filter(e=>e.featuredDriver);return (race.coverage==='team-only'?entries:featured.length?featured:entries).slice(0,3);};
 const leadNews=news.find(s=>s.featured)||news[0];
-const moreNews=news.filter(s=>s!==leadNews).slice(0,2);
+const moreNews=news.filter(s=>s.slug!==leadNews?.slug).sort((a,b)=>String(b.dateIso||'').localeCompare(String(a.dateIso||''))).slice(0,2);
+const mexicoNews=news.find(story=>story.slug==='bell-eyes-championship-mexico-city');
+const mexicoNewsCard=mexicoNews?Object.fromEntries(['slug','dateIso','date','category','title','cardSummary','embedDescription','summary'].map(key=>[key,mexicoNews[key]])):null;
 const garageProgramOrder={nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5};
 const garageProgramShort={nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'};
 const garageRides=(person)=>drivers.filter(d=>d.profile===person.slug&&d.affiliation==='aetherwing').sort((a,b)=>(garageProgramOrder[a.competitionId]||99)-(garageProgramOrder[b.competitionId]||99));
@@ -71,9 +73,9 @@ const programLogo={
 
   <section class="ux-section" aria-labelledby="wire-title">
     <div class="ux-section__head"><div><p class="ux-tag">Team wire</p><h2 class="ux-h2" id="wire-title">Latest stories</h2></div><a class="ux-more" href="/news/">Newsroom</a></div>
-    <div class="hub-wire">
+    <div class="hub-wire" data-home-news>
       {leadNews&&<a class="ux-card hub-wire__lead" href={`/news/${leadNews.slug}/`}><span class="ux-tag"><b>{leadNews.category}</b>{leadNews.date}</span><h3>{leadNews.title}</h3><p>{leadNews.summary}</p><span class="ux-more">Read story</span></a>}
-      {moreNews.map(story=><a class="ux-card ux-card--pad hub-wire__item" href={`/news/${story.slug}/`}><span class="ux-tag">{story.date}</span><h3>{story.title}</h3></a>)}
+      {moreNews.map(story=><a class="ux-card ux-card--pad hub-wire__item" data-home-secondary-news href={`/news/${story.slug}/`}><span class="ux-tag">{story.date}</span><h3>{story.title}</h3></a>)}
     </div>
   </section>
 
@@ -128,6 +130,20 @@ const programLogo={
   if(window.__AETHERWING_CONTENT__)applyLiveHome(window.__AETHERWING_CONTENT__);
 </script>
 
+<script is:inline type="application/json" data-home-news-seed set:html={JSON.stringify({leadSlug:leadNews?.slug,release:mexicoNewsCard}).replace(/</g,'\\u003c')}/>
+<script>
+  const seed=JSON.parse(document.querySelector('[data-home-news-seed]').textContent),root=document.querySelector('[data-home-news]');
+  const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  let rendered='';
+  const renderSecondaryNews=d=>{
+    if(!root||!Array.isArray(d?.news))return;
+    const stories=[...d.news];if(seed.release&&!stories.some(story=>story?.slug===seed.release.slug))stories.push(seed.release);
+    const markup=stories.filter(story=>story?.slug!==seed.leadSlug).sort((a,b)=>String(b.dateIso||'').localeCompare(String(a.dateIso||''))).slice(0,2).map(story=>`<a class="ux-card ux-card--pad hub-wire__item" data-home-secondary-news href="/news/${encodeURIComponent(story.slug)}/"><span class="ux-tag">${esc(story.date)}</span><h3>${esc(story.title)}</h3></a>`).join('');
+    if(markup===rendered)return;rendered=markup;
+    root.querySelectorAll('[data-home-secondary-news]').forEach(card=>card.remove());root.insertAdjacentHTML('beforeend',markup);
+  };
+  window.addEventListener('aetherwing:content',({detail})=>renderSecondaryNews(detail));if(window.__AETHERWING_CONTENT__)renderSecondaryNews(window.__AETHERWING_CONTENT__);
+</script>
 <script is:inline type="application/json" data-home-alliance-seed set:html={JSON.stringify({competitions,alliances})}/>
 <script>
   import {alliancePrograms} from '../lib/alliance-content.mjs';
