@@ -2,6 +2,8 @@ const {alliancePrograms,preserveAllianceRelationship}=require('../../src/lib/all
 const { reconcileTeamPartners } = require('../../src/lib/team-partner-content.mjs');
 const { read, json, normalizeDriverAssignments, seeds, normalize } = require('./_content.cjs');
 const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
+const { reconcileNovemberSchedule, reconcileNovemberStandings } = require('../../src/lib/november-racing-context.mjs');
+const { reconcileCharterPlans } = require('../../src/lib/charter-plans.mjs');
 function replaceFullCirclePartner(value){
   if(Array.isArray(value))return value.map(replaceFullCirclePartner);
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
@@ -39,18 +41,21 @@ function mergeCanonical(datasets){
       if(e?.league==='iracing'&&e?.title==='Bathurst 1000'&&e?.date==='2026-10-02'){const fresh=scheduleSeedByKey.get(`${e.date}|${e.league}|${e.title}`)||{};return {...e,startAt:fresh.startAt,endAt:fresh.endAt};}
       return e;
     });
+    datasets['schedule-events']=reconcileNovemberSchedule(datasets['schedule-events']);
   }
   if(Array.isArray(datasets.results)){
     datasets.results=normalize('results',appendReviewedResults(datasets.results,seed.results));
   }
-  // Published standings are authoritative. Historical repair migrations belong at release time,
-  // never in the live read path, or fresh Admin edits can be silently replaced by bundled seeds.
+  // Scores remain published-authoritative. Only the exact owner-confirmed November
+  // Iowa caption is repaired; points, selection flags and later edits are retained.
+  if(Array.isArray(datasets.standings))datasets.standings=reconcileNovemberStandings(datasets.standings);
   // Keep published assignment numbers while retaining legacy identity/roster filtering.
   const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r'))).map(e=>{if(e?.competitionId!=='uarl-d1')return e;const k=String(e?.profile||e?.displayName||'').toLowerCase();if(k==='hailey')return {...e,displayName:'Hailey'};return e;});
   if(Array.isArray(datasets.drivers))datasets.drivers=canonDrivers(datasets.drivers);
   if(Array.isArray(datasets['roster-profiles']))datasets['roster-profiles']=normalize('roster-profiles',datasets['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(datasets['driver-profiles']))datasets['driver-profiles']=normalize('driver-profiles',datasets['driver-profiles']);
   if(Array.isArray(datasets.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');datasets.charters=datasets.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
+  if(Array.isArray(datasets.charters))datasets.charters=reconcileCharterPlans(datasets.charters,seed.charters);
   if(Array.isArray(datasets.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));datasets.competitions=datasets.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>['uarl-d1','kmart'].includes(x?.id)?preserveAllianceRelationship(fresh.get(x.id),x):x);}
   if(Array.isArray(datasets.competitions))datasets.competitions=alliancePrograms(datasets.competitions,datasets.alliances);
   if(Array.isArray(datasets.partners))datasets.partners=ensureCoreTeamPartners(datasets.partners,seed.partners||[]);else datasets.partners=ensureCoreTeamPartners([],seed.partners||[]);

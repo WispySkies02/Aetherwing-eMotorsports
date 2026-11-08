@@ -1,5 +1,8 @@
 const { reconcileTeamPartners } = require('../../src/lib/team-partner-content.mjs');
 const { seeds, read, write, validate, normalize, json } = require('./_content.cjs');
+const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
+const { reconcileNovemberSchedule, reconcileNovemberStandings } = require('../../src/lib/november-racing-context.mjs');
+const { reconcileCharterPlans } = require('../../src/lib/charter-plans.mjs');
 
 function normalizedName(value='') {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g,'').replace(/^wispy$/,'hailey');
@@ -126,13 +129,18 @@ function migrateKnownPublished(registry){
   if(Array.isArray(registry.published?.news)){const scrSlug='hailey-bell-joins-starclutch-racing-nrrs-season-4',fresh=(seed.news||[]).find((story)=>story?.slug===scrSlug);registry.published.news=registry.published.news.map((story)=>{if(story?.slug!==scrSlug||!fresh)return story;const serialized=JSON.stringify(story);return /one of her personal partners|Hailey personal partner|relationship follows Bell/i.test(serialized)||story?.contentRevision!==fresh.contentRevision?fresh:story;});}
   if(Array.isArray(registry.published?.news)){const currentSlug=(seed.news||[]).find(story=>story.featured)?.slug,fresh=(seed.news||[]).find((story)=>story?.slug===currentSlug);let hadCurrent=false;registry.published.news=registry.published.news.map((story)=>{if(story?.slug!==currentSlug)return story;hadCurrent=true;return fresh&&story?.contentRevision!==fresh.contentRevision?fresh:story;});if(!hadCurrent&&fresh)registry.published.news.push(fresh);const archived=(seed.news||[]).find(story=>story.slug==='from-fourth-to-first-hailey-bell-kmart-chase');if(archived&&!registry.published.news.some(story=>story.slug===archived.slug))registry.published.news.push(archived);registry.published.news=registry.published.news.map((story)=>({...story,featured:story?.slug===currentSlug}));}
   if(Array.isArray(registry.published?.['schedule-events']))registry.published['schedule-events']=registry.published['schedule-events'].filter(e=>e?.league!=='uarl-d2').map(e=>{if(e?.league==='nrrs'&&e?.date==='2026-09-22')return {...e,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'};if(e?.league==='iracing'&&e?.title==='Bathurst 1000'&&e?.date==='2026-10-02'){const fresh=(seed['schedule-events']||[]).find(x=>x.date===e.date&&x.league===e.league&&x.title===e.title)||{};return {...e,startAt:fresh.startAt,endAt:fresh.endAt};}return e;});
-  // Results and standings are now fully live-published datasets. Do not run legacy
-  // seed-repair migrations here: they can overwrite a fresh Admin publication.
+  // Add only missing owner-approved archive records. Recompute the automatic
+  // Latest Result marker without scoring races or advancing any standings.
+  if(Array.isArray(registry.published?.results))registry.published.results=appendReviewedResults(registry.published.results,seed.results).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map((race,index)=>({...race,featured:index===0}));
+  // Narrow metadata corrections preserve points, entries and future Admin edits.
+  if(Array.isArray(registry.published?.['schedule-events']))registry.published['schedule-events']=reconcileNovemberSchedule(registry.published['schedule-events']);
+  if(Array.isArray(registry.published?.standings))registry.published.standings=reconcileNovemberStandings(registry.published.standings);
   // Assignment numbers are also editable; migrate identities without resetting numbers.
   if(Array.isArray(registry.published?.drivers))registry.published.drivers=normalize('drivers',registry.published.drivers).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r'))).map(e=>{if(e?.competitionId!=='uarl-d1')return e;const k=String(e?.profile||e?.displayName||'').toLowerCase();if(k==='hailey')return {...e,displayName:'Hailey'};return e;});
   if(Array.isArray(registry.published?.['roster-profiles']))registry.published['roster-profiles']=normalize('roster-profiles',registry.published['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(registry.published?.['driver-profiles']))registry.published['driver-profiles']=normalize('driver-profiles',registry.published['driver-profiles']);
   if(Array.isArray(registry.published?.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');registry.published.charters=registry.published.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
+  if(Array.isArray(registry.published?.charters))registry.published.charters=reconcileCharterPlans(registry.published.charters,seed.charters);
   if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>{const current=['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id):null;if(!current)return x;return Object.hasOwn(x,'allianceId')?{...current,allianceId:x.allianceId,type:x.type,label:x.label,platform:x.platform}:current;});}
   if(Array.isArray(registry.published?.partners))registry.published.partners=ensureCoreTeamPartners(registry.published.partners,seed.partners||[]);
   if(Array.isArray(registry.published?.['driver-portfolios']))registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']);

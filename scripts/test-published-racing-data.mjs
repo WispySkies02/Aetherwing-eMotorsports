@@ -74,30 +74,49 @@ for(const snapshot of [published,cached,bundled]) {
 }
 
 const official=seed.results.filter(r=>r.pointsSource==='official-recap');
-assert.equal(official.length,3);
-assert.deepEqual(official.map(r=>[r.date,r.entries[0].driver,r.entries[0].number,r.entries[0].finish,r.entries[0].racePoints]),[['2026-10-20','Hailey','32',3,39],['2026-10-13','Hailey','32',8,29],['2026-10-06','Hailey','32',4,41]]);
+const octoberIds=new Set(['nrrs-round-24','nrrs-round-23','nrrs-round-22']);
+const octoberOfficial=official.filter(r=>octoberIds.has(r.scheduleId));
+assert.equal(octoberOfficial.length,3,'All three previously approved NRRS October records remain present');
+assert.deepEqual(octoberOfficial.map(r=>[r.date,r.entries[0].driver,r.entries[0].number,r.entries[0].finish,r.entries[0].racePoints]),[['2026-10-20','Hailey','32',3,39],['2026-10-13','Hailey','32',8,29],['2026-10-06','Hailey','32',4,41]]);
+assert.equal(official.length,5,'The two new cited archive records supplement the original three recaps');
 const normalized=normalize('results',seed.results);
 assert.equal(validate('results',normalized),'');
-assert.equal(normalized[0].date,'2026-10-20');
-assert.equal(normalized[0].entries[0].racePoints,39,'New Hampshire keeps its recap-confirmed total');
+assert.equal(normalized[0].scheduleId,'kmart-round-11','The newest published result is Iowa, not the older New Hampshire recap');
+assert.equal(normalized[0].date,'2026-11-02');
+const newHampshire=normalized.find(race=>race.scheduleId==='nrrs-round-24');
+assert.equal(newHampshire.entries[0].racePoints,39,'New Hampshire keeps its recap-confirmed total');
+const iowa=normalized.find(race=>race.scheduleId==='kmart-round-11');
+assert.deepEqual([iowa.date,iowa.track,iowa.coverage,iowa.standingsMode],['2026-11-02','Iowa Speedway','team-only','record-only']);
+assert.deepEqual(iowa.entries.map(entry=>[entry.driver,entry.number,entry.finish,entry.start,entry.stage1Finish,entry.stage2Finish,entry.racePoints]),[['Hailey','15',4,null,null,null,null]],'The cited Iowa P4 does not invent starts, stages or race points');
+assert.equal(iowa.sourceUrl,'/news/bell-eyes-championship-mexico-city/');
+const homestead=normalized.find(race=>race.scheduleId==='nrrs-round-25');
+assert.deepEqual([homestead.date,homestead.track,homestead.coverage,homestead.standingsMode],['2026-10-27','Homestead-Miami Speedway','team-only','record-only']);
+assert.deepEqual(homestead.entries.map(entry=>[entry.driver,entry.number,entry.finishStatus,entry.finish,entry.start,entry.qualifyingPosition,entry.stage1Finish,entry.stage2Finish,entry.racePoints]),[['Hailey','32','DNS',null,null,4,null,null,null]],'Homestead retains the historical #32, qualifying P4 and DNS without a start or classified finish');
+assert.equal(homestead.sourceUrl,'/news/hailey-bell-nrrs-season-3-review/');
 const portland=normalized.find(race=>race.scheduleId==='nrrs-round-23');
 assert.equal(normalized.find(r=>r.date==='2026-10-06').entries[0].racePoints,41,'Official points survive normalization');
 assert.equal(portland.entries[0].start,7,'Screenshot confirms Hailey qualified P7 at Portland');
 assert.equal(portland.entries[0].stage1Finish,null,'Outside the stage top five does not establish an exact finishing position');
+const ordinaryInput=structuredClone(newHampshire);
+for(const field of ['pointsSource','coverage','standingsMode','sourceUrl','sourceNote'])delete ordinaryInput[field];
+delete ordinaryInput.entries[0].stagePoints;
+const ordinary=normalize('results',[ordinaryInput])[0];
+assert.equal(validate('results',[ordinary]),'','The ordinary scored fixture is valid before testing missing required numbers');
 for(const field of ['finish','racePoints']) {
-  const bad=structuredClone(normalized);bad[0].entries[0][field]=null;
-  assert.notEqual(validate('results',bad),'',`${field} is still required`);
+  const bad=structuredClone(ordinary);bad.entries[0][field]=null;
+  const error=validate('results',[bad]);
+  assert.ok(error.includes(`non-negative numeric ${field}`),`${field} remains required for an ordinary result without archive-only provenance: ${error}`);
 }
-const bad=structuredClone(normalized);bad[0].entries[0].stage1Points=-1;
+const bad=structuredClone(normalized);bad.find(race=>race.scheduleId==='nrrs-round-24').entries[0].stage1Points=-1;
 assert.notEqual(validate('results',bad),'','Official provenance does not permit negative points');
-const missingSource=structuredClone(normalized);delete missingSource[0].sourceUrl;
+const missingSource=structuredClone(normalized);delete missingSource.find(race=>race.scheduleId==='nrrs-round-24').sourceUrl;
 assert.notEqual(validate('results',missingSource),'','Official scoring requires a source');
 const {autoAdvanceStandings}=createRequire(import.meta.url)('../netlify/lib/_site-admin.cjs')._test;
 const registry={published:{standings:structuredClone(seed.standings)}};
 const before=JSON.stringify(registry.published.standings);
 assert.equal(autoAdvanceStandings(registry,official,[]),false,'Partial historical result imports must not advance or recalculate current standings');
 assert.equal(JSON.stringify(registry.published.standings),before);
-const fullArchive=structuredClone(official[0]);delete fullArchive.pointsSource;delete fullArchive.coverage;
+const fullArchive=structuredClone(newHampshire);delete fullArchive.pointsSource;delete fullArchive.coverage;
 assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival record still must not add points if later completed with a full field');
 // Real Admin controls load the reviewed recap records into an older registry,
 // preserve unknowns while saving, and leave already-published standings alone.
@@ -116,7 +135,7 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   const $=selector=>w.document.querySelector(selector);
   await tick();$('[data-login]').click();$('[data-admin-dataset="results"]').click();await tick();
   const standingsBefore=JSON.stringify(JSON.parse(w.localStorage.getItem('aetherwing-site-admin')).published.standings);
-  for(const race of official){
+  for(const race of octoberOfficial){
     const league=$('[data-results-league-filter]');league.value='nrrs';league.dispatchEvent(new w.Event('change',{bubbles:true}));
     const event=publishedSchedule.find(e=>e.league===race.league&&e.round===race.round);
     assert.ok(event);const select=$('[data-results-race-select]');
@@ -144,10 +163,10 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   assert.equal(JSON.stringify(JSON.parse(w.localStorage.getItem('aetherwing-site-admin')).published.standings),standingsBefore);
   w.close();
 }
-// A September-only publication must expose all approved October records together.
+// A September-only publication must expose all approved October and November records together.
 {
   const {mergeCanonical}=createRequire(import.meta.url)('../netlify/lib/_site-data.cjs')._test;
-  const approved=requireReview().results;
+  const approved=allApprovedResults();
   const oldResults=structuredClone(seed.results.filter(result=>result.date<'2026-10-01'));
   const original=JSON.stringify(oldResults);
   const standings=structuredClone(seed.standings),before=JSON.stringify(standings);
@@ -160,7 +179,7 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
     const matches=merged.results.filter(row=>sameReviewedEvent(row,result));
     assert.equal(matches.length,1,result.scheduleId);
     for(let i=0;i<result.entries.length;i++)for(const key of ['driver','number','start','finish','racePoints','stage1Finish','stage2Finish'])assert.equal(matches[0].entries[i][key],result.entries[i][key],`${result.scheduleId}: preserve approved ${key}`);
-    const corrected=structuredClone(matches[0]);corrected.entries[0].racePoints+=1;
+    const corrected=structuredClone(matches[0]);corrected.entries[0].racePoints=corrected.entries[0].racePoints===null?0:corrected.entries[0].racePoints+1;
     const resolved=mergeCanonical({results:[corrected]});
     assert.equal(resolved.results.filter(row=>sameReviewedEvent(row,result)).length,1);
     assert.equal(resolved.results.find(row=>sameReviewedEvent(row,result)).entries[0].racePoints,corrected.entries[0].racePoints,'A later Admin correction wins for every approved event');
@@ -171,6 +190,12 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   assert.equal(merged.results.some(result=>result.date==='2026-10-19'),false,'October 19 stays pending official source');
 }
 function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/confirmed-racing-updates.json',import.meta.url),'utf8'));}
+function allApprovedResults(){
+  const november=JSON.parse(fs.readFileSync(new URL('../src/data/november-2026-results.json',import.meta.url),'utf8'));
+  const additions=seed.results.filter(result=>november.approvedResultIds.includes(result.scheduleId));
+  assert.deepEqual(additions.map(result=>result.scheduleId).sort(),['kmart-round-11','nrrs-round-25'],'Both new approved events must be in the source collection');
+  return [...requireReview().results,...additions];
+}
 
 // The owner-supplied New Hampshire article and canonical result stay linked
 // when the live registry still contains the older September-only collection.
@@ -183,8 +208,8 @@ function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/
   assert.deepEqual(merged.news.filter(s=>s.featured).map(s=>s.slug),['hailey-bell-nrrs-season-3-review']);
   assert.ok(merged.news.some(s=>s.slug===slug&&!s.featured),'New Hampshire stays available as an archived recap');
   assert.equal(JSON.stringify(merged.standings),beforeStandings,'A recap does not replace an Admin championship snapshot');
-  const race=merged.results[0];
-  assert.equal(race.scheduleId,'nrrs-round-24');
+  const race=merged.results.find(result=>result.scheduleId==='nrrs-round-24');
+  assert.ok(race,'The older New Hampshire result remains linked even when newer results lead the archive');
   assert.deepEqual(race.entries.map(e=>[e.driver,e.number,e.start,e.stage1Finish,e.stage2Finish,e.finish,e.racePoints,e.lapsDown]),[['Hailey','32',1,4,3,3,39,2]]);
   assert.equal(race.entries[0].stagePoints,5);
   assert.equal(race.entries[0].stage1Points,null,'Do not infer individual stage awards from a combined five-point total');
@@ -193,11 +218,11 @@ function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/
   assert.equal(mergeCanonical(merged).results.filter(r=>r.scheduleId===race.scheduleId).length,1,'Release defaults are idempotent');
   const corrected=structuredClone(race);corrected.scheduleId='2026-10-20-nrrs-comcast-301';corrected.entries[0].racePoints=40;
   const preserved=mergeCanonical({news:seed.news,results:[corrected]});
-  const reviewedIds=new Set(requireReview().results.map(result=>result.scheduleId));
+  const reviewedIds=new Set(allApprovedResults().map(result=>result.scheduleId));
   const approved=seed.results.filter(result=>reviewedIds.has(result.scheduleId));
   assert.equal(preserved.results.length,approved.length,'Restore the other approved results without duplicating a legacy event ID');
   assert.equal(preserved.results.filter(result=>sameReviewedEvent(result,race)).length,1);
-  assert.equal(preserved.results[0].entries[0].racePoints,40,'Subsequent Admin corrections remain authoritative');
+  assert.equal(preserved.results.find(result=>sameReviewedEvent(result,race)).entries[0].racePoints,40,'Subsequent Admin corrections remain authoritative');
   delete corrected.round;
   assert.equal(mergeCanonical({results:[corrected]}).results.length,approved.length,'A date/venue-matched legacy record also remains authoritative');
   assert.equal(mergeCanonical({results:[corrected]}).results.find(result=>result.scheduleId===corrected.scheduleId).entries[0].racePoints,40);
@@ -247,4 +272,4 @@ function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/
   w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:{drivers:updated}}));check(updated);
   dom.window.close();
 }
-console.log('PASS: all program publications, derived directory assignments, Eastern time/DST, moved rounds, cancelled/postponed/completed races, atomic snapshots, labeled cache/fallback, and sourced October results without invented fields.');
+console.log('PASS: all program publications, derived directory assignments, Eastern time/DST, moved rounds, cancelled/postponed/completed races, atomic snapshots, labeled cache/fallback, and sourced October/November results without invented fields.');

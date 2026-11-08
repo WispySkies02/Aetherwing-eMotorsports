@@ -43,6 +43,20 @@
           }
         ]
       }
+    ],
+    "plannedSeasons": [
+      {
+        "season": 4,
+        "year": 2027,
+        "status": "planned",
+        "numbers": [
+          "42",
+          "43",
+          "46"
+        ],
+        "sourceDate": "2026-11-08",
+        "sourceNote": "Owner-approved plan: NRRS charters for next season are planned #42 / #43 / #46."
+      }
     ]
   },
   {

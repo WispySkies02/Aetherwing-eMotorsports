@@ -23,6 +23,8 @@ import liveryBrandsSeed from '../data/livery-brands.json';
 import driverPortfoliosSeed from '../data/driver-portfolios.json';
 import pageOverridesSeed from '../data/page-overrides.json';
 import { appendReviewedResults } from './reviewed-results.mjs';
+import { reconcileNovemberSchedule, reconcileNovemberStandings } from './november-racing-context.mjs';
+import { reconcileCharterPlans } from './charter-plans.mjs';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const alliances = choose('alliances',defaultAlliances);
 
@@ -53,7 +55,7 @@ const normalizeLegacyKmartResult = (result) => ({...result, entries:(result.entr
   return entry;
 })});
 const publishedSchedule = choose('schedule-events', scheduleSeed);
-export const scheduleEvents = (Array.isArray(publishedSchedule)?publishedSchedule:scheduleSeed).filter((event)=>event?.league!=='uarl-d2').map((event)=>event?.league==='nrrs'&&event?.date==='2026-09-22'?{...event,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'}:event);
+export const scheduleEvents = reconcileNovemberSchedule((Array.isArray(publishedSchedule)?publishedSchedule:scheduleSeed).filter((event)=>event?.league!=='uarl-d2').map((event)=>event?.league==='nrrs'&&event?.date==='2026-09-22'?{...event,title:'North Wilkesboro Speedway (Chase Race 2)',track:'North Wilkesboro Speedway',status:'The Chase',round:'ROUND 21',time:'7:30 PM ET'}:event));
 export const siteSettings = choose('site', siteSeed);
 const publishedNavigation = choose('navigation', navigationSeed);
 const obsoleteNavigation = Array.isArray(publishedNavigation) && (
@@ -96,7 +98,7 @@ export const results = mergedResults.map(normalizeLegacyKmartResult).map(scorePu
 }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map((result,index)=>({...result,featured:index===0}));
 export const wins = choose('wins', winsSeed);
 const publishedStandings = choose('standings', standingsSeed);
-export const standings = Array.isArray(publishedStandings) ? publishedStandings : standingsSeed;
+export const standings = reconcileNovemberStandings(Array.isArray(publishedStandings) ? publishedStandings : standingsSeed);
 export const milestones = choose('milestones', milestonesSeed);
 // Preserve edited numbers while applying identity aliases and retired-driver filtering.
 const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
@@ -142,7 +144,7 @@ const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=
     {number:'56',driver:'Open',numberImage:board.fullTime?.find(x=>['56','54'].includes(String(x.number)))?.numberImage||''}
   ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:flex.slotLabel,uses:[{...flex.uses[0],...(charter.uses||[]).find(u=>String(u.number)==='62'),description:flex.uses[0].description,number:'62',label:'Part-Time',active:true}]}))};
 });
-export const charters = enforceCurrentCharters(choose('charters', chartersSeed));
+export const charters = reconcileCharterPlans(enforceCurrentCharters(choose('charters', chartersSeed)),chartersSeed);
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
 const currentFeaturedNewsSlug=newsSeed.find(story=>story.featured)?.slug;

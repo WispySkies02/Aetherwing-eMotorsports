@@ -2,6 +2,8 @@ import {alliancePrograms,preserveAllianceRelationship} from '../src/lib/alliance
 import { reconcileTeamPartners } from '../src/lib/team-partner-content.mjs';
 import fs from 'node:fs';
 import { appendReviewedResults } from '../src/lib/reviewed-results.mjs';
+import { reconcileNovemberSchedule, reconcileNovemberStandings } from '../src/lib/november-racing-context.mjs';
+import { reconcileCharterPlans } from '../src/lib/charter-plans.mjs';
 const target = new URL('../src/data/admin-content.json', import.meta.url);
 const configured = process.env.AETHERWING_CONTENT_URL;
 const endpoint = configured || (process.env.NETLIFY ? 'https://aetherwing.net/api/site-content' : '');
@@ -69,6 +71,7 @@ async function canonicalizeBuildContent(payload){
   if(Array.isArray(d.charters)){
     const current=(seed.charters||[]).find((board)=>board.id==='uarl-d1');
     d.charters=d.charters.map((board)=>board?.id==='uarl-d1'&&current?{...board,fullTime:current.fullTime,openCharters:current.openCharters}:board);
+    d.charters=reconcileCharterPlans(d.charters,seed.charters);
   }
   if(Array.isArray(d.competitions)){
     const current=new Map((seed.competitions||[]).map((item)=>[item.id,item]));
@@ -77,9 +80,11 @@ async function canonicalizeBuildContent(payload){
   if(Array.isArray(d.competitions))d.competitions=alliancePrograms(d.competitions,d.alliances);
   d.partners=ensureCoreTeamPartners(Array.isArray(d.partners)?d.partners:[],seed.partners||[]);
   if(Array.isArray(d['driver-portfolios']))d['driver-portfolios']=normalize('driver-portfolios',d['driver-portfolios']);
-  if(Array.isArray(d['schedule-events']))d['schedule-events']=normalize('schedule-events',d['schedule-events'].filter((event)=>event?.league!=='uarl-d2'));
+  if(Array.isArray(d['schedule-events']))d['schedule-events']=normalize('schedule-events',reconcileNovemberSchedule(d['schedule-events'].filter((event)=>event?.league!=='uarl-d2')));
   if(Array.isArray(d.results))d.results=normalize('results',appendReviewedResults(d.results,seed.results));
-  // Do not seed-repair standings here. A published standings board is authoritative.
+  // Repair only the confirmed Iowa round caption, never the published points or
+  // a later editorial snapshot. Future charter plans also stay separate from entries.
+  if(Array.isArray(d.standings))d.standings=reconcileNovemberStandings(d.standings);
   return next;
 }
 

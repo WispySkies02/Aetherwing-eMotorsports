@@ -5,6 +5,8 @@ import {JSDOM} from 'jsdom';
 import {alliancePrograms,preserveAllianceRelationship} from '../src/lib/alliance-content.mjs';
 import {reconcileTeamPartners} from '../src/lib/team-partner-content.mjs';
 import {appendReviewedResults} from '../src/lib/reviewed-results.mjs';
+import {reconcileNovemberSchedule,reconcileNovemberStandings} from '../src/lib/november-racing-context.mjs';
+import {reconcileCharterPlans} from '../src/lib/charter-plans.mjs';
 
 const require=createRequire(import.meta.url),content=require('../netlify/lib/_content.cjs');
 const {mergeCanonical}=require('../netlify/lib/_site-data.cjs')._test;
@@ -30,7 +32,7 @@ const adminRows=rows=>new Function('name','value','seeds','normalizeNewsIdentity
 // Extract only the pure build transformation; importing the sync entrypoint would write files.
 const syncSource=read('../scripts/sync-admin-content.mjs');
 const syncBlock=syncSource.slice(syncSource.indexOf('function ensureCoreTeamPartners'),syncSource.indexOf('function readBundledOverlay')).replaceAll('import.meta.url','scriptUrl');
-const buildRows=new Function('scriptUrl','alliancePrograms','preserveAllianceRelationship','reconcileTeamPartners','appendReviewedResults',`${syncBlock}\nreturn canonicalizeBuildContent;`)(new URL('./sync-admin-content.mjs',import.meta.url).href,alliancePrograms,preserveAllianceRelationship,reconcileTeamPartners,appendReviewedResults);
+const buildRows=new Function('scriptUrl','alliancePrograms','preserveAllianceRelationship','reconcileTeamPartners','appendReviewedResults','reconcileNovemberSchedule','reconcileNovemberStandings','reconcileCharterPlans',`${syncBlock}\nreturn canonicalizeBuildContent;`)(new URL('./sync-admin-content.mjs',import.meta.url).href,alliancePrograms,preserveAllianceRelationship,reconcileTeamPartners,appendReviewedResults,reconcileNovemberSchedule,reconcileNovemberStandings,reconcileCharterPlans);
 
 for(const rows of [oldNews,[],[...oldNews,stale],[...oldNews,edited]]){
   const before=structuredClone(rows),expected=find(rows)?.contentRevision===fresh.contentRevision?edited:fresh;

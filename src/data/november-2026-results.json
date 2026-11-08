@@ -1,0 +1,19 @@
+{
+  "id": "november-8-2026-owner-approved-archive",
+  "sourceDate": "2026-11-08",
+  "sourceNote": "Owner-approved article records and explicit November 8 update request. Unknown values remain null; archive-only records never recalculate standings.",
+  "approvedResultIds": [
+    "kmart-round-11",
+    "nrrs-round-25"
+  ],
+  "pendingSources": [
+    {
+      "eventId": "kmart-2026-10-26",
+      "date": "2026-10-26",
+      "league": "kmart",
+      "title": "O’Reilly Auto Parts All-Star",
+      "status": "awaiting-official-results",
+      "note": "Official finishing positions and race-point treatment have not been supplied. No result record is published for this event."
+    }
+  ]
+}

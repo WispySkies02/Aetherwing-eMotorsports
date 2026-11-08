@@ -213,8 +213,8 @@ function validate(key, data, registry={}, context={}) {
       }
     }
     if(key==='results'){
-      if(row.pointsSource==='official-result'&&(!String(row.sourceNote||'').trim()||row.coverage!=='team-only'))return `Result ${index+1}: official team results need source notes and explicit team-only coverage.`;
-      if(row.pointsSource==='official-recap'&&(!/^\/news\/[a-z0-9-]+\/$/.test(row.sourceUrl||'')||row.coverage!=='team-only'))return `Result ${index+1}: recap-confirmed results need a source article and explicit team-only coverage.`;
+      if(row.pointsSource==='official-result'&&(typeof row.sourceNote!=='string'||!row.sourceNote.trim()||row.coverage!=='team-only'))return `Result ${index+1}: official team results need source notes and explicit team-only coverage.`;
+      if(row.pointsSource==='official-recap'&&(typeof row.sourceUrl!=='string'||!/^\/news\/[a-z0-9-]+\/$/.test(row.sourceUrl)||row.coverage!=='team-only'))return `Result ${index+1}: recap-confirmed results need a source article and explicit team-only coverage.`;
       if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date)||Number.isNaN(Date.parse(row.date)))return `Result ${index+1}: select a valid scheduled race.`;
       if(!Array.isArray(row.entries)||!row.entries.length)return `Result ${index+1}: add at least one roster driver result.`;
       if(row.entries.filter((entry)=>entry.featuredDriver).length!==1)return `Result ${index+1}: choose exactly one featured driver.`;
@@ -224,13 +224,25 @@ function validate(key, data, registry={}, context={}) {
       // Roster exits/number changes must not make an unchanged official result
       // unpublishable. This does not authorize stale assignments in new races.
       const historical=[...seed,...(registry.published?.results||[])].filter((race)=>race.scheduleId===row.scheduleId&&race.league===row.league&&race.date===row.date);
+      const archive=['official-recap','official-result'].includes(row.pointsSource)&&row.coverage==='team-only'&&row.standingsMode==='record-only';
       for(const entry of row.entries){
         const assignment=entry.assignmentId?eligible.get(entry.assignmentId):null;
         const recorded=entry.assignmentId&&historical.some((race)=>race.entries?.some((prior)=>prior.assignmentId===entry.assignmentId&&prior.driver===entry.driver&&String(prior.number)===String(entry.number)));
         if(entry.assignmentId&&!assignment&&!recorded)return `Result ${index+1}: ${entry.driver||'a driver'} is not assigned to ${row.leagueName} in the Driver Roster.`;
         if(assignment&&!recorded&&(entry.driver!==assignment.displayName||String(entry.number)!==String(assignment.number||'')))return `Result ${index+1}: ${entry.driver}'s name and car number must match the Driver Roster.`;
         if(!assignment&&!String(entry.driver||'').trim())return `Result ${index+1}: external race participants need a driver name.`;
-        for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints'])if(!(['official-recap','official-result'].includes(row.pointsSource)&&['start','stage1Finish','stage1Points','stage2Finish','stage2Points'].includes(field)&&entry[field]===null)&&(!Number.isFinite(entry[field])||entry[field]<0))return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
+        if(Object.hasOwn(entry,'finishStatus')&&(!archive||entry.finishStatus!=='DNS'))return `Result ${index+1}: finish status is only DNS for an official, team-only historical record.`;
+        if(entry.finishStatus==='DNS'&&entry.finish!==null)return `Result ${index+1}: ${entry.driver}'s DNS needs a blank finish, not a finishing position.`;
+        if(entry.finishStatus==='DNS'&&entry.start!==null)return `Result ${index+1}: ${entry.driver}'s DNS needs a blank start; record qualifying separately.`;
+        if(Object.hasOwn(entry,'qualifyingPosition')&&!(archive&&entry.qualifyingPosition===null)&&(!Number.isInteger(entry.qualifyingPosition)||entry.qualifyingPosition<1))return `Result ${index+1}: ${entry.driver} needs a positive integer qualifying position or an unreported historical value.`;
+        for(const field of ['start','stage1Finish','stage1Points','stage2Finish','stage2Points','finish','racePoints']){
+          const unknown=entry[field]===null&&(
+            ['official-recap','official-result'].includes(row.pointsSource)&&['start','stage1Finish','stage1Points','stage2Finish','stage2Points'].includes(field)
+            ||archive&&(field==='racePoints'||field==='finish'&&entry.finishStatus==='DNS')
+          );
+          if(!unknown&&(!Number.isFinite(entry[field])||entry[field]<0))return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}${field==='finish'?' (or an explicit historical DNS)':''}.`;
+        }
+        for(const field of ['finishPoints','bonusPoints'])if(Object.hasOwn(entry,field)&&entry[field]!==null&&(!Number.isFinite(entry[field])||entry[field]<0))return `Result ${index+1}: ${entry.driver} needs a non-negative numeric ${field}.`;
       }
       if(new Set(row.entries.map((entry)=>entry.driver)).size!==row.entries.length)return `Result ${index+1}: each driver can appear only once.`;
     }
@@ -260,6 +272,16 @@ function validate(key, data, registry={}, context={}) {
       if(champions.size>1)return 'Choose at most one regular-season champion per standings board.';
     }
     if (key === 'charters') {
+      if(Object.hasOwn(row,'plannedSeasons')){
+        if(!Array.isArray(row.plannedSeasons))return 'Planned charter seasons must be a list.';
+        const allowed=new Set(['season','year','status','numbers','sourceDate','sourceNote']);
+        for(const plan of row.plannedSeasons){
+          if(!plan||typeof plan!=='object'||Array.isArray(plan)||Object.keys(plan).some(field=>!allowed.has(field)))return 'Planned charter seasons contain planning metadata only, without active slots or driver assignments.';
+          if(!Number.isInteger(plan.season)||plan.season<1||!Number.isInteger(plan.year)||plan.year<1000||plan.year>9999||plan.status!=='planned')return 'Planned charter seasons need a positive season, four-digit year and planned status.';
+          if(!Array.isArray(plan.numbers)||!plan.numbers.length||plan.numbers.some(number=>typeof number!=='string'||!/^\d{1,3}$/.test(number))||new Set(plan.numbers).size!==plan.numbers.length)return 'Planned charter numbers must be unique one-to-three-digit text values.';
+          if(typeof plan.sourceDate!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(plan.sourceDate)||Number.isNaN(Date.parse(plan.sourceDate))||new Date(plan.sourceDate).toISOString().slice(0,10)!==plan.sourceDate||typeof plan.sourceNote!=='string'||!plan.sourceNote.trim())return 'Planned charter seasons need a valid ISO source date and a plain-text source note.';
+        }
+      }
       if (!Array.isArray(row.fullTime) || !Array.isArray(row.openCharters)) return 'Charter boards need full-time entries and an Open Charters list.';
       if (row.fullTime.some((slot)=>slot?.numberImage && !validNumberImage(slot.numberImage))) return 'Full-time charter number images must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
       for (const charter of row.openCharters) {

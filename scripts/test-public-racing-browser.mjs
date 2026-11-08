@@ -74,9 +74,10 @@ try {
     assert.match(await page.locator('[data-battle-context]').textContent(),/R23\/25.*2,190 PTS/);
     assert.equal(await page.locator('[data-battle-gap]').textContent(),'-96');
     assert.match(await page.locator('[data-tower-context]').textContent(),/R23\/25/);
-    assert.equal(await page.locator('[data-latest-title]').textContent(),'Comcast 301');
+    assert.equal(await page.locator('[data-latest-title]').textContent(),'MasterPro Iowa 200');
     assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),'/news/hailey-bell-nrrs-season-3-review/');
-    assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/nrrs-round-24/');
+    assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/kmart-round-11/');
+    assert.match(await page.locator('[data-latest-entries]').textContent(),/#15.*Hailey.*P4/s,'The latest card reflects the approved Iowa finish');
     assert.equal(await page.locator('[data-team-stat="rootsSince"]').textContent(),'2015');
     if(viewport.width<1100) {
       const dock=page.locator('[data-aw-dock]');assert.equal(await dock.isVisible(),true);
@@ -200,14 +201,25 @@ try {
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     const archive=page.locator('[data-results-list] article');
     const dates=await archive.locator(':scope > span').allTextContents();
-    for(const date of ['2026-10-20','2026-10-13','2026-10-10','2026-10-06','2026-10-05'])assert.ok(dates.some(text=>text.startsWith(date)),`Approved ${date} result remains visible after hydration`);
+    for(const date of ['2026-11-02','2026-10-27','2026-10-20','2026-10-13','2026-10-10','2026-10-06','2026-10-05'])assert.ok(dates.some(text=>text.startsWith(date)),`Approved ${date} result remains visible after hydration`);
+    assert.ok(dates[0].startsWith('2026-11-02'),'History places Iowa above all older results');
     assert.ok(!dates.some(text=>text.startsWith('2026-10-19')),'No unsupported October 19 result');
-    for(const id of ['nrrs-round-22','nrrs-round-23','nrrs-round-24']) {
+    for(const id of ['nrrs-round-22','nrrs-round-23','nrrs-round-24','nrrs-round-25','kmart-round-11']) {
       const link=page.locator(`[data-results-list] a[href="/event/${id}/"]`);
       assert.equal(await link.count(),1,'The approved result links once to its event');
       await page.goto(`${base}/event/${id}/`,{waitUntil:'domcontentloaded'});
       await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
       assert.ok((await page.locator('[data-event-result]').textContent()).includes('Hailey'));
+      if(id==='kmart-round-11'||id==='nrrs-round-25'){
+        const row=page.locator('[data-event-result] .race-result-row').first();
+        assert.equal(await row.locator(':scope > b').textContent(),id==='kmart-round-11'?'P4':'DNS');
+        assert.equal(await row.locator(':scope > span').last().textContent(),'—','Unreported race points never display as zero');
+        assert.deepEqual(await row.locator(':scope > span').allTextContents(),['—','—','—','—'],'Unknown starts, stages and points remain visibly unknown');
+        if(id==='nrrs-round-25'){
+          assert.match(await row.locator(':scope > strong').textContent(),/#32.*Hailey.*Qualified P4/s,'The historical number and qualifying position stay distinct from DNS');
+          assert.match(await page.locator('[data-event-entries]').textContent(),/Hailey.*#32.*DNS/s,'The garage identifies the non-start without calling it raced');
+        }
+      }
       await page.goto(`${base}/history/`,{waitUntil:'domcontentloaded'});
       await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     }
