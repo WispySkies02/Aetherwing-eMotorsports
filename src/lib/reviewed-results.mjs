@@ -1,6 +1,7 @@
 import review from '../data/confirmed-racing-updates.json' with { type:'json' };
+import november from '../data/november-2026-results.json' with { type:'json' };
 
-const approvedIds = new Set(review.results.map(result=>result.scheduleId));
+const approvedIds = new Set([...review.results.map(result=>result.scheduleId),...november.approvedResultIds]);
 const round = result=>String(result.round||'').match(/\d+/)?.[0];
 
 export function sameReviewedEvent(a,b) {

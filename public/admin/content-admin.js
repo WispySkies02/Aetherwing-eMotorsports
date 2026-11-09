@@ -39,7 +39,7 @@
   const fieldLabels = {
     alliances:{id:'Alliance key',name:'Alliance name',shortName:'Short name (optional)'},
     'schedule-events':{league:'Series / program',leagueName:'Public series name',status:'Race / season status',title:'Event name',track:'Track / venue',date:'Start date',endDate:'End date',displayDate:'Displayed date/window',time:'Start time',round:'Round label',specialTag:'Special badge',offWeek:'Off-week / no race',tbd:'Date/time TBD',entryListMode:'Event entry list mode',entries:'Event entry list',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',entryStatus:'Entry note / status'},
-    results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Automatic Latest Result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',finishPoints:'Finish points',bonusPoints:'Bonus / adjustment points',pointsEligible:'Championship points eligible',racePoints:'Total race points',featuredDriver:'Featured driver',chaseDriver:'Chase driver'},
+    results:{scheduleId:'Linked schedule race',league:'League ID',leagueName:'League / series',title:'Race name',track:'Track',date:'Race date',round:'Round',status:'Race status',specialTag:'Special badge',featured:'Automatic Latest Result',headline:'Headline line 1',headlineAccent:'Headline accent line',summary:'Race summary',entries:'Driver results',assignmentId:'Roster driver',driver:'Driver name',number:'Car number',start:'Starting position',qualifyingPosition:'Qualifying position',stage1Finish:'Stage 1 finish',stage1Points:'Stage 1 points',stage2Finish:'Stage 2 finish',stage2Points:'Stage 2 points',finish:'Finishing position',finishStatus:'Finish status',finishPoints:'Finish points',bonusPoints:'Bonus / adjustment points',pointsEligible:'Championship points eligible',racePoints:'Total race points',featuredDriver:'Featured driver',chaseDriver:'Chase driver'},
     wins:{assignmentId:'Linked driver assignment',league:'League / series',track:'Track / event',driver:'Recorded driver name',date:'Result date'},
     standings:{id:'Snapshot ID',title:'Public title',subtitle:'Snapshot context',league:'League key',status:'Status badge',featuredOnHome:'Feature on homepage',homeTable:'Homepage standings table',chaseActive:'League is currently in the Chase',autoPoints:'Auto Points from published results',gapMode:'Gap calculation mode',lastResultDate:'Last applied result date',lastResultScheduleId:'Last applied result ID',autoUpdateNote:'Automatic update note',rows:'Standings rows',position:'Official position label',number:'Car number',driver:'Driver',manufacturer:'Manufacturer',chaseLocked:'Chase berth locked',regularSeasonChampion:'Regular-season champion',points:'Points',delta:'Gap / delta',positionChange:'Position change (+/-)',chaseEligible:'Chase eligible',chaseStatus:'Chase label',highlight:'Highlight this driver'},
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
@@ -86,6 +86,7 @@
     positionChange:'Enter a signed number: +2 gained two positions, -1 lost one, 0 stayed in place. The public site converts this to green/red broadcast arrows.',
     bonusPoints:'For NRRS/UARL auto scoring, enter only extra official bonus/adjustment points not already covered by finish or stages.',
     pointsEligible:'Turn off for an ineligible/substitute entry that should receive zero championship points.',
+    sourceNote:'Identify the approved source and any important limits on what it confirms.',
     chaseDriver:'Marks this entry as a Chase/playoff driver in the full Race Weekend results. This stays manual and is never guessed from the CSV.',
     sections:'Each nested item is a story section. Paragraphs inside it are one paragraph per line.',
     legacyRoute:'Historical route retained for redirects/reference. Leave blank only when there is no legacy URL.',
@@ -430,7 +431,8 @@
   }
   function importedResultEntry(race,row){
     const key=resultDriverKey(row.driver),old=(race.entries||[]).find(entry=>resultDriverKey(entry.driver)===key)||{},assignment=resultRoster(race.league).find(driver=>resultDriverKey(driver.displayName)===key),standing=resultStandingRow(race,row.driver)||{};
-    return {...old,assignmentId:assignment?.id||old.assignmentId||'',driver:assignment?.displayName||old.driver||row.driver,number:String(assignment?.number||old.number||standing.number||''),start:row.start,stage1Finish:row.stage1Finish,stage1Points:Number(old.stage1Points||0)||0,stage2Finish:row.stage2Finish,stage2Points:Number(old.stage2Points||0)||0,finish:row.finish,finishPoints:Number(old.finishPoints||0)||0,bonusPoints:Number(old.bonusPoints||0)||0,pointsEligible:old.pointsEligible!==false,racePoints:Number(old.racePoints||0)||0,featuredDriver:old.featuredDriver===true,chaseDriver:old.chaseDriver===true};
+    const next={...old,assignmentId:assignment?.id||old.assignmentId||'',driver:assignment?.displayName||old.driver||row.driver,number:String(assignment?.number||old.number||standing.number||''),start:row.start,stage1Finish:row.stage1Finish,stage1Points:Number(old.stage1Points||0)||0,stage2Finish:row.stage2Finish,stage2Points:Number(old.stage2Points||0)||0,finish:row.finish,finishPoints:Number(old.finishPoints||0)||0,bonusPoints:Number(old.bonusPoints||0)||0,pointsEligible:old.pointsEligible!==false,racePoints:Number(old.racePoints||0)||0,featuredDriver:old.featuredDriver===true,chaseDriver:old.chaseDriver===true};
+    delete next.finishStatus;return next;
   }
   let resultsImportPreview=[];
   function fullFieldResult(race,entries){const next={...race,entries};if(['official-recap','official-result'].includes(next.pointsSource)){delete next.pointsSource;delete next.coverage;delete next.sourceUrl;delete next.sourceNote;next.summary='Full finishing order imported. Review official positions and scoring before publication.';}return scoreKnownResult(next);}
@@ -609,13 +611,7 @@
   const standingsSeriesTitle=(board)=>standingsSeriesTitleMap[board?.league]||standingsSeriesTitleMap[board?.id]||String(board?.title||'Standings').toUpperCase();
   const standingsLeagueKey=(board)=>board?.league||board?.id||'';
   function standingsRoundSummary(board){
-    const league=standingsLeagueKey(board);if(league!=='kmart')return String(board?.subtitle||'');
-    const events=(base('schedule-events')||[]).filter(event=>event?.league==='kmart'&&/^ROUND\s+\d+/i.test(String(event?.round||'')));
-    if(!events.length)return String(board?.subtitle||'');
-    const anchor=String(board?.lastResultDate||new Date().toISOString().slice(0,10)),past=events.filter(event=>String(event?.date||'')<=anchor).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))),event=past[0]||events[0];
-    const roundNumber=Number(String(event?.round||'').match(/\d+/)?.[0]||0),total=Math.max(...events.map(item=>Number(String(item?.round||'').match(/\d+/)?.[0]||0)).filter(Boolean));
-    const date=event?.date?new Date(`${event.date}T12:00:00Z`).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}):'';
-    return [`After Round ${roundNumber}${total?` of ${total}`:''}`,event?.track,date].filter(Boolean).join(' · ');
+    return String(board?.subtitle||'');
   }
   function standingsExportStatus(board){
     const league=standingsLeagueKey(board);if(league==='kmart')return board?.chaseActive===true?'THE CHASE':'CHASE BUBBLE';if(league==='sunoco')return board?.chaseActive===true?'CHASE ACTIVE':'REGULAR SEASON';if(league==='nrrs'&&board?.chaseActive===true)return'THE CHASE';return String(board?.status||'');
@@ -981,6 +977,7 @@
       let value=type==='boolean'?field.checked:type==='number'?Number(field.value):type==='lines'?field.value.split('\n').filter((v)=>v.trim()):field.value;
       if (type==='nullable' && !value) value=null;
       if(type==='nullable-number')value=field.value.trim()===''?null:Number(field.value);
+      if(key==='results'&&path.at(-1)==='finishStatus'&&value===''){delete valueAt(current(),path.slice(0,-1)).finishStatus;return;}
       assign(current(),path,value);
     });
     if(key==='alliances'&&current()&&!String(current().id||'').trim()&&current().name)current().id=slugifyResultPart(current().name);
@@ -1026,6 +1023,8 @@
     if(key==='standings'&&path.length===0)value={featuredOnHome:false,...(Array.isArray(value.chaseRows)?{homeTable:'regular'}:{}),...value};
     else if(standingRow)value={manufacturer:'',chaseLocked:false,regularSeasonChampion:false,...value};
     else if(partTimeRow)value={manufacturer:'',...value};
+    const archiveResult=key==='results'&&['official-recap','official-result'].includes(current()?.pointsSource)&&current()?.coverage==='team-only'&&current()?.standingsMode==='record-only';
+    if(archiveResult&&path.length===2&&path[0]==='entries')value={finishStatus:'',...value};
     // Older portfolios and newly added brands may omit this optional field.
     if(key==='driver-portfolios'&&path.length===2&&path[0]==='brands')value={...value,sponsorTitle:value.sponsorTitle??''};
     const shell=(pretty,control,help='',extra='')=>`<label class="admin-field ${extra}"><span class="admin-field__label">${esc(pretty)}</span>${control}${help?`<small class="admin-field__help">${esc(help)}</small>`:''}</label>`;
@@ -1061,6 +1060,8 @@
         return shell(pretty,`<input type="text" readonly value="${esc(shown)}">`,'Automatically generated from Driver League Assignments when the site builds.','is-readonly');
       }
       if(key==='results'&&['official-recap','official-result'].includes(current()?.pointsSource)&&['pointsSource','coverage'].includes(k))return shell(k==='pointsSource'?'Points source':'Result coverage',`<input type="text" readonly value="${k==='pointsSource'?'Official supplied result':'Confirmed team results only'}">`,'Missing details stay blank. Import a complete official finishing order to switch to full-field scoring.','is-readonly');
+      if(archiveResult&&path.length===2&&path[0]==='entries'&&k==='finishStatus')return shell(pretty,`<select ${attr} data-field-type="string" data-archive-finish-status><option value="" ${v!=='DNS'?'selected':''}>Classified finish</option><option value="DNS" ${v==='DNS'?'selected':''}>DNS · Did not start</option></select>`,'DNS has no race starting or finishing position. Keep a verified qualifying result in Qualifying position.');
+      if(archiveResult&&path.length===2&&path[0]==='entries'&&['start','qualifyingPosition','stage1Finish','stage2Finish','finish','bonusPoints'].includes(k))return shell(pretty,`<input ${attr} data-field-type="nullable-number" type="number" step="any" value="${esc(v??'')}">`,'Leave blank when the cited official source does not report this value. A blank finish requires an explicit DNS; unknown values are never scored as zero.');
       if(key==='results'&&k==='standingsMode'&&v==='record-only')return shell('Standings effect','<input type="text" readonly value="Historical record only">','Already reflected in current standings. Publishing this race updates results without adding its points again.','is-readonly');
       if(key==='results'&&['scheduleId','league','leagueName','title','track','date','round','status','specialTag'].includes(k)) {
         return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Synced automatically from the selected scheduled race.','is-readonly');
@@ -1589,7 +1590,7 @@
   const markDatasetFieldDirty=(event)=>{
     if(!event.target?.closest?.('[data-field-path]'))return;
     dirty=true;
-    saveFeedback(event.target.matches('[data-home-standings-feature],[data-home-standings-table]')?'UNSAVED STANDINGS SELECTION · save a private draft or publish':'UNSAVED EDIT · publish or save a draft before leaving','warning');
+    saveFeedback(event.target.matches('[data-home-standings-feature],[data-home-standings-table]')?'UNSAVED STANDINGS SELECTION · save a private draft or publish':event.target.matches('[data-archive-finish-status]')?'UNSAVED ARCHIVE RESULT · save a private draft or publish':'UNSAVED EDIT · publish or save a draft before leaving','warning');
   };
   $('[data-content-form]').addEventListener('input',markDatasetFieldDirty);
   $('[data-content-form]').addEventListener('change',markDatasetFieldDirty);
@@ -1672,6 +1673,13 @@
     if(key==='drivers'&&event.key==='Enter'&&event.target.matches('[data-number-image-url]')){event.preventDefault();useNumberImageUrl();}
   });
   $('[data-content-fields]').addEventListener('change',async(event)=>{
+    const archiveFinishStatus=event.target.closest?.('[data-archive-finish-status]');
+    if(key==='results'&&archiveFinishStatus){
+      commit();const path=JSON.parse(archiveFinishStatus.dataset.fieldPath),entry=valueAt(current(),path.slice(0,-1));
+      if(entry.finishStatus==='DNS'){entry.start=null;entry.finish=null;}
+      dirty=true;render();saveFeedback('UNSAVED ARCHIVE RESULT · save a private draft or publish','warning');
+      status(entry.finishStatus==='DNS'?'DNS recorded without a finishing position. Qualifying and cited points remain unchanged; unreported values stay blank.':'Classified finish selected. Enter the verified finishing position and retain the official source before publishing.');return;
+    }
     const homeStandingsControl=event.target.closest?.('[data-home-standings-feature],[data-home-standings-table]');
     if(key==='standings'&&homeStandingsControl){
       try{
@@ -1707,7 +1715,7 @@
     if(scoreField&&key==='results'&&['nrrs','kmart','uarl-d1'].includes(current()?.league)){
       const path=JSON.parse(scoreField.dataset.fieldPath||'[]'),field=path.at(-1);
       if(path[0]==='entries'&&['finish','stage1Finish','stage2Finish','bonusPoints','pointsEligible'].includes(field)){
-        commit();const scored=scoreKnownResult(current());Object.keys(current()).forEach(k=>delete current()[k]);Object.assign(current(),scored);dirty=true;render();status(['official-recap','official-result'].includes(current()?.pointsSource)?'Recorded position updated. Official supplied points remain unchanged.':'Finish, stage, and total race points recalculated for this league.');return;
+        commit();const record=current(),scored=scoreKnownResult(record);if(scored!==record){Object.keys(record).forEach(k=>delete record[k]);Object.assign(record,scored);}dirty=true;render();status(['official-recap','official-result'].includes(current()?.pointsSource)?'Recorded position updated. Cited points remain unchanged and unreported values stay blank.':'Finish, stage, and total race points recalculated for this league.');return;
       }
     }
     const numberUpload=event.target.closest?.('[data-number-image-upload]');

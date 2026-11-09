@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-rebuild.mjs",
-    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-section-loading.mjs && node scripts/test-admin-schedule-shift.mjs && node scripts/test-standings-metadata.mjs && node scripts/test-home-standings.mjs && node scripts/test-admin-home-standings.mjs && node scripts/test-admin-standings-metadata.mjs && node scripts/test-schedule-entry-snapshots.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-admin-logo-uploads.mjs && node scripts/test-3d-client-contract.mjs && node scripts/test-race-calendar.mjs && node scripts/test-published-racing-data.mjs && node scripts/test-confirmed-racing-updates.mjs && node scripts/test-race-weekend-track-info.mjs && node scripts/test-schedule-loading.mjs && node scripts/test-publication-recovery.mjs && node scripts/test-kmart-season2.mjs && node scripts/test-nrrs-season3.mjs && node scripts/test-mexico-city-story.mjs && node scripts/test-mexico-city-publication.mjs && node scripts/test-lineup-summary.mjs && node scripts/test-current-driver-updates.mjs && node scripts/test-current-roster-publication.mjs && node scripts/test-alliances.mjs && node scripts/test-alliance-rendering.mjs && node scripts/test-alliance-admin-dom.mjs",
+    "test": "node scripts/test-admin.mjs && node scripts/test-admin-dom.mjs && node scripts/test-admin-navigation-art.mjs && node scripts/test-admin-section-loading.mjs && node scripts/test-admin-schedule-shift.mjs && node scripts/test-standings-metadata.mjs && node scripts/test-home-standings.mjs && node scripts/test-admin-home-standings.mjs && node scripts/test-admin-standings-metadata.mjs && node scripts/test-schedule-entry-snapshots.mjs && node scripts/test-admin-live-save.mjs && node scripts/test-admin-logo-uploads.mjs && node scripts/test-3d-client-contract.mjs && node scripts/test-race-calendar.mjs && node scripts/test-published-racing-data.mjs && node scripts/test-november-racing-context.mjs && node scripts/test-archive-result-unknowns.mjs && node scripts/test-archive-result-display.mjs && node scripts/test-charter-plans.mjs && node scripts/test-confirmed-racing-updates.mjs && node scripts/test-race-weekend-track-info.mjs && node scripts/test-schedule-loading.mjs && node scripts/test-publication-recovery.mjs && node scripts/test-kmart-season2.mjs && node scripts/test-nrrs-season3.mjs && node scripts/test-mexico-city-story.mjs && node scripts/test-mexico-city-publication.mjs && node scripts/test-lineup-summary.mjs && node scripts/test-current-driver-updates.mjs && node scripts/test-current-roster-publication.mjs && node scripts/test-alliances.mjs && node scripts/test-alliance-rendering.mjs && node scripts/test-alliance-admin-dom.mjs",
     "test:home:browser": "node scripts/test-home-standings-browser.mjs",
     "test:standings:browser": "node scripts/test-standings-metadata-browser.mjs",
     "test:admin:shift:browser": "node scripts/test-admin-schedule-shift-browser.mjs",
@@ -26,7 +26,8 @@
     "test:kmart:browser": "node scripts/test-kmart-feature-browser.mjs",
     "test:nrrs:browser": "node scripts/test-nrrs-season3-browser.mjs",
     "test:drivers:browser": "node scripts/test-driver-identities-browser.mjs",
-    "test:alliances:browser": "node scripts/test-alliance-browser.mjs"
+    "test:alliances:browser": "node scripts/test-alliance-browser.mjs",
+    "test:november:browser": "node scripts/test-november-racing-browser.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.0",

@@ -1,6 +1,7 @@
 ---
 import { drivers, rosterProfiles, charters, alliances } from '../lib/site-content.mjs';
 import { allianceName } from '../lib/alliances.mjs';
+import { plannedCharterNotes } from '../lib/charter-plans.mjs';
 import '../styles/driver-lineup.css';
 const entries = drivers;
 const people = rosterProfiles;
@@ -9,12 +10,15 @@ const allianceRecords = alliances;
 const alliedNames=[...new Set(entries.filter(row=>row.affiliation==='alliance').map(row=>allianceName(row,alliances)))];
 const intro=alliedNames.length?`Aetherwing seats plus affiliated ${alliedNames.join(' / ')} rides. Number art leads each entry.`:'Aetherwing racing seats. Number art leads each entry.';
 const profileSlugs = rosterProfiles.map(profile=>profile.slug);
+const charterPlans = boards.map(({id,plannedSeasons})=>({id,plannedSeasons}));
+const initialPlanNotes = plannedCharterNotes(charterPlans.find(board=>board.id==='nrrs'));
 ---
 <section class="aw-lineup section" data-lineup aria-labelledby="lineup-title">
   <div class="shell">
     <div class="section-head"><div><p class="eyebrow">Aetherwing + Partner Teams</p><h2 class="section-title" id="lineup-title">Driver Lineup</h2></div><p class="lede" data-lineup-intro>{intro}</p></div>
     <div class="aw-lineup__filters" role="group" aria-label="Filter roster by racing program" data-lineup-filters></div>
     <div class="aw-lineup__program" data-lineup-program></div>
+    <p class="mono muted" data-planned-charters hidden>{initialPlanNotes.join(' ')}{initialPlanNotes.length>0?' Current entries remain unchanged.':''}</p>
     <div class="aw-lineup__grid" data-lineup-grid></div>
   </div>
 </section>
@@ -239,4 +243,28 @@ const profileSlugs = rosterProfiles.map(profile=>profile.slug);
   render();
   hydrateDriverArtwork(0);
 })();
+</script>
+
+<script is:inline type="application/json" data-planned-charters-seed set:html={JSON.stringify(charterPlans).replace(/</g,'\\u003c')}/>
+<script>
+  import { plannedCharterNotes, reconcileCharterPlans } from '../lib/charter-plans.mjs';
+  const root=document.querySelector('[data-lineup]');
+  const note=root?.querySelector('[data-planned-charters]');
+  if(root&&note){
+    const seed=JSON.parse(document.querySelector('[data-planned-charters-seed]').textContent);
+    let plans=seed;
+    const renderPlanNote=()=>{
+      const selected=root.querySelector('[data-program][aria-pressed="true"]')?.getAttribute('data-program');
+      const notes=selected==='nrrs'?plannedCharterNotes(plans.find(board=>board?.id==='nrrs')):[];
+      note.hidden=!notes.length;
+      note.textContent=notes.length?`${notes.join(' ')} Current entries remain unchanged.`:'';
+    };
+    const applyPlans=(datasets)=>{
+      if(Array.isArray(datasets?.charters))plans=reconcileCharterPlans(datasets.charters,seed);
+      renderPlanNote();
+    };
+    root.addEventListener('click',renderPlanNote);
+    window.addEventListener('aetherwing:content',({detail})=>applyPlans(detail));
+    applyPlans(window.__AETHERWING_CONTENT__);
+  }
 </script>

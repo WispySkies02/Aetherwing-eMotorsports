@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { siteSettings, standings, results, news, rosterProfiles, drivers, partners, competitions, alliances } from '../lib/site-content.mjs';
 import { eventSlug } from '../lib/schedule-events.mjs';
+import { resultFinishLabel } from '../lib/result-display.mjs';
 import { homeStandings } from '../lib/home-standings.mjs';
 import { homeFocusHeading, homeFocusContext } from '../lib/home-standings-client.mjs';
 import OnTrackNext from '../components/home/OnTrackNext.astro';
@@ -66,7 +67,7 @@ const programLogo={
         <p class="ux-tag" data-latest-meta>{latest?.leagueName||'Aetherwing'} · {latest?.date||'LATEST'}</p>
         <h3 data-latest-title>{latest?.title||'Race results'}</h3>
         <p data-latest-track>{latest?.track||''}</p>
-        <div class="hub-result__entries" data-latest-entries>{compactResultEntries(latest).map(e=><strong>{e.number?`#${e.number} `:''}{e.driver}<b>{e.finish?`P${e.finish}`:'DNS'}</b></strong>)}</div>
+        <div class="hub-result__entries" data-latest-entries>{compactResultEntries(latest).map(e=><strong>{e.number?`#${e.number} `:''}{e.driver}<b>{resultFinishLabel(e,'DNS')}</b></strong>)}</div>
         <a class="ux-more" data-latest-event hidden={!latest} href={latest?`/event/${eventSlug(latest)}/`:'/history/'}>Race result →</a><a class="ux-more" href="/history/">Results archive</a>
       </article>
     </section>
@@ -104,6 +105,7 @@ const programLogo={
 </Base>
 <script>
   import { eventSlug } from '../lib/schedule-events.mjs';
+  import { resultFinishLabel } from '../lib/result-display.mjs';
   const applyLiveHome=(d)=>{const liveSite=d.site||{};const setText=(selector,value)=>{const el=document.querySelector(selector);if(el&&value)el.textContent=value;};const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));setText('[data-faith-eyebrow]',liveSite.faithEyebrow);setText('[data-faith-title]',liveSite.faithTitle);setText('[data-faith-statement]',liveSite.faithStatement);setText('[data-faith-verse]',liveSite.faithVerse);if(Array.isArray(d.partners)){const partnerRoot=document.querySelector('[data-home-partners]');if(partnerRoot){partnerRoot.innerHTML=d.partners.map(partner=>`<a href="${esc(/^https:\/\//i.test(String(partner.url||''))?partner.url:'#')}" target="_blank" rel="noopener noreferrer">${partner.logo?`<img src="${esc(partner.logo)}" alt="${esc(partner.name)}" loading="lazy">`:`<strong>${esc(partner.name)}</strong>`}<span>${esc(partner.role)}</span></a>`).join('');partnerFallback();}}document.querySelectorAll('[data-team-stat]').forEach(node=>{const value=liveSite[node.dataset.teamStat];if(value!==undefined&&value!=='')node.textContent=String(value);});if(Array.isArray(d.results))renderLatestResult(d.results);if(!Array.isArray(d.drivers))return;const show=(element,number,art)=>{if(!element)return;element.textContent=`#${number}`;if(art){const img=document.createElement('img');img.alt=`Number ${number}`;img.src=art;img.addEventListener('error',()=>{element.textContent=`#${number}`;},{once:true});element.replaceChildren(img);}};document.querySelectorAll('.ux-driver[data-profile]').forEach(tile=>{const rides=d.drivers.filter(a=>a.profile===tile.dataset.profile&&a.affiliation==='aetherwing').sort((a,b)=>({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[a.competitionId]||99)-({nrrs:1,'uarl-d1':2,'uarl-open':3,kmart:4,sunoco:5}[b.competitionId]||99));const assignment=rides[0]||d.drivers.find(a=>a.profile===tile.dataset.profile);if(assignment){tile.dataset.number=String(assignment.number||'');show(tile.querySelector('[data-number-art]'),assignment.number,assignment?.numberImageBackup||assignment?.numberImage);}const meta=tile.querySelector('[data-program-numbers]');if(meta)meta.textContent=rides.slice(0,2).map(a=>`#${a.number} ${{nrrs:'NRRS','uarl-d1':'UARL D1','uarl-open':'UARL OPEN',kmart:'KMART',sunoco:'SUNOCO'}[a.competitionId]||a.competition}`).join(' / ');});};
   function renderLatestResult(rows){
     const latest=[...rows].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0];
@@ -120,7 +122,7 @@ const programLogo={
     for(const entry of (latest?.coverage==='team-only'?all:featured.length?featured:all).slice(0,3)){
       const row=document.createElement('strong'),finish=document.createElement('b');
       row.textContent=`${entry.number?`#${entry.number} `:''}${entry.driver}`;
-      finish.textContent=entry.finish?`P${entry.finish}`:'DNS';
+      finish.textContent=resultFinishLabel(entry,'DNS');
       row.append(finish);container.append(row);
     }
   }
