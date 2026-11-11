@@ -3363,7 +3363,6 @@
       "numbers": "32 / 28 / 15 / 54",
       "programs": [
         "NRRS",
-        "UARL D1",
         "UARL Open",
         "Kmart",
         "Sunoco"
@@ -3375,7 +3374,8 @@
       "historicalIRacingName": "Nicholas Waggoner",
       "robloxDisplayName": "Hailey",
       "robloxUsername": "@Aokikoto",
-      "historicalRobloxDisplayName": "Wispy"
+      "historicalRobloxDisplayName": "Wispy",
+      "currentUarlRevision": "2026-11-11-v1"
     },
     {
       "slug": "parker",
@@ -3398,12 +3398,11 @@
       "role": "Driver",
       "affiliation": "aetherwing",
       "numbers": "46",
-      "programs": [
-        "UARL D1"
-      ],
-      "feature": "UARL D1",
+      "programs": [],
+      "feature": "Previous UARL D1 entry",
       "signatureLogo": "",
-      "bio": "Full-time Aetherwing UARL Division 1 driver in the #46."
+      "bio": "Previously raced for Aetherwing in UARL Division 1 in the #46.",
+      "currentUarlRevision": "2026-11-11-v1"
     },
     {
       "slug": "burgertown2good",
@@ -3412,12 +3411,11 @@
       "role": "Driver",
       "affiliation": "aetherwing",
       "numbers": "32",
-      "programs": [
-        "UARL D1"
-      ],
-      "feature": "UARL D1",
+      "programs": [],
+      "feature": "Previous UARL D1 entry",
       "signatureLogo": "",
-      "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
+      "bio": "Previously raced for Aetherwing in UARL Division 1 in the #32.",
+      "currentUarlRevision": "2026-11-11-v1"
     },
     {
       "slug": "will",
@@ -3425,15 +3423,17 @@
       "handle": "@Raceartstudios",
       "role": "Creative Director / Driver",
       "affiliation": "alliance",
-      "numbers": "24 / 42",
+      "numbers": "33 / 24 / 42",
       "programs": [
+        "UARL D1",
         "Kmart",
         "Sunoco"
       ],
-      "feature": "StarClutch Alliance",
+      "feature": "Multi-program",
       "signatureLogo": "",
-      "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor.",
-      "allianceId": "starclutch-racing"
+      "bio": "Aetherwing Creative Director and current UARL Division 1 #33 Chevrolet driver, alongside his StarClutch Racing alliance competition in Kmart and Sunoco.",
+      "allianceId": "starclutch-racing",
+      "currentUarlRevision": "2026-11-11-v1"
     },
     {
       "slug": "jaxon",
@@ -3560,27 +3560,18 @@
       "numberImage": ""
     },
     {
-      "id": "wispy-uarl-d1",
-      "profile": "hailey",
-      "displayName": "Hailey",
-      "number": "28",
+      "id": "will-uarl-d1",
+      "profile": "will",
+      "displayName": "Will",
+      "number": "33",
       "competition": "UARL Division 1",
       "competitionId": "uarl-d1",
-      "status": "Full-Time",
+      "status": "Active",
       "affiliation": "aetherwing",
-      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
-      "numberImage": ""
-    },
-    {
-      "id": "rocky-uarl-d1",
-      "profile": "rocky",
-      "displayName": "Rocky",
-      "number": "46",
-      "competition": "UARL Division 1",
-      "competitionId": "uarl-d1",
-      "status": "Full-Time",
-      "affiliation": "aetherwing",
-      "numberImage": ""
+      "car": "Chevrolet",
+      "manufacturer": "Chevrolet",
+      "numberImage": "",
+      "currentUarlRevision": "2026-11-11-v1"
     },
     {
       "id": "wispy-uarl-open",
@@ -3746,18 +3737,6 @@
       "status": "Factory Driver",
       "affiliation": "aetherwing",
       "numberImage": ""
-    },
-    {
-      "id": "burgertown-uarl-d1",
-      "profile": "burgertown2good",
-      "displayName": "BurgerTown2Good",
-      "handle": "@uhhbzb",
-      "number": "32",
-      "competition": "UARL Division 1",
-      "competitionId": "uarl-d1",
-      "status": "Full-Time",
-      "affiliation": "aetherwing",
-      "numberImage": ""
     }
   ],
   "charters": [
@@ -3824,46 +3803,28 @@
     {
       "id": "uarl-d1",
       "label": "UARL D1",
-      "seriesNote": "Aetherwing Season 6 charter allocation",
+      "seriesNote": "Aetherwing Chevrolet return · #42 and #43 unsigned",
       "fullTime": [
         {
-          "number": "28",
-          "driver": "Hailey",
+          "number": "33",
+          "driver": "Will",
           "numberImage": ""
         },
         {
-          "number": "32",
-          "driver": "BurgerTown2Good",
-          "numberImage": ""
-        },
-        {
-          "number": "46",
-          "driver": "Rocky",
-          "numberImage": ""
-        },
-        {
-          "number": "56",
+          "number": "42",
           "driver": "Open",
+          "status": "Unsigned",
+          "numberImage": ""
+        },
+        {
+          "number": "43",
+          "driver": "Open",
+          "status": "Unsigned",
           "numberImage": ""
         }
       ],
-      "openCharters": [
-        {
-          "id": "uarl-d1-open-1",
-          "label": "Aetherwing Open Charter",
-          "slotLabel": "FLEXIBLE ENTRY",
-          "active": true,
-          "uses": [
-            {
-              "number": "62",
-              "label": "Part-Time",
-              "description": "Flexible part-time entry for the Aetherwing Open Charter. It does not add another roster slot.",
-              "active": true,
-              "numberImage": ""
-            }
-          ]
-        }
-      ]
+      "openCharters": [],
+      "currentUarlRevision": "2026-11-11-v1"
     }
   ],
   "iracing-garage": {
@@ -3920,15 +3881,14 @@
       "type": "aetherwing",
       "label": "Aetherwing Program",
       "schedule": "Sundays · 8:30 PM ET",
-      "machine": "BBR Next-Gen Toyota",
+      "machine": "BBR Next-Gen Chevrolet",
       "platform": "Roblox / BBR Next-Gen platform",
       "roster": [
-        "#28 Hailey",
-        "#32 BurgerTown2Good",
-        "#46 Rocky",
-        "#56 OPEN",
-        "AETHERWING FLEX ENTRY · #62 PART-TIME"
-      ]
+        "#33 Will",
+        "#42 UNSIGNED",
+        "#43 UNSIGNED"
+      ],
+      "currentUarlRevision": "2026-11-11-v1"
     },
     {
       "id": "uarl-open",

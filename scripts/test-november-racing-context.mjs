@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import {createRequire} from 'node:module';
 import {eventSlug,legacyEventSlug} from '../src/lib/schedule-events.mjs';
 import {reconcileNovemberSchedule,reconcileNovemberStandings} from '../src/lib/november-racing-context.mjs';
+import {reconcileUarlReturn,reconcileUarlCharters} from '../src/lib/uarl-d1-return.mjs';
 import {reconcileCharterPlans} from '../src/lib/charter-plans.mjs';
 import {appendReviewedResults} from '../src/lib/reviewed-results.mjs';
 import {alliancePrograms,preserveAllianceRelationship} from '../src/lib/alliance-content.mjs';
@@ -79,7 +80,7 @@ const assertReviewed=(datasets)=>{
 const apiView=api.mergeCanonical(clone(oldPublished));assertReviewed(apiView);assertReviewed(api.mergeCanonical(clone(apiView)));
 
 const syncSource=read('./sync-admin-content.mjs'),syncBlock=syncSource.slice(syncSource.indexOf('function ensureCoreTeamPartners'),syncSource.indexOf('function readBundledOverlay')).replaceAll('import.meta.url','scriptUrl');
-const buildView=new Function('scriptUrl','alliancePrograms','preserveAllianceRelationship','reconcileTeamPartners','appendReviewedResults','reconcileNovemberSchedule','reconcileNovemberStandings','reconcileCharterPlans',`${syncBlock}\nreturn canonicalizeBuildContent;`)(new URL('./sync-admin-content.mjs',import.meta.url).href,alliancePrograms,preserveAllianceRelationship,reconcileTeamPartners,appendReviewedResults,reconcileNovemberSchedule,reconcileNovemberStandings,reconcileCharterPlans);
+const buildView=new Function('scriptUrl','alliancePrograms','preserveAllianceRelationship','reconcileTeamPartners','appendReviewedResults','reconcileNovemberSchedule','reconcileNovemberStandings','reconcileCharterPlans','reconcileUarlReturn','reconcileUarlCharters',`${syncBlock}\nreturn canonicalizeBuildContent;`)(new URL('./sync-admin-content.mjs',import.meta.url).href,alliancePrograms,preserveAllianceRelationship,reconcileTeamPartners,appendReviewedResults,reconcileNovemberSchedule,reconcileNovemberStandings,reconcileCharterPlans,reconcileUarlReturn,reconcileUarlCharters);
 const buildInput={version:1,revision:123,datasets:clone(oldPublished)},buildBefore=clone(buildInput);
 assertReviewed((await buildView(buildInput)).datasets);assert.deepEqual(buildInput,buildBefore,'Build preparation is pure and the test never invokes the writing sync entrypoint');
 
@@ -87,7 +88,7 @@ const ssrSource=read('../src/lib/site-content.mjs');
 const ssrSchedule=ssrSource.slice(ssrSource.indexOf('const publishedSchedule ='),ssrSource.indexOf('export const siteSettings =')).replace('export const scheduleEvents =','const scheduleEvents =');
 const ssrStandings=ssrSource.slice(ssrSource.indexOf('const publishedStandings ='),ssrSource.indexOf('export const milestones =')).replace('export const standings =','const standings =');
 const ssrCharters=ssrSource.slice(ssrSource.indexOf('const normalizeCharters ='),ssrSource.indexOf('export const iracingGarage =')).replace('export const charters =','const charters =');
-const ssrView=datasets=>new Function('choose','scheduleSeed','standingsSeed','chartersSeed','reconcileNovemberSchedule','reconcileNovemberStandings','reconcileCharterPlans',`${ssrSchedule}\n${ssrStandings}\n${ssrCharters}\nreturn {'schedule-events':scheduleEvents,standings,charters};`)((key,fallback)=>datasets[key]??fallback,seed['schedule-events'],seed.standings,seed.charters,reconcileNovemberSchedule,reconcileNovemberStandings,reconcileCharterPlans);
+const ssrView=datasets=>new Function('choose','scheduleSeed','standingsSeed','chartersSeed','reconcileNovemberSchedule','reconcileNovemberStandings','reconcileCharterPlans','reconcileUarlReturn','reconcileUarlCharters',`${ssrSchedule}\n${ssrStandings}\n${ssrCharters}\nreturn {'schedule-events':scheduleEvents,standings,charters};`)((key,fallback)=>datasets[key]??fallback,seed['schedule-events'],seed.standings,seed.charters,reconcileNovemberSchedule,reconcileNovemberStandings,reconcileCharterPlans,reconcileUarlReturn,reconcileUarlCharters);
 const ssr=ssrView(clone(oldPublished));
 assert.deepEqual(ssr['schedule-events'],apiView['schedule-events']);assert.deepEqual(ssr.standings,apiView.standings);assert.deepEqual(ssr.charters,apiView.charters,'Generated pages use the same targeted caption and missing plan metadata');
 

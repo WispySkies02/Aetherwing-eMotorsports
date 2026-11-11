@@ -8,7 +8,6 @@
     "numbers": "32 / 28 / 15 / 54",
     "programs": [
       "NRRS",
-      "UARL D1",
       "UARL Open",
       "Kmart",
       "Sunoco"
@@ -20,7 +19,8 @@
     "historicalIRacingName": "Nicholas Waggoner",
     "robloxDisplayName": "Hailey",
     "robloxUsername": "@Aokikoto",
-    "historicalRobloxDisplayName": "Wispy"
+    "historicalRobloxDisplayName": "Wispy",
+    "currentUarlRevision": "2026-11-11-v1"
   },
   {
     "slug": "parker",
@@ -43,12 +43,11 @@
     "role": "Driver",
     "affiliation": "aetherwing",
     "numbers": "46",
-    "programs": [
-      "UARL D1"
-    ],
-    "feature": "UARL D1",
+    "programs": [],
+    "feature": "Previous UARL D1 entry",
     "signatureLogo": "",
-    "bio": "Full-time Aetherwing UARL Division 1 driver in the #46."
+    "bio": "Previously raced for Aetherwing in UARL Division 1 in the #46.",
+    "currentUarlRevision": "2026-11-11-v1"
   },
   {
     "slug": "burgertown2good",
@@ -57,12 +56,11 @@
     "role": "Driver",
     "affiliation": "aetherwing",
     "numbers": "32",
-    "programs": [
-      "UARL D1"
-    ],
-    "feature": "UARL D1",
+    "programs": [],
+    "feature": "Previous UARL D1 entry",
     "signatureLogo": "",
-    "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
+    "bio": "Previously raced for Aetherwing in UARL Division 1 in the #32.",
+    "currentUarlRevision": "2026-11-11-v1"
   },
   {
     "slug": "will",
@@ -70,15 +68,17 @@
     "handle": "@Raceartstudios",
     "role": "Creative Director / Driver",
     "affiliation": "alliance",
-    "numbers": "24 / 42",
+    "numbers": "33 / 24 / 42",
     "programs": [
+      "UARL D1",
       "Kmart",
       "Sunoco"
     ],
-    "feature": "StarClutch Alliance",
+    "feature": "Multi-program",
     "signatureLogo": "",
-    "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor.",
-    "allianceId": "starclutch-racing"
+    "bio": "Aetherwing Creative Director and current UARL Division 1 #33 Chevrolet driver, alongside his StarClutch Racing alliance competition in Kmart and Sunoco.",
+    "allianceId": "starclutch-racing",
+    "currentUarlRevision": "2026-11-11-v1"
   },
   {
     "slug": "jaxon",

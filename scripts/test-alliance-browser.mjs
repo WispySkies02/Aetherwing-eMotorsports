@@ -40,11 +40,11 @@ try{
   // regression or expand into the separate design work reserved for the user.
   if(width===320){datasets=mergeCanonical(structuredClone(seed));await open('/mission-values/');missionBaselineWidth=await page.evaluate(()=>document.documentElement.scrollWidth);datasets=structuredClone(initial);}
 
-  await open('/drivers/');assert.equal(await matty().getAttribute('data-team-label'),'FIXTURE RACING');assert.equal(await page.locator('.aw-lineup__poster').count(),8);
+  await open('/drivers/');assert.equal(await matty().getAttribute('data-team-label'),'FIXTURE RACING');assert.equal(await page.locator('.aw-lineup__poster').count(),6);
   assert.equal(await matty().getAttribute('data-number'),'3');assert.equal(await matty().locator('.aw-lineup__plate > p').textContent(),'@matty_campbell');
   await renameOnly();assert.equal(await matty().getAttribute('data-team-label'),'RENAMED FIXTURE');assert.match(await page.locator('[data-lineup-intro]').textContent(),/Renamed Fixture Racing/);
   await page.locator('[data-program="kmart"]').click();assert.equal(await matty().getAttribute('data-team-label'),'RENAMED FIXTURE');await checkFit('directory');await page.screenshot({path:`/tmp/alliance-matty-${width}.png`,animations:'disabled'});
-  await page.locator('[data-program="uarl-d1"]').click();assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'3 ASSIGNED · 1 OPEN · 1 FLEXIBLE ENTRY');
+  await page.locator('[data-program="uarl-d1"]').click();assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'1 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');assert.deepEqual(await page.locator('.aw-lineup__poster').evaluateAll(cards=>cards.map(card=>card.dataset.number)),['33','42','43'],'Changing an alliance preserves Will and the independent unsigned D1 entries');
 
   await open('/drivers/matty/');assert.equal(await page.locator('[data-profile-affiliation]').textContent(),'FIXTURE RACING DRIVER');assert.match(await page.locator('[data-profile-assignments]').textContent(),/FIXTURE RACING/);
   const bio=await page.locator('[data-profile-bio]').textContent();await renameOnly();assert.equal(await page.locator('[data-profile-affiliation]').textContent(),'RENAMED FIXTURE RACING DRIVER');assert.match(await page.locator('[data-profile-assignments]').textContent(),/RENAMED FIXTURE RACING/);assert.equal(await page.locator('[data-profile-bio]').textContent(),bio,'A rename does not rewrite freeform biography');await checkFit('profile');

@@ -1,0 +1,573 @@
+{
+  "drivers": [
+    {
+      "id": "wispy-nrrs",
+      "profile": "hailey",
+      "displayName": "Hailey",
+      "number": "32",
+      "competition": "NRRS",
+      "competitionId": "nrrs",
+      "status": "Full-Time",
+      "affiliation": "aetherwing",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
+    },
+    {
+      "id": "parker-nrrs",
+      "profile": "parker",
+      "displayName": "Plarker",
+      "number": "43",
+      "competition": "NRRS",
+      "competitionId": "nrrs",
+      "status": "Full-Time",
+      "affiliation": "aetherwing",
+      "numberImage": ""
+    },
+    {
+      "id": "wispy-uarl-d1",
+      "profile": "hailey",
+      "displayName": "Hailey",
+      "number": "28",
+      "competition": "UARL Division 1",
+      "competitionId": "uarl-d1",
+      "status": "Full-Time",
+      "affiliation": "aetherwing",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
+    },
+    {
+      "id": "rocky-uarl-d1",
+      "profile": "rocky",
+      "displayName": "Rocky",
+      "number": "46",
+      "competition": "UARL Division 1",
+      "competitionId": "uarl-d1",
+      "status": "Full-Time",
+      "affiliation": "aetherwing",
+      "numberImage": ""
+    },
+    {
+      "id": "wispy-uarl-open",
+      "profile": "hailey",
+      "displayName": "Hailey",
+      "number": "28",
+      "competition": "UARL Open",
+      "competitionId": "uarl-open",
+      "status": "Active",
+      "affiliation": "aetherwing",
+      "car": "BBR Late Model Toyota",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": ""
+    },
+    {
+      "id": "wispy-kmart",
+      "profile": "hailey",
+      "displayName": "Hailey",
+      "number": "15",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Active",
+      "affiliation": "alliance",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "will-kmart",
+      "profile": "will",
+      "displayName": "Will",
+      "number": "24",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Active",
+      "affiliation": "alliance",
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "clutch-kmart",
+      "profile": "clutch",
+      "displayName": "Clutch",
+      "number": "29",
+      "numberImage": "",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Shared Part-Time Entry",
+      "affiliation": "alliance",
+      "car": "SCR #29 PT",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "eazy-kmart",
+      "profile": "eazy",
+      "displayName": "Eazy",
+      "number": "29",
+      "numberImage": "",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Shared Part-Time Entry",
+      "affiliation": "alliance",
+      "car": "SCR #29 PT",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "matty-kmart",
+      "profile": "matty",
+      "displayName": "Matty",
+      "number": "3",
+      "numberImage": "",
+      "competition": "Kmart Auto Parts Series",
+      "competitionId": "kmart",
+      "status": "Full-Time",
+      "affiliation": "alliance",
+      "car": "SCR #3",
+      "currentRosterRevision": "2026-11-01-v1",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "eazy-sunoco",
+      "profile": "eazy",
+      "displayName": "Eazy",
+      "number": "27",
+      "competition": "Sunoco Truck Series",
+      "competitionId": "sunoco",
+      "status": "Active",
+      "affiliation": "alliance",
+      "car": "RAM",
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "will-sunoco",
+      "profile": "will",
+      "displayName": "Will",
+      "number": "42",
+      "competition": "Sunoco Truck Series",
+      "competitionId": "sunoco",
+      "status": "Active",
+      "affiliation": "alliance",
+      "car": "RAM",
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "clutch-sunoco",
+      "profile": "clutch",
+      "displayName": "Clutch",
+      "number": "46",
+      "competition": "Sunoco Truck Series",
+      "competitionId": "sunoco",
+      "status": "Active",
+      "affiliation": "alliance",
+      "car": "RAM",
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "wispy-sunoco",
+      "profile": "hailey",
+      "displayName": "Hailey",
+      "number": "54",
+      "competition": "Sunoco Truck Series",
+      "competitionId": "sunoco",
+      "status": "Active",
+      "affiliation": "alliance",
+      "car": "RAM",
+      "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
+      "numberImage": "",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "levi-iracing",
+      "profile": "levi-ramsey",
+      "displayName": "Levi Ramsey",
+      "number": "6",
+      "competition": "iRacing Factory Program",
+      "competitionId": "iracing-factory",
+      "status": "Factory Driver",
+      "affiliation": "aetherwing",
+      "numberImage": ""
+    },
+    {
+      "id": "nicholas-iracing",
+      "profile": "hailey",
+      "displayName": "Hailey Bell",
+      "number": "28",
+      "competition": "iRacing Factory Program",
+      "competitionId": "iracing-factory",
+      "status": "Factory Driver",
+      "affiliation": "aetherwing",
+      "identityNote": "Current iRacing name: Hailey Bell. Roblox / RoRacing display name: Hailey, username @Aokikoto. Historical iRacing results originally recorded under Nicholas Waggoner retain that attribution.",
+      "numberImage": ""
+    },
+    {
+      "id": "joshua-iracing",
+      "profile": "joshua-douglas",
+      "displayName": "Joshua Douglas",
+      "number": "35",
+      "competition": "iRacing Factory Program",
+      "competitionId": "iracing-factory",
+      "status": "Factory Driver",
+      "affiliation": "aetherwing",
+      "numberImage": ""
+    },
+    {
+      "id": "burgertown-uarl-d1",
+      "profile": "burgertown2good",
+      "displayName": "BurgerTown2Good",
+      "handle": "@uhhbzb",
+      "number": "32",
+      "competition": "UARL Division 1",
+      "competitionId": "uarl-d1",
+      "status": "Full-Time",
+      "affiliation": "aetherwing",
+      "numberImage": ""
+    }
+  ],
+  "charters": [
+    {
+      "id": "nrrs",
+      "label": "NRRS",
+      "seriesNote": "Aetherwing charter allocation",
+      "fullTime": [
+        {
+          "number": "32",
+          "driver": "Hailey",
+          "numberImage": ""
+        },
+        {
+          "number": "43",
+          "driver": "Plarker",
+          "numberImage": ""
+        },
+        {
+          "number": "54",
+          "driver": "Open",
+          "numberImage": ""
+        }
+      ],
+      "openCharters": [
+        {
+          "id": "nrrs-open-1",
+          "label": "Aetherwing Open Charter",
+          "slotLabel": "4TH CHARTER",
+          "active": true,
+          "uses": [
+            {
+              "number": "62",
+              "label": "Part-Time",
+              "description": "Flexible part-time entry identity for this shared fourth charter. It does not add another roster slot.",
+              "active": true,
+              "numberImage": ""
+            },
+            {
+              "number": "82",
+              "label": "Development",
+              "description": "Development entry identity for this shared fourth charter. It does not add another roster slot.",
+              "active": true,
+              "numberImage": ""
+            }
+          ]
+        }
+      ],
+      "plannedSeasons": [
+        {
+          "season": 4,
+          "year": 2027,
+          "status": "planned",
+          "numbers": [
+            "42",
+            "43",
+            "46"
+          ],
+          "sourceDate": "2026-11-08",
+          "sourceNote": "Owner-approved plan: NRRS charters for next season are planned #42 / #43 / #46."
+        }
+      ]
+    },
+    {
+      "id": "uarl-d1",
+      "label": "UARL D1",
+      "seriesNote": "Aetherwing Season 6 charter allocation",
+      "fullTime": [
+        {
+          "number": "28",
+          "driver": "Hailey",
+          "numberImage": ""
+        },
+        {
+          "number": "32",
+          "driver": "BurgerTown2Good",
+          "numberImage": ""
+        },
+        {
+          "number": "46",
+          "driver": "Rocky",
+          "numberImage": ""
+        },
+        {
+          "number": "56",
+          "driver": "Open",
+          "numberImage": ""
+        }
+      ],
+      "openCharters": [
+        {
+          "id": "uarl-d1-open-1",
+          "label": "Aetherwing Open Charter",
+          "slotLabel": "FLEXIBLE ENTRY",
+          "active": true,
+          "uses": [
+            {
+              "number": "62",
+              "label": "Part-Time",
+              "description": "Flexible part-time entry for the Aetherwing Open Charter. It does not add another roster slot.",
+              "active": true,
+              "numberImage": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "competitions": [
+    {
+      "id": "nrrs",
+      "name": "NRRS",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Tuesdays \u00b7 7:30 PM ET",
+      "machine": "BBR Next-Gen Toyota",
+      "platform": "Roblox / BBR Next-Gen platform",
+      "roster": [
+        "#32 Hailey",
+        "#43 Plarker",
+        "#54 OPEN",
+        "4TH \u00b7 AETHERWING OPEN CHARTER \u00b7 #62 PT / #82 DEVELOPMENT"
+      ]
+    },
+    {
+      "id": "uarl-d1",
+      "name": "UARL Division 1",
+      "series": "L.L. Bean Cup Series",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Sundays \u00b7 8:30 PM ET",
+      "machine": "BBR Next-Gen Toyota",
+      "platform": "Roblox / BBR Next-Gen platform",
+      "roster": [
+        "#28 Hailey",
+        "#32 BurgerTown2Good",
+        "#46 Rocky",
+        "#56 OPEN",
+        "AETHERWING FLEX ENTRY \u00b7 #62 PART-TIME"
+      ]
+    },
+    {
+      "id": "uarl-open",
+      "name": "UARL Open",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Sundays \u00b7 11:30 AM ET",
+      "machine": "Super Late Model Open Series",
+      "platform": "Roblox / UARL Late Model platform",
+      "roster": [
+        "#28 Hailey"
+      ]
+    },
+    {
+      "id": "iracing-factory",
+      "name": "iRacing Factory Program",
+      "type": "aetherwing",
+      "label": "Aetherwing Program",
+      "schedule": "Special-event windows",
+      "machine": "Multiple Cars \u00b7 Multiple Disciplines",
+      "platform": "iRacing / Aetherwing Factory Program",
+      "roster": [
+        "#6 Levi Ramsey",
+        "#28 Hailey Bell",
+        "#35 Joshua Douglas"
+      ],
+      "drivers": []
+    },
+    {
+      "id": "kmart",
+      "name": "Kmart Auto Parts Series",
+      "type": "alliance",
+      "label": "StarClutch Racing Alliance",
+      "schedule": "Mondays \u00b7 8:30 PM ET",
+      "machine": "Dodge \u00b7 BBR D2 Chevy Body",
+      "platform": "Roblox",
+      "roster": [
+        "#15 Hailey",
+        "#24 Will",
+        "#3 Matty \u00b7 Full-Time",
+        "#29 PT \u00b7 Clutch / Eazy"
+      ],
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "id": "sunoco",
+      "name": "Sunoco Truck Series",
+      "type": "alliance",
+      "label": "StarClutch Racing Alliance",
+      "schedule": "Saturdays \u00b7 8:00 PM ET",
+      "machine": "Dodge RAM \u00b7 CWS15 Ford Body",
+      "platform": "Roblox",
+      "roster": [
+        "#27 Eazy",
+        "#42 Will",
+        "#46 Clutch",
+        "#54 Hailey"
+      ],
+      "allianceId": "starclutch-racing"
+    }
+  ],
+  "roster-profiles": [
+    {
+      "slug": "hailey",
+      "name": "Hailey",
+      "handle": "@Aokikoto",
+      "role": "Founder / Driver",
+      "affiliation": "aetherwing",
+      "numbers": "32 / 28 / 15 / 54",
+      "programs": [
+        "NRRS",
+        "UARL D1",
+        "UARL Open",
+        "Kmart",
+        "Sunoco"
+      ],
+      "feature": "Multi-program",
+      "signatureLogo": "",
+      "bio": "Aetherwing founder and multi-program RoRacing driver. Current Roblox display name: Hailey; username: @Aokikoto. Current iRacing name: Hailey Bell.",
+      "iracingName": "Hailey Bell",
+      "historicalIRacingName": "Nicholas Waggoner",
+      "robloxDisplayName": "Hailey",
+      "robloxUsername": "@Aokikoto",
+      "historicalRobloxDisplayName": "Wispy"
+    },
+    {
+      "slug": "parker",
+      "name": "Plarker",
+      "handle": "@Leg0man1o",
+      "role": "Driver",
+      "affiliation": "aetherwing",
+      "numbers": "43",
+      "programs": [
+        "NRRS"
+      ],
+      "feature": "NRRS",
+      "signatureLogo": "",
+      "bio": "Aetherwing NRRS driver in the #43 entry."
+    },
+    {
+      "slug": "rocky",
+      "name": "Rocky",
+      "handle": "@IIKyle5Larson",
+      "role": "Driver",
+      "affiliation": "aetherwing",
+      "numbers": "46",
+      "programs": [
+        "UARL D1"
+      ],
+      "feature": "UARL D1",
+      "signatureLogo": "",
+      "bio": "Full-time Aetherwing UARL Division 1 driver in the #46."
+    },
+    {
+      "slug": "burgertown2good",
+      "name": "BurgerTown2Good",
+      "handle": "@uhhbzb",
+      "role": "Driver",
+      "affiliation": "aetherwing",
+      "numbers": "32",
+      "programs": [
+        "UARL D1"
+      ],
+      "feature": "UARL D1",
+      "signatureLogo": "",
+      "bio": "Full-time Aetherwing UARL Division 1 driver in the #32."
+    },
+    {
+      "slug": "will",
+      "name": "Will",
+      "handle": "@Raceartstudios",
+      "role": "Creative Director / Driver",
+      "affiliation": "alliance",
+      "numbers": "24 / 42",
+      "programs": [
+        "Kmart",
+        "Sunoco"
+      ],
+      "feature": "StarClutch Alliance",
+      "signatureLogo": "",
+      "bio": "Aetherwing Creative Director and StarClutch Racing alliance competitor.",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "slug": "jaxon",
+      "name": "Jaxon",
+      "handle": "@Arctic_Blitzzzz",
+      "role": "Media Specialist \u00b7 Former Driver",
+      "affiliation": "alliance",
+      "numbers": "34",
+      "programs": [
+        "Kmart"
+      ],
+      "feature": "Former Competition Driver",
+      "signatureLogo": "",
+      "bio": "Aetherwing Media Specialist and former #34 Kmart alliance competitor. Historical results and paint records remain part of the team archive.",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "slug": "clutch",
+      "name": "Clutch",
+      "handle": "@Mj_fan088",
+      "role": "Alliance Driver",
+      "affiliation": "alliance",
+      "numbers": "29 / 46",
+      "programs": [
+        "Kmart",
+        "Sunoco"
+      ],
+      "feature": "StarClutch Alliance",
+      "signatureLogo": "",
+      "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #46.",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "slug": "eazy",
+      "name": "Eazy",
+      "handle": "@deadmansrisin27_",
+      "role": "Alliance Driver",
+      "affiliation": "alliance",
+      "numbers": "27 / 29",
+      "programs": [
+        "Kmart",
+        "Sunoco"
+      ],
+      "feature": "StarClutch Alliance",
+      "signatureLogo": "",
+      "bio": "StarClutch Racing alliance driver, sharing the Kmart #29 and driving the Sunoco #27 RAM.",
+      "currentRosterRevision": "2026-11-01-v1",
+      "allianceId": "starclutch-racing"
+    },
+    {
+      "slug": "matty",
+      "name": "Matty",
+      "handle": "@matty_campbell",
+      "role": "Alliance Driver",
+      "affiliation": "alliance",
+      "numbers": "3",
+      "programs": [
+        "Kmart"
+      ],
+      "feature": "Full-Time Entry",
+      "signatureLogo": "",
+      "bio": "StarClutch Racing alliance driver driving the full-time Kmart #3 entry.",
+      "currentRosterRevision": "2026-11-01-v1",
+      "allianceId": "starclutch-racing"
+    }
+  ]
+}

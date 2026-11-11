@@ -172,7 +172,7 @@ try {
   // A number published in Assignments must survive Admin readback and public
   // hydration, including UARL identities previously overwritten by migrations.
   const historyBefore=JSON.stringify((await (await publicData(new Request('https://aetherwing.net/api/site-content'))).json()).datasets.results);
-  const editedNumbers=new Map([['wispy-nrrs','08'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
+  const editedNumbers=new Map([['wispy-nrrs','08'],['will-uarl-d1','83'],['matty-kmart','84'],['eazy-sunoco','85']]);
   $('[data-admin-dataset="drivers"]').click();
   await waitFor(()=>field(['number']),'Assignments must load');
   const assignments=content.normalize('drivers',seeds.drivers);

@@ -70,7 +70,7 @@ try {
   const historicalEntries=structuredClone(historicalEvent.entries);
   // A current-season number change must not rewrite an approved older event
   // while an unrelated schedule publication passes through content sync.
-  const editedNumbers=new Map([[nrrsAssignment.id,'28'],['wispy-uarl-d1','83'],['rocky-uarl-d1','84'],['burgertown-uarl-d1','85']]);
+  const editedNumbers=new Map([[nrrsAssignment.id,'28'],['will-uarl-d1','83'],['matty-kmart','84'],['eazy-sunoco','85']]);
   for(const entry of data.drivers)if(editedNumbers.has(entry.id))entry.number=editedNumbers.get(entry.id);
   const nrrs=data.standings.find((board)=>board.id==='nrrs');nrrs.cutoffAfter=6;nrrs.cutoffLabel='Chase cutoff · Top 6';
   const nrrsManual=nrrs.rows.find(row=>standingIdentity(row)==='hailey');

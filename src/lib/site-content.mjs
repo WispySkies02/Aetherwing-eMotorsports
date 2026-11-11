@@ -25,6 +25,7 @@ import pageOverridesSeed from '../data/page-overrides.json';
 import { appendReviewedResults } from './reviewed-results.mjs';
 import { reconcileNovemberSchedule, reconcileNovemberStandings } from './november-racing-context.mjs';
 import { reconcileCharterPlans } from './charter-plans.mjs';
+import { reconcileUarlAssignments, reconcileUarlCharters, reconcileUarlCompetitions, reconcileUarlProfiles } from './uarl-d1-return.mjs';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const alliances = choose('alliances',defaultAlliances);
 
@@ -41,7 +42,7 @@ const normalizeDriverAssignments = (rows=[]) => {
       {...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}
     ];
   });
-  const updated=reconcileCurrentAssignments(normalized);
+  const updated=reconcileUarlAssignments(reconcileCurrentAssignments(normalized));
   const shared29=updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
   if(!shared29)return updated;
   const sharedUpload=shared29.numberImageBackup||'';
@@ -101,18 +102,13 @@ const publishedStandings = choose('standings', standingsSeed);
 export const standings = reconcileNovemberStandings(Array.isArray(publishedStandings) ? publishedStandings : standingsSeed);
 export const milestones = choose('milestones', milestonesSeed);
 // Preserve edited numbers while applying identity aliases and retired-driver filtering.
-const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>{entry=entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry;
-  if(entry?.competitionId!=='uarl-d1')return entry;
-  const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
-  if(key==='wispy'||key==='hailey')return {...entry,displayName:'Hailey'};
-  return entry;
-});
+const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
 export const drivers = enforceCurrentAssignments(choose('drivers', driversSeed));
 const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',
   kmart:'Kmart', sunoco:'Sunoco', 'iracing-factory':'iRacing Factory Program'
 };
-const rosterBase = reconcileCurrentProfiles(choose('roster-profiles', rosterSeed)).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags');
+const rosterBase = reconcileUarlProfiles(reconcileCurrentProfiles(choose('roster-profiles', rosterSeed))).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags');
 export const rosterProfiles = rosterBase.map((sourceProfile) => {
   const profile=sourceProfile?.slug==='wispy'?{...sourceProfile,slug:'hailey'}:sourceProfile;
   const assignments = drivers.filter((entry) => entry.profile === profile.slug);
@@ -134,16 +130,7 @@ const normalizeCharters = (boards) => (boards ?? []).map((board) => {
   delete next.openCharter;
   return next;
 });
-const enforceCurrentCharters=(boards=[])=>normalizeCharters(boards).map((board)=>{
-  if(board?.id!=='uarl-d1')return board;
-  const flex=chartersSeed.find(item=>item.id==='uarl-d1').openCharters[0];
-  return {...board,fullTime:[
-    {number:'28',driver:'Hailey',numberImage:board.fullTime?.find(x=>String(x.number)==='28')?.numberImage||''},
-    {number:'32',driver:'BurgerTown2Good',numberImage:board.fullTime?.find(x=>String(x.number)==='32')?.numberImage||''},
-    {number:'46',driver:'Rocky',numberImage:board.fullTime?.find(x=>['46','92'].includes(String(x.number)))?.numberImage||''},
-    {number:'56',driver:'Open',numberImage:board.fullTime?.find(x=>['56','54'].includes(String(x.number)))?.numberImage||''}
-  ],openCharters:(board.openCharters||[]).slice(0,1).map((charter)=>({...charter,slotLabel:flex.slotLabel,uses:[{...flex.uses[0],...(charter.uses||[]).find(u=>String(u.number)==='62'),description:flex.uses[0].description,number:'62',label:'Part-Time',active:true}]}))};
-});
+const enforceCurrentCharters=(boards=[])=>reconcileUarlCharters(normalizeCharters(boards));
 export const charters = reconcileCharterPlans(enforceCurrentCharters(choose('charters', chartersSeed)),chartersSeed);
 export const iracingGarage = choose('iracing-garage', iracingSeed);
 const publishedNews = choose('news', newsSeed);
@@ -207,13 +194,12 @@ const publishedCompetitions = choose('competitions', competitionsSeed);
 const competitionSeedById = new Map(competitionsSeed.map((item)=>[item.id,item]));
 const staleCompetition = (item={}) => {
   if(item.id==='uarl-d2') return true;
-  if(item.id==='uarl-d1') return /Saturday/i.test(item.schedule||'') || /Cadillac/i.test(item.machine||'') || !['#28 Hailey','#32 BurgerTown2Good','#46 Rocky','#56 OPEN'].every((entry)=>(item.roster||[]).includes(entry)) || (item.roster||[]).some((entry)=>/GK3R|#42\b/i.test(entry));
   if(item.id==='kmart' && (item.roster||[]).some((entry)=>/Jaxon/i.test(entry))) return true;
   if(item.id==='nrrs') return (item.roster||[]).some((entry)=>/#32\s+Wispy|#43\s+Parker/i.test(entry));
   if(item.id==='iracing-factory') return (item.roster||[]).some((entry)=>/Nicholas Waggoner/i.test(entry));
   return false;
 };
-export const competitions = alliancePrograms((Array.isArray(publishedCompetitions)?publishedCompetitions:competitionsSeed)
+export const competitions = alliancePrograms(reconcileUarlCompetitions(Array.isArray(publishedCompetitions)?publishedCompetitions:competitionsSeed)
   .filter((item)=>item?.id!=='uarl-d2')
   .map((item)=>staleCompetition(item)?preserveAllianceRelationship(competitionSeedById.get(item.id),item):item),alliances);
 const publishedLeadership = choose('leadership', leadershipSeed);

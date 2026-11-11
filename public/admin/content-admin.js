@@ -119,6 +119,82 @@
   const status = (message) => { $('[data-content-status]').textContent=message; };
   const account = () => window.netlifyIdentity?.currentUser();
   const authorized = () => local || (account()?.app_metadata?.roles || account()?.app_metadata?.authorization?.roles || []).includes('admin');
+  // BEGIN UARL_D1_RETURN_MIRROR
+  // Generated from src/lib/uarl-d1-return.mjs; parity is tested across read/cache paths.
+  const uarlD1Return=(()=>{
+    // Owner-confirmed November 11, 2026 return: Will #33 Chevrolet; #42/#43 unsigned.
+    // Only recognized pre-return records migrate. A saved revision, explicit empty
+    // collection or unrelated custom record is authoritative, including later edits.
+    const currentUarlRevision='2026-11-11-v1';
+    const marked=row=>row&&Object.hasOwn(row,'currentUarlRevision');
+    const identity=value=>String(value||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+    const formerNumbers=new Map([['hailey',['28']],['wispy',['28']],['rocky',['46','92']],['burgertown2good',['32']],['burgertown',['32']],['gk3r',['42']]]);
+    const formerNumber=(name,number)=>(formerNumbers.get(identity(name))||[]).includes(String(number));
+    const formerIds=new Set(['wispy-uarl-d1','rocky-uarl-d1','burgertown-uarl-d1','gk3r-uarl-d1']);
+    const formerAssignment=row=>row?.competitionId==='uarl-d1'&&formerIds.has(row.id)&&!marked(row)&&formerNumber(row.profile||row.displayName,row.number);
+
+    function reconcileUarlAssignments(rows=[]){
+      if(!Array.isArray(rows)||!rows.some(formerAssignment))return rows;
+      const next=rows.filter(row=>!formerAssignment(row));
+      if(!next.some(row=>row?.competitionId==='uarl-d1'&&(row.id==='will-uarl-d1'||identity(row.profile||row.displayName)==='will'))){
+        // Match the source ordering so a legacy cache cannot switch Will's leading
+        // program/number to a different league after initial server rendering.
+        next.splice(rows.findIndex(formerAssignment),0,{id:'will-uarl-d1',profile:'will',displayName:'Will',number:'33',competition:'UARL Division 1',competitionId:'uarl-d1',status:'Active',affiliation:'aetherwing',car:'Chevrolet',manufacturer:'Chevrolet',numberImage:'',currentUarlRevision});
+      }
+      return next;
+    }
+
+    function reconcileUarlCharters(boards=[]){
+      if(!Array.isArray(boards))return boards;
+      return boards.map(board=>{
+        if(board?.id!=='uarl-d1'||marked(board)||!Array.isArray(board.fullTime)||!board.fullTime.some(slot=>formerNumber(slot?.driver,slot?.number)))return board;
+        return {...board,seriesNote:'Aetherwing Chevrolet return · #42 and #43 unsigned',fullTime:[
+          {number:'33',driver:'Will',numberImage:''},
+          {number:'42',driver:'Open',status:'Unsigned',numberImage:''},
+          {number:'43',driver:'Open',status:'Unsigned',numberImage:''}
+        ],openCharters:[],currentUarlRevision};
+      });
+    }
+
+    function reconcileUarlCompetitions(rows=[]){
+      if(!Array.isArray(rows))return rows;
+      return rows.map(row=>{
+        if(row?.id!=='uarl-d1'||marked(row)||!Array.isArray(row.roster)||!row.roster.some(entry=>/^#(?:28\s+(?:Hailey|Wispy)|32\s+BurgerTown|(?:46|92)\s+Rocky|42\s+GK3R)/i.test(String(entry))))return row;
+        return {...row,machine:'BBR Next-Gen Chevrolet',roster:['#33 Will','#42 UNSIGNED','#43 UNSIGNED'],currentUarlRevision};
+      });
+    }
+
+    function reconcileUarlProfiles(rows=[]){
+      if(!Array.isArray(rows))return rows;
+      return rows.map(row=>{
+        if(!row||marked(row)||!Array.isArray(row.programs))return row;
+        if(['hailey','wispy','rocky','burgertown2good'].includes(row.slug)&&row.programs.includes('UARL D1')){
+          const next={...row,programs:row.programs.filter(program=>program!=='UARL D1'),currentUarlRevision};
+          if(['rocky','burgertown2good'].includes(row.slug)){
+            next.feature='Previous UARL D1 entry';
+            const number=row.slug==='rocky'?'46':'32';
+            if(row.bio===`Full-time Aetherwing UARL Division 1 driver in the #${number}.`)next.bio=`Previously raced for Aetherwing in UARL Division 1 in the #${number}.`;
+          }
+          return next;
+        }
+        if(row.slug!=='will'||row.programs.includes('UARL D1'))return row;
+        const numbers=[...new Set(['33',...String(row.numbers||'').split(/\s*\/\s*/).filter(Boolean)])];
+        const next={...row,numbers:numbers.join(' / '),programs:['UARL D1',...row.programs],feature:'Multi-program',currentUarlRevision};
+        if(row.bio==='Aetherwing Creative Director and StarClutch Racing alliance competitor.')next.bio='Aetherwing Creative Director and current UARL Division 1 #33 Chevrolet driver, alongside his StarClutch Racing alliance competition in Kmart and Sunoco.';
+        return next;
+      });
+    }
+
+    function reconcileUarlReturn(datasets={}){
+      const next={...datasets};
+      for(const [key,repair] of [['drivers',reconcileUarlAssignments],['charters',reconcileUarlCharters],['competitions',reconcileUarlCompetitions],['roster-profiles',reconcileUarlProfiles]]){
+        if(Array.isArray(datasets?.[key]))next[key]=repair(datasets[key]);
+      }
+      return next;
+    }
+    return {currentUarlRevision,reconcileUarlAssignments,reconcileUarlCharters,reconcileUarlCompetitions,reconcileUarlProfiles,reconcileUarlReturn};
+  })();
+  // END UARL_D1_RETURN_MIRROR
   // Apply confirmed current identities once; retain later saved Admin edits.
   const migrateCurrentRoster=(name,rows=[])=>rows.map((row)=>{
     const profile=name==='drivers'?(row.id==='matty-kmart'?'matty':row.profile):row.slug;
@@ -185,7 +261,9 @@
   };
 
   const base = (name) => {
-    const value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
+    let value=name==='site'?{...(seeds[name]||{}),...(registry.published[name]||{}),...(registry.drafts[name]||{})}:(registry.drafts[name] ?? registry.published[name] ?? seeds[name]);
+    const uarlRepair={drivers:uarlD1Return.reconcileUarlAssignments,charters:uarlD1Return.reconcileUarlCharters,competitions:uarlD1Return.reconcileUarlCompetitions,'roster-profiles':uarlD1Return.reconcileUarlProfiles}[name];
+    if(uarlRepair&&Array.isArray(value))value=uarlRepair(value);
     if(name==='results'&&Array.isArray(value)){
       const recap=(seeds.results||[]).find(race=>race.scheduleId==='nrrs-round-24');
       if(recap&&!value.some(race=>race.league==='nrrs'&&String(race.date||'').slice(0,4)==='2026'&&(race.scheduleId===recap.scheduleId||String(race.round||'').match(/\d+/)?.[0]==='24'||(race.date===recap.date&&(race.track===recap.track||race.title===recap.title)))))return [structuredClone(recap),...value];
@@ -583,6 +661,8 @@
     nrrs:'#d8b968',kmart:'#df2638',sunoco:'#f0c928',uarl:'#6f8f73','uarl-d1':'#6f8f73','uarl-open':'#bd9b57'
   };
   const standingsManufacturerByNumber={
+    uarl:{'33':'Chevrolet','42':'Chevrolet','43':'Chevrolet'},
+    'uarl-d1':{'33':'Chevrolet','42':'Chevrolet','43':'Chevrolet'},
     nrrs:{
       '1':'Chevrolet','01':'Chevrolet','3':'Chevrolet','6':'Ford','7':'Chevrolet','07':'Chevrolet','8':'Chevrolet','9':'Cadillac','10':'Chevrolet','11':'Ford','13':'Toyota','14':'Ford','15':'Honda','16':'Chevrolet','17':'Ford','18':'Toyota','20':'Chevrolet','21':'Chevrolet','22':'Ford','27':'Ford','32':'Toyota','33':'Chevrolet','41':'Honda','43':'Toyota','45':'Ford','58':'Ford','60':'Ford','61':'Chevrolet','62':'Toyota','67':'Ford','71':'Chevrolet','77':'Chevrolet','94':'Chevrolet','99':'Ford'
     },
@@ -623,9 +703,10 @@
   const standingsLeagueMatches=(resultLeague,boardLeague)=>resultLeague===boardLeague||(boardLeague==='uarl'&&resultLeague==='uarl-d1');
   function latestStandingResultEntry(board,row){
     const driverKey=normalizeStandingDriver(row?.driver||row?.displayName||'');if(!driverKey)return null;
-    const races=[...(base('results')||[])].filter((race)=>standingsLeagueMatches(race?.league,board?.league)).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||'')));
+    const league=board?.league||board?.id||'',d1=['uarl','uarl-d1'].includes(league),number=String(row?.number??'').trim();
+    const races=[...(base('results')||[])].filter((race)=>standingsLeagueMatches(race?.league,league)).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||'')));
     for(const race of races){
-      const entry=(race.entries||[]).find((candidate)=>normalizeStandingDriver(candidate?.driver||candidate?.displayName||'')===driverKey);
+      const entry=(race.entries||[]).find((candidate)=>normalizeStandingDriver(candidate?.driver||candidate?.displayName||'')===driverKey&&(!d1||(number&&String(candidate?.number??'').trim()===number)));
       if(entry)return entry;
     }
     return null;
@@ -1032,6 +1113,7 @@
       if(key==='partners'&&k==='contentRevision')return '';
       if(key==='drivers'&&k==='numberImageBackup')return '';
       if(['drivers','roster-profiles'].includes(key)&&k==='currentRosterRevision')return '';
+      if(['drivers','roster-profiles','charters','competitions'].includes(key)&&k==='currentUarlRevision')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
       if(key==='standings'&&path.length===0&&k==='featuredOnHome'){
         return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" data-home-standings-feature ${v===true?'checked':''}><span><b>${esc(pretty)}</b><small>Choose this standings board for the homepage. Selecting it clears other boards. Without an explicit selection, NRRS remains the default. The first highlighted driver is featured; otherwise the points leader.</small></span></label>`;
@@ -1085,11 +1167,13 @@
         return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,'Filled automatically from the selected Driver League Assignment.','is-readonly');
       }
       if(key==='results'&&k==='assignmentId'&&path[0]==='entries') {
-        const choices=resultRoster(current()?.league||'');
-        return shell(pretty,`<select ${attr} data-field-type="string" data-result-driver-choice><option value="" ${!v?'selected':''}>External / unrostered participant</option>${choices.map((driver)=>`<option value="${esc(driver.id)}" ${driver.id===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,choices.length?'Pick an Aetherwing/partner roster assignment, or use External for other league competitors.':'Enter league competitors as External participants.');
+        const race=current(),entry=valueAt(race,path),choices=resultRoster(race?.league||''),missing=v&&!choices.some(driver=>driver.id===v);
+        const recorded=missing&&[...(seeds.results||[]),...(registry.published.results||[])].some(prior=>prior.scheduleId===race.scheduleId&&prior.league===race.league&&prior.date===race.date&&(prior.entries||[]).some(item=>item.assignmentId===v&&item.driver===entry.driver&&String(item.number)===String(entry.number)));
+        const retained=missing?`<option value="${esc(v)}" selected>${recorded?'Recorded entry':'Unavailable assignment'} · ${esc(entry?.driver||v)}${entry?.number?` #${esc(entry.number)}`:''}</option>`:'';
+        return shell(pretty,`<select ${attr} data-field-type="string" data-result-driver-choice><option value="" ${!v?'selected':''}>External / unrostered participant</option>${retained}${choices.map((driver)=>`<option value="${esc(driver.id)}" ${driver.id===v?'selected':''}>#${esc(driver.number)} · ${esc(driver.displayName)}</option>`).join('')}</select>`,recorded?'This result retains its approved recorded entry. Choosing a current driver or External replaces that link.':missing?'This assignment is no longer current. Only an approved historical entry can keep this link when saved.':choices.length?'Pick an Aetherwing/partner roster assignment, or use External for other league competitors.':'Enter league competitors as External participants.');
       }
       if(key==='results'&&['driver','number'].includes(k)&&path[0]==='entries') {
-        const entry=valueAt(current(),path.slice(0,-1)),linked=Boolean(entry?.assignmentId);
+        const entry=valueAt(current(),path),linked=Boolean(entry?.assignmentId);
         return shell(pretty,`<input ${attr} data-field-type="string" ${linked?'readonly':''} value="${esc(v)}">`,linked?'Filled automatically from the selected Driver League Assignment.':'External participant: enter the official race name and car number.',linked?'is-readonly':'');
       }
       if(key==='page-overrides'&&['id','page','type','label','original'].includes(k)) {
@@ -1766,6 +1850,7 @@
     const resultDriver=event.target.closest?.('[data-result-driver-choice]');
     if(resultDriver&&key==='results'){
       const path=JSON.parse(resultDriver.dataset.fieldPath),entry=valueAt(current(),path.slice(0,-1)),assignment=resultRoster(current()?.league||'').find((driver)=>driver.id===resultDriver.value);
+      if(!assignment&&resultDriver.value&&resultDriver.value===entry.assignmentId)return status('Recorded race entry retained.');
       entry.assignmentId=resultDriver.value;
       if(assignment){entry.driver=assignment.displayName||'';entry.number=String(assignment.number||'');status(`${entry.driver} selected from the ${current().leagueName} roster. Name and number stay synced to this assignment.`);}else{entry.driver='';entry.number='';status('External participant selected. Enter the official driver name and car number for this race.');}
       dirty=true;render();return;

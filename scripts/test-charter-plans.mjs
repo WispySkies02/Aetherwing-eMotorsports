@@ -9,7 +9,7 @@ assert.deepEqual(nrrs.plannedSeasons,[{season:4,year:2027,status:'planned',numbe
 assert.deepEqual(Object.keys(plan).sort(),['numbers','season','sourceDate','sourceNote','status','year'],'Only planning facts are supplied; no drivers, teams or active assignments');
 assert.deepEqual(nrrs.fullTime.map(entry=>[entry.number,entry.driver]),[['32','Hailey'],['43','Plarker'],['54','Open']],'The 2026 NRRS full-time allocation is retained');
 assert.deepEqual(nrrs.openCharters.flatMap(charter=>charter.uses.map(use=>use.number)),['62','82'],'The existing NRRS shared uses are retained');
-assert.deepEqual(boards.find(board=>board.id==='uarl-d1').fullTime.map(entry=>entry.number),['28','32','46','56'],'A future NRRS plan never alters the D1 allocation');
+assert.deepEqual(boards.find(board=>board.id==='uarl-d1').fullTime.map(entry=>entry.number),['33','42','43'],'A future NRRS plan never alters the approved Chevrolet D1 allocation');
 const note='2027 · NRRS Season 4 — planned charter numbers: #42 / #43 / #46.';
 assert.deepEqual(plannedCharterNotes(nrrs),[note]);
 const legacy=structuredClone(boards);delete legacy.find(board=>board.id==='nrrs').plannedSeasons;
