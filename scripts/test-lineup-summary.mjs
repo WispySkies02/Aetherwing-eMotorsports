@@ -7,11 +7,15 @@ const {seeds}=createRequire(import.meta.url)('../netlify/lib/_content.cjs');
 const seed=seeds();
 const source=fs.readFileSync(new URL('../src/components/DriverLineup.astro',import.meta.url),'utf8');
 const script=source.match(/<script define:vars=[^>]+>([\s\S]*?)<\/script>/)[1];
-const initial={drivers:structuredClone(seed.drivers),'roster-profiles':structuredClone(seed['roster-profiles']),charters:structuredClone(seed.charters)};
-const before=JSON.stringify(initial);
+const current={drivers:structuredClone(seed.drivers),'roster-profiles':structuredClone(seed['roster-profiles']),charters:structuredClone(seed.charters)};
+// Retain complex flexible-card coverage with an explicit historical fixture,
+// rather than silently restoring the former D1 allocation to current seeds.
+const legacy=JSON.parse(fs.readFileSync(new URL('./fixtures/uarl-d1-before-return.json',import.meta.url),'utf8'));
+const initial={drivers:structuredClone(legacy.drivers),'roster-profiles':structuredClone(legacy['roster-profiles']),charters:structuredClone(legacy.charters)};
+const before=JSON.stringify(initial),currentBefore=JSON.stringify(current);
 const dom=new JSDOM('<section data-lineup><div data-lineup-filters></div><div data-lineup-program></div><div data-lineup-grid></div></section>',{url:'https://example.test/drivers/',runScripts:'outside-only'});
 const w=dom.window,d=w.document;
-Object.assign(w,{entries:initial.drivers,people:initial['roster-profiles'],boards:initial.charters,profileSlugs:initial['roster-profiles'].map(p=>p.slug),fetch:()=>new Promise(()=>{})});
+Object.assign(w,{entries:current.drivers,people:current['roster-profiles'],boards:current.charters,profileSlugs:current['roster-profiles'].map(p=>p.slug),fetch:()=>new Promise(()=>{})});
 const cards=()=>[...d.querySelectorAll('[data-lineup-grid] article')];
 const summary=()=>d.querySelector('[data-lineup-program] strong').textContent;
 const select=program=>{const button=d.querySelector(`[data-program="${program}"]`);assert.ok(button,`${program} filter remains available`);button.click();};
@@ -23,6 +27,10 @@ const check=(assigned,open,flexible)=>{
 };
 try{
   w.eval(script);
+  assert.equal(cards().length,6,'The current directory contains only the six drivers with current assignments');
+  select('uarl-d1');check(1,2,0);
+  assert.deepEqual(cards().map(card=>card.dataset.number),['33','42','43'],'Current D1 has Will #33 and two unsigned entry modules');
+  publish(initial);select('all');
   const allCount=cards().length;
   assert.equal(summary(),`${allCount} DRIVERS · ONE CARD EACH`);
   select('uarl-d1');check(3,1,1);
@@ -64,5 +72,9 @@ try{
   select('all');assert.equal(summary(),`${allCount} DRIVERS · ONE CARD EACH`);assert.equal(cards().length,allCount);
   select('uarl-d1');check(3,1,1);
   assert.equal(JSON.stringify(initial),before,'Rendering/filtering never changes roster or charter source records');
-  console.log('PASS: visible-card summary counts, D1 3 assigned/1 open/1 flex, filter switching, inactive/multi-use flex, missing assignment cards, open assignment rows, pluralization and unchanged source records.');
+  publish(current);check(1,2,0);
+  assert.deepEqual(cards().map(card=>card.dataset.number),['33','42','43'],'Restoring the current publication replaces the legacy test cards');
+  select('all');assert.equal(cards().length,6);
+  assert.equal(JSON.stringify(current),currentBefore,'Current roster records remain unchanged throughout the legacy fixture tests');
+  console.log('PASS: current D1 1 assigned/2 open/0 flex, explicit legacy flexible-card summary counts, filter switching, inactive/multi-use flex, missing assignment cards, open assignment rows, pluralization and unchanged source records.');
 }finally{dom.window.close();}

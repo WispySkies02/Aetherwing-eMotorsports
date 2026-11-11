@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { appendReviewedResults } from '../src/lib/reviewed-results.mjs';
 import { reconcileNovemberSchedule, reconcileNovemberStandings } from '../src/lib/november-racing-context.mjs';
 import { reconcileCharterPlans } from '../src/lib/charter-plans.mjs';
+import { reconcileUarlReturn } from '../src/lib/uarl-d1-return.mjs';
 const target = new URL('../src/data/admin-content.json', import.meta.url);
 const configured = process.env.AETHERWING_CONTENT_URL;
 const endpoint = configured || (process.env.NETLIFY ? 'https://aetherwing.net/api/site-content' : '');
@@ -43,6 +44,7 @@ async function canonicalizeBuildContent(payload){
   const seed=seeds();
   const next={...payload,datasets:{...(payload?.datasets||{})}};
   const d=next.datasets;
+  Object.assign(d,reconcileUarlReturn(d));
   d.alliances=Array.isArray(d.alliances)?d.alliances:seed.alliances;
   if(Array.isArray(d.news)){
     const fresh=seed.news.find(story=>story.slug==='bell-eyes-championship-mexico-city');
@@ -56,26 +58,16 @@ async function canonicalizeBuildContent(payload){
   // Build-time pages must never resurrect retired roster/manufacturer data from an older
   // Admin publication. Results, standings and assignment numbers remain Admin-authoritative.
   const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows)
-    .filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r')))
-    .map((entry)=>{
-      if(entry?.competitionId!=='uarl-d1')return entry;
-      const key=String(entry?.profile||entry?.displayName||'').toLowerCase();
-      if(key==='hailey')return {...entry,displayName:'Hailey'};
-      if(key==='burgertown2good')return {...entry,displayName:'BurgerTown2Good'};
-      if(key==='rocky')return {...entry,displayName:'Rocky'};
-      return entry;
-    });
+    .filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r')));
   if(Array.isArray(d.drivers))d.drivers=canonDrivers(d.drivers);
   if(Array.isArray(d['roster-profiles']))d['roster-profiles']=normalize('roster-profiles',d['roster-profiles']).filter((profile)=>profile?.slug!=='gk3r'&&String(profile?.handle||'').toLowerCase()!=='@sealsntags').map((profile)=>profile?.slug==='jaxon'?{...profile,...(seed['roster-profiles']||[]).find((item)=>item.slug===profile.slug)}:profile);
   if(Array.isArray(d['driver-profiles']))d['driver-profiles']=normalize('driver-profiles',d['driver-profiles']);
   if(Array.isArray(d.charters)){
-    const current=(seed.charters||[]).find((board)=>board.id==='uarl-d1');
-    d.charters=d.charters.map((board)=>board?.id==='uarl-d1'&&current?{...board,fullTime:current.fullTime,openCharters:current.openCharters}:board);
     d.charters=reconcileCharterPlans(d.charters,seed.charters);
   }
   if(Array.isArray(d.competitions)){
     const current=new Map((seed.competitions||[]).map((item)=>[item.id,item]));
-    d.competitions=d.competitions.filter((item)=>item?.id!=='uarl-d2').map((item)=>['uarl-d1','kmart'].includes(item?.id)?preserveAllianceRelationship(current.get(item.id),item):item);
+    d.competitions=d.competitions.filter((item)=>item?.id!=='uarl-d2').map((item)=>item?.id==='kmart'?preserveAllianceRelationship(current.get(item.id),item):item);
   }
   if(Array.isArray(d.competitions))d.competitions=alliancePrograms(d.competitions,d.alliances);
   d.partners=ensureCoreTeamPartners(Array.isArray(d.partners)?d.partners:[],seed.partners||[]);

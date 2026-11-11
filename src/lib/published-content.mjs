@@ -1,6 +1,7 @@
 import {defaultAlliances} from './alliances.mjs';
 import {alliancePrograms} from './alliance-content.mjs';
 import { reconcileCurrentAssignments, reconcileCurrentProfiles } from './current-driver-updates.mjs';
+import { reconcileUarlReturn } from './uarl-d1-return.mjs';
 // One atomic publication for every public surface. A failed request can expose
 // a saved snapshot, but must label it rather than silently imply it is current.
 const validDatasets = datasets => Boolean(datasets && !Array.isArray(datasets) && typeof datasets === 'object' && ['standings','results','schedule-events'].every(key=>Object.hasOwn(datasets,key)&&Array.isArray(datasets[key])));
@@ -98,6 +99,7 @@ export function startPublicationUpdates({ onSnapshot, fetcher = fetch, storage =
 
 export function applyPublication(snapshot, fallback, { document, window }) {
   const datasets = { ...fallback, ...snapshot.datasets };
+  Object.assign(datasets,reconcileUarlReturn(datasets));
   datasets.alliances=Array.isArray(datasets.alliances)?datasets.alliances:defaultAlliances;
   if(Array.isArray(datasets.competitions))datasets.competitions=alliancePrograms(datasets.competitions,datasets.alliances);
   if(Array.isArray(datasets.drivers))datasets.drivers=reconcileCurrentAssignments(datasets.drivers);

@@ -21,15 +21,14 @@
     "type": "aetherwing",
     "label": "Aetherwing Program",
     "schedule": "Sundays · 8:30 PM ET",
-    "machine": "BBR Next-Gen Toyota",
+    "machine": "BBR Next-Gen Chevrolet",
     "platform": "Roblox / BBR Next-Gen platform",
     "roster": [
-      "#28 Hailey",
-      "#32 BurgerTown2Good",
-      "#46 Rocky",
-      "#56 OPEN",
-      "AETHERWING FLEX ENTRY · #62 PART-TIME"
-    ]
+      "#33 Will",
+      "#42 UNSIGNED",
+      "#43 UNSIGNED"
+    ],
+    "currentUarlRevision": "2026-11-11-v1"
   },
   {
     "id": "uarl-open",

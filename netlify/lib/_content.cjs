@@ -1,5 +1,6 @@
 const { allianceIdFor } = require('../../src/lib/alliances.mjs');
 const { reconcileCurrentAssignments, reconcileCurrentProfiles } = require('../../src/lib/current-driver-updates.mjs');
+const { reconcileUarlAssignments, reconcileUarlProfiles, reconcileUarlCharters, reconcileUarlCompetitions } = require('../../src/lib/uarl-d1-return.mjs');
 const { manufacturerChoices, normalizeManufacturer, standingIdentity, normalizeStandingMetadata } = require('../../src/lib/standings-metadata.mjs');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -22,7 +23,7 @@ function normalizeDriverAssignments(rows=[]) {
     const common={number:'29',numberImage:entry.numberImage||'',numberImageBackup:entry.numberImageBackup||'',competition:entry.competition||'Kmart Auto Parts Series',competitionId:'kmart',status:entry.status||'Shared Part-Time Entry',affiliation:entry.affiliation||'alliance',...(Object.hasOwn(entry,'allianceId')?{allianceId:entry.allianceId}:{}),car:entry.car||'SCR #29 PT'};
     return [{...common,id:'clutch-kmart',profile:'clutch',displayName:'Clutch'},{...common,id:'eazy-kmart',profile:'eazy',displayName:'Eazy'},{...common,id:'matty-kmart',profile:'matty',displayName:'Matty'}];
   });
-  const updated=reconcileCurrentAssignments(normalized);
+  const updated=reconcileUarlAssignments(reconcileCurrentAssignments(normalized));
   const shared29=updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImageBackup)||updated.find((entry)=>entry?.competitionId==='kmart'&&String(entry?.number)==='29'&&entry?.numberImage);
   if(!shared29)return updated.map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
   const sharedUpload=shared29.numberImageBackup||'';
@@ -70,7 +71,9 @@ function normalize(key,data) {
   if(key==='schedule-events'&&Array.isArray(data))return [...data].sort(compareScheduleEvents);
   if(key==='standings'&&Array.isArray(data))return data.map(normalizeStandingMetadata);
   if(key==='drivers'&&Array.isArray(data))return normalizeDriverAssignments(data);
-  if(key==='roster-profiles'&&Array.isArray(data))return reconcileCurrentProfiles(data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug})));
+  if(key==='roster-profiles'&&Array.isArray(data))return reconcileUarlProfiles(reconcileCurrentProfiles(data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug}))));
+  if(key==='charters'&&Array.isArray(data))return reconcileUarlCharters(data);
+  if(key==='competitions'&&Array.isArray(data))return reconcileUarlCompetitions(data);
   if(key==='driver-profiles'&&Array.isArray(data))return data.map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
   if(key==='driver-portfolios'&&Array.isArray(data))return data.map((portfolio)=>portfolio?.profile==='wispy'?{...portfolio,profile:'hailey'}:portfolio);
   if(key==='results'&&Array.isArray(data)){const sorted=[...data].map(scoreKnownRace).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));return sorted.map((race,index)=>({...race,featured:index===0}));}

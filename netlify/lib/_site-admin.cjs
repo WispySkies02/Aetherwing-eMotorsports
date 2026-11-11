@@ -3,6 +3,7 @@ const { seeds, read, write, validate, normalize, json } = require('./_content.cj
 const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
 const { reconcileNovemberSchedule, reconcileNovemberStandings } = require('../../src/lib/november-racing-context.mjs');
 const { reconcileCharterPlans } = require('../../src/lib/charter-plans.mjs');
+const { reconcileUarlReturn } = require('../../src/lib/uarl-d1-return.mjs');
 
 function normalizedName(value='') {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g,'').replace(/^wispy$/,'hailey');
@@ -117,6 +118,7 @@ function ensureCoreTeamPartners(rows=[],seedPartners=[]){
 
 function migrateKnownPublished(registry){
   const seed=seeds();
+  registry.published=reconcileUarlReturn(registry.published);
   if(Array.isArray(registry.published?.news)){
     const fresh=seed.news.find(story=>story.slug==='bell-eyes-championship-mexico-city');
     if(fresh){
@@ -136,16 +138,16 @@ function migrateKnownPublished(registry){
   if(Array.isArray(registry.published?.['schedule-events']))registry.published['schedule-events']=reconcileNovemberSchedule(registry.published['schedule-events']);
   if(Array.isArray(registry.published?.standings))registry.published.standings=reconcileNovemberStandings(registry.published.standings);
   // Assignment numbers are also editable; migrate identities without resetting numbers.
-  if(Array.isArray(registry.published?.drivers))registry.published.drivers=normalize('drivers',registry.published.drivers).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r'))).map(e=>{if(e?.competitionId!=='uarl-d1')return e;const k=String(e?.profile||e?.displayName||'').toLowerCase();if(k==='hailey')return {...e,displayName:'Hailey'};return e;});
+  if(Array.isArray(registry.published?.drivers))registry.published.drivers=normalize('drivers',registry.published.drivers).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r')));
   if(Array.isArray(registry.published?.['roster-profiles']))registry.published['roster-profiles']=normalize('roster-profiles',registry.published['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(registry.published?.['driver-profiles']))registry.published['driver-profiles']=normalize('driver-profiles',registry.published['driver-profiles']);
-  if(Array.isArray(registry.published?.charters)){const fresh=(seed.charters||[]).find(b=>b.id==='uarl-d1');registry.published.charters=registry.published.charters.map(b=>b?.id==='uarl-d1'&&fresh?{...b,fullTime:fresh.fullTime,openCharters:fresh.openCharters}:b);}
   if(Array.isArray(registry.published?.charters))registry.published.charters=reconcileCharterPlans(registry.published.charters,seed.charters);
-  if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>{const current=['uarl-d1','kmart'].includes(x?.id)?fresh.get(x.id):null;if(!current)return x;return Object.hasOwn(x,'allianceId')?{...current,allianceId:x.allianceId,type:x.type,label:x.label,platform:x.platform}:current;});}
+  if(Array.isArray(registry.published?.competitions)){const fresh=new Map((seed.competitions||[]).map(x=>[x.id,x]));registry.published.competitions=registry.published.competitions.filter(x=>x?.id!=='uarl-d2').map(x=>{const current=x?.id==='kmart'?fresh.get(x.id):null;if(!current)return x;return Object.hasOwn(x,'allianceId')?{...current,allianceId:x.allianceId,type:x.type,label:x.label,platform:x.platform}:current;});}
   if(Array.isArray(registry.published?.partners))registry.published.partners=ensureCoreTeamPartners(registry.published.partners,seed.partners||[]);
   if(Array.isArray(registry.published?.['driver-portfolios']))registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']);
   if(Array.isArray(registry.drafts?.['roster-profiles']))registry.drafts['roster-profiles']=normalize('roster-profiles',registry.drafts['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags');
   if(Array.isArray(registry.drafts?.drivers))registry.drafts.drivers=normalize('drivers',registry.drafts.drivers).filter(e=>e?.profile!=='gk3r'&&String(e?.handle||'').toLowerCase()!=='@sealsntags');
+  for(const key of ['charters','competitions'])if(Array.isArray(registry.drafts?.[key]))registry.drafts[key]=normalize(key,registry.drafts[key]);
   return registry;
 }
 

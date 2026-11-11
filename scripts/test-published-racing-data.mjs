@@ -263,7 +263,7 @@ function allApprovedResults(){
     const rides=[...card.querySelectorAll('.aw-lineup__summary-rides > span')];
     assert.equal(rides.length,expected.length,'Each profile assignment appears in the summary');
     for(const assignment of expected)assert.ok(rides.some(ride=>ride.textContent.includes(assignment.competitionId==='uarl-d1'?'UARL D1':assignment.competition)&&ride.textContent.includes(`#${assignment.number}`)));
-    assert.equal(w.document.querySelectorAll('[data-lineup-grid] article').length,8,'Factory-only entries without directory profiles do not add unapproved driver cards');
+    assert.equal(w.document.querySelectorAll('[data-lineup-grid] article').length,6,'Factory-only entries and archived Rocky/BurgerTown profiles do not add unapproved active driver cards');
   };
   check(seed.drivers);
   const removed=seed.drivers.filter(row=>!(row.profile==='hailey'&&row.competitionId==='iracing-factory'));

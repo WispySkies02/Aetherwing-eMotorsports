@@ -62,45 +62,27 @@
   {
     "id": "uarl-d1",
     "label": "UARL D1",
-    "seriesNote": "Aetherwing Season 6 charter allocation",
+    "seriesNote": "Aetherwing Chevrolet return · #42 and #43 unsigned",
     "fullTime": [
       {
-        "number": "28",
-        "driver": "Hailey",
+        "number": "33",
+        "driver": "Will",
         "numberImage": ""
       },
       {
-        "number": "32",
-        "driver": "BurgerTown2Good",
-        "numberImage": ""
-      },
-      {
-        "number": "46",
-        "driver": "Rocky",
-        "numberImage": ""
-      },
-      {
-        "number": "56",
+        "number": "42",
         "driver": "Open",
+        "status": "Unsigned",
+        "numberImage": ""
+      },
+      {
+        "number": "43",
+        "driver": "Open",
+        "status": "Unsigned",
         "numberImage": ""
       }
     ],
-    "openCharters": [
-      {
-        "id": "uarl-d1-open-1",
-        "label": "Aetherwing Open Charter",
-        "slotLabel": "FLEXIBLE ENTRY",
-        "active": true,
-        "uses": [
-          {
-            "number": "62",
-            "label": "Part-Time",
-            "description": "Flexible part-time entry for the Aetherwing Open Charter. It does not add another roster slot.",
-            "active": true,
-            "numberImage": ""
-          }
-        ]
-      }
-    ]
+    "openCharters": [],
+    "currentUarlRevision": "2026-11-11-v1"
   }
 ]

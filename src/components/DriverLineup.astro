@@ -136,7 +136,7 @@ const initialPlanNotes = plannedCharterNotes(charterPlans.find(board=>board.id==
   };
   const profileWithPublishedSignature=(profile)=>profile&&publishedSignatureBySlug.has(profile.slug)?{...profile,signatureLogo:publishedSignatureBySlug.get(profile.slug)}:profile;
   const programFilter=(key,labelText)=>{const logo=programLogo[key]||'';const label=key==='all'?'All Drivers':labelText||key;return `<button type="button" data-program="${esc(key)}" aria-pressed="${series===key}" aria-label="${esc(label)}"><span class="aw-lineup__filter-logo">${logo?`<img src="${esc(logo)}" alt="" loading="lazy">`:`<b>${esc(label)}</b>`}</span><span>${esc(label)}</span></button>`;};
-  const entryKind=entry=>entry.flex?'flexible':/open charter|^open$/i.test(entry.displayName||'')?'open':'assigned';
+  const entryKind=entry=>entry.flex?'flexible':/^unsigned$/i.test(String(entry.status||'').trim())||/open charter|^open$|^unsigned (?:entry|seat)$/i.test(entry.displayName||'')?'open':'assigned';
   function render(){
     const rawActive=assignments.filter(e=>e.competitionId!=='iracing-factory'||profiles.some(person=>person.slug===e.profile)).map(assignmentWithPublishedArt);
     const sharedKmart29=rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImageBackup)||rawActive.find(e=>e.competitionId==='kmart'&&String(e.number)==='29'&&e.numberImage);
@@ -172,7 +172,7 @@ const initialPlanNotes = plannedCharterNotes(charterPlans.find(board=>board.id==
     };
     const shown=series==='all'?groupedDrivers():leagueShown;
     const board=charters.find(c=>c.id===series);
-    const extra=(series==='all'?[]:(board?.fullTime||[]).filter(slot=>!shown.some(entry=>entry.number===String(slot.number))).map(slot=>({number:String(slot.number),numberImage:slot.numberImage||'',displayName:slot.driver==='Open'?'Open charter':slot.driver,status:slot.driver==='Open'?'Open charter':'Full-Time',competitionId:series,affiliation:'aetherwing'})));
+    const extra=(series==='all'?[]:(board?.fullTime||[]).filter(slot=>!shown.some(entry=>entry.number===String(slot.number))).map(slot=>{const unsigned=/^unsigned$/i.test(String(slot.status||'').trim());return{number:String(slot.number),numberImage:slot.numberImage||'',displayName:slot.driver==='Open'?(unsigned?'Unsigned entry':'Open charter'):slot.driver,status:slot.status||(slot.driver==='Open'?'Open charter':'Full-Time'),competitionId:series,affiliation:'aetherwing'};}));
     const flex=(series==='all'?[]:(board?.openCharters||[]).filter(c=>c.active!==false).map(c=>{const uses=(c.uses||[]).filter(u=>u.active!==false);return{number:uses.map(u=>u.number).join(' / '),numberImages:uses.map(u=>({number:String(u.number),image:u.numberImage||''})),displayName:c.label||'Flexible entry',status:c.slotLabel||'Part-time / development',competitionId:series,affiliation:'aetherwing',flex:true};}));
     const all=[...shown,...extra,...flex];
     const counts=all.reduce((totals,entry)=>{totals[entryKind(entry)]+=1;return totals;},{assigned:0,open:0,flexible:0});
@@ -214,7 +214,8 @@ const initialPlanNotes = plannedCharterNotes(charterPlans.find(board=>board.id==
     }).join('')||'<p class="aw-lineup__empty">No roster entries have been published for this program.</p>';
     queueMicrotask(()=>root.querySelectorAll('.aw-lineup__number img').forEach(img=>{if(img.complete&&img.naturalWidth){tightenNumber(img);if(matchMedia('(max-width: 600px)').matches)requestAnimationFrame(()=>fitNumberVisual(img));}}));
   }
-  window.addEventListener('aetherwing:content',e=>{const d=e.detail||{};if(Array.isArray(d.drivers)){assignments=d.drivers;rememberPublishedArt(d.drivers,[]);}if(Array.isArray(d['roster-profiles'])){profiles=d['roster-profiles'];rememberPublishedArt([],d['roster-profiles']);}if(Array.isArray(d.charters))charters=d.charters;if(Array.isArray(d.alliances))organizations=d.alliances;render();});
+  const applyLineup=d=>{if(Array.isArray(d.drivers)){assignments=d.drivers;rememberPublishedArt(d.drivers,[]);}if(Array.isArray(d['roster-profiles'])){profiles=d['roster-profiles'];rememberPublishedArt([],d['roster-profiles']);}if(Array.isArray(d.charters))charters=d.charters;if(Array.isArray(d.alliances))organizations=d.alliances;render();};
+  window.addEventListener('aetherwing:content',e=>applyLineup(e.detail||{}));
   const applyArtPayload=(payload)=>{
     if(!payload)return false;
     const driverRows=Array.isArray(payload.drivers)?payload.drivers:Array.isArray(payload.datasets?.drivers)?payload.datasets.drivers:[];
@@ -241,6 +242,7 @@ const initialPlanNotes = plannedCharterNotes(charterPlans.find(board=>board.id==
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')hydrateDriverArtwork(0);});
   let resizeFrame=0;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{if(matchMedia('(max-width: 600px)').matches)root.querySelectorAll('.aw-lineup__number img').forEach(fitNumberVisual);});},{passive:true});
   render();
+  if(window.__AETHERWING_CONTENT__)applyLineup(window.__AETHERWING_CONTENT__);
   hydrateDriverArtwork(0);
 })();
 </script>

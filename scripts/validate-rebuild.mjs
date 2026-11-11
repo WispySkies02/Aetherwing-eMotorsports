@@ -115,24 +115,25 @@ const partnersPageSource=readFileSync('src/pages/partners/index.astro','utf8');
 const homeSource=readFileSync('src/pages/index.astro','utf8');
 if(!partnersPageSource.includes('Array.isArray(d.partners)')||!partnersPageSource.includes('renderTeamPartners'))throw Error('Team partner edits must live-sync to the public Partners page without waiting for a rebuild.');
 if(!homeSource.includes('data-home-partners')||!homeSource.includes('Array.isArray(d.partners)'))throw Error('Team partner edits must live-sync to the homepage partner strip.');
-for(const boardId of ['nrrs','uarl-d1']){
-  const board=charters.find((item)=>item.id===boardId);
-  const shared=(board?.openCharters||[]).find((item)=>item.active!==false);
-  const uses=(shared?.uses||[]).filter((item)=>item.active!==false);
-  const expected=boardId==='uarl-d1'?['62']:['62','82'];
-  if(!shared||uses.length!==expected.length||!expected.every((number)=>uses.some((use)=>String(use.number)===number)))throw Error(`${boardId} active flex identities must be ${expected.join(' / ')} within one open charter.`);
-  const flexCopy=[shared?.label,shared?.slotLabel,...uses.flatMap(use=>[use.label,use.description])].filter(Boolean).join(' ');
-  if(boardId==='uarl-d1'&&((board.openCharters||[]).filter(c=>c.active!==false).length!==1||/\b82\b|shared/i.test(flexCopy)))throw Error('UARL D1 must retain one #62 flexible entry without retired #82 or shared-number copy.');
-  if(uses.some((use)=>Object.hasOwn(use,'driver')&&String(use.driver||'').trim()))throw Error(`${boardId} open charter identities must not carry permanent driver assignments.`);
+// NRRS retains its existing flexible charter; the Chevrolet D1 return has
+// its own approved three-seat allocation and no current flexible entry.
+{
+  const board=charters.find(item=>item.id==='nrrs');
+  const shared=(board?.openCharters||[]).find(item=>item.active!==false);
+  const uses=(shared?.uses||[]).filter(item=>item.active!==false);
+  if(!shared||uses.length!==2||!['62','82'].every(number=>uses.some(use=>String(use.number)===number)))throw Error('NRRS active flex identities must remain #62 / #82 within one open charter.');
+  if(uses.some(use=>Object.hasOwn(use,'driver')&&String(use.driver||'').trim()))throw Error('NRRS open charter identities must not carry permanent driver assignments.');
 }
 if(drivers.some((driver)=>driver.competitionId==='uarl-d2')||scheduleEvents.some((event)=>event.league==='uarl-d2'))throw Error('Closed UARL D2 must not reappear in active driver or schedule filters.');
 const currentNumbers={
   'uarl-d1':new Set(drivers.filter((d)=>d.competitionId==='uarl-d1').map((d)=>String(d.number))),
   nrrs:new Set(drivers.filter((d)=>d.competitionId==='nrrs').map((d)=>String(d.number)))
 };
-if(!['28','32','46'].every((number)=>currentNumbers['uarl-d1'].has(number))||currentNumbers['uarl-d1'].has('42'))throw Error('Current UARL D1 assigned-driver roster must contain #28/#32/#46 and exclude departed #42 GK3R.');
-const uarlCharter=charters.find((board)=>board.id==='uarl-d1');
-if(!(uarlCharter?.fullTime||[]).some((slot)=>String(slot.number)==='56'&&String(slot.driver||'').toUpperCase()==='OPEN'))throw Error('Current UARL D1 charter set must contain #56 OPEN.');
+const currentD1=drivers.filter(driver=>driver.competitionId==='uarl-d1');
+if(currentD1.length!==1||currentD1[0].id!=='will-uarl-d1'||currentD1[0].profile!=='will'||currentD1[0].number!=='33'||currentD1[0].manufacturer!=='Chevrolet')throw Error('Current UARL D1 must assign only Will #33 Chevrolet.');
+const uarlCharter=charters.find(board=>board.id==='uarl-d1');
+if(JSON.stringify((uarlCharter?.fullTime||[]).map(slot=>[String(slot.number),slot.driver]))!==JSON.stringify([['33','Will'],['42','Open'],['43','Open']])||(uarlCharter?.openCharters||[]).length!==0)throw Error('The D1 return must retain #33 Will and unsigned #42/#43, with no current flexible entry.');
+if((uarlCharter?.fullTime||[]).filter(slot=>slot.driver==='Open').some(slot=>slot.status!=='Unsigned'))throw Error('D1 #42/#43 must be explicitly unsigned rather than new driver assignments.');
 if(currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season NRRS #42/#46/#56 numbers must stay out of the current NRRS roster until the season changes.');
 
 // v1.1.31 — selected-board standings PNG export.
@@ -165,7 +166,7 @@ const missionSource=readFileSync('src/pages/mission-values/index.astro','utf8');
 const handbookSource=readFileSync('src/pages/team-handbook/index.astro','utf8');
 if(!missionSource.includes('aetherwing.length')||!missionSource.includes('alliance.length')||!missionSource.includes('active.length'))throw Error('Mission & Values counters must be derived from active competition data.');
 if(!missionSource.includes('Former program / historical archive')||!handbookSource.includes('UARL D2 is closed'))throw Error('Closed UARL D2 must be historical-only on Mission and Handbook pages.');
-if(!competitions.find((item)=>item.id==='uarl-d1')?.roster?.includes('#32 BurgerTown2Good')||competitions.find((item)=>item.id==='uarl-d1')?.roster?.some((entry)=>/GK3R|#42\b/i.test(entry)))throw Error('UARL D1 current roster must include BurgerTown2Good and exclude departed GK3R/#42.');
+if(JSON.stringify(competitions.find(item=>item.id==='uarl-d1')?.roster)!==JSON.stringify(['#33 Will','#42 UNSIGNED','#43 UNSIGNED']))throw Error('UARL D1 program must agree with the approved Will #33 and unsigned #42/#43 allocation.');
 if(competitions.some((item)=>item.id==='uarl-d2'))throw Error('UARL D2 must stay out of active competitions.');
 if(competitions.find((item)=>item.id==='uarl-d1')?.schedule!=='Sundays · 8:30 PM ET')throw Error('UARL D1 must race Sundays at 8:30 PM ET.');
 if(!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Hailey')||!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Plarker'))throw Error('NRRS active roster must use Hailey and Plarker identities.');
@@ -367,10 +368,10 @@ if(!siteDataV217.includes('articleLogo:normalized.articleLogo||fresh.articleLogo
 console.log('v2.0.20 verified: Team Wire shows the FULL HEART logo in-article, uses transparent embed art, and keeps previews compact.');
 
 
-// v2.0.21 — October 4 shared roster canon
+// Historical October roster canon is superseded only by the approved Chevrolet D1 return.
 {
  const comps=JSON.parse(readFileSync('src/data/competitions.json','utf8')), d1=comps.find(x=>x.id==='uarl-d1'), km=comps.find(x=>x.id==='kmart');
- if(!d1||d1.machine!=='BBR Next-Gen Toyota'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#32 BurgerTown2Good','#46 Rocky','#56 OPEN','AETHERWING FLEX ENTRY · #62 PART-TIME'])) throw Error('Current UARL D1 canon must retain the assigned entries, #56 OPEN, and one #62 flexible entry.');
+ if(!d1||d1.machine!=='BBR Next-Gen Chevrolet'||JSON.stringify(d1.roster)!==JSON.stringify(['#33 Will','#42 UNSIGNED','#43 UNSIGNED'])) throw Error('Current UARL D1 program must retain Chevrolet, Will #33 and two unsigned entries.');
  if((km?.roster||[]).some(x=>/Jaxon/i.test(x))) throw Error('v2.0.21 Jaxon must not remain in active Kmart roster.');
  const drivers=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
  if(drivers.some(x=>x.id==='jaxon-kmart')) throw Error('v2.0.21 Jaxon active assignment still present.');
@@ -643,7 +644,7 @@ console.log('v2.0.38 verified: Admin Theme Preview visibly animates every select
   const program=readFileSync('src/pages/programs/[id].astro','utf8');
   const mission=readFileSync('src/pages/mission-values/index.astro','utf8');
   const handbook=readFileSync('src/pages/team-handbook/index.astro','utf8');
-  if(!sync.includes('canonicalizeBuildContent')||!sync.includes("['uarl-d1','kmart']")||!sync.includes("competitionId==='kmart'&&entry?.profile==='jaxon'"))throw Error('v2.0.39 build sync must canonicalize current UARL D1/Kmart roster data before Astro renders.');
+  if(!sync.includes('canonicalizeBuildContent')||!sync.includes('reconcileUarlReturn')||!sync.includes("competitionId==='kmart'&&entry?.profile==='jaxon'"))throw Error('v2.0.39 build sync must canonicalize current UARL D1/Kmart roster data before Astro renders.');
   if(!sync.includes("['Palmetto Gaming','Apex Sim Racing']"))throw Error('v2.0.39 build sync must preserve both core team partners.');
   for(const [label,source] of [['Programs',programs],['Program detail',program],['Mission',mission],['Handbook',handbook]]){
     if(!source.includes('aetherwing:content')||!source.includes('__AETHERWING_CONTENT__'))throw Error(`v2.0.39 ${label} must hydrate from live Admin content.`);
@@ -659,17 +660,17 @@ console.log('v2.0.39 verified: build-time canon and live program surfaces share 
   const profiles40=JSON.parse(readFileSync('src/data/roster-profiles.json','utf8'));
   if(drivers40.some((entry)=>entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||entry?.handle==='@sealsntags'||entry?.displayName==='GK3R')))throw Error('v2.0.40 departed GK3R assignment must not remain active.');
   const d140=comps40.find((item)=>item.id==='uarl-d1');
-  if((d140?.roster||[]).some((entry)=>/GK3R|#42\b/i.test(entry)))throw Error('v2.0.40 UARL D1 public roster still contains departed GK3R/#42.');
+  if((d140?.roster||[]).some((entry)=>/GK3R|sealsntags/i.test(entry)))throw Error('v2.0.40 UARL D1 public roster still contains departed GK3R identity.');
   const c140=charters40.find((item)=>item.id==='uarl-d1');
-  if((c140?.fullTime||[]).some((slot)=>String(slot.number)==='42'||slot.driver==='GK3R'))throw Error('v2.0.40 UARL D1 active charter board still assigns #42 to GK3R.');
+  if((c140?.fullTime||[]).some((slot)=>/GK3R|sealsntags/i.test(String(slot.driver||''))))throw Error('v2.0.40 UARL D1 active charter board still assigns a seat to GK3R.');
   if(profiles40.some((profile)=>profile.slug==='gk3r'||String(profile.handle||'').toLowerCase()==='@sealsntags'))throw Error('v2.0.41: no Aetherwing driver profile for a non-starter.');
   for(const file of ['src/lib/site-content.mjs','scripts/sync-admin-content.mjs','netlify/lib/_site-data.cjs','netlify/lib/_site-admin.cjs']){
     const source=readFileSync(file,'utf8');
     if(!source.includes("profile==='gk3r'")&&!source.includes("profile==='gk3r'".replace('profile','entry?.profile')))throw Error(`v2.0.40 ${file} must explicitly suppress the departed GK3R active assignment.`);
   }
 }
-console.log('v2.0.40/41 verified: #42 absent from current UARL D1; GK3R never started and is not listed as former.');
-{const seed41=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));if(seed41['roster-profiles'].some(p=>p.slug==='gk3r')||seed41.drivers.some(d=>d.profile==='gk3r')||seed41.charters.find(c=>c.id==='uarl-d1')?.fullTime?.some(c=>String(c.number)==='42'))throw Error('v2.0.41 admin seed must not resurrect GK3R/#42');for(const file of ['scripts/sync-admin-content.mjs','netlify/lib/_site-data.cjs','netlify/lib/_site-admin.cjs','src/lib/site-content.mjs']){const source=readFileSync(file,'utf8');if(!source.includes("slug!=='gk3r'"))throw Error('v2.0.41 must filter outdated published GK3R roster profiles in '+file);}}
+console.log('v2.0.40/41 verified: GK3R remains absent; unsigned #42 is not a driver identity or a former-driver claim.');
+{const seed41=JSON.parse(readFileSync('public/data/site-admin-seed.json','utf8'));if(seed41['roster-profiles'].some(p=>p.slug==='gk3r')||seed41.drivers.some(d=>d.profile==='gk3r')||seed41.charters.find(c=>c.id==='uarl-d1')?.fullTime?.some(c=>/GK3R|sealsntags/i.test(String(c.driver||''))))throw Error('v2.0.41 admin seed must not resurrect GK3R');for(const file of ['scripts/sync-admin-content.mjs','netlify/lib/_site-data.cjs','netlify/lib/_site-admin.cjs','src/lib/site-content.mjs']){const source=readFileSync(file,'utf8');if(!source.includes("slug!=='gk3r'"))throw Error('v2.0.41 must filter outdated published GK3R roster profiles in '+file);}}
 
 // Hailey Bell driver file: personal broadcast styling is scoped and CMS-compatible.
 {
@@ -680,7 +681,7 @@ console.log('v2.0.40/41 verified: #42 absent from current UARL D1; GK3R never st
   if(!hailey)throw Error('Hailey driver profile missing from roster seed.');
   if(!profilePage.includes("const isHailey=person.slug==='hailey';")||!profilePage.includes("isHailey ? (")||!profilePage.includes('profile-hero--bell'))throw Error('Hailey-only driver file design or generic fallback missing.');
   for(const part of ['data-profile-name','data-profile-identity','data-profile-bio','data-profile-number','data-profile-assignments','data-profile-stats','data-profile-partners'])if(!profilePage.includes(part))throw Error('Profile CMS hook missing: '+part);
-  for(const marker of ['data-profile-mark-fallback','fallback.hidden=!!person.signatureLogo','data-profile-primary-program',"program.textContent=entry.competition"])if(!profilePage.includes(marker))throw Error('Hailey signature/program live data hook missing: '+marker);
+  for(const marker of ['data-profile-mark-fallback','fallback.hidden=!!person.signatureLogo','data-profile-primary-program',"program.textContent=entry?.competition||'No current program'"])if(!profilePage.includes(marker))throw Error('Hailey signature/program live data hook missing: '+marker);
   if(!profilePage.includes("location.replace('/drivers/')"))throw Error('Departed driver redirect must still work.');
   for(const marker of ['.profile-hero--bell','.profile-grid--bell','.bell-driver-partners','@media(max-width:760px)','@media(max-width:480px)'])if(!profileCss.includes(marker))throw Error('Hailey-specific desktop/mobile style missing: '+marker);
 }

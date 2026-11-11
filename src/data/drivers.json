@@ -23,27 +23,18 @@
     "numberImage": ""
   },
   {
-    "id": "wispy-uarl-d1",
-    "profile": "hailey",
-    "displayName": "Hailey",
-    "number": "28",
+    "id": "will-uarl-d1",
+    "profile": "will",
+    "displayName": "Will",
+    "number": "33",
     "competition": "UARL Division 1",
     "competitionId": "uarl-d1",
-    "status": "Full-Time",
+    "status": "Active",
     "affiliation": "aetherwing",
-    "identityNote": "Current Roblox / RoRacing display name: Hailey. Username: @Aokikoto. Historical results recorded under Wispy remain part of this same competition record.",
-    "numberImage": ""
-  },
-  {
-    "id": "rocky-uarl-d1",
-    "profile": "rocky",
-    "displayName": "Rocky",
-    "number": "46",
-    "competition": "UARL Division 1",
-    "competitionId": "uarl-d1",
-    "status": "Full-Time",
-    "affiliation": "aetherwing",
-    "numberImage": ""
+    "car": "Chevrolet",
+    "manufacturer": "Chevrolet",
+    "numberImage": "",
+    "currentUarlRevision": "2026-11-11-v1"
   },
   {
     "id": "wispy-uarl-open",
@@ -207,18 +198,6 @@
     "competition": "iRacing Factory Program",
     "competitionId": "iracing-factory",
     "status": "Factory Driver",
-    "affiliation": "aetherwing",
-    "numberImage": ""
-  },
-  {
-    "id": "burgertown-uarl-d1",
-    "profile": "burgertown2good",
-    "displayName": "BurgerTown2Good",
-    "handle": "@uhhbzb",
-    "number": "32",
-    "competition": "UARL Division 1",
-    "competitionId": "uarl-d1",
-    "status": "Full-Time",
     "affiliation": "aetherwing",
     "numberImage": ""
   }

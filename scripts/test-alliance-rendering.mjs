@@ -15,7 +15,7 @@ w.eval(script);
 const card=slug=>d.querySelector(`a[href="/drivers/${slug}/"]`).closest('article');
 const apply=detail=>w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail}));
 const filter=id=>d.querySelector(`[data-program="${id}"]`).click();
-assert.equal(d.querySelectorAll('[data-lineup-grid] article').length,8);
+assert.equal(d.querySelectorAll('[data-lineup-grid] article').length,6);
 assert.equal(card('matty').dataset.teamLabel,'STARCLUTCH RACING');
 assert.equal(card('hailey').dataset.teamLabel,'AETHERWING + STARCLUTCH RACING');
 filter('kmart');
@@ -28,7 +28,7 @@ for(const row of reassigned)if(row.competitionId==='sunoco'&&['eazy','hailey'].i
 apply({alliances:[legacy,north],drivers:reassigned});filter('all');
 assert.equal(card('eazy').dataset.teamLabel,'STARCLUTCH RACING + NORTHSTAR');
 assert.equal(card('hailey').dataset.teamLabel,'AETHERWING + STARCLUTCH RACING + NORTHSTAR');
-assert.equal(d.querySelectorAll('[data-lineup-grid] article').length,8,'New organizations do not create duplicate driver cards');
+assert.equal(d.querySelectorAll('[data-lineup-grid] article').length,6,'New organizations do not create duplicate driver cards');
 filter('sunoco');assert.equal(card('eazy').dataset.teamLabel,'NORTHSTAR');
 const quoted={...north,name:'Team "Echo" & Co',shortName:'Team "Echo" & Co'};
 apply({alliances:[legacy,quoted]});
@@ -38,8 +38,8 @@ const unassigned=structuredClone(drivers);unassigned.find(row=>row.id==='eazy-su
 apply({alliances:[legacy],drivers:unassigned});assert.equal(card('eazy').dataset.teamLabel,'ALLIANCE','An explicit blank link never resolves to legacy StarClutch');
 apply({alliances:[]});
 assert.ok([...d.querySelectorAll('[data-lineup-grid] article')].every(c=>!c.dataset.teamLabel.includes('STARCLUTCH')),'An explicitly empty collection does not resurrect a deleted name');
-filter('uarl-d1');assert.equal(d.querySelector('[data-lineup-program] strong').textContent,'3 ASSIGNED · 1 OPEN · 1 FLEXIBLE ENTRY');
-assert.deepEqual([...d.querySelectorAll('[data-lineup-grid] article')].map(c=>c.dataset.number),['28','32','46','56','62']);
+filter('uarl-d1');assert.equal(d.querySelector('[data-lineup-program] strong').textContent,'1 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');
+assert.deepEqual([...d.querySelectorAll('[data-lineup-grid] article')].map(c=>c.dataset.number),['33','42','43']);
 dom.window.close();
 
 // Profile text and existing assignment rows refresh when only the alliance collection changes.
@@ -61,12 +61,14 @@ assert.equal(profile.window.document.querySelector('[data-profile-bio]').textCon
 const currentPerson={...person,allianceId:north.id};
 const split=mine.map((row,index)=>({...row,allianceId:index===0?north.id:'starclutch-racing'}));
 send({alliances:[legacy,north],drivers:split,'roster-profiles':[currentPerson]});
-assert.equal(profile.window.document.querySelector('[data-profile-affiliation]').textContent,'NORTHSTAR RACING DRIVER');
+assert.equal(profile.window.document.querySelector('[data-profile-affiliation]').textContent,'NORTHSTAR RACING + STARCLUTCH RACING DRIVER','Current assignments determine the profile heading across both organizations');
 assert.match(box().textContent,/NORTHSTAR RACING/);assert.match(box().textContent,/STARCLUTCH RACING/);
 send({alliances:[]});assert.doesNotMatch(box().textContent,/STARCLUTCH|NORTHSTAR/);assert.match(box().textContent,/ALLIANCE/);
 send({'roster-profiles':[{...person,allianceId:''}],alliances:[legacy]});
-assert.equal(profile.window.document.querySelector('[data-profile-affiliation]').textContent,'ALLIANCE DRIVER');
-send({'roster-profiles':[{...person,affiliation:'aetherwing',allianceId:''}]});
+assert.equal(profile.window.document.querySelector('[data-profile-affiliation]').textContent,'ALLIANCE + STARCLUTCH RACING DRIVER','Profile-only metadata cannot erase an organization still assigned to a current ride');
+send({drivers:split.map(row=>({...row,allianceId:''}))});
+assert.equal(profile.window.document.querySelector('[data-profile-affiliation]').textContent,'ALLIANCE DRIVER','Explicitly unlinking each ride never resurrects legacy StarClutch membership');
+send({'roster-profiles':[{...person,affiliation:'aetherwing',allianceId:''}],drivers:split.map(row=>({...row,affiliation:'aetherwing',allianceId:''}))});
 assert.equal(profile.window.document.querySelector('[data-profile-affiliation]').textContent,'AETHERWING DRIVER');
 profile.window.close();
 assert.equal(JSON.stringify({drivers,people,boards}),originals,'Source roster, identities, artwork and charter data remain unchanged');

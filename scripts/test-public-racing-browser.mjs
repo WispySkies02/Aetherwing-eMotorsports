@@ -154,8 +154,10 @@ try {
       await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
       await page.locator('[data-program="uarl-d1"]').click();
       const cards=page.locator('[data-lineup-grid] article');
-      assert.deepEqual(await cards.evaluateAll(nodes=>nodes.map(node=>node.dataset.number).sort()),['28','32','46','56','62'],'D1 keeps its three drivers, #56 open, and exactly one #62 flex card');
-      assert.doesNotMatch(await page.locator('[data-lineup-grid]').textContent(),/82|shared/i);
+      assert.deepEqual(await cards.evaluateAll(nodes=>nodes.map(node=>node.dataset.number).sort()),['33','42','43'],'D1 shows Will #33 and the two unsigned #42/#43 entries');
+      assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'1 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');
+      assert.equal(await cards.filter({has:page.locator('h3',{hasText:/^Will$/})}).getAttribute('data-number'),'33');
+      assert.doesNotMatch(await page.locator('[data-lineup-grid]').textContent(),/GK3R|82|shared/i);
       if(!reload)await page.reload({waitUntil:'domcontentloaded'});
     }
     for(const program of seed.competitions.filter(p=>p.id!=='uarl-d2')) {
@@ -170,13 +172,14 @@ try {
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     const haileyCard=page.locator('[data-lineup-grid] article').filter({has:page.locator('a[href="/drivers/hailey/"]')});
     const directoryPrograms=await haileyCard.locator('.aw-lineup__summary-rides > span').allTextContents();
-    assert.match(await haileyCard.locator('.aw-lineup__plate > small').textContent(),/^6 ACTIVE PROGRAMS$/);
-    assert.equal(await page.locator('[data-lineup-grid] article').count(),8);
+    assert.match(await haileyCard.locator('.aw-lineup__plate > small').textContent(),/^5 ACTIVE PROGRAMS$/);
+    assert.equal(await page.locator('[data-lineup-grid] article').count(),6,'Only current assigned drivers appear; archived Rocky and BurgerTown profiles do not add active cards');
     await page.goto(`${base}/drivers/hailey/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     const profilePrograms=await page.locator('[data-profile-assignments] .profile-assignment').allTextContents();
     assert.equal(profilePrograms.length,directoryPrograms.length);
     assert.ok(directoryPrograms.some(text=>/iRacing Factory Program.*#28/.test(text)));
+    assert.ok(!directoryPrograms.some(text=>/UARL D1/.test(text)),'Hailey’s current assignment summary no longer includes her prior D1 entry');
     for(const assignment of datasets.drivers.filter(row=>row.profile==='hailey'))assert.ok(profilePrograms.some(text=>text.includes(assignment.competition)&&text.includes(`#${assignment.number}`)));
     await page.goto(`${base}/schedule/uarl-d1/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
