@@ -1519,10 +1519,59 @@
   ],
   "results": [
     {
-      "pointsSource": "official-recap",
+      "pointsSource": "official-result",
       "coverage": "team-only",
       "standingsMode": "record-only",
       "featured": true,
+      "scheduleId": "kmart-round-12",
+      "league": "kmart",
+      "leagueName": "NASCAR Kmart Auto Parts Series",
+      "title": "Corona Mexico 250",
+      "track": "Mexico City",
+      "date": "2026-11-09",
+      "round": "ROUND 12",
+      "status": "Regular Season",
+      "specialTag": "",
+      "sourceNote": "Owner-approved November 15, 2026 review confirms Hailey #15 finished sixth and Will #24 finished first in the November 9 Corona Mexico 250, Kmart Round 12. The published calendar confirms the event identity, and the approved Kmart assignment identifies Will as #24 for StarClutch Racing. Starting positions, stage results and race points were not supplied. This team-only archive record must not advance standings.",
+      "headline": "MEXICO CITY RESULTS",
+      "headlineAccent": "KMART · ROUND 12",
+      "summary": "Hailey #15 finished sixth and Will #24 won the Corona Mexico 250. Starting positions, stage results and race points have not been supplied.",
+      "entries": [
+        {
+          "assignmentId": "wispy-kmart",
+          "driver": "Hailey",
+          "number": "15",
+          "manufacturer": "Dodge",
+          "start": null,
+          "stage1Finish": null,
+          "stage1Points": null,
+          "stage2Finish": null,
+          "stage2Points": null,
+          "finish": 6,
+          "racePoints": null,
+          "featuredDriver": true
+        },
+        {
+          "assignmentId": "will-kmart",
+          "driver": "Will",
+          "number": "24",
+          "manufacturer": "",
+          "start": null,
+          "stage1Finish": null,
+          "stage1Points": null,
+          "stage2Finish": null,
+          "stage2Points": null,
+          "finish": 1,
+          "racePoints": null,
+          "featuredDriver": false
+        }
+      ]
+    },
+    {
+      "pointsSource": "official-recap",
+      "coverage": "team-only",
+      "standingsMode": "record-only",
+      "featured": false,
       "scheduleId": "kmart-round-11",
       "league": "kmart",
       "leagueName": "Kmart Auto Parts Series",
@@ -3532,7 +3581,18 @@
       "historicalIRacingName": "Nicholas Waggoner",
       "robloxDisplayName": "Hailey",
       "robloxUsername": "@Aokikoto",
-      "historicalRobloxDisplayName": "Wispy"
+      "historicalRobloxDisplayName": "Wispy",
+      "profileAssignments": [
+        {
+          "id": "hailey-gwm-uarl-d1",
+          "competitionId": "uarl-d1",
+          "competition": "UARL Division 1",
+          "number": "28",
+          "team": "Goat Whitlock Motorsports",
+          "status": "Active",
+          "active": true
+        }
+      ]
     }
   ],
   "drivers": [

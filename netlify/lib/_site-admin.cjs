@@ -146,6 +146,7 @@ function migrateKnownPublished(registry){
   if(Array.isArray(registry.published?.partners))registry.published.partners=ensureCoreTeamPartners(registry.published.partners,seed.partners||[]);
   if(Array.isArray(registry.published?.['driver-portfolios']))registry.published['driver-portfolios']=normalize('driver-portfolios',registry.published['driver-portfolios']);
   if(Array.isArray(registry.drafts?.['roster-profiles']))registry.drafts['roster-profiles']=normalize('roster-profiles',registry.drafts['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags');
+  if(Array.isArray(registry.drafts?.['driver-profiles']))registry.drafts['driver-profiles']=normalize('driver-profiles',registry.drafts['driver-profiles']);
   if(Array.isArray(registry.drafts?.drivers))registry.drafts.drivers=normalize('drivers',registry.drafts.drivers).filter(e=>e?.profile!=='gk3r'&&String(e?.handle||'').toLowerCase()!=='@sealsntags');
   for(const key of ['charters','competitions'])if(Array.isArray(registry.drafts?.[key]))registry.drafts[key]=normalize(key,registry.drafts[key]);
   return registry;

@@ -18,7 +18,7 @@
     milestones:{number:'05',kicker:'RACE OPERATION',title:'Milestones',description:'Manage the timeline of major Aetherwing and driver milestones.',guide:'Use this for meaningful historical markers, not routine race results.'},
     drivers:{number:'06',kicker:'PEOPLE + PROGRAMS',title:'Driver League Assignments',description:'One row per driver per league: number, public display name, status, affiliation, car/body, and identity note.',guide:'This is the source of truth for current league assignments. Changing an assignment also drives the public roster number/program badges.'},
     'roster-profiles':{number:'07',kicker:'PEOPLE + PROGRAMS',title:'Driver Directory',description:'Edit each person’s current public identity, handle, role, affiliation, feature label, biography, and identity history.',guide:'Numbers and program badges are generated from Driver League Assignments, so those summaries are read-only here.'},
-    'driver-profiles':{number:'08',kicker:'PEOPLE + PROGRAMS',title:'Driver Profiles',description:'Edit long-form profile presentation, platform-specific names, historical names, and every career-stat tile.',guide:'This controls detailed profile copy. Current Roblox/RoRacing and iRacing identities can stay distinct without creating duplicate people.'},
+    'driver-profiles':{number:'08',kicker:'PEOPLE + PROGRAMS',title:'Driver Profiles',description:'Edit long-form profile presentation, platform-specific names, career-stat tiles, and profile-only programs.',guide:'Profile-only programs show rides with other teams on the driver’s detailed profile. They do not create Aetherwing roster entries, change team program counts, or allocate charters.'},
     charters:{number:'09',kicker:'PEOPLE + PROGRAMS',title:'Charter Boards',description:'Build each league’s charter structure: full-time seats plus any number of configurable Open Charters and number identities.',guide:'One Open Charter record equals one actual charter slot. Inside it, add one or more possible number/usage identities. You can remove #82, run only #62, add a third use, add another Open Charter, or create a Charter Board for another league later.'},
     'iracing-garage':{number:'10',kicker:'PEOPLE + PROGRAMS',title:'iRacing Roster',description:'Edit Factory Program totals and every driver/team entry shown in the iRacing garage.',guide:'Hailey’s current iRacing presentation is Hailey Bell only. Roblox usernames do not belong on current iRacing entries.'},
     competitions:{number:'11',kicker:'PEOPLE + PROGRAMS',title:'League Details',description:'Edit the public name, relationship type, schedule cadence, platform, machine, and roster summary for every active competition relationship.',guide:'This edits Aetherwing’s relationship to a league/program; it does not alter technical schedule colors or route IDs.'},
@@ -45,7 +45,7 @@
     milestones:{assignmentId:'Linked driver assignment',date:'Display date',title:'Milestone title',description:'Milestone description'},
     drivers:{id:'Assignment ID',profile:'Driver profile',displayName:'Display name in this league',number:'Car number',numberImage:'Number image URL',competition:'League name',competitionId:'League',status:'Entry status',affiliation:'Relationship',allianceId:'Alliance team',car:'Car / body',identityNote:'Identity note'},
     'roster-profiles':{slug:'Profile ID',name:'Current display name',handle:'Current handle / username',role:'Team role',affiliation:'Primary relationship',allianceId:'Alliance team',numbers:'Active numbers summary',programs:'Program badges',feature:'Profile tag',signatureLogo:'Signature logo URL',bio:'Biography',iracingName:'Current iRacing name',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
-    'driver-profiles':{slug:'Profile ID',displayName:'Current RoRacing display name',iracingName:'Current iRacing name',subtitle:'Profile subtitle',intro:'Profile introduction',stats:'Career stat tiles',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name'},
+    'driver-profiles':{slug:'Profile ID',displayName:'Current RoRacing display name',iracingName:'Current iRacing name',subtitle:'Profile subtitle',intro:'Profile introduction',stats:'Career stat tiles',historicalIRacingName:'Historical iRacing name',robloxDisplayName:'Current Roblox display name',robloxUsername:'Roblox username',historicalRobloxDisplayName:'Historical Roblox display name',profileAssignments:'Profile-only programs',competitionId:'League / program',competition:'League / program name',number:'Program car number',team:'Team / organization',status:'Program status',active:'Show on driver profile'},
     charters:{id:'League / charter board ID',label:'Public series label',seriesNote:'Board note',fullTime:'Full-time charters',openCharters:'Open Charters',uses:'Number identities / uses',number:'Car number',numberImage:'Number image URL',driver:'Assigned driver',slotLabel:'Slot label',active:'Active / public',description:'Public explanation'},
     'iracing-garage':{factoryDrivers:'Factory driver count',teamEntries:'Team entry count',schemes:'Published scheme count',entries:'Garage entries',driver:'Driver / team name',number:'Car number(s)',placeholder:'Placeholder entry'},
     competitions:{id:'League ID',name:'League / program name',type:'Relationship type',allianceId:'Alliance team',label:'Public relationship label',schedule:'Usual schedule',machine:'Car / machine',platform:'Platform',roster:'Roster summary'},
@@ -110,7 +110,8 @@
     entryStatus:'Optional public note such as Confirmed, Expected, Raced, Withdrawn, or Substitute.'
   };
   const fieldLabel = (name) => fieldLabels[key]?.[name] || label(name);
-  const helpFor = (name) => fieldHelp[name] || '';
+  const profileAssignmentHelp={profileAssignments:'Add or remove external rides shown only on this driver’s detailed profile. These do not change Aetherwing assignments, team counts, or charters. An empty list stays empty after publishing.',competitionId:'Choose the league for this external ride. This does not add the driver to the Aetherwing team roster.',competition:'Filled automatically from the selected league. Existing custom program names are preserved.',number:'Enter this ride’s car number exactly as it should display.',team:'Enter the team or organization for this profile-only ride.',status:'Enter the public program status, such as Active or Part-Time.',active:'Show this ride on the detailed driver profile. Turn off to retain it in this record without displaying it.'};
+  const helpFor = (name) => (key==='driver-profiles'?profileAssignmentHelp[name]:null) || fieldHelp[name] || '';
 
   let registry = { revision:0, published:{}, drafts:{}, history:[] }, seeds = {}, key='', data=null, index=0, dirty=false, loaded=false, busy=false, publishConfigured=false, persistedSnapshot='';
   const $ = (s) => document.querySelector(s);
@@ -119,6 +120,48 @@
   const status = (message) => { $('[data-content-status]').textContent=message; };
   const account = () => window.netlifyIdentity?.currentUser();
   const authorized = () => local || (account()?.app_metadata?.roles || account()?.app_metadata?.authorization?.roles || []).includes('admin');
+  // BEGIN PROFILE_ASSIGNMENTS_MIRROR
+  // Exact pure-helper mirror for the classic/offline Admin script.
+  const profileAssignmentContent=(()=>{
+    // Owner-confirmed profile context only. This is never a team-roster or charter
+    // assignment, and must not be used to calculate directory/program counts.
+    const approvedHaileyProfileAssignment=Object.freeze({
+      id:'hailey-gwm-uarl-d1',
+      competitionId:'uarl-d1',
+      competition:'UARL Division 1',
+      number:'28',
+      team:'Goat Whitlock Motorsports',
+      status:'Active',
+      active:true
+    });
+
+    const fields=new Set(['id','competitionId','competition','number','team','status','active']);
+    const text=(value,limit)=>typeof value==='string'&&value.trim().length>0&&value.length<=limit&&!/[<>\u0000-\u001f\u007f]/.test(value);
+    function validProfileAssignment(row){
+      return Boolean(row&&typeof row==='object'&&!Array.isArray(row)
+        &&[...fields].every(key=>Object.hasOwn(row,key))
+        &&Object.keys(row).every(key=>fields.has(key))
+        &&text(row.id,100)&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.id)
+        &&text(row.competitionId,80)&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.competitionId)
+        &&text(row.competition,160)&&text(row.number,32)&&text(row.team,160)&&text(row.status,80)
+        &&typeof row.active==='boolean');
+    }
+
+    function reconcileProfileAssignments(rows=[]){
+      if(!Array.isArray(rows))return [];
+      return rows.map(row=>row&&typeof row==='object'&&!Array.isArray(row)&&row.slug==='hailey'&&!Object.hasOwn(row,'profileAssignments')
+        ?{...row,profileAssignments:[{...approvedHaileyProfileAssignment}]}
+        :row);
+    }
+
+    function profileAssignmentsFor(profile){
+      return profile&&Object.hasOwn(profile,'profileAssignments')&&Array.isArray(profile.profileAssignments)
+        ?profile.profileAssignments.filter(row=>validProfileAssignment(row)&&row.active===true)
+        :[];
+    }
+    return {approvedHaileyProfileAssignment,validProfileAssignment,reconcileProfileAssignments,profileAssignmentsFor};
+  })();
+  // END PROFILE_ASSIGNMENTS_MIRROR
   // BEGIN UARL_D1_RETURN_MIRROR
   // Generated from src/lib/uarl-d1-return.mjs; parity is tested across read/cache paths.
   const uarlD1Return=(()=>{
@@ -289,6 +332,7 @@
     }
     if(name==='partners'&&Array.isArray(value)){const list=[...value];for(const partnerName of ['Palmetto Gaming','Apex Sim Racing']){const canonical=(seeds.partners||[]).find((item)=>item?.name===partnerName);if(!canonical)continue;const index=list.findIndex((item)=>item?.name===partnerName);if(index===-1)list.push(structuredClone(canonical));else{const current={...list[index]};if(current.contentRevision!==canonical.contentRevision)for(const field of ['description','badge','category','profileLabel','tags','presenceTitle','presenceParagraphs','presenceTags','contentRevision'])if(Object.hasOwn(canonical,field))current[field]=structuredClone(canonical[field]);if(partnerName==='Palmetto Gaming'&&/hailey|personal/i.test(String(current.role||'')))current.role=canonical.role;list[index]=current;}}const order=new Map(['Palmetto Gaming','Apex Sim Racing'].map((partnerName,index)=>[partnerName,index]));return list.sort((a,b)=>(order.get(a?.name)??99)-(order.get(b?.name)??99));}
     if(name==='drivers')return normalizeDriverAssignments(value||[]);
+    if(name==='driver-profiles'&&Array.isArray(value))return profileAssignmentContent.reconcileProfileAssignments(value.map(profile=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile));
     if(name==='roster-profiles'&&Array.isArray(value)){
       const seedBySlug=new Map((seeds[name]||[]).map((profile)=>[profile.slug,profile]));
       return migrateCurrentRoster(name,value).map((profile)=>({...seedBySlug.get(profile.slug),...profile,signatureLogo:profile.signatureLogo||''}));
@@ -1041,6 +1085,7 @@
     });
   }
   function arrayTemplate(name) {
+    if(key==='driver-profiles'&&name==='profileAssignments')return profileAssignmentContent.approvedHaileyProfileAssignment;
     let found;
     function visit(value) {
       if (!value || typeof value!=='object' || found) return;
@@ -1087,6 +1132,7 @@
     if(name==='schedule-events')next=next.map((r)=>({offWeek:false,tbd:false,timePending:false,specialTag:'',round:'',entryListMode:'auto',...r,entries:normalizeScheduleEntries(r)})).sort(compareScheduleEvents);
     if(name==='results'){next=migrateResults(next).sort(compareResults);next=next.map((race,i)=>({...race,featured:i===0}));}
     if(name==='drivers')next=next.map((row)=>({numberImage:'',...row}));
+    if(name==='driver-profiles')next=next.map(row=>({profileAssignments:[],...row}));
     if(['drivers','roster-profiles','competitions'].includes(name))next=next.map(row=>({...row,allianceId:Object.hasOwn(row,'allianceId')?row.allianceId:(row.affiliation==='alliance'||row.type==='alliance'?'starclutch-racing':'')}));
     if(['wins','milestones'].includes(name))next=next.map((row)=>({assignmentId:'',...row}));
     return next;
@@ -1114,7 +1160,13 @@
       if(key==='drivers'&&k==='numberImageBackup')return '';
       if(['drivers','roster-profiles'].includes(key)&&k==='currentRosterRevision')return '';
       if(['drivers','roster-profiles','charters','competitions'].includes(key)&&k==='currentUarlRevision')return '';
+      if(key==='driver-profiles'&&path.length===2&&path[0]==='profileAssignments'&&k==='id')return '';
       const p=[...path,k], attr=`data-field-path="${esc(JSON.stringify(p))}"`, pretty=fieldLabel(k), help=helpFor(k);
+      if(key==='driver-profiles'&&path.length===2&&path[0]==='profileAssignments'&&k==='competitionId'){
+        const choices=competitionChoices(),known=choices.some(([id])=>id===v);
+        return shell(pretty,`<select ${attr} data-field-type="string" data-profile-program-choice>${!v?'<option value="" selected>Choose league / program</option>':''}${v&&!known?`<option value="${esc(v)}" selected>${esc(value.competition||v)} (existing program)</option>`:''}${choices.map(([id,name])=>`<option value="${esc(id)}" ${id===v?'selected':''}>${esc(name)}</option>`).join('')}</select>`,help);
+      }
+      if(key==='driver-profiles'&&path.length===2&&path[0]==='profileAssignments'&&k==='competition')return shell(pretty,`<input ${attr} data-field-type="string" readonly value="${esc(v)}">`,help,'is-readonly');
       if(key==='standings'&&path.length===0&&k==='featuredOnHome'){
         return `<label class="content-check admin-toggle"><input type="checkbox" ${attr} data-field-type="boolean" data-home-standings-feature ${v===true?'checked':''}><span><b>${esc(pretty)}</b><small>Choose this standings board for the homepage. Selecting it clears other boards. Without an explicit selection, NRRS remains the default. The first highlighted driver is featured; otherwise the points leader.</small></span></label>`;
       }
@@ -1870,6 +1922,12 @@
       if(profile){current().name=profile.name||current().name;current().handle=profile.handle||current().handle;}
       dirty=true;render();status(profile?`${profile.name} is linked. Their current public name and handle were filled in.`:'This portfolio can now use a custom driver name and handle.');return;
     }
+    const profileProgram=event.target.closest?.('[data-profile-program-choice]');
+    if(key==='driver-profiles'&&profileProgram){
+      commit();const path=JSON.parse(profileProgram.dataset.fieldPath),row=valueAt(current(),path.slice(0,-1)),name=competitionChoices().find(([id])=>id===profileProgram.value)?.[1];
+      if(name){row.competition=name;const namePath=JSON.stringify([...path.slice(0,-1),'competition']),field=[...$('[data-content-fields]').querySelectorAll('[data-field-path]')].find(node=>node.dataset.fieldPath===namePath);if(field)field.value=name;}
+      dirty=true;return;
+    }
     const league=event.target.closest?.('[data-competition-choice]');
     if(!league)return;
     const name=competitionChoices().find(([id])=>id===league.value)?.[1]||league.value;
@@ -1902,7 +1960,7 @@
     if(clearEntries&&key==='schedule-events'){commit();current().entries=[];current().entryListMode='custom';dirty=true;render();status('Custom entry list cleared. Add only the drivers you want shown, or switch Entry List Mode back to Auto.');return;}
     const button=event.target.closest('[data-array-add],[data-array-remove]');if(!button)return;
     commit();
-    if(button.dataset.arrayAdd){const path=JSON.parse(button.dataset.arrayAdd),arr=valueAt(current(),path);const scheduleEntries=key==='schedule-events'&&path.at(-1)==='entries';const template=arr[0]||arrayTemplate(path.at(-1))||(scheduleEntries?{assignmentId:'',driver:'',number:'',entryStatus:''}:{});const added=blank(template);if(scheduleEntries){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next)Object.assign(added,scheduleEntryFromAssignment(next,'Confirmed'));current().entryListMode='custom';}if(key==='results'&&path.at(-1)==='entries'){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next){added.assignmentId=next.id;added.driver=next.displayName;added.number=String(next.number||'');}added.featuredDriver=arr.length===0;}arr.push(added);}
+    if(button.dataset.arrayAdd){const path=JSON.parse(button.dataset.arrayAdd),arr=valueAt(current(),path);const scheduleEntries=key==='schedule-events'&&path.at(-1)==='entries';const template=arr[0]||arrayTemplate(path.at(-1))||(scheduleEntries?{assignmentId:'',driver:'',number:'',entryStatus:''}:{});const added=blank(template);if(key==='driver-profiles'&&path.at(-1)==='profileAssignments'){const prefix=slugifyResultPart(current().slug||current().displayName||'profile')||'profile';let suffix=1;while(arr.some(row=>row.id===`${prefix}-program-${suffix}`))suffix++;Object.assign(added,{id:`${prefix}-program-${suffix}`,status:'Active',active:true});}if(scheduleEntries){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next)Object.assign(added,scheduleEntryFromAssignment(next,'Confirmed'));current().entryListMode='custom';}if(key==='results'&&path.at(-1)==='entries'){const used=new Set(arr.map((entry)=>entry.assignmentId)),next=resultRoster(current()?.league||'').find((driver)=>!used.has(driver.id));if(next){added.assignmentId=next.id;added.driver=next.displayName;added.number=String(next.number||'');}added.featuredDriver=arr.length===0;}arr.push(added);}
     else {const path=JSON.parse(button.dataset.arrayRemove);valueAt(current(),path.slice(0,-1)).splice(Number(path.at(-1)),1);}
     dirty=true;render();
   });
@@ -1930,7 +1988,7 @@
   $('[data-content-fields]').addEventListener('dragend',()=>{
     standingDragPath=null;document.querySelectorAll('[data-standing-drag]').forEach((item)=>item.classList.remove('is-dragging','is-drag-target'));
   });
-  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=key==='alliances'?{id:'',name:'',shortName:''}:blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(['drivers','roster-profiles','competitions'].includes(key))added.allianceId='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}if(key==='news'&&!Array.isArray(added.timeline))added.timeline=[];data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
+  $('[data-content-add]').addEventListener('click',()=>{if(!Array.isArray(data))return;if(key==='results'){refreshResultsRaceOptions();$('[data-results-race-tool]').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});return status('Filter by league, choose the completed scheduled race, then select Load race results.');}commit();const added=key==='alliances'?{id:'',name:'',shortName:''}:blank(seeds[key][0]);if(key==='drivers')added.numberImage='';if(key==='driver-profiles')added.profileAssignments=[];if(['drivers','roster-profiles','competitions'].includes(key))added.allianceId='';if(['wins','milestones'].includes(key))added.assignmentId='';if(key==='driver-portfolios'){added.id=`driver-${Date.now()}`;added.label='Driver Brand / Livery Portfolio';added.order=data.length+1;}if(key==='schedule-events'){added.entryListMode='auto';added.entries=[];}if(key==='news'&&!Array.isArray(added.timeline))added.timeline=[];data.push(added);index=data.length-1;dirty=true;render();if(key==='schedule-events')status('New race added. Enter its league, date, and start time; Save Draft or Publish will automatically place it in chronological order.');if(key==='driver-portfolios')status('New driver portfolio added. Choose a Driver Directory profile or enter a custom name, then build their brand list and add logos by URL or file upload.');});
   $('[data-content-remove]').addEventListener('click',()=>{if(!Array.isArray(data))return;const row=current(),message=key==='alliances'?`Remove ${row?.name||'this alliance'} from this section draft? Current linked records must be reassigned before publication. Historical results, news and paints are kept.`:key==='roster-profiles'?`Remove ${row?.name||row?.slug||'this driver'} from the Driver Directory? When you publish, all of this driver’s current league assignments will also be removed from the public site. Historical results and wins are kept.`:'Remove this entry from the section draft? It stays public until you publish.';if(!confirm(message))return;commit();data.splice(index,1);index=Math.max(0,index-1);dirty=true;render();if(key==='roster-profiles')status('Driver removed from this draft. Publish Driver Directory to remove the profile and current league assignments from the public site; historical results remain.');});
   async function action(name) {
     if(['saveDraft','publish'].includes(name)&&[...sponsorLogoRequests.keys()].some(field=>field.isConnected))throw new Error('Wait for sponsor logo optimization to finish before saving or publishing.');

@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {JSDOM} from 'jsdom';
 import {prepareConfirmedRacingUpdates as prepareSection} from '../public/admin/racing-updates.mjs';
 import {prepareConfirmedRacingUpdates} from '../src/lib/confirmed-racing-updates.mjs';
-import {buildRaceFeed,upcomingRaces,eventCompleted,countdownParts,compactCountdown,nextRace,calendarFile,eventEnd} from '../src/lib/race-clock.mjs';
+import {buildRaceFeed,upcomingRaces,eventCompleted,countdownParts,compactCountdown,nextRace,calendarFile,eventEnd,scheduleStatus,SCHEDULE_COPY} from '../src/lib/race-clock.mjs';
 const require=createRequire(import.meta.url);
 const reviewed=JSON.parse(fs.readFileSync(new URL('../src/data/confirmed-racing-updates.json',import.meta.url)));
 const {seeds,validate,normalize}=require('../netlify/lib/_content.cjs');
@@ -82,12 +82,17 @@ assert.equal(nextRace(buildRaceFeed([pending],[{...pending,entries:[]}]),now),nu
 // Test the production Calendar controller with a known date / unknown time.
 const calendar=fs.readFileSync(new URL('../src/components/RaceCalendar.astro',import.meta.url),'utf8');
 const markup=calendar.slice(calendar.indexOf('<section'),calendar.indexOf('<script'));
-const script=calendar.match(/<script define:vars[^>]*>([\s\S]*?)<\/script>/)[1];
+const script=calendar.match(/<script>\s*([\s\S]*?)<\/script>/)[1].replace(/^\s*import .*;$/gm,'');
 const dom=new JSDOM(markup,{url:'https://aetherwing.net/schedule/open/',runScripts:'outside-only'});
 const w=dom.window,RealDate=w.Date;
 w.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[+now]));}static now(){return +now;}};
 w.setInterval=()=>1;
-w.eval(`const initial=${JSON.stringify([pending])},initialResults=[];\n${script}`);
+const calendarSeed=w.document.createElement('script');calendarSeed.type='application/json';calendarSeed.dataset.calendarSeed='';calendarSeed.textContent=JSON.stringify({initial:[pending],initialResults:[]});w.document.body.append(calendarSeed);
+w.eval(`window.scheduleStatus=${scheduleStatus.toString()};`);w.SCHEDULE_COPY=SCHEDULE_COPY;
+w.eval(script);
+assert.match(w.document.querySelector('[data-calendar-hero]').textContent,/Loading published schedule/,'A bundled pending race is not current before publication');
+const calendarPublication={'schedule-events':[pending],results:[]};w.__AETHERWING_PUBLICATION__={state:'published',datasets:calendarPublication};w.__AETHERWING_CONTENT__=calendarPublication;
+w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:calendarPublication}));
 assert.match(w.document.querySelector('[data-calendar-hero]').textContent,/START TIME PENDING.*TIME TBD/s);
 assert.ok(!w.document.querySelector('[data-calendar-hero]').textContent.includes('LIVE'),'Pending is distinct from an actual live race');
 w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:{'schedule-events':[{...pending,timePending:false,time:'8:00 PM ET'}]}}));

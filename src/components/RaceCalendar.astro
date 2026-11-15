@@ -5,27 +5,30 @@ import '../styles/race-calendar.css';
 const initial = scheduleEvents.map((event) => ({ ...event, url: `/event/${eventSlug(event)}/` }));
 const initialResults = results;
 ---
-<section class="aw-calendar section" id="race-calendar" aria-labelledby="calendar-title" data-race-calendar>
+<section class="aw-calendar section" id="race-calendar" aria-labelledby="calendar-title" data-race-calendar data-schedule-state="loading" aria-busy="true">
   <div class="shell">
     <div class="section-head"><div><p class="eyebrow">Aetherwing Race Control</p><h2 class="section-title" id="calendar-title">Race Calendar</h2></div><p class="lede">Where the team races next. Choose a program to see its own countdown and schedule.</p></div>
     <div class="aw-calendar__filters" role="group" aria-label="Choose racing program" data-calendar-filters></div>
     <div class="aw-calendar__layout">
-      <article class="aw-calendar__hero" aria-live="polite" data-calendar-hero></article>
-      <div class="aw-calendar__upcoming"><div class="aw-calendar__heading"><span data-calendar-heading>UPCOMING</span><button type="button" data-calendar-toggle aria-expanded="false" aria-controls="calendar-list">View full schedule</button></div><div id="calendar-list" data-calendar-list></div></div>
+      <article class="aw-calendar__hero" aria-live="polite" data-calendar-hero><p class="aw-calendar__empty" role="status" data-calendar-status>Loading published schedule…</p></article>
+      <div class="aw-calendar__upcoming"><div class="aw-calendar__heading"><span data-calendar-heading>UPCOMING</span><button type="button" data-calendar-toggle aria-expanded="false" aria-controls="calendar-list" disabled>View full schedule</button></div><div id="calendar-list" data-calendar-list></div></div>
     </div>
     <div class="aw-calendar__recent" data-calendar-recent></div>
   </div>
 </section>
-<script define:vars={{ initial, initialResults }}>
+<script is:inline type="application/json" data-calendar-seed set:html={JSON.stringify({initial,initialResults}).replace(/</g,'\\u003c')}/>
+<script>
+import {scheduleStatus,SCHEDULE_COPY} from '../lib/race-clock.mjs';
 (() => {
   const root=document.querySelector('[data-race-calendar]');if(!root)return;
+  const {initial,initialResults}=JSON.parse(document.querySelector('[data-calendar-seed]').textContent);
   const readLocation=()=>{
     const match=location.pathname.match(/^\/schedule(?:\/([^/]+))?\/?$/);
     let league='all';
     try{if(match?.[1])league=decodeURIComponent(match[1]);}catch{}
     return {league,full:location.hash==='#full'};
   };
-  let events=initial, raceResults=initialResults, selected=readLocation().league, showFull=readLocation().full, renderedList='';
+  let events=initial, raceResults=initialResults, selected=readLocation().league, showFull=readLocation().full, renderedList='', publishedEvents=false;
   const esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const labels=(rows)=>new Map(rows.map(e=>[e.league,e.leagueName||e.league.toUpperCase()]));
   const seriesVisual={
@@ -84,9 +87,9 @@ const initialResults = results;
     event.preventDefault();navigate(selected,true);toggle.focus({preventScroll:true});
   });
   function tick(){
-    const now=new Date(), visible=events.filter(e=>!e.offWeek&&(selected==='all'||e.league===selected));
-    const upcoming=visible.filter(e=>!unavailable(e)&&!completed(e,now)).sort(chronological);
-    const current=upcoming.find(e=>start(e)<=now&&end(e)>=now) || upcoming[0];
+    const availability=scheduleStatus(),state=availability==='ready'&&!publishedEvents?'unavailable':availability;
+    root.dataset.scheduleState=state;root.setAttribute('aria-busy',String(state==='loading'));
+    const now=new Date();
     const filters=root.querySelector('[data-calendar-filters]'), list=root.querySelector('[data-calendar-list]'), hero=root.querySelector('[data-calendar-hero]');
     const names=labels(events), keys=['all',...names.keys()];
     if(filters.dataset.keys!==keys.join('|')){
@@ -95,11 +98,23 @@ const initialResults = results;
       filters.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.series,showFull)));
     }
     filters.querySelectorAll('button').forEach(button=>{
+      if(state!=='ready'){button.setAttribute('aria-pressed',String(button.dataset.series===selected));button.querySelector('small').textContent=state==='loading'?'LOADING':'UNAVAILABLE';return;}
       const k=button.dataset.series, future=events.filter(e=>!e.offWeek&&(k==='all'||e.league===k)&&!unavailable(e)&&!completed(e,now)).sort(chronological)[0];
       button.setAttribute('aria-pressed',String(k===selected));button.querySelector('small').textContent=k==='all'?`${names.size} SERIES`:future?(future.timePending?'START TIME PENDING':`NEXT · ${relative(start(future)-now)}`):'SEASON COMPLETE';
     });
     root.querySelector('[data-calendar-heading]').textContent=`${selected==='all'?'ALL SERIES':names.get(selected)||selected} · ${showFull?'FULL SCHEDULE':'UPCOMING'}`;
-    toggle.textContent=showFull?'Show next 5':'View full schedule';toggle.setAttribute('aria-expanded',String(showFull));
+    toggle.textContent=showFull?'Show next 5':'View full schedule';toggle.setAttribute('aria-expanded',String(showFull));toggle.disabled=state!=='ready';
+    // Calendar actions follow the same publication policy as Home. A bundled
+    // or cached event is never presented as the current race while loading or
+    // after a failed request; keep the selected program/full URL for recovery.
+    if(state!=='ready'){
+      const signature=`publication:${state}`;
+      if(hero.dataset.event!==signature){hero.dataset.event=signature;hero.innerHTML=`<p class="aw-calendar__empty" role="status" data-calendar-status>${esc(SCHEDULE_COPY[state]||SCHEDULE_COPY.unavailable)}</p>`;}
+      renderedList='';list.innerHTML='';root.querySelector('[data-calendar-recent]').innerHTML='';return;
+    }
+    const visible=events.filter(e=>!e.offWeek&&(selected==='all'||e.league===selected));
+    const upcoming=visible.filter(e=>!unavailable(e)&&!completed(e,now)).sort(chronological);
+    const current=upcoming.find(e=>start(e)<=now&&end(e)>=now) || upcoming[0];
     const rows=showFull?events.filter(e=>selected==='all'||e.league===selected).sort(chronological):upcoming.slice(0,5);
     const markup=rows.length?rows.map((scheduled,i)=>{
       const result=resultFor(scheduled);
@@ -122,7 +137,7 @@ const initialResults = results;
     const official=recent&&resultFor(recent),driver=official?.entries?.find(e=>e.featuredDriver)||official?.entries?.[0];
     root.querySelector('[data-calendar-recent]').innerHTML=recent?`<span>${official?'✓ RESULT':'✓ RECENT'}</span><b>${esc(recent.leagueName||recent.league)} · ${esc(official?.track||recent.track||recent.title)}</b><small>${dateLabel(recent)}${driver?` · #${esc(driver.number)} ${esc(driver.driver)} ${driver.finish?`P${esc(driver.finish)}`:'DNS'}`:''}</small><a href="${esc(url(recent))}">View event →</a>`:'';
   }
-  const applyLiveCalendar=(d)=>{if(Array.isArray(d?.['schedule-events']))events=d['schedule-events'];if(Array.isArray(d?.results))raceResults=d.results;tick();};
+  const applyLiveCalendar=(d)=>{if(Array.isArray(d?.['schedule-events'])){events=d['schedule-events'];publishedEvents=scheduleStatus()==='ready';}if(Array.isArray(d?.results))raceResults=d.results;tick();};
   window.addEventListener('aetherwing:content',e=>applyLiveCalendar(e.detail));
   if(window.__AETHERWING_CONTENT__)applyLiveCalendar(window.__AETHERWING_CONTENT__);
   tick();setInterval(tick,1000);

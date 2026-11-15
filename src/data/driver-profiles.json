@@ -30,6 +30,17 @@
     "historicalIRacingName": "Nicholas Waggoner",
     "robloxDisplayName": "Hailey",
     "robloxUsername": "@Aokikoto",
-    "historicalRobloxDisplayName": "Wispy"
+    "historicalRobloxDisplayName": "Wispy",
+    "profileAssignments": [
+      {
+        "id": "hailey-gwm-uarl-d1",
+        "competitionId": "uarl-d1",
+        "competition": "UARL Division 1",
+        "number": "28",
+        "team": "Goat Whitlock Motorsports",
+        "status": "Active",
+        "active": true
+      }
+    ]
   }
 ]
