@@ -2,17 +2,28 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import {JSDOM} from 'jsdom';
 import {eventSlug} from '../src/lib/schedule-events.mjs';
+import {scheduleStatus,SCHEDULE_COPY} from '../src/lib/race-clock.mjs';
 
 const source=fs.readFileSync(new URL('../src/components/RaceCalendar.astro',import.meta.url),'utf8');
 const markup=source.slice(source.indexOf('<section'),source.indexOf('<script'));
-const script=source.match(/<script define:vars[^>]*>([\s\S]*?)<\/script>/)[1];
+const script=source.match(/<script>\s*([\s\S]*?)<\/script>/)[1].replace(/^\s*import .*;$/gm,'');
+const install=(w,initial,initialResults)=>{
+  const seed=w.document.createElement('script');seed.type='application/json';seed.dataset.calendarSeed='';seed.textContent=JSON.stringify({initial,initialResults});w.document.body.append(seed);
+  // Run the real imported policy in this page's Window realm, as the bundle does.
+  w.eval(`window.scheduleStatus=${scheduleStatus.toString()};`);w.SCHEDULE_COPY=SCHEDULE_COPY;
+};
+const publication=(w,data,state='published')=>{
+  const datasets={...(w.__AETHERWING_CONTENT__||{}),...data};
+  w.__AETHERWING_PUBLICATION__={state,revision:1,datasets};w.__AETHERWING_CONTENT__=datasets;
+  w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:data}));
+};
 const fixture=(league,day,extra={})=>({league,leagueName:league.toUpperCase(),date:`2026-10-${String(day).padStart(2,'0')}`,time:'7:30 PM ET',title:`${league} Race ${day}`,track:`${league} Track ${day}`,round:`ROUND ${day}`,...extra});
 const nrrs=[fixture('nrrs',1),fixture('nrrs',17),...Array.from({length:9},(_,i)=>fixture('nrrs',19+i)),fixture('nrrs',23,{offWeek:true,title:'Off week',round:'',time:''}),fixture('nrrs',29,{tbd:true,date:'',title:'Finale date pending'})];
 const kmart=[fixture('kmart',2),...Array.from({length:7},(_,i)=>fixture('kmart',19+i))];
 // Shuffle deliberately: both views must use chronological order, not source order.
 const events=[...nrrs,...kmart].reverse();
 const initialResults=[{league:'nrrs',date:nrrs[0].date,title:nrrs[0].title,entries:[{driver:'Fixture',number:'32',finish:1}]}];
-for(const mode of ['seed','cached','event']){
+for(const mode of ['bundled-then-published','published-replay','published-event']){
   const dom=new JSDOM(markup,{url:'https://aetherwing.net/schedule/',runScripts:'outside-only'});
   const w=dom.window,$=selector=>w.document.querySelector(selector);
   try{
@@ -20,10 +31,15 @@ for(const mode of ['seed','cached','event']){
     w.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}};
     let clockTick;w.setInterval=fn=>{clockTick=fn;return 1;};
     const payload={'schedule-events':events,results:initialResults};
-    if(mode==='cached')w.__AETHERWING_CONTENT__=payload;
-    w.eval(`const initial=${JSON.stringify(mode==='seed'?events:[])},initialResults=${JSON.stringify(mode==='seed'?initialResults:[])};\n${script}`);
-    const publish=data=>w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:data}));
-    if(mode==='event')publish(payload);
+    install(w,mode==='bundled-then-published'?events:[],mode==='bundled-then-published'?initialResults:[]);
+    if(mode==='published-replay'){w.__AETHERWING_PUBLICATION__={state:'published',datasets:payload};w.__AETHERWING_CONTENT__=payload;}
+    w.eval(script);
+    const publish=data=>publication(w,data);
+    if(mode!=='published-replay'){
+      assert.equal($('[data-race-calendar]').dataset.scheduleState,'loading','Bundled data is not an actionable current publication');
+      assert.equal(w.document.querySelectorAll('[data-calendar-list] a').length,0);assert.equal($('[data-calendar-toggle]').disabled,true);
+      publish(payload);
+    }
     const rows=()=>Array.from(w.document.querySelectorAll('[data-calendar-list] .aw-calendar__event'));
     const select=league=>$(`[data-series="${league}"]`).click();
     const toggle=()=> $('[data-calendar-toggle]').click();
@@ -79,13 +95,19 @@ for(const mode of ['seed','cached','event']){
     assert.ok(!w.document.body.textContent.includes('NaN'),'An undated-only league must not show a broken countdown');
     publish({'schedule-events':[]});assert.equal(rows().length,0);assert.match($('[data-calendar-list]').textContent,/No events have been published/);
     assert.ok(!w.document.body.textContent.includes('NaN'));
+    for(const degraded of ['cached','bundled']){
+      publication(w,payload,degraded);
+      assert.equal($('[data-race-calendar]').dataset.scheduleState,'unavailable');assert.equal(rows().length,0,'Failed/cached schedule data is not presented as a current calendar');
+      assert.equal($('[data-calendar-hero]').querySelector('a'),null);assert.equal($('[data-calendar-toggle]').disabled,true);
+      publication(w,payload);assert.equal($('[data-race-calendar]').dataset.scheduleState,'ready','The same calendar recovers when a current publication arrives');
+    }
   }finally{w.close();}
 }
 const waitFor=async(predicate,label)=>{
   for(let attempt=0;attempt<100;attempt++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,10));}
   assert.fail(label);
 };
-for(const mode of ['seed','cached','event']){
+for(const mode of ['bundled-then-published','published-replay','published-event']){
   for(const [path,league,full] of [['/schedule/kmart#full','kmart',true],['/schedule/kmart/?from=fixture#full','kmart',true],['/schedule/kmart/','kmart',false],['/schedule/nrrs/#full','nrrs',true],['/schedule/#full','all',true],['/schedule/#main','all',false]]){
     const link=new URL(path,'https://aetherwing.net');
     const dom=new JSDOM(`<link rel="canonical" href="${link.origin}${link.pathname}">${markup}`,{url:link.href,runScripts:'outside-only'});
@@ -95,10 +117,11 @@ for(const mode of ['seed','cached','event']){
       w.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}};
       let clockTick;w.setInterval=fn=>{clockTick=fn;return 1;};
       const payload={'schedule-events':events,results:initialResults};
-      if(mode==='cached')w.__AETHERWING_CONTENT__=payload;
-      w.eval(`const initial=${JSON.stringify(mode==='seed'?events:[])},initialResults=${JSON.stringify(mode==='seed'?initialResults:[])};\n${script}`);
-      const publish=()=>w.dispatchEvent(new w.CustomEvent('aetherwing:content',{detail:payload}));
-      if(mode==='event')publish();
+      install(w,mode==='bundled-then-published'?events:[],mode==='bundled-then-published'?initialResults:[]);
+      if(mode==='published-replay'){w.__AETHERWING_PUBLICATION__={state:'published',datasets:payload};w.__AETHERWING_CONTENT__=payload;}
+      w.eval(script);
+      const publish=()=>publication(w,payload);
+      if(mode!=='published-replay')publish();
       const selected=()=>$('[data-series][aria-pressed="true"]')?.dataset.series;
       const expanded=()=>$('[data-calendar-toggle]').getAttribute('aria-expanded')==='true';
       assert.equal(selected(),league,`${mode}: ${path} opens the linked league`);
@@ -126,4 +149,4 @@ for(const mode of ['seed','cached','event']){
     }finally{w.close();}
   }
 }
-console.log('PASS: next-five/full league schedules, shareable URLs, fragment/history restoration, complete seasons, off weeks, TBD dates, stable links, focus, and seed/cached/live updates.');
+console.log('PASS: next-five/full league schedules, shareable URLs, fragment/history restoration, complete seasons, off weeks, TBD dates, stable links, focus, and explicit published replay/event updates with honest bundled/cached loading gates.');

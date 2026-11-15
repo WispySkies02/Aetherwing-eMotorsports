@@ -4,7 +4,8 @@
   "sourceNote": "Owner-approved article records and explicit November 8 update request. Unknown values remain null; archive-only records never recalculate standings.",
   "approvedResultIds": [
     "kmart-round-11",
-    "nrrs-round-25"
+    "nrrs-round-25",
+    "kmart-round-12"
   ],
   "pendingSources": [
     {
@@ -14,6 +15,15 @@
       "title": "O’Reilly Auto Parts All-Star",
       "status": "awaiting-official-results",
       "note": "Official finishing positions and race-point treatment have not been supplied. No result record is published for this event."
+    }
+  ],
+  "subsequentApprovals": [
+    {
+      "sourceDate": "2026-11-15",
+      "approvedResultIds": [
+        "kmart-round-12"
+      ],
+      "sourceNote": "Owner-approved November 15 result confirmation: Kmart Round 12, Corona Mexico 250 at Mexico City on November 9; Hailey #15 P6 and Will #24 P1. Unknown start, stage and race-point values remain null. Existing published corrections remain authoritative."
     }
   ]
 }

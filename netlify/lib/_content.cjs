@@ -2,6 +2,7 @@ const { allianceIdFor } = require('../../src/lib/alliances.mjs');
 const { reconcileCurrentAssignments, reconcileCurrentProfiles } = require('../../src/lib/current-driver-updates.mjs');
 const { reconcileUarlAssignments, reconcileUarlProfiles, reconcileUarlCharters, reconcileUarlCompetitions } = require('../../src/lib/uarl-d1-return.mjs');
 const { manufacturerChoices, normalizeManufacturer, standingIdentity, normalizeStandingMetadata } = require('../../src/lib/standings-metadata.mjs');
+const { reconcileProfileAssignments, validProfileAssignment } = require('../../src/lib/profile-assignments.mjs');
 const fs = require('node:fs');
 const path = require('node:path');
 let blobsModulePromise;
@@ -74,7 +75,7 @@ function normalize(key,data) {
   if(key==='roster-profiles'&&Array.isArray(data))return reconcileUarlProfiles(reconcileCurrentProfiles(data.map((profile)=>({signatureLogo:'',...profile,slug:profile?.slug==='wispy'?'hailey':profile?.slug}))));
   if(key==='charters'&&Array.isArray(data))return reconcileUarlCharters(data);
   if(key==='competitions'&&Array.isArray(data))return reconcileUarlCompetitions(data);
-  if(key==='driver-profiles'&&Array.isArray(data))return data.map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
+  if(key==='driver-profiles'&&Array.isArray(data))return reconcileProfileAssignments(data.map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile));
   if(key==='driver-portfolios'&&Array.isArray(data))return data.map((portfolio)=>portfolio?.profile==='wispy'?{...portfolio,profile:'hailey'}:portfolio);
   if(key==='results'&&Array.isArray(data)){const sorted=[...data].map(scoreKnownRace).sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(a?.league||'').localeCompare(String(b?.league||''))||String(a?.title||'').localeCompare(String(b?.title||'')));return sorted.map((race,index)=>({...race,featured:index===0}));}
   return data;
@@ -253,6 +254,11 @@ function validate(key, data, registry={}, context={}) {
     if (key === 'roster-profiles' && !Array.isArray(row.programs)) return 'Driver programs must be a list.';
     if (key === 'roster-profiles' && !validLogoImage(row.signatureLogo||'')) return 'Driver signature logos must be uploaded PNG/JPG/WebP data, HTTPS URLs, or site-relative paths.';
     if (key === 'driver-profiles' && !Array.isArray(row.stats)) return 'Driver stats must be a list.';
+    if(key==='driver-profiles'&&Object.hasOwn(row,'profileAssignments')){
+      if(!Array.isArray(row.profileAssignments)||row.profileAssignments.length>100)return 'Profile assignments must be a list of up to 100 records.';
+      if(row.profileAssignments.some(assignment=>!validProfileAssignment(assignment)))return 'Profile assignments need text IDs, program, number, team and status, plus a checked/unchecked active flag. Keep images, manufacturers and team-roster fields in their dedicated records.';
+      if(new Set(row.profileAssignments.map(assignment=>assignment.id)).size!==row.profileAssignments.length)return 'Each profile assignment ID must be unique within its driver profile.';
+    }
     if (key === 'standings' && (!Array.isArray(row.rows) || row.rows.some((r) => !(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points)) || (Array.isArray(row.chaseRows) && row.chaseRows.some((r)=>!(r?.pointsPending===true && r?.points==null) && !Number.isFinite(r?.points))))) return 'Standings rows need numeric points (or an explicit pending placeholder before the first full-roster import).';
     if(key==='standings') {
       if(Object.hasOwn(row,'featuredOnHome')&&typeof row.featuredOnHome!=='boolean')return 'Standings featuredOnHome must be a true/false value.';

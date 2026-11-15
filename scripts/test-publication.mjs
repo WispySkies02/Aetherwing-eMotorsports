@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { eventSlug, legacyEventSlug } from '../src/lib/schedule-events.mjs';
+import { scheduleStatus, SCHEDULE_COPY } from '../src/lib/race-clock.mjs';
 import { standingIdentity } from '../src/lib/standings-metadata.mjs';
 import { mountHomeStandings } from '../src/lib/home-standings-client.mjs';
 import { JSDOM } from 'jsdom';
@@ -142,15 +143,26 @@ try {
     const findHistoricalEvent=events=>events.find(event=>event.league===historicalEvent.league&&event.date===historicalEvent.date);
     assert.equal(synced.datasets.drivers.find(entry=>entry.id===nrrsAssignment.id).number,'28','The current NRRS number change survives publication');
     assert.deepEqual(findHistoricalEvent(synced.datasets['schedule-events'])?.entries,historicalEntries,'Content sync must preserve approved historical custom entry names and numbers');
+    const calendarSource=fs.readFileSync(join(cwd,'src/components/RaceCalendar.astro'),'utf8');
+    const calendarRenderer=calendarSource.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1]?.replace(/^\s*import .*;$/gm,'');
+    assert.ok(calendarRenderer,'The schedule keeps its module calendar renderer');
+    const activateCalendar=page=>{
+      assert.ok(page.window.document.querySelector('script[type="module"][src]'),'The built page includes its bundled module scripts');
+      page.window.eval(`window.scheduleStatus=${scheduleStatus.toString()};`);page.window.SCHEDULE_COPY=SCHEDULE_COPY;
+      page.window.eval(calendarRenderer);
+      assert.equal(page.window.document.querySelector('[data-race-calendar]').dataset.scheduleState,'loading','The built seed does not bypass publication loading');
+      assert.equal(page.window.document.querySelectorAll('[data-calendar-list] a').length,0,'The unverified bundled calendar is not actionable');
+      page.window.__AETHERWING_PUBLICATION__={state:'published',datasets:synced.datasets};page.window.__AETHERWING_CONTENT__=synced.datasets;
+      page.window.dispatchEvent(new page.window.CustomEvent('aetherwing:content',{detail:synced.datasets}));
+      assert.equal(page.window.document.querySelector('[data-race-calendar]').dataset.scheduleState,'ready','The full published snapshot reveals the verified schedule');
+    };
     const calendar=new JSDOM(read('schedule/index.html'),{url:'https://aetherwing.net/schedule/',runScripts:'outside-only'});
     try{
       calendar.window.setInterval=()=>0;
-      const calendarScript=Array.from(calendar.window.document.scripts).find(script=>script.textContent.includes('[data-race-calendar]'));
-      assert.ok(calendarScript,'Built schedule page must include its calendar renderer');
-      const calendarSeed=calendarScript.textContent.match(/const initial\s*=\s*(\[[\s\S]*?\]);\s*const initialResults\s*=/)?.[1];
-      assert.ok(calendarSeed,'Built calendar must embed its published schedule');
-      assert.deepEqual(findHistoricalEvent(JSON.parse(calendarSeed))?.entries,historicalEntries,'Built calendar data must keep the historical #32 despite the current #28 assignment');
-      calendar.window.eval(calendarScript.textContent);
+      const calendarSeed=calendar.window.document.querySelector('[data-calendar-seed]');
+      assert.ok(calendarSeed,'Built calendar must embed its independently readable schedule JSON');
+      assert.deepEqual(findHistoricalEvent(JSON.parse(calendarSeed.textContent).initial)?.entries,historicalEntries,'Built calendar data must keep the historical #32 despite the current #28 assignment');
+      activateCalendar(calendar);
       const doc=calendar.window.document,rows=()=>Array.from(doc.querySelectorAll('[data-calendar-list] .aw-calendar__event'));
       assert.ok(rows().length<=5,'Production calendar must default to at most five upcoming races');
       assert.equal(doc.querySelector('[data-calendar-toggle]').getAttribute('aria-expanded'),'false');
@@ -167,8 +179,7 @@ try {
       const page=new JSDOM(read(`schedule/${league}/index.html`),{url:`https://aetherwing.net${path}#full`,runScripts:'outside-only'});
       try{
         page.window.setInterval=()=>0;
-        const script=Array.from(page.window.document.scripts).find(script=>script.textContent.includes('[data-race-calendar]'));
-        assert.ok(script);page.window.eval(script.textContent);
+        activateCalendar(page);
         const doc=page.window.document;
         assert.equal(doc.querySelector('link[rel="canonical"]').href,`https://aetherwing.net${path}`);
         assert.equal(doc.querySelector('[data-series][aria-pressed="true"]').dataset.series,league,'Built shared links must select their league');

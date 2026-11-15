@@ -81,8 +81,14 @@ assert.deepEqual(octoberOfficial.map(r=>[r.date,r.entries[0].driver,r.entries[0]
 assert.equal(official.length,5,'The two new cited archive records supplement the original three recaps');
 const normalized=normalize('results',seed.results);
 assert.equal(validate('results',normalized),'');
-assert.equal(normalized[0].scheduleId,'kmart-round-11','The newest published result is Iowa, not the older New Hampshire recap');
-assert.equal(normalized[0].date,'2026-11-02');
+assert.equal(normalized[0].scheduleId,'kmart-round-12','The newest published result is Mexico City; Iowa and the October recaps remain archived');
+assert.equal(normalized[0].date,'2026-11-09');
+const mexico=normalized.find(race=>race.scheduleId==='kmart-round-12');
+assert.deepEqual([mexico.date,mexico.title,mexico.track,mexico.pointsSource,mexico.coverage,mexico.standingsMode],['2026-11-09','Corona Mexico 250','Mexico City','official-result','team-only','record-only']);
+assert.deepEqual(mexico.entries.map(entry=>[entry.driver,entry.number,entry.finish,entry.start,entry.stage1Finish,entry.stage2Finish,entry.racePoints,entry.manufacturer]),[['Hailey','15',6,null,null,null,null,'Dodge'],['Will','24',1,null,null,null,null,'']],'Mexico includes both approved team entries without inventing measurements or Will’s manufacturer');
+assert.ok(mexico.sourceNote.includes('November 15'),'The new official result carries its owner-approval source rather than an invented recap link');
+const allOfficial=seed.results.filter(race=>['official-recap','official-result'].includes(race.pointsSource));
+assert.deepEqual(allOfficial.map(race=>race.scheduleId).sort(),allApprovedResults().map(race=>race.scheduleId).sort(),'Mexico supplements every previously approved official result and all five preserved recaps');
 const newHampshire=normalized.find(race=>race.scheduleId==='nrrs-round-24');
 assert.equal(newHampshire.entries[0].racePoints,39,'New Hampshire keeps its recap-confirmed total');
 const iowa=normalized.find(race=>race.scheduleId==='kmart-round-11');
@@ -114,7 +120,7 @@ assert.notEqual(validate('results',missingSource),'','Official scoring requires 
 const {autoAdvanceStandings}=createRequire(import.meta.url)('../netlify/lib/_site-admin.cjs')._test;
 const registry={published:{standings:structuredClone(seed.standings)}};
 const before=JSON.stringify(registry.published.standings);
-assert.equal(autoAdvanceStandings(registry,official,[]),false,'Partial historical result imports must not advance or recalculate current standings');
+assert.equal(autoAdvanceStandings(registry,allOfficial,[]),false,'Partial historical result imports must not advance or recalculate current standings');
 assert.equal(JSON.stringify(registry.published.standings),before);
 const fullArchive=structuredClone(newHampshire);delete fullArchive.pointsSource;delete fullArchive.coverage;
 assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival record still must not add points if later completed with a full field');
@@ -178,7 +184,7 @@ assert.equal(autoAdvanceStandings(registry,[fullArchive],[]),false,'An archival 
   for(const result of approved){
     const matches=merged.results.filter(row=>sameReviewedEvent(row,result));
     assert.equal(matches.length,1,result.scheduleId);
-    for(let i=0;i<result.entries.length;i++)for(const key of ['driver','number','start','finish','racePoints','stage1Finish','stage2Finish'])assert.equal(matches[0].entries[i][key],result.entries[i][key],`${result.scheduleId}: preserve approved ${key}`);
+    for(let i=0;i<result.entries.length;i++)for(const key of ['driver','number','start','finish','racePoints','stage1Finish','stage2Finish','stage1Points','stage2Points','finishStatus','qualifyingPosition','manufacturer'])assert.equal(matches[0].entries[i][key],result.entries[i][key],`${result.scheduleId}: preserve approved ${key}`);
     const corrected=structuredClone(matches[0]);corrected.entries[0].racePoints=corrected.entries[0].racePoints===null?0:corrected.entries[0].racePoints+1;
     const resolved=mergeCanonical({results:[corrected]});
     assert.equal(resolved.results.filter(row=>sameReviewedEvent(row,result)).length,1);
@@ -193,7 +199,7 @@ function requireReview(){return JSON.parse(fs.readFileSync(new URL('../src/data/
 function allApprovedResults(){
   const november=JSON.parse(fs.readFileSync(new URL('../src/data/november-2026-results.json',import.meta.url),'utf8'));
   const additions=seed.results.filter(result=>november.approvedResultIds.includes(result.scheduleId));
-  assert.deepEqual(additions.map(result=>result.scheduleId).sort(),['kmart-round-11','nrrs-round-25'],'Both new approved events must be in the source collection');
+  assert.deepEqual(additions.map(result=>result.scheduleId).sort(),['kmart-round-11','kmart-round-12','nrrs-round-25'],'Every approved November archive event must be in the source collection');
   return [...requireReview().results,...additions];
 }
 

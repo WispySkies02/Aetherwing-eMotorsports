@@ -74,10 +74,10 @@ try {
     assert.match(await page.locator('[data-battle-context]').textContent(),/R23\/25.*2,190 PTS/);
     assert.equal(await page.locator('[data-battle-gap]').textContent(),'-96');
     assert.match(await page.locator('[data-tower-context]').textContent(),/R23\/25/);
-    assert.equal(await page.locator('[data-latest-title]').textContent(),'MasterPro Iowa 200');
+    assert.equal(await page.locator('[data-latest-title]').textContent(),'Corona Mexico 250');
     assert.equal(await page.locator('.hub-wire__lead').getAttribute('href'),'/news/hailey-bell-nrrs-season-3-review/');
-    assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/kmart-round-11/');
-    assert.match(await page.locator('[data-latest-entries]').textContent(),/#15.*Hailey.*P4/s,'The latest card reflects the approved Iowa finish');
+    assert.equal(await page.locator('[data-latest-event]').getAttribute('href'),'/event/kmart-round-12/');
+    assert.deepEqual(await page.locator('[data-latest-entries] strong').allTextContents(),['#15 HaileyP6','#24 WillP1'],'Latest Result retains both known Mexico finishes without inventing points');
     assert.equal(await page.locator('[data-team-stat="rootsSince"]').textContent(),'2015');
     if(viewport.width<1100) {
       const dock=page.locator('[data-aw-dock]');assert.equal(await dock.isVisible(),true);
@@ -176,7 +176,9 @@ try {
     assert.equal(await page.locator('[data-lineup-grid] article').count(),6,'Only current assigned drivers appear; archived Rocky and BurgerTown profiles do not add active cards');
     await page.goto(`${base}/drivers/hailey/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
-    const profilePrograms=await page.locator('[data-profile-assignments] .profile-assignment').allTextContents();
+    const profilePrograms=await page.locator('[data-profile-assignments] .profile-assignment[data-profile-assignment-scope="team"]').allTextContents();
+    assert.equal(await page.locator('[data-profile-assignments] .profile-assignment[data-profile-assignment-scope="profile"]').count(),1,'The personal GWM ride stays separate from the global team-directory count');
+    assert.match(await page.locator('[data-profile-assignment-id="hailey-gwm-uarl-d1"]').textContent(),/UARL Division 1.*#28.*Active.*Goat Whitlock Motorsports/s);
     assert.equal(profilePrograms.length,directoryPrograms.length);
     assert.ok(directoryPrograms.some(text=>/iRacing Factory Program.*#28/.test(text)));
     assert.ok(!directoryPrograms.some(text=>/UARL D1/.test(text)),'Hailey’s current assignment summary no longer includes her prior D1 entry');
@@ -204,15 +206,22 @@ try {
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     const archive=page.locator('[data-results-list] article');
     const dates=await archive.locator(':scope > span').allTextContents();
-    for(const date of ['2026-11-02','2026-10-27','2026-10-20','2026-10-13','2026-10-10','2026-10-06','2026-10-05'])assert.ok(dates.some(text=>text.startsWith(date)),`Approved ${date} result remains visible after hydration`);
-    assert.ok(dates[0].startsWith('2026-11-02'),'History places Iowa above all older results');
+    for(const date of ['2026-11-09','2026-11-02','2026-10-27','2026-10-20','2026-10-13','2026-10-10','2026-10-06','2026-10-05'])assert.ok(dates.some(text=>text.startsWith(date)),`Approved ${date} result remains visible after hydration`);
+    assert.ok(dates[0].startsWith('2026-11-09'),'History places Mexico above the preserved Iowa and October results');
     assert.ok(!dates.some(text=>text.startsWith('2026-10-19')),'No unsupported October 19 result');
-    for(const id of ['nrrs-round-22','nrrs-round-23','nrrs-round-24','nrrs-round-25','kmart-round-11']) {
+    for(const id of ['nrrs-round-22','nrrs-round-23','nrrs-round-24','nrrs-round-25','kmart-round-11','kmart-round-12']) {
       const link=page.locator(`[data-results-list] a[href="/event/${id}/"]`);
       assert.equal(await link.count(),1,'The approved result links once to its event');
       await page.goto(`${base}/event/${id}/`,{waitUntil:'domcontentloaded'});
       await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
       assert.ok((await page.locator('[data-event-result]').textContent()).includes('Hailey'));
+      if(id==='kmart-round-12'){
+        const rows=page.locator('[data-event-result] .race-result-row');assert.equal(await rows.count(),2);
+        const winner=rows.filter({has:page.locator('strong',{hasText:/Will/})}),hailey=rows.filter({has:page.locator('strong',{hasText:/Hailey/})});
+        assert.equal(await winner.locator(':scope > b').textContent(),'P1');assert.match(await winner.locator(':scope > strong').textContent(),/#24.*Will/);
+        assert.equal(await hailey.locator(':scope > b').textContent(),'P6');assert.match(await hailey.locator(':scope > strong').textContent(),/#15.*Hailey/);
+        for(const row of [winner,hailey])assert.deepEqual(await row.locator(':scope > span').allTextContents(),['—','—','—','—'],'Mexico’s unreported start, stages and points remain unknown');
+      }
       if(id==='kmart-round-11'||id==='nrrs-round-25'){
         const row=page.locator('[data-event-result] .race-result-row').first();
         assert.equal(await row.locator(':scope > b').textContent(),id==='kmart-round-11'?'P4':'DNS');

@@ -74,7 +74,7 @@ const assertReviewed=(datasets)=>{
   const nrrs=datasets.charters.find(row=>row.id==='nrrs');assert.deepEqual(nrrs.plannedSeasons,seed.charters.find(row=>row.id==='nrrs').plannedSeasons);
   assert.deepEqual(nrrs.fullTime,legacyCharters.find(row=>row.id==='nrrs').fullTime);assert.deepEqual(nrrs.openCharters,legacyCharters.find(row=>row.id==='nrrs').openCharters,'The 2027 plan is never made active');
   for(const id of november.approvedResultIds){assert.equal(datasets.results.filter(row=>row.scheduleId===id).length,1);assert.deepEqual(withoutFeature(datasets.results.find(row=>row.scheduleId===id)),withoutFeature(seed.results.find(row=>row.scheduleId===id)));}
-  assert.deepEqual(datasets.results.filter(row=>row.featured).map(row=>row.scheduleId),['kmart-round-11'],'Iowa becomes the sole automatic Latest Result');
+  assert.deepEqual(datasets.results.filter(row=>row.featured).map(row=>row.scheduleId),['kmart-round-12'],'Mexico becomes the sole automatic Latest Result while Iowa remains in the archive');
   for(const prior of oldResults)assert.deepEqual(withoutFeature(datasets.results.find(row=>row.scheduleId===prior.scheduleId)),withoutFeature(prior),'Existing historical results and points are not replaced or rescored');
 };
 const apiView=api.mergeCanonical(clone(oldPublished));assertReviewed(apiView);assertReviewed(api.mergeCanonical(clone(apiView)));

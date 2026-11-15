@@ -26,6 +26,7 @@ import { appendReviewedResults } from './reviewed-results.mjs';
 import { reconcileNovemberSchedule, reconcileNovemberStandings } from './november-racing-context.mjs';
 import { reconcileCharterPlans } from './charter-plans.mjs';
 import { reconcileUarlAssignments, reconcileUarlCharters, reconcileUarlCompetitions, reconcileUarlProfiles } from './uarl-d1-return.mjs';
+import { reconcileProfileAssignments } from './profile-assignments.mjs';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const alliances = choose('alliances',defaultAlliances);
 
@@ -120,7 +121,7 @@ export const rosterProfiles = rosterBase.map((sourceProfile) => {
     programs: [...new Set(assignments.map((entry) => rosterProgramLabels[entry.competitionId] || entry.competition).filter(Boolean))]
   };
 });
-export const driverProfiles = choose('driver-profiles', profilesSeed).map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile);
+export const driverProfiles = reconcileProfileAssignments(choose('driver-profiles', profilesSeed).map((profile)=>profile?.slug==='wispy'?{...profile,slug:'hailey'}:profile));
 const normalizeCharters = (boards) => (boards ?? []).map((board) => {
   if (Array.isArray(board.openCharters)) return board;
   const old = board.openCharter;
