@@ -38,8 +38,8 @@ const unassigned=structuredClone(drivers);unassigned.find(row=>row.id==='eazy-su
 apply({alliances:[legacy],drivers:unassigned});assert.equal(card('eazy').dataset.teamLabel,'ALLIANCE','An explicit blank link never resolves to legacy StarClutch');
 apply({alliances:[]});
 assert.ok([...d.querySelectorAll('[data-lineup-grid] article')].every(c=>!c.dataset.teamLabel.includes('STARCLUTCH')),'An explicitly empty collection does not resurrect a deleted name');
-filter('uarl-d1');assert.equal(d.querySelector('[data-lineup-program] strong').textContent,'1 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');
-assert.deepEqual([...d.querySelectorAll('[data-lineup-grid] article')].map(c=>c.dataset.number),['33','42','43']);
+filter('uarl-d1');assert.equal(d.querySelector('[data-lineup-program] strong').textContent,'2 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');
+assert.deepEqual([...d.querySelectorAll('[data-lineup-grid] article')].map(c=>c.dataset.number),['28','33','42','43']);
 dom.window.close();
 
 // Profile text and existing assignment rows refresh when only the alliance collection changes.

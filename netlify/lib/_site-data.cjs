@@ -4,7 +4,7 @@ const { read, json, normalizeDriverAssignments, seeds, normalize } = require('./
 const { appendReviewedResults } = require('../../src/lib/reviewed-results.mjs');
 const { reconcileNovemberSchedule, reconcileNovemberStandings } = require('../../src/lib/november-racing-context.mjs');
 const { reconcileCharterPlans } = require('../../src/lib/charter-plans.mjs');
-const { reconcileUarlReturn } = require('../../src/lib/uarl-d1-return.mjs');
+const { activeUarlAssignments, reconcileUarlReturn } = require('../../src/lib/uarl-d1-return.mjs');
 function replaceFullCirclePartner(value){
   if(Array.isArray(value))return value.map(replaceFullCirclePartner);
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,child])=>[key,replaceFullCirclePartner(child)]));
@@ -53,7 +53,7 @@ function mergeCanonical(datasets){
   if(Array.isArray(datasets.standings))datasets.standings=reconcileNovemberStandings(datasets.standings);
   // Keep published assignment numbers while retaining legacy identity/roster filtering.
   const canonDrivers=(rows=[])=>normalizeDriverAssignments(rows).filter(e=>!(e?.competitionId==='kmart'&&e?.profile==='jaxon')&&!(e?.competitionId==='uarl-d1'&&(e?.profile==='gk3r'||String(e?.handle||'').toLowerCase()==='@sealsntags'||String(e?.displayName||'').toLowerCase()==='gk3r')));
-  if(Array.isArray(datasets.drivers))datasets.drivers=canonDrivers(datasets.drivers);
+  if(Array.isArray(datasets.drivers))datasets.drivers=activeUarlAssignments(canonDrivers(datasets.drivers));
   if(Array.isArray(datasets['roster-profiles']))datasets['roster-profiles']=normalize('roster-profiles',datasets['roster-profiles']).filter(p=>p?.slug!=='gk3r'&&String(p?.handle||'').toLowerCase()!=='@sealsntags').map(p=>p?.slug==='jaxon'?{...p,...(seed['roster-profiles']||[]).find(x=>x.slug===p.slug)}:p);
   if(Array.isArray(datasets['driver-profiles']))datasets['driver-profiles']=normalize('driver-profiles',datasets['driver-profiles']);
   if(Array.isArray(datasets.charters))datasets.charters=reconcileCharterPlans(datasets.charters,seed.charters);

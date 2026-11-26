@@ -1,11 +1,11 @@
-const { read, json, normalizeDriverAssignments, seeds } = require('./_content.cjs');
+const { activeUarlAssignments, read, json, normalizeDriverAssignments, seeds } = require('./_content.cjs');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') return json(405, { error:'Method not allowed.' });
   try {
     const { registry } = await read();
     const seed = seeds();
-    const drivers = normalizeDriverAssignments(registry.published?.drivers ?? seed.drivers ?? []).map((entry)=>({
+    const drivers = activeUarlAssignments(normalizeDriverAssignments(registry.published?.drivers ?? seed.drivers ?? [])).map((entry)=>({
       id:entry?.id||'',
       profile:entry?.profile||'',
       displayName:entry?.displayName||'',

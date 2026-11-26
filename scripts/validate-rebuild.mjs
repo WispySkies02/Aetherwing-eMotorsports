@@ -130,9 +130,9 @@ const currentNumbers={
   nrrs:new Set(drivers.filter((d)=>d.competitionId==='nrrs').map((d)=>String(d.number)))
 };
 const currentD1=drivers.filter(driver=>driver.competitionId==='uarl-d1');
-if(currentD1.length!==1||currentD1[0].id!=='will-uarl-d1'||currentD1[0].profile!=='will'||currentD1[0].number!=='33'||currentD1[0].manufacturer!=='Chevrolet')throw Error('Current UARL D1 must assign only Will #33 Chevrolet.');
+if(JSON.stringify(currentD1.map(row=>[row.profile,row.number,row.manufacturer]))!==JSON.stringify([['hailey','28','Cadillac'],['will','33','Chevrolet']]))throw Error('Current UARL D1 must assign Hailey #28 Cadillac and Will #33 Chevrolet.');
 const uarlCharter=charters.find(board=>board.id==='uarl-d1');
-if(JSON.stringify((uarlCharter?.fullTime||[]).map(slot=>[String(slot.number),slot.driver]))!==JSON.stringify([['33','Will'],['42','Open'],['43','Open']])||(uarlCharter?.openCharters||[]).length!==0)throw Error('The D1 return must retain #33 Will and unsigned #42/#43, with no current flexible entry.');
+if(JSON.stringify((uarlCharter?.fullTime||[]).map(slot=>[String(slot.number),slot.driver]))!==JSON.stringify([['28','Hailey'],['33','Will'],['42','Open'],['43','Open']])||(uarlCharter?.openCharters||[]).length!==0)throw Error('The D1 return must retain #28 Hailey, #33 Will and open #42/#43, with no current flexible entry.');
 if((uarlCharter?.fullTime||[]).filter(slot=>slot.driver==='Open').some(slot=>slot.status!=='Unsigned'))throw Error('D1 #42/#43 must be explicitly unsigned rather than new driver assignments.');
 if(currentNumbers.nrrs.has('42')||currentNumbers.nrrs.has('46')||currentNumbers.nrrs.has('56'))throw Error('Proposed next-season NRRS #42/#46/#56 numbers must stay out of the current NRRS roster until the season changes.');
 
@@ -166,7 +166,7 @@ const missionSource=readFileSync('src/pages/mission-values/index.astro','utf8');
 const handbookSource=readFileSync('src/pages/team-handbook/index.astro','utf8');
 if(!missionSource.includes('aetherwing.length')||!missionSource.includes('alliance.length')||!missionSource.includes('active.length'))throw Error('Mission & Values counters must be derived from active competition data.');
 if(!missionSource.includes('Former program / historical archive')||!handbookSource.includes('UARL D2 is closed'))throw Error('Closed UARL D2 must be historical-only on Mission and Handbook pages.');
-if(JSON.stringify(competitions.find(item=>item.id==='uarl-d1')?.roster)!==JSON.stringify(['#33 Will','#42 UNSIGNED','#43 UNSIGNED']))throw Error('UARL D1 program must agree with the approved Will #33 and unsigned #42/#43 allocation.');
+if(JSON.stringify(competitions.find(item=>item.id==='uarl-d1')?.roster)!==JSON.stringify(['#28 Hailey','#33 Will','#42 UNSIGNED','#43 UNSIGNED']))throw Error('UARL D1 program must agree with the approved Will #33 and unsigned #42/#43 allocation.');
 if(competitions.some((item)=>item.id==='uarl-d2'))throw Error('UARL D2 must stay out of active competitions.');
 if(competitions.find((item)=>item.id==='uarl-d1')?.schedule!=='Sundays · 8:30 PM ET')throw Error('UARL D1 must race Sundays at 8:30 PM ET.');
 if(!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Hailey')||!JSON.stringify(competitions.find((item)=>item.id==='nrrs')?.roster||[]).includes('Plarker'))throw Error('NRRS active roster must use Hailey and Plarker identities.');
@@ -371,7 +371,7 @@ console.log('v2.0.20 verified: Team Wire shows the FULL HEART logo in-article, u
 // Historical October roster canon is superseded only by the approved Chevrolet D1 return.
 {
  const comps=JSON.parse(readFileSync('src/data/competitions.json','utf8')), d1=comps.find(x=>x.id==='uarl-d1'), km=comps.find(x=>x.id==='kmart');
- if(!d1||d1.machine!=='BBR Next-Gen Chevrolet'||JSON.stringify(d1.roster)!==JSON.stringify(['#33 Will','#42 UNSIGNED','#43 UNSIGNED'])) throw Error('Current UARL D1 program must retain Chevrolet, Will #33 and two unsigned entries.');
+ if(!d1||d1.machine!=='BBR Next-Gen GM · Cadillac / Chevrolet'||JSON.stringify(d1.roster)!==JSON.stringify(['#28 Hailey','#33 Will','#42 UNSIGNED','#43 UNSIGNED'])) throw Error('Current UARL D1 program must retain GM, Hailey #28, Will #33 and two open entries.');
  if((km?.roster||[]).some(x=>/Jaxon/i.test(x))) throw Error('v2.0.21 Jaxon must not remain in active Kmart roster.');
  const drivers=JSON.parse(readFileSync('src/data/drivers.json','utf8'));
  if(drivers.some(x=>x.id==='jaxon-kmart')) throw Error('v2.0.21 Jaxon active assignment still present.');

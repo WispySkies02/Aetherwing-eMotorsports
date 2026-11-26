@@ -23,6 +23,20 @@
     "numberImage": ""
   },
   {
+    "id": "hailey-uarl-d1-cadillac",
+    "profile": "hailey",
+    "displayName": "Hailey",
+    "number": "28",
+    "competition": "UARL Division 1",
+    "competitionId": "uarl-d1",
+    "status": "Active",
+    "affiliation": "aetherwing",
+    "car": "Cadillac",
+    "manufacturer": "Cadillac",
+    "numberImage": "",
+    "currentUarlRevision": "2026-11-26-v1"
+  },
+  {
     "id": "will-uarl-d1",
     "profile": "will",
     "displayName": "Will",
@@ -34,7 +48,7 @@
     "car": "Chevrolet",
     "manufacturer": "Chevrolet",
     "numberImage": "",
-    "currentUarlRevision": "2026-11-11-v1"
+    "currentUarlRevision": "2026-11-26-v1"
   },
   {
     "id": "wispy-uarl-open",

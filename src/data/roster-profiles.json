@@ -10,7 +10,8 @@
       "NRRS",
       "UARL Open",
       "Kmart",
-      "Sunoco"
+      "Sunoco",
+      "UARL D1"
     ],
     "feature": "Multi-program",
     "signatureLogo": "",
@@ -20,7 +21,7 @@
     "robloxDisplayName": "Hailey",
     "robloxUsername": "@Aokikoto",
     "historicalRobloxDisplayName": "Wispy",
-    "currentUarlRevision": "2026-11-11-v1"
+    "currentUarlRevision": "2026-11-26-v1"
   },
   {
     "slug": "parker",

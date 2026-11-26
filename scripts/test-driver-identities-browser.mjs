@@ -28,7 +28,7 @@ try{
   await page.locator('[data-program="kmart"]').click();await checkMatty();
   assert.equal(await card('clutch').getAttribute('data-number'),'29');assert.equal(await card('eazy').getAttribute('data-number'),'29');
   await page.locator('[data-program="sunoco"]').click();assert.equal(await card('eazy').getAttribute('data-number'),'27');assert.equal(await card('eazy').locator('.aw-lineup__plate > p').textContent(),'@deadmansrisin27_');
-  for(const filter of ['uarl-d1','all','kmart','uarl-d1']){await page.locator(`[data-program="${filter}"]`).click();if(filter==='uarl-d1'){assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'1 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');assert.deepEqual(await page.locator('.aw-lineup__poster').evaluateAll(cards=>cards.map(c=>c.dataset.number)),['33','42','43']);}}
+  for(const filter of ['uarl-d1','all','kmart','uarl-d1']){await page.locator(`[data-program="${filter}"]`).click();if(filter==='uarl-d1'){assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'2 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');assert.deepEqual(await page.locator('.aw-lineup__poster').evaluateAll(cards=>cards.map(c=>c.dataset.number)),['28','33','42','43']);}}
   await page.locator('[data-lineup]').screenshot({path:`/tmp/current-drivers-d1-${width}.png`});
   await page.locator('[data-program="kmart"]').click();await card('matty').screenshot({path:`/tmp/current-drivers-matty-${width}.png`});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);assert.ok(artRequests>0,'Stale artwork endpoint was exercised');

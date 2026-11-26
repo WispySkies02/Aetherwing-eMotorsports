@@ -1,6 +1,6 @@
 const { allianceIdFor } = require('../../src/lib/alliances.mjs');
 const { reconcileCurrentAssignments, reconcileCurrentProfiles } = require('../../src/lib/current-driver-updates.mjs');
-const { reconcileUarlAssignments, reconcileUarlProfiles, reconcileUarlCharters, reconcileUarlCompetitions } = require('../../src/lib/uarl-d1-return.mjs');
+const { activeUarlAssignments, reconcileUarlAssignments, reconcileUarlProfiles, reconcileUarlCharters, reconcileUarlCompetitions } = require('../../src/lib/uarl-d1-return.mjs');
 const { manufacturerChoices, normalizeManufacturer, standingIdentity, normalizeStandingMetadata } = require('../../src/lib/standings-metadata.mjs');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -201,7 +201,7 @@ function validate(key, data, registry={}, context={}) {
       if (row.entryListMode==='custom') {
         if (!Array.isArray(row.entries)) return `Entry ${index + 1}: custom event entries must be a list.`;
         const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seedData.drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
-        const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
+        const eligible=new Map(activeUarlAssignments(roster).filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
         const approved=approvedEventEntries.get(snapshotEventKey(row));
         const seen=new Set();
         for (const eventEntry of row.entries) {
@@ -222,7 +222,7 @@ function validate(key, data, registry={}, context={}) {
       if(!Array.isArray(row.entries)||!row.entries.length)return `Result ${index+1}: add at least one roster driver result.`;
       if(row.entries.filter((entry)=>entry.featuredDriver).length!==1)return `Result ${index+1}: choose exactly one featured driver.`;
       const roster=normalizeDriverAssignments(registry.drafts?.drivers??registry.published?.drivers??seeds().drivers),leagueId=row.league==='open'?'uarl-open':row.league==='iracing'?'iracing-factory':row.league;
-      const eligible=new Map(roster.filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
+      const eligible=new Map(activeUarlAssignments(roster).filter((driver)=>driver.competitionId===leagueId).map((driver)=>[driver.id,driver]));
       // Published history retains the identity recorded for that specific race.
       // Roster exits/number changes must not make an unchanged official result
       // unpublishable. This does not authorize stale assignments in new races.
@@ -356,4 +356,4 @@ function validate(key, data, registry={}, context={}) {
   return '';
 }
 function json(statusCode, data) { return { statusCode, headers: { 'content-type':'application/json; charset=utf-8', 'cache-control':'no-store', 'x-content-type-options':'nosniff' }, body:JSON.stringify(data) }; }
-module.exports = { FILES, seeds, read, write, validate, normalize, normalizeDriverAssignments, compareScheduleEvents, scoreKnownRace, json };
+module.exports = { activeUarlAssignments, FILES, seeds, read, write, validate, normalize, normalizeDriverAssignments, compareScheduleEvents, scoreKnownRace, json };

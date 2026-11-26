@@ -157,7 +157,7 @@ assert.ok(partnerCardHtml({...seeds.partners[0],presenceTitle:'<img src=x onerro
 let revision=response.body.registry.revision;
 // The approved Chevrolet return replaces recognized legacy D1 records once.
 const d1=seeds.charters.find(board=>board.id==='uarl-d1');
-assert.deepEqual(d1.fullTime.map(slot=>[slot.number,slot.driver]),[['33','Will'],['42','Open'],['43','Open']]);
+assert.deepEqual(d1.fullTime.map(slot=>[slot.number,slot.driver]),[['28','Hailey'],['33','Will'],['42','Open'],['43','Open']]);
 assert.deepEqual(d1.fullTime.filter(slot=>slot.driver==='Open').map(slot=>slot.status),['Unsigned','Unsigned']);
 assert.deepEqual(d1.openCharters,[]);
 const legacyCharters=structuredClone(require('./fixtures/uarl-d1-before-return.json').charters);
@@ -165,7 +165,7 @@ const legacyD1=legacyCharters.find(board=>board.id==='uarl-d1');
 legacyD1.openCharters[0].slotLabel='SHARED CHARTER';
 legacyD1.openCharters[0].uses.push({number:'82',label:'Development',active:true});
 const reconciled=require('../netlify/lib/_site-data.cjs')._test.mergeCanonical({charters:legacyCharters}).charters;
-assert.deepEqual(reconciled.find(board=>board.id==='uarl-d1'),d1,'A recognized pre-return registry acquires the approved three-seat Chevrolet allocation');
+assert.deepEqual(reconciled.find(board=>board.id==='uarl-d1'),d1,'A recognized pre-return registry acquires the approved four-slot GM allocation');
 assert.deepEqual(reconciled.find(board=>board.id==='nrrs'),seeds.charters.find(board=>board.id==='nrrs'),'D1 return does not alter NRRS');
 // Regression: current unsaved form data can publish directly without a separate saveDraft request.
 const directSchedule=structuredClone(seeds['schedule-events']);
