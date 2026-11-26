@@ -25,7 +25,7 @@ import pageOverridesSeed from '../data/page-overrides.json';
 import { appendReviewedResults } from './reviewed-results.mjs';
 import { reconcileNovemberSchedule, reconcileNovemberStandings } from './november-racing-context.mjs';
 import { reconcileCharterPlans } from './charter-plans.mjs';
-import { reconcileUarlAssignments, reconcileUarlCharters, reconcileUarlCompetitions, reconcileUarlProfiles } from './uarl-d1-return.mjs';
+import { activeUarlAssignments, reconcileUarlAssignments, reconcileUarlCharters, reconcileUarlCompetitions, reconcileUarlProfiles } from './uarl-d1-return.mjs';
 const choose = (name, seed) => overlay.datasets?.[name] ?? seed;
 export const alliances = choose('alliances',defaultAlliances);
 
@@ -102,7 +102,7 @@ const publishedStandings = choose('standings', standingsSeed);
 export const standings = reconcileNovemberStandings(Array.isArray(publishedStandings) ? publishedStandings : standingsSeed);
 export const milestones = choose('milestones', milestonesSeed);
 // Preserve edited numbers while applying identity aliases and retired-driver filtering.
-const enforceCurrentAssignments=(rows=[])=>normalizeDriverAssignments(rows).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
+const enforceCurrentAssignments=(rows=[])=>activeUarlAssignments(normalizeDriverAssignments(rows)).filter((entry)=>!(entry?.competitionId==='kmart'&&entry?.profile==='jaxon')&&!(entry?.competitionId==='uarl-d1'&&(entry?.profile==='gk3r'||String(entry?.handle||'').toLowerCase()==='@sealsntags'||String(entry?.displayName||'').toLowerCase()==='gk3r'))).map((entry)=>entry?.profile==='wispy'?{...entry,profile:'hailey'}:entry);
 export const drivers = enforceCurrentAssignments(choose('drivers', driversSeed));
 const rosterProgramLabels = {
   nrrs:'NRRS', 'uarl-d1':'UARL D1', 'uarl-open':'UARL Open',

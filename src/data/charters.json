@@ -62,8 +62,13 @@
   {
     "id": "uarl-d1",
     "label": "UARL D1",
-    "seriesNote": "Aetherwing Chevrolet return · #42 and #43 unsigned",
+    "seriesNote": "Aetherwing GM · #28 Cadillac / #33 Chevrolet · #42 and #43 open",
     "fullTime": [
+      {
+        "number": "28",
+        "driver": "Hailey",
+        "numberImage": ""
+      },
       {
         "number": "33",
         "driver": "Will",
@@ -83,6 +88,6 @@
       }
     ],
     "openCharters": [],
-    "currentUarlRevision": "2026-11-11-v1"
+    "currentUarlRevision": "2026-11-26-v1"
   }
 ]

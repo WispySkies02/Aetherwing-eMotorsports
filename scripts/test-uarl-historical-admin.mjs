@@ -15,7 +15,7 @@ const archived={scheduleId:'uarl-d1-historical-admin-fixture',league:'uarl-d1',l
  {assignmentId:'burgertown-uarl-d1',driver:'BurgerTown2Good',number:'32',manufacturer:'Toyota',start:3,stage1Finish:3,stage1Points:3,stage2Finish:1,stage2Points:5,finish:3,finishPoints:42,bonusPoints:0,racePoints:50,featuredDriver:false,chaseDriver:false}
 ]};
 assert.ok(!seed.results.some(race=>race.scheduleId===archived.scheduleId),'The historical result comes from approved mock CMS history, not a bundled source fixture');
-assert.deepEqual(seed.drivers.filter(driver=>driver.competitionId==='uarl-d1').map(driver=>[driver.id,driver.number]),[['will-uarl-d1','33']]);
+assert.deepEqual(seed.drivers.filter(driver=>driver.competitionId==='uarl-d1').map(driver=>[driver.id,driver.number]),[['hailey-uarl-d1-cadillac','28'],['will-uarl-d1','33']]);
 for(const entry of archived.entries)assert.ok(!seed.drivers.some(driver=>driver.id===entry.assignmentId),'The test must use genuinely retired assignment IDs');
 
 function backend(){
@@ -93,7 +93,7 @@ try{
  const before=server.stored,writes=server.writes,copy={...clone(archived),scheduleId:'uarl-d1-unapproved-new-fixture',date:'2026-09-14',round:'ROUND 78',title:'Unapproved new race fixture'};
  const response=await server.request('POST',JSON.stringify({action:'saveDraft',dataset:'results',revision:before.revision,data:[copy,...before.published.results]})),failure=await response.json();
  assert.equal(response.status,400);assert.match(failure.error,/not assigned|Driver Roster/);assert.equal(server.writes,writes);assert.deepEqual(server.stored,before);
- assert.deepEqual(server.stored.published.drivers,seed.drivers,'Historical editing never changes current Will #33 or other assignments');
+ assert.deepEqual(server.stored.published.drivers,seed.drivers,'Historical editing preserves all current assignments');
  assert.deepEqual(unhandled,[]);
  console.log('PASS: authenticated historical D1 result picker retains retired Hailey28/Rocky46/Burger32 IDs, readonly linked identities and all archived measurements through prose edits/draft/switch/publish/reload; explicit External stays editable and new-race stale IDs remain rejected. No live writes.');
 }finally{e?.close();process.off('unhandledRejection',onUnhandled);}

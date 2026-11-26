@@ -28,8 +28,8 @@ const check=(assigned,open,flexible)=>{
 try{
   w.eval(script);
   assert.equal(cards().length,6,'The current directory contains only the six drivers with current assignments');
-  select('uarl-d1');check(1,2,0);
-  assert.deepEqual(cards().map(card=>card.dataset.number),['33','42','43'],'Current D1 has Will #33 and two unsigned entry modules');
+  select('uarl-d1');check(2,2,0);
+  assert.deepEqual(cards().map(card=>card.dataset.number),['28','33','42','43'],'Current D1 has Hailey #28, Will #33 and two open entries');
   publish(initial);select('all');
   const allCount=cards().length;
   assert.equal(summary(),`${allCount} DRIVERS · ONE CARD EACH`);
@@ -72,9 +72,9 @@ try{
   select('all');assert.equal(summary(),`${allCount} DRIVERS · ONE CARD EACH`);assert.equal(cards().length,allCount);
   select('uarl-d1');check(3,1,1);
   assert.equal(JSON.stringify(initial),before,'Rendering/filtering never changes roster or charter source records');
-  publish(current);check(1,2,0);
-  assert.deepEqual(cards().map(card=>card.dataset.number),['33','42','43'],'Restoring the current publication replaces the legacy test cards');
+  publish(current);check(2,2,0);
+  assert.deepEqual(cards().map(card=>card.dataset.number),['28','33','42','43'],'Restoring the current publication replaces the legacy test cards');
   select('all');assert.equal(cards().length,6);
   assert.equal(JSON.stringify(current),currentBefore,'Current roster records remain unchanged throughout the legacy fixture tests');
-  console.log('PASS: current D1 1 assigned/2 open/0 flex, explicit legacy flexible-card summary counts, filter switching, inactive/multi-use flex, missing assignment cards, open assignment rows, pluralization and unchanged source records.');
+  console.log('PASS: current D1 2 assigned/2 open/0 flex, explicit legacy flexible-card summary counts, filter switching, inactive/multi-use flex, missing assignment cards, open assignment rows, pluralization and unchanged source records.');
 }finally{dom.window.close();}

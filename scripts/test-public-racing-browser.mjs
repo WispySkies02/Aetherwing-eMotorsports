@@ -154,8 +154,8 @@ try {
       await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
       await page.locator('[data-program="uarl-d1"]').click();
       const cards=page.locator('[data-lineup-grid] article');
-      assert.deepEqual(await cards.evaluateAll(nodes=>nodes.map(node=>node.dataset.number).sort()),['33','42','43'],'D1 shows Will #33 and the two unsigned #42/#43 entries');
-      assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'1 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');
+      assert.deepEqual(await cards.evaluateAll(nodes=>nodes.map(node=>node.dataset.number).sort()),['28','33','42','43'],'D1 shows Hailey #28, Will #33 and the two open entries');
+      assert.equal(await page.locator('[data-lineup-program] strong').textContent(),'2 ASSIGNED · 2 OPEN · 0 FLEXIBLE ENTRIES');
       assert.equal(await cards.filter({has:page.locator('h3',{hasText:/^Will$/})}).getAttribute('data-number'),'33');
       assert.doesNotMatch(await page.locator('[data-lineup-grid]').textContent(),/GK3R|82|shared/i);
       if(!reload)await page.reload({waitUntil:'domcontentloaded'});
@@ -179,7 +179,7 @@ try {
     const profilePrograms=await page.locator('[data-profile-assignments] .profile-assignment').allTextContents();
     assert.equal(profilePrograms.length,directoryPrograms.length);
     assert.ok(directoryPrograms.some(text=>/iRacing Factory Program.*#28/.test(text)));
-    assert.ok(!directoryPrograms.some(text=>/UARL D1/.test(text)),'Hailey’s current assignment summary no longer includes her prior D1 entry');
+    assert.ok(directoryPrograms.some(text=>/UARL D1/.test(text)),'Hailey’s current assignment summary includes D1');
     for(const assignment of datasets.drivers.filter(row=>row.profile==='hailey'))assert.ok(profilePrograms.some(text=>text.includes(assignment.competition)&&text.includes(`#${assignment.number}`)));
     await page.goto(`${base}/schedule/uarl-d1/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');

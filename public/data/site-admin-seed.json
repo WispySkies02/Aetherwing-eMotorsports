@@ -3365,7 +3365,8 @@
         "NRRS",
         "UARL Open",
         "Kmart",
-        "Sunoco"
+        "Sunoco",
+        "UARL D1"
       ],
       "feature": "Multi-program",
       "signatureLogo": "",
@@ -3375,7 +3376,7 @@
       "robloxDisplayName": "Hailey",
       "robloxUsername": "@Aokikoto",
       "historicalRobloxDisplayName": "Wispy",
-      "currentUarlRevision": "2026-11-11-v1"
+      "currentUarlRevision": "2026-11-26-v1"
     },
     {
       "slug": "parker",
@@ -3560,6 +3561,20 @@
       "numberImage": ""
     },
     {
+      "id": "hailey-uarl-d1-cadillac",
+      "profile": "hailey",
+      "displayName": "Hailey",
+      "number": "28",
+      "competition": "UARL Division 1",
+      "competitionId": "uarl-d1",
+      "status": "Active",
+      "affiliation": "aetherwing",
+      "car": "Cadillac",
+      "manufacturer": "Cadillac",
+      "numberImage": "",
+      "currentUarlRevision": "2026-11-26-v1"
+    },
+    {
       "id": "will-uarl-d1",
       "profile": "will",
       "displayName": "Will",
@@ -3571,7 +3586,7 @@
       "car": "Chevrolet",
       "manufacturer": "Chevrolet",
       "numberImage": "",
-      "currentUarlRevision": "2026-11-11-v1"
+      "currentUarlRevision": "2026-11-26-v1"
     },
     {
       "id": "wispy-uarl-open",
@@ -3803,8 +3818,13 @@
     {
       "id": "uarl-d1",
       "label": "UARL D1",
-      "seriesNote": "Aetherwing Chevrolet return · #42 and #43 unsigned",
+      "seriesNote": "Aetherwing GM · #28 Cadillac / #33 Chevrolet · #42 and #43 open",
       "fullTime": [
+        {
+          "number": "28",
+          "driver": "Hailey",
+          "numberImage": ""
+        },
         {
           "number": "33",
           "driver": "Will",
@@ -3824,7 +3844,7 @@
         }
       ],
       "openCharters": [],
-      "currentUarlRevision": "2026-11-11-v1"
+      "currentUarlRevision": "2026-11-26-v1"
     }
   ],
   "iracing-garage": {
@@ -3881,14 +3901,15 @@
       "type": "aetherwing",
       "label": "Aetherwing Program",
       "schedule": "Sundays · 8:30 PM ET",
-      "machine": "BBR Next-Gen Chevrolet",
+      "machine": "BBR Next-Gen GM · Cadillac / Chevrolet",
       "platform": "Roblox / BBR Next-Gen platform",
       "roster": [
+        "#28 Hailey",
         "#33 Will",
         "#42 UNSIGNED",
         "#43 UNSIGNED"
       ],
-      "currentUarlRevision": "2026-11-11-v1"
+      "currentUarlRevision": "2026-11-26-v1"
     },
     {
       "id": "uarl-open",
