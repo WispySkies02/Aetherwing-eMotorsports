@@ -172,7 +172,7 @@ try {
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
     const haileyCard=page.locator('[data-lineup-grid] article').filter({has:page.locator('a[href="/drivers/hailey/"]')});
     const directoryPrograms=await haileyCard.locator('.aw-lineup__summary-rides > span').allTextContents();
-    assert.match(await haileyCard.locator('.aw-lineup__plate > small').textContent(),/^5 ACTIVE PROGRAMS$/);
+    assert.match(await haileyCard.locator('.aw-lineup__plate > small').textContent(),/^6 ACTIVE PROGRAMS$/);
     assert.equal(await page.locator('[data-lineup-grid] article').count(),6,'Only current assigned drivers appear; archived Rocky and BurgerTown profiles do not add active cards');
     await page.goto(`${base}/drivers/hailey/`,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.documentElement.dataset.contentState==='published');
